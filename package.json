@@ -1,0 +1,42 @@
+{
+    "name": "rapida-react",
+    "version": "1.0.0",
+    "description": "enables to integrate rapida using react",
+    "scripts": {
+        "rollup": "rollup -c"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+ssh://git@github.com/rapidaai/rapida-react.git"
+    },
+    "keywords": [
+        "rapida",
+        "voiceai"
+    ],
+    "author": "Prashant Srivastav <prashant@rapida.ai>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/rapidaai/rapida-react/issues"
+    },
+    "homepage": "https://github.com/rapidaai/rapida-react#readme",
+    "devDependencies": {
+        "@rollup/plugin-commonjs": "^28.0.2",
+        "@rollup/plugin-node-resolve": "^16.0.0",
+        "@rollup/plugin-typescript": "^12.1.2",
+        "@types/react": "^19.0.8",
+        "react": "^19.0.0",
+        "rollup": "^4.34.6",
+        "rollup-plugin-dts": "^6.1.1",
+        "typescript": "^5.7.3"
+    },
+    "main": "dist/cjs/index.js",
+    "module": "dist/esm/index.js",
+    "files": [
+        "dist"
+    ],
+    "types": "dist/index.d.ts",
+    "dependencies": {
+        "framer-motion": "^12.4.2",
+        "lucide-react": "^0.475.0"
+    }
+}
