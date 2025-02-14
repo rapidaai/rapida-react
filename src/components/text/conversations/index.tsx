@@ -3,9 +3,9 @@ import {
   UserMessage,
 } from "@/rapida/components/text/conversations/message";
 import { agentEventObserver } from "@/rapida/hooks/observables/voice-agent";
-import { Message } from "@/rapida/hooks/types";
+import { Message } from "@/rapida/types";
 import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
-import { cn } from "@/styles/media";
+import { cn } from "@/rapida/styles";
 import React, { FC, HTMLAttributes, useEffect, useRef, useState } from "react";
 
 interface ConversationMessagesProps extends HTMLAttributes<HTMLDivElement> {
@@ -18,19 +18,16 @@ export const ConversationMessages: FC<ConversationMessagesProps> = ({
   userIcon: UserIcon,
   className,
   intialConversations = [],
-  ...props
 }) => {
   const [chats, setChats] = useState<Message[]>([]);
   const ctrRef = useRef<HTMLDivElement>(null);
-  const [changed, setChanged] = useState(false);
+  const [_, setChanged] = useState(false);
   const agentContext = useMaybeVoiceAgentContext();
   //
   React.useEffect(() => {
     const serverEventListner = agentEventObserver(agentContext!).subscribe(
       (agentEvents) => {
-        setChats((prevChats) => {
-          return [...intialConversations, ...agentEvents.chats];
-        });
+        setChats([...intialConversations, ...agentEvents.chats]);
         setChanged((prevChanged) => !prevChanged);
       }
     );

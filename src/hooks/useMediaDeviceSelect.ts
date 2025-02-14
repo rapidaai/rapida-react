@@ -2,11 +2,11 @@ import * as React from "react";
 import { useObservableState } from "@/rapida/hooks/useObservableState";
 import { BehaviorSubject } from "rxjs";
 import {
-  createActiveDeviceObservable,
-  createMediaDeviceObserver,
+  browserMediaDeviceObserver,
+  agentInputMediaDeviceChangeObservable,
 } from "@/rapida/hooks/observables/voice-agent";
 import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
-import { VoiceAgent } from "@/rapida/hooks/types/voice-agent";
+import { VoiceAgent } from "@/rapida/types/voice-agent";
 
 /** @public */
 export interface UseMediaDeviceSelectProps {
@@ -46,13 +46,13 @@ export function useMediaDeviceSelect({
   const voiceAgentContext = useMaybeVoiceAgentContext();
   // List of all devices.
   const deviceObserver = React.useMemo(
-    () => createMediaDeviceObserver("audioinput", onError, requestPermissions),
+    () => browserMediaDeviceObserver("audioinput", onError, requestPermissions),
     [requestPermissions, onError]
   );
   const devices = useObservableState(deviceObserver, [] as MediaDeviceInfo[]);
   //
   const [currentDeviceId, setCurrentDeviceId] = React.useState<string>(
-    voiceAgentContext?.deviceId ?? ""
+    voiceAgentContext?.inputMediaDevice ?? ""
   );
   const { className, activeDeviceObservable, setActiveMediaDevice } =
     React.useMemo(
@@ -85,12 +85,12 @@ export function setupDeviceSelector(kind: MediaDeviceKind, agent?: VoiceAgent) {
   );
 
   const activeDeviceObservable = agent
-    ? createActiveDeviceObservable(agent)
+    ? agentInputMediaDeviceChangeObservable(agent)
     : activeDeviceSubject.asObservable();
 
   const setActiveMediaDevice = async (id: string) => {
     if (agent) {
-      await agent.setDeviceId(id);
+      await agent.setInputMediaDevice(id);
     } else if (activeDeviceSubject.value !== id) {
       activeDeviceSubject.next(id);
     }

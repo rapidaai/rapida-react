@@ -1,6 +1,5 @@
-import { cn } from "@/styles/media";
-import { ArrowUpRight, CopyIcon } from "lucide-react";
-import { FC, HTMLAttributes, useEffect, useRef, useState } from "react";
+import { cn } from "@/rapida/styles";
+import { FC, HTMLAttributes } from "react";
 
 interface IconProps extends HTMLAttributes<HTMLDivElement> {}
 

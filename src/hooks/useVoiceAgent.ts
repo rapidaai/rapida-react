@@ -1,4 +1,4 @@
-import type { VoiceAgent } from "./types/voice-agent";
+import type { VoiceAgent } from "@/rapida/types/voice-agent";
 import * as React from "react";
 
 /** @public */

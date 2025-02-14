@@ -2,9 +2,9 @@ import {
   agentConnectionStateObservable,
   agentEventObserver,
 } from "@/rapida/hooks/observables/voice-agent";
-import { AgentServerEvent } from "@/rapida/hooks/types/agent-event";
+import { AgentServerEvent } from "@/rapida/types/agent-event";
 import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
-import { cn } from "@/styles/media";
+import { cn } from "@/rapida/styles";
 import React, { FC, HTMLAttributes, useState } from "react";
 
 interface AgentLiveTranscriptProps extends HTMLAttributes<HTMLDivElement> {
@@ -18,7 +18,7 @@ export const AgentLiveTranscript: FC<AgentLiveTranscriptProps> = ({
   const agentContext = useMaybeVoiceAgentContext();
   const [canPlay, setCanPlay] = useState<boolean>(false);
   const [transcript, setTranscript] = useState("");
-  const [changed, setChanged] = useState(false);
+  const [_, setChanged] = useState(false);
 
   React.useEffect(() => {
     const listener = agentConnectionStateObservable(agentContext!).subscribe(

@@ -1,19 +1,17 @@
 import { AudioMessagingAction } from "@/rapida/components/actions/messaging/audio-messsaging-action";
 import { SimpleMessagingAction } from "@/rapida/components/actions/messaging/simple-messaging-action";
-import { Channel } from "@/rapida/hooks/types";
+import { Channel } from "@/rapida/types";
 import { useInputToggleAgent } from "@/rapida/hooks/useInputToggleAgent";
-import { cn } from "@/styles/media";
-import { FC, HTMLAttributes, useState } from "react";
+import { cn } from "@/rapida/styles";
+import { FC, HTMLAttributes } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useEnsureVoiceAgent } from "@/rapida/hooks/useVoiceAgent";
 import {
   MicVocal,
   PauseCircleIcon,
   PlayCircleIcon,
-  Plus,
   StopCircle,
   Text,
-  X,
 } from "lucide-react";
 import { useConnectAgent } from "@/rapida/hooks/useConnectAgent";
 import { useMicInputToggleAgent } from "@/rapida/hooks/useMicInputToggleAgent";

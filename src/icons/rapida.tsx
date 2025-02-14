@@ -1,5 +1,5 @@
 import React from "react";
-import { cn } from "@/styles/media";
+import { cn } from "@/rapida/styles";
 
 export function RapidaIcon(props: React.SVGProps<SVGSVGElement>) {
   return (

@@ -37,14 +37,13 @@ import {
   UserAuthInfo,
   WithAuthContext,
 } from "@/rapida/clients";
-import { ServiceError } from "@/rapida/clients/protos/web-api_pb_service";
+import { ServiceError } from "@/rapida/clients/protos/assistant-api_pb_service";
 import { Criteria, Paginate, Message } from "@/rapida/clients/protos/common_pb";
-// import { ASSISTANT_API } from "@/configs";
 import { TalkServiceClient } from "@/rapida/clients/protos/talk-api_pb_service";
 import {
   BidirectionalStream,
   ResponseStream,
-} from "@/rapida/clients/protos/endpoint-api_pb_service";
+} from "@/rapida/clients/protos/assistant-api_pb_service";
 import { grpc } from "@improbable-eng/grpc-web";
 import {
   fromStageStr,
@@ -59,17 +58,6 @@ import {
   TextGenerationStage,
   OutputEvaluationStage,
 } from "@/rapida/utils/rapida_stages";
-
-const conversationClient = new TalkServiceClient(
-  "https://assistant-01.rapida.ai"
-);
-const conversationStreamClient = new TalkServiceClient(
-  "https://assistant-01.rapida.ai",
-  {
-    transport: grpc.WebsocketTransport(),
-    debug: true,
-  }
-);
 
 /**
  *
@@ -112,6 +100,7 @@ export function GetStageMessage(stage: string): string {
  * @param cb
  */
 export function AssistantMessaging(
+  conversationClient: TalkServiceClient,
   assistantId: string,
   assistantProviderModelId: string,
   conversation: {
@@ -143,6 +132,7 @@ export function AssistantMessaging(
  * @param authHeader
  */
 export function GetAllAssistantConversation(
+  conversationClient: TalkServiceClient,
   assistantId: string,
   page: number,
   pageSize: number,
@@ -183,6 +173,7 @@ export function GetAllAssistantConversation(
  * @param authHeader
  */
 export function GetAllAssistantConversationMessage(
+  conversationClient: TalkServiceClient,
   assistantId: string,
   assistantConversationId: string,
   page: number,
@@ -220,6 +211,7 @@ export function GetAllAssistantConversationMessage(
  * @returns
  */
 export function AssistantTalk(
+  conversationStreamClient: TalkServiceClient,
   authHeader: UserAuthInfo | ClientAuthInfo
 ): BidirectionalStream<AssistantMessagingRequest, AssistantMessagingResponse> {
   return conversationStreamClient.assistantTalk(WithAuthContext(authHeader));

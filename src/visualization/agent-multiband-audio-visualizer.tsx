@@ -1,4 +1,4 @@
-import { cn } from "@/styles/media";
+import { cn } from "@/rapida/styles";
 import { useEffect, useState } from "react";
 
 /**

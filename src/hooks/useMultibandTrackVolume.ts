@@ -1,4 +1,3 @@
-import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
 /**
  * The function `useMultibandSpeakerTrackVolume` calculates and updates frequency bands based on audio
  * player data at regular intervals.
@@ -20,6 +19,7 @@ import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
  * interval of 100ms.
  */
 import { useState, useEffect, useRef } from "react";
+import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
 
 export const useMultibandMicrophoneTrackVolume = (
   bands: number = 5,
@@ -35,15 +35,12 @@ export const useMultibandMicrophoneTrackVolume = (
 
   useEffect(() => {
     const updateVolume = () => {
-      if (
-        !agentContext ||
-        agentContext.audioRecorder.getStatus() !== "recording"
-      ) {
+      if (!agentContext || agentContext.recorder.getStatus() !== "recording") {
         return;
       }
 
       const frequencies =
-        agentContext.audioRecorder.getFrequencies("frequency")?.values;
+        agentContext.recorder.getFrequencies("frequency")?.values;
       if (!frequencies || frequencies.length === 0) return;
 
       // Calculate the frequency range we want to analyze
@@ -68,8 +65,10 @@ export const useMultibandMicrophoneTrackVolume = (
         const bandFrequencies = usableFrequencies
           .slice(bandStart, bandEnd)
           .map((amplitude) => {
+            // Ensure amplitude is treated as a number
+            const numericAmplitude = Number(amplitude);
             // Normalize amplitude to 0-1 range
-            return Math.min(1, Math.max(0, amplitude * 4));
+            return Math.min(1, Math.max(0, numericAmplitude * 4));
           });
 
         // Ensure we have a consistent number of samples per band
@@ -134,15 +133,12 @@ export const useMultibandSpeakerTrackVolume = (
 
   useEffect(() => {
     const updateVolume = () => {
-      if (
-        !agentContext?.audioPlayer?.getFrequencies ||
-        !agentContext.canPlaybackAudio
-      ) {
+      if (!agentContext?.player?.getFrequencies) {
         return;
       }
 
       const frequencies =
-        agentContext.audioPlayer.getFrequencies("frequency")?.values;
+        agentContext.player.getFrequencies("frequency")?.values;
       if (!frequencies || frequencies.length === 0) return;
 
       // Calculate the frequency range we want to analyze
@@ -168,7 +164,8 @@ export const useMultibandSpeakerTrackVolume = (
           .slice(bandStart, bandEnd)
           .map((amplitude) => {
             // Normalize amplitude to 0-1 range
-            return Math.min(1, Math.max(0, amplitude));
+            const numericAmplitude = Number(amplitude);
+            return Math.min(1, Math.max(0, numericAmplitude));
           });
 
         // Ensure we have a consistent number of samples per band
@@ -240,15 +237,12 @@ export const useMultiband3DSpeakerTrackVolume = (
 
   useEffect(() => {
     const updateVolume = () => {
-      if (
-        !agentContext?.audioPlayer?.getFrequencies ||
-        !agentContext.canPlaybackAudio
-      ) {
+      if (!agentContext?.player?.getFrequencies) {
         return;
       }
 
       const frequencies =
-        agentContext.audioPlayer.getFrequencies("frequency")?.values;
+        agentContext.player.getFrequencies("frequency")?.values;
       if (!frequencies || frequencies.length === 0) return;
 
       // Calculate the frequency range we want to analyze
@@ -274,7 +268,8 @@ export const useMultiband3DSpeakerTrackVolume = (
           .slice(bandStart, bandEnd)
           .map((amplitude) => {
             // Normalize amplitude to 0-1 range
-            return Math.min(1, Math.max(0, amplitude));
+            const numericAmplitude = Number(amplitude);
+            return Math.min(1, Math.max(0, numericAmplitude));
           });
 
         // Ensure we have a consistent number of samples per band

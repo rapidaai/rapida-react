@@ -1,5 +1,5 @@
-import { cn } from '@/styles/media';
-import React, { useState, useEffect, useRef } from 'react';
+import { cn } from "@/rapida/styles";
+import React, { useState, useRef } from "react";
 
 interface TooltipCursorProps {
   content: string;
@@ -10,13 +10,12 @@ interface TooltipCursorProps {
 export const TooltipCursor: React.FC<TooltipCursorProps> = ({
   children,
   content,
-  delay,
 }) => {
   const [isTooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
-  const [showTooltipContent, setShowTooltipContent] = useState(false);
+  const [_, setShowTooltipContent] = useState(false);
 
-  const tooltipRef = useRef<HTMLDivElement>(document.createElement('div'));
+  const tooltipRef = useRef<HTMLDivElement>(document.createElement("div"));
 
   // ... component logic
 
@@ -65,12 +64,12 @@ export const TooltipCursor: React.FC<TooltipCursorProps> = ({
         <div
           ref={tooltipRef}
           className={cn(
-            'fixed px-3 py-1.5 backdrop-blur-md rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 shadow z-50 text-sm font-medium max-w-md',
+            "fixed px-3 py-1.5 backdrop-blur-md rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-600 dark:text-gray-400 shadow z-50 text-sm font-medium max-w-md"
           )}
           style={{
             top: tooltipPosition.y,
             left: tooltipPosition.x,
-            zIndex: '2147483647',
+            zIndex: "2147483647",
           }}
         >
           {content}

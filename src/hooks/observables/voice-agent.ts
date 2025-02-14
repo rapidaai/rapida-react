@@ -1,10 +1,7 @@
 import { Subject, map, Observable, startWith, finalize, concat } from "rxjs";
-import { VoiceAgent } from "@/rapida/hooks/types/voice-agent";
-import {
-  AgentEvent,
-  AgentEventCallback,
-} from "@/rapida/hooks/types/agent-event";
-import { Channel, ConnectionState } from "@/rapida/hooks/types";
+import { VoiceAgent } from "@/rapida/types/voice-agent";
+import { AgentEvent, AgentEventCallback } from "@/rapida/types/agent-event";
+import { ConnectionState } from "@/rapida/types";
 
 /**
  *
@@ -94,7 +91,7 @@ export function agentObserver(agent: VoiceAgent) {
  * @param requestPermissions
  * @returns
  */
-export function createMediaDeviceObserver(
+export function browserMediaDeviceObserver(
   kind?: MediaDeviceKind,
   onError?: (e: Error) => void,
   requestPermissions = true
@@ -151,7 +148,7 @@ export function createDataObserver(agent: VoiceAgent) {
 
 export function agentInputMediaDeviceChangeObservable(agent: VoiceAgent) {
   return agentEventSelector(agent, AgentEvent.InputMediaDeviceChanged).pipe(
-    map(([deviceId]) => {
+    map(([deviceId]: [string]) => {
       return deviceId;
     })
   );
@@ -167,7 +164,7 @@ export function agentAudioInputMuteObservable(agent: VoiceAgent) {
     agent,
     AgentEvent.AudioInputMuteToggle
   ).pipe(
-    map((_agn) => {
+    map((_agn: VoiceAgent) => {
       return { isEnable: _agn.isAudioInputEnable };
     })
   );
@@ -184,8 +181,8 @@ export function agentConnectionStateObservable(agent: VoiceAgent) {
     agent,
     AgentEvent.ConnectionChanged
   ).pipe(
-    map((room) => {
-      return { isConnected: room.state === ConnectionState.Connected };
+    map((_a: VoiceAgent) => {
+      return { isConnected: agent.state === ConnectionState.Connected };
     })
   );
   return observable;
@@ -201,7 +198,7 @@ export function agentInputObservable(agent: VoiceAgent) {
     agent,
     AgentEvent.InputChannelSwitch
   ).pipe(
-    map((_agent) => {
+    map((_agent: VoiceAgent) => {
       return { channel: _agent.inputChannel };
     })
   );

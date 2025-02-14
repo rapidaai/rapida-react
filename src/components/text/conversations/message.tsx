@@ -1,4 +1,4 @@
-import { ArrowUpRight, CopyIcon } from "lucide-react";
+import { CopyIcon } from "lucide-react";
 import { FC } from "react";
 
 export const BotMessage: FC<{ message: string }> = ({ message }) => {

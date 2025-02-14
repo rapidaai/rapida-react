@@ -1,10 +1,9 @@
 import { useInputToggleAgent } from "@/rapida/hooks/useInputToggleAgent";
 import { useEnsureVoiceAgent } from "@/rapida/hooks/useVoiceAgent";
-import { cn } from "@/styles/media";
-import { AudioLines, Send, SendHorizontal } from "lucide-react";
-import { FC, HTMLAttributes, useState } from "react";
+import { cn } from "@/rapida/styles";
+import { AudioLines, Send } from "lucide-react";
+import { FC, HTMLAttributes } from "react";
 import { useForm } from "react-hook-form";
-import { motion } from "framer-motion";
 
 interface SimpleMessagingAcitonProps extends HTMLAttributes<HTMLDivElement> {
   placeholder?: string;
@@ -14,7 +13,7 @@ export const SimpleMessagingAction: FC<SimpleMessagingAcitonProps> = ({
   placeholder,
 }) => {
   const ctx = useEnsureVoiceAgent();
-  const { handleInputToggle, channel } = useInputToggleAgent();
+  const { handleInputToggle } = useInputToggleAgent();
 
   const {
     register,

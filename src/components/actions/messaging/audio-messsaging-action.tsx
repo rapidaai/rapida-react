@@ -1,16 +1,12 @@
 import { AgentLiveTranscript } from "@/rapida/components/live-transcript";
 import { useMultibandMicrophoneTrackVolume } from "@/rapida/hooks/useMultibandTrackVolume";
 import { AgentMultibandAudioVisualizer } from "@/rapida/visualization/agent-multiband-audio-visualizer";
-import React, { FC, HTMLAttributes, useState } from "react";
+import { FC, HTMLAttributes } from "react";
 import { motion } from "framer-motion";
-import {
-  useEnsureVoiceAgent,
-  useMaybeVoiceAgentContext,
-} from "@/rapida/hooks/useVoiceAgent";
-import { useInputToggleAgent } from "@/rapida/hooks/useInputToggleAgent";
-import { Mic, PauseCircleIcon, StopCircle, X } from "lucide-react";
+import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
+import { Mic } from "lucide-react";
 import { useConnectAgent } from "@/rapida/hooks/useConnectAgent";
-import { cn } from "@/styles/media";
+import { cn } from "@/rapida/styles";
 
 /**
  *

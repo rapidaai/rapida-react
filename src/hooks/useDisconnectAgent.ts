@@ -1,4 +1,4 @@
-import { VoiceAgent } from "@/rapida/hooks/types/voice-agent";
+import { VoiceAgent } from "@/rapida/types/voice-agent";
 import { useEnsureVoiceAgent } from "@/rapida/hooks/useVoiceAgent";
 import { useObservableState } from "@/rapida/hooks/useObservableState";
 import * as React from "react";

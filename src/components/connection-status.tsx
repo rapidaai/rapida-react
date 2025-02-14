@@ -1,9 +1,9 @@
 import { agentConnectionStateObservable } from "@/rapida/hooks/observables/voice-agent";
 import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
-import { cn } from "@/styles/media";
+import { cn } from "@/rapida/styles";
 import React, { FC, useState } from "react";
 
-export const AgentConnectionStatus: FC = (props: {}) => {
+export const AgentConnectionStatus: FC = ({}) => {
   const agentContext = useMaybeVoiceAgentContext();
   const [canPlay, setCanPlay] = useState<boolean>(false);
 
