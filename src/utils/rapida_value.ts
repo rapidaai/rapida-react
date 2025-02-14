@@ -22,7 +22,7 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { Map, Message } from "google-protobuf";
+import { Map } from "google-protobuf";
 import { Any } from "google-protobuf/google/protobuf/any_pb";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 import {
@@ -38,6 +38,13 @@ function pack(serialized: Uint8Array, typeUrlPrefix: string): Any {
   const anyValue = new Any();
   anyValue.pack(serialized, typeUrlPrefix);
   return anyValue;
+}
+
+//  string array to `Any`
+export function StringArrayToAny(values: string[]): Any {
+  return values.map((x) => {
+    return StringToAny(x);
+  });
 }
 
 //  string to `Any`

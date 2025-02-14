@@ -5,7 +5,7 @@ import { FC, HTMLAttributes } from "react";
 import { motion } from "framer-motion";
 import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
 import { Mic } from "lucide-react";
-import { useConnectAgent } from "@/rapida/hooks/useConnectAgent";
+import { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
 import { cn } from "@/rapida/styles";
 
 /**

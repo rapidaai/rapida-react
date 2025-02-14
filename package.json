@@ -1,6 +1,6 @@
 {
     "name": "rapida-react",
-    "version": "1.0.10",
+    "version": "1.0.13",
     "description": "enables to integrate rapida using react",
     "repository": {
         "type": "git",
@@ -45,14 +45,10 @@
     "devDependencies": {
         "@babel/cli": "^7.26.4",
         "@babel/core": "^7.26.8",
-        "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
+        "@babel/plugin-transform-private-property-in-object": "^7.21.11",
         "@babel/preset-env": "^7.24.6",
         "@babel/preset-react": "^7.26.3",
         "@babel/preset-typescript": "^7.26.0",
-        "@rollup/plugin-babel": "^6.0.4",
-        "@rollup/plugin-commonjs": "^28.0.2",
-        "@rollup/plugin-node-resolve": "^16.0.0",
-        "@rollup/plugin-typescript": "^12.1.2",
         "@swc/core": "^1.10.16",
         "@types/node": "^22.13.2",
         "@types/react": "^19.0.8",
@@ -63,10 +59,6 @@
         "postcss-preset-env": "^10.1.4",
         "react": "^19.0.0",
         "react-dom": "19.0.0",
-        "rollup": "^4.34.6",
-        "rollup-plugin-dts": "^6.1.1",
-        "rollup-plugin-postcss": "^4.0.2",
-        "rollup-plugin-typescript2": "^0.36.0",
         "tailwindcss": "^3.4.17",
         "tailwindcss-patch": "^5.0.2",
         "ts-loader": "^9.5.2",
@@ -74,9 +66,7 @@
         "tslib": "^2.6.2",
         "tsup": "^8.3.6",
         "typescript": "^5.7.3",
-        "unplugin-tailwindcss-mangle": "^4.0.2",
-        "webpack": "^5.97.1",
-        "webpack-cli": "^6.0.1"
+        "unplugin-tailwindcss-mangle": "^4.0.2"
     },
     "main": "dist/index.js",
     "module": "dist/index.esm.js",
@@ -94,7 +84,6 @@
     "dependencies": {
         "@emotion/is-prop-valid": "^1.3.1",
         "@improbable-eng/grpc-web": "^0.15.0",
-        "@rollup/plugin-alias": "^5.1.1",
         "@tailwindcss/postcss": "^4.0.6",
         "clsx": "^2.1.1",
         "css-loader": "^7.1.2",
@@ -105,7 +94,6 @@
         "lucide-react": "^0.475.0",
         "moment": "^2.30.1",
         "react-hook-form": "^7.54.2",
-        "rollup-plugin-peer-deps-external": "^2.2.4",
         "rxjs": "^7.8.1",
         "style-loader": "^4.0.0",
         "styled-components": "^6.1.15",

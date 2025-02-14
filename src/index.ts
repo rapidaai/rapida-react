@@ -7,6 +7,9 @@ import {
 } from "@/rapida/components/text/conversations/icon";
 import { MessagingAction } from "@/rapida/components/actions/messaging/messaging-action";
 import { ConversationMessages } from "@/rapida/components/text/conversations";
+import { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
+import { useDisconnectAgent } from "@/rapida/hooks/use-disconnect-agent";
+import { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
 export {
   Channel,
   ConnectionState,
@@ -20,6 +23,13 @@ export {
   UserIcon,
   MessagingAction,
   ConversationMessages,
+
+  // context
   VoiceAgent,
   VoiceAgentContext,
+
+  // hooks
+  useConnectAgent,
+  useDisconnectAgent,
+  useInputModeToggleAgent,
 };

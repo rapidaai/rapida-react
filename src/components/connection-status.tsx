@@ -1,9 +1,10 @@
 import { agentConnectionStateObservable } from "@/rapida/hooks/observables/voice-agent";
 import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
 import { cn } from "@/rapida/styles";
-import React, { FC, useState } from "react";
+import React, { FC, HTMLAttributes, useState } from "react";
 
-export const AgentConnectionStatus: FC = ({}) => {
+interface ConnectionStatusProps extends HTMLAttributes<HTMLSpanElement> {}
+export const ConnectionStatus: FC<ConnectionStatusProps> = ({ className }) => {
   const agentContext = useMaybeVoiceAgentContext();
   const [canPlay, setCanPlay] = useState<boolean>(false);
 
@@ -17,7 +18,7 @@ export const AgentConnectionStatus: FC = ({}) => {
   }, [agentContext]);
 
   return (
-    <span className={cn(canPlay && "text-green-600", "font-medium")}>
+    <span className={cn(canPlay && "text-green-600", "font-medium", className)}>
       {canPlay ? "Connected" : "Disconnected"}
     </span>
   );

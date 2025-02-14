@@ -1,8 +1,10 @@
 import { TalkServiceClient } from "@/rapida/clients/protos/talk-api_pb_service";
 import { AssistantDefinition } from "@/rapida/clients/protos/talk-api_pb";
 import { grpc } from "@improbable-eng/grpc-web";
-import { ASSISTANT_API } from "@/rapida/configs";
+import { ASSISTANT_API, LOCAL_ASSISTANT_API } from "@/rapida/configs";
 import { ClientAuthInfo, UserAuthInfo } from "@/rapida/clients";
+import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
+import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
 export const DEFAULT_DEVICE_ID = "default";
 
 export enum Channel {
@@ -121,9 +123,19 @@ export class AgentConfig {
   version?: string;
 
   /**
-   * Configuration options or parameters for the agent.
+   * arguments for assistant
    */
-  arguments?: {};
+  arguments?: Map<string, google_protobuf_any_pb.Any>;
+
+  /**
+   * options for assistants
+   */
+  options?: Map<string, google_protobuf_any_pb.Any>;
+
+  /**
+   * metadata for assistant request
+   */
+  metadata?: Map<string, google_protobuf_any_pb.Any>;
 
   /**
    * Initializes a new instance of `AgentConfig`.
@@ -132,10 +144,18 @@ export class AgentConfig {
    * @param version - (Optional) Version number of the agent.
    * @param argument - (Optional) Configuration arguments for the agent.
    */
-  constructor(id: string, version?: string, argument?: {}) {
+  constructor(
+    id: string,
+    version?: string,
+    argument?: Map<string, google_protobuf_any_pb.Any>,
+    options?: Map<string, google_protobuf_any_pb.Any>,
+    metadata?: Map<string, google_protobuf_any_pb.Any>
+  ) {
     this.id = id;
     this.version = version;
     this.arguments = argument;
+    this.options = options;
+    this.metadata = metadata;
   }
 
   /**
@@ -152,6 +172,53 @@ export class AgentConfig {
     }
 
     return def;
+  }
+
+  /**
+   * for adding custom dictionary
+   * it allows user to add custom keywords to given agent it will perform correction
+   * @param keywords
+   */
+  addKeywords(keywords: string[]): this {
+    if (this.options == undefined) this.options = new Map();
+    this.options["keywords"] = StringArrayToAny(keywords);
+    return this;
+  }
+
+  /**
+   * Want to add other options to override
+   * @param k
+   * @param otp
+   * @returns
+   */
+  addCustomOption(k: string, otp: google_protobuf_any_pb.Any): this {
+    if (this.options == undefined) this.options = new Map();
+    this.options[k] = otp;
+    return this;
+  }
+
+  /**
+   *
+   * @param k
+   * @param meta
+   * @returns
+   */
+  addMetadata(k: string, meta: google_protobuf_any_pb.Any): this {
+    if (this.metadata == undefined) this.metadata = new Map();
+    this.metadata[k] = meta;
+    return this;
+  }
+
+  /**
+   *
+   * @param k
+   * @param value
+   * @returns
+   */
+  addArgument(k: string, value: string): this {
+    if (this.arguments == undefined) this.arguments = new Map();
+    this.arguments[k] = StringToAny(value);
+    return this;
   }
 }
 
@@ -201,5 +268,27 @@ export class ConnectionConfig {
       transport: grpc.WebsocketTransport(),
       debug: true,
     });
+  }
+
+  /**
+   * Only for testing
+   * @returns
+   */
+  withLocal(): this {
+    return this.withCustomEndpoint(LOCAL_ASSISTANT_API);
+  }
+
+  /**
+   * On premise deployment options
+   * @param endpoint
+   * @returns
+   */
+  withCustomEndpoint(endpoint: string): this {
+    this.conversationClient = new TalkServiceClient(endpoint);
+    this.streamClient = new TalkServiceClient(endpoint, {
+      transport: grpc.WebsocketTransport(),
+      debug: true,
+    });
+    return this;
   }
 }

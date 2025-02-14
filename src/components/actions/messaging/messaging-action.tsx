@@ -1,7 +1,7 @@
 import { AudioMessagingAction } from "@/rapida/components/actions/messaging/audio-messsaging-action";
 import { SimpleMessagingAction } from "@/rapida/components/actions/messaging/simple-messaging-action";
 import { Channel } from "@/rapida/types";
-import { useInputToggleAgent } from "@/rapida/hooks/useInputToggleAgent";
+import { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
 import { cn } from "@/rapida/styles";
 import { FC, HTMLAttributes } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -13,9 +13,9 @@ import {
   StopCircle,
   Text,
 } from "lucide-react";
-import { useConnectAgent } from "@/rapida/hooks/useConnectAgent";
+import { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
 import { useMicInputToggleAgent } from "@/rapida/hooks/useMicInputToggleAgent";
-import { useDisconnectAgent } from "@/rapida/hooks/useDisconnectAgent";
+import { useDisconnectAgent } from "@/rapida/hooks/use-disconnect-agent";
 import { QuickSuggestion } from "@/rapida/components/text/suggestions";
 
 /**
@@ -38,7 +38,9 @@ export const MessagingAction: FC<MessageActionProps> = ({
 }) => {
   const ctx = useEnsureVoiceAgent();
   const { handleMicInputToggleAgent, isEnable } = useMicInputToggleAgent();
-  const { handleInputToggle, channel } = useInputToggleAgent();
+
+  //   current channel and a way to toggel
+  const { handleInputToggle, channel } = useInputModeToggleAgent();
   const { handleConnectAgent, isConnected } = useConnectAgent();
   const { handleDisconnectAgent } = useDisconnectAgent();
   return (

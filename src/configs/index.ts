@@ -25,3 +25,5 @@
  */
 
 export const ASSISTANT_API = "https://assistant-01.rapida.ai";
+
+export const LOCAL_ASSISTANT_API = "http://assistant.rapida.local";

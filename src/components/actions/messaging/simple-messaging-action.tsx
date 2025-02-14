@@ -1,4 +1,4 @@
-import { useInputToggleAgent } from "@/rapida/hooks/useInputToggleAgent";
+import { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
 import { useEnsureVoiceAgent } from "@/rapida/hooks/useVoiceAgent";
 import { cn } from "@/rapida/styles";
 import { AudioLines, Send } from "lucide-react";
@@ -13,7 +13,7 @@ export const SimpleMessagingAction: FC<SimpleMessagingAcitonProps> = ({
   placeholder,
 }) => {
   const ctx = useEnsureVoiceAgent();
-  const { handleInputToggle } = useInputToggleAgent();
+  const { handleInputToggle } = useInputModeToggleAgent();
 
   const {
     register,

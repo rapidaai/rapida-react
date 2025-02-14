@@ -2,19 +2,16 @@ import { VoiceAgent } from "@/rapida/types/voice-agent";
 import { useEnsureVoiceAgent } from "@/rapida/hooks/useVoiceAgent";
 import { useObservableState } from "@/rapida/hooks/useObservableState";
 import * as React from "react";
-import {
-  agentConnectionStateObservable,
-  agentInputObservable,
-} from "@/rapida/hooks/observables/voice-agent";
+import { agentInputObservable } from "@/rapida/hooks/observables/voice-agent";
 import { Channel } from "@/rapida/types";
 
-export function useInputToggleAgent() {
+export function useInputModeToggleAgent() {
   // ensure that voice agent is initializesd
   const agent = useEnsureVoiceAgent();
 
   // observe
   const { _agentInputObservable, handleInputToggle } = React.useMemo(
-    () => toggleInput(),
+    () => toggleInputMode(),
     []
   );
 
@@ -31,10 +28,10 @@ export function useInputToggleAgent() {
 }
 
 /**
- *
+ * Toggle input voice agent
  * @returns
  */
-function toggleInput() {
+function toggleInputMode() {
   const handleInputToggle = async (agent: VoiceAgent) => {
     // toggelling the input from audio to text
     if (agent.isAudioInput) {

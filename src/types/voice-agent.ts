@@ -207,6 +207,28 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
 
     request.setAssistant(this.agentConfig.definition);
     request.setMessage(message);
+
+    //
+    if (this.agentConfig.options) {
+      this.agentConfig.options?.forEach((k, v) => {
+        request.getOptionsMap().put(k, v);
+      });
+    }
+
+    //
+    if (this.agentConfig.metadata) {
+      this.agentConfig.metadata?.forEach((k, v) => {
+        request.getMetadataMap().put(k, v);
+      });
+    }
+
+    //
+    if (this.agentConfig.arguments) {
+      this.agentConfig.arguments?.forEach((k, v) => {
+        request.getArgsMap().put(k, v);
+      });
+    }
+
     return request;
   };
 
