@@ -4,7 +4,7 @@ import {
 } from "@/rapida/components/text/conversations/message";
 import { agentEventObserver } from "@/rapida/hooks/observables/voice-agent";
 import { Message } from "@/rapida/types";
-import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
+import { useMaybeVoiceAgentContext } from "@/rapida/hooks/use-voice-agent";
 import { cn } from "@/rapida/styles";
 import React, { FC, HTMLAttributes, useEffect, useRef, useState } from "react";
 

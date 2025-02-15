@@ -1,3 +1,27 @@
+/*
+ *  Copyright (c) 2024. Rapida
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in
+ *  all copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *  THE SOFTWARE.
+ *
+ *  Author: Prashant <prashant@rapida.ai>
+ *
+ */
 import { DeviceManager } from "@/rapida/devices/device-manager";
 import { EventEmitter } from "events";
 import type TypedEmitter from "typed-emitter";
@@ -52,7 +76,8 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
   get outputMediaDevice(): string {
     return this.outputDeviceId;
   }
-  private audioOutputPaused: boolean = false;
+  // later will impliment mute speaker
+  private audioOutputPaused: boolean = true;
 
   // player one is audio player another is recorder
   private audioPlayer: WavStreamPlayer;
@@ -107,8 +132,6 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
     this.agentConfig = agentConfig;
     this.connectionConfig = connection;
     //
-    this.audioInputPaused = true;
-    this.audioOutputPaused = false;
 
     //
     this.audioPlayer = new WavStreamPlayer({ sampleRate: 24000 });
@@ -123,18 +146,19 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
     if (this.state !== ConnectionState.Connected) {
       return;
     }
+
+    // toggel audio
+    await this.toggelAudioOutput();
+    await this.toggelAudioInput();
+
+    // cleanup
     await this.audioRecorder.clear();
     await this.audioRecorder.end();
     await this.audioRecorder.quit();
     await this.audioPlayer.interrupt();
 
-    this.audioOutputPaused = true;
+    //
     this.connection?.end();
-    this.agentMessagingId = undefined;
-    this.agentTranscript = "";
-    this.agentEvents = [];
-    this.agentMessages = [];
-    await this.setAndEmitConnectionState(ConnectionState.Disconnected);
   }
 
   async connect() {
@@ -162,16 +186,19 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
         this.connectionConfig.auth
       );
       this.connection?.on("data", await this.onDataChange);
-      this.connection?.on("end", this.onEnd);
+      this.connection?.on("end", await this.onEnd);
       this.connection?.on("status", this.onStatusChange);
 
       //starting recording
       await this.startRecording(true);
       await this.setAndEmitConnectionState(ConnectionState.Connected);
+
+      // enable both input and output
       await this.toggelAudioInput();
+      await this.toggelAudioOutput();
     } catch (err) {
       console.error("error while connect " + err);
-      throw err;
+      // throw err;
     }
   }
 
@@ -210,22 +237,22 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
 
     //
     if (this.agentConfig.options) {
-      this.agentConfig.options?.forEach((k, v) => {
-        request.getOptionsMap().put(k, v);
+      this.agentConfig.options?.forEach((v, k) => {
+        request.getOptionsMap().set(k, v);
       });
     }
 
     //
     if (this.agentConfig.metadata) {
-      this.agentConfig.metadata?.forEach((k, v) => {
-        request.getMetadataMap().put(k, v);
+      this.agentConfig.metadata?.forEach((v, k) => {
+        request.getMetadataMap().set(k, v);
       });
     }
 
     //
     if (this.agentConfig.arguments) {
-      this.agentConfig.arguments?.forEach((k, v) => {
-        request.getArgsMap().put(k, v);
+      this.agentConfig.arguments?.forEach((v, k) => {
+        request.getArgsMap().set(k, v);
       });
     }
 
@@ -277,6 +304,10 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
     return new Uint8Array(arrayBuffer);
   }
 
+  /**
+   *
+   * @param mono
+   */
   private onSendAudio = async (mono: Int16Array) => {
     this.connection?.write(
       this.createAssistantRequest("user", [
@@ -285,11 +316,21 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
     );
   };
 
+  /**
+   *
+   * @param assistantConversationId
+   * @returns
+   */
   private onChangeConversation = (assistantConversationId: string) => {
     if (this.agentMessagingId) return;
     this.agentMessagingId = assistantConversationId;
   };
-  //
+
+  /**
+   *
+   * @param response
+   * @returns
+   */
   private onDataChange = async (response: AssistantMessagingResponse) => {
     switch (response.getDataCase()) {
       case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
@@ -310,6 +351,7 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
               );
               break;
             case AgentServerEvent.Interruption:
+              this.agentTranscript = "";
               await this.audioPlayer.interrupt();
               this.emit(
                 AgentEvent.ServerEvent,
@@ -403,14 +445,16 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
     }
   };
 
-  // call it when end of stream
+  /**
+   * call it when end of stream
+   */
   private onEnd = async () => {
-    console.log("end of stream");
+    await this.setAndEmitConnectionState(ConnectionState.Disconnected);
   };
 
   // when status change of active connection
   private onStatusChange = async (s) => {
-    console.log("change in statue" + s);
+    console.log(s);
   };
 
   /**
@@ -432,7 +476,6 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
    */
   public setOutputMediaDevice = async (deviceId: string) => {
     if (this.outputDeviceId === deviceId) {
-      console.log("output media device doesn't changed ignored");
       return;
     }
     this.outputDeviceId = deviceId;
@@ -446,7 +489,6 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
    */
   public setInputMediaDevice = async (deviceId: string) => {
     if (this.inputDeviceId === deviceId) {
-      console.log("input media device doesn't changed ignored");
       return;
     }
     this.inputDeviceId = deviceId;
@@ -491,20 +533,6 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
     this.outputChannel = output;
     this.emit(AgentEvent.OutputChannelSwitch, this.outputChannel);
   }
-  //
-  //
-  //
-  toggleMute = async () => {
-    await this.pauseOutput();
-    await this.toggelAudioInput();
-  };
-
-  /**
-   * toggling input to mute
-   */
-  toggleInputMute = async () => {
-    await this.toggelAudioInput();
-  };
 
   // /** @internal */
   emit<E extends keyof AgentEventCallback>(
@@ -522,7 +550,7 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
    * Input for the voice agent
    * to check if audio in or text in
    */
-  private toggelAudioInput = async () => {
+  toggelAudioInput = async () => {
     if (this.audioInputPaused) {
       this.audioInputPaused = false;
       if (this.audioRecorder && this.audioRecorder.getStatus() === "paused") {
@@ -555,8 +583,7 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
   /**
    * output for voice agent
    */
-
-  private pauseOutput = async () => {
+  toggelAudioOutput = async () => {
     if (this.audioOutputPaused) {
       this.audioOutputPaused = false;
       // if already paused then start recording

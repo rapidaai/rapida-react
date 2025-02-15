@@ -1,10 +1,10 @@
-import { useMediaDeviceSelect } from "@/rapida/hooks/useMediaDeviceSelect";
+import { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
 import { cn } from "@/rapida/styles";
 import { useEffect, useState } from "react";
 
 export const DeviceSelector = () => {
   const [showMenu, setShowMenu] = useState(false);
-  const deviceSelect = useMediaDeviceSelect({});
+  const deviceSelect = useSelectInputDeviceAgent({});
   const [selectedDeviceName, setSelectedDeviceName] = useState("");
 
   useEffect(() => {

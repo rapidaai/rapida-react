@@ -1,3 +1,27 @@
+/*
+ *  Copyright (c) 2024. Rapida
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in
+ *  all copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ *  THE SOFTWARE.
+ *
+ *  Author: Prashant <prashant@rapida.ai>
+ *
+ */
 import { TalkServiceClient } from "@/rapida/clients/protos/talk-api_pb_service";
 import { AssistantDefinition } from "@/rapida/clients/protos/talk-api_pb";
 import { grpc } from "@improbable-eng/grpc-web";
@@ -193,7 +217,7 @@ export class AgentConfig {
    */
   addCustomOption(k: string, otp: google_protobuf_any_pb.Any): this {
     if (this.options == undefined) this.options = new Map();
-    this.options[k] = otp;
+    this.options.set(k, otp);
     return this;
   }
 
@@ -205,7 +229,7 @@ export class AgentConfig {
    */
   addMetadata(k: string, meta: google_protobuf_any_pb.Any): this {
     if (this.metadata == undefined) this.metadata = new Map();
-    this.metadata[k] = meta;
+    this.metadata.set(k, meta);
     return this;
   }
 
@@ -217,7 +241,9 @@ export class AgentConfig {
    */
   addArgument(k: string, value: string): this {
     if (this.arguments == undefined) this.arguments = new Map();
-    this.arguments[k] = StringToAny(value);
+    this.arguments?.set(k, StringToAny(value));
+    console.dir(value);
+    console.dir(this.arguments);
     return this;
   }
 }

@@ -22,52 +22,46 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
+import * as React from "react";
 import { VoiceAgent } from "@/rapida/types/voice-agent";
 import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { useObservableState } from "@/rapida/hooks/use-observable-state";
-import * as React from "react";
-import { agentInputObservable } from "@/rapida/hooks/observables/voice-agent";
-import { Channel } from "@/rapida/types";
+import { agentAudioOutputMuteObservable } from "@/rapida/hooks/observables/voice-agent";
 
-export function useInputModeToggleAgent() {
-  // ensure that voice agent is initializesd
+/**
+ * use speaker toggle agent
+ * @returns
+ */
+export function useSpeakerOuputToggleAgent() {
+  //
   const agent = useEnsureVoiceAgent();
 
-  // observe
-  const { _agentInputObservable, handleInputToggle } = React.useMemo(
-    () => toggleInputMode(),
-    []
-  );
+  //
+  const { _agentAudioInputMuteObservable, handleSpeakerOuputToggleAgent } =
+    React.useMemo(() => speakerOuputToggleAgent(), []);
 
   const observable = React.useMemo(
-    () => _agentInputObservable(agent),
-    [agent, _agentInputObservable]
+    () => _agentAudioInputMuteObservable(agent),
+    [agent, _agentAudioInputMuteObservable]
   );
 
-  const { channel } = useObservableState(observable, {
-    channel: agent.inputChannel,
+  const { isEnable } = useObservableState(observable, {
+    isEnable: agent.isAudioInputEnable,
   });
 
-  return { handleInputToggle, channel };
+  return { handleSpeakerOuputToggleAgent, isEnable };
 }
 
 /**
- * Toggle input voice agent
+ * For toggleing mic for a given agent
  * @returns
  */
-function toggleInputMode() {
-  const handleInputToggle = async (agent: VoiceAgent) => {
-    // toggelling the input from audio to text
-    if (agent.isAudioInput) {
-      await agent.setInputChannel(Channel.Text);
-      return;
-    }
-    if (agent.isTextInput) {
-      await agent.setInputChannel(Channel.Audio);
-    }
+function speakerOuputToggleAgent() {
+  const handleSpeakerOuputToggleAgent = async (agent: VoiceAgent) => {
+    await agent.toggelAudioOutput();
   };
   return {
-    _agentInputObservable: agentInputObservable,
-    handleInputToggle,
+    _agentAudioInputMuteObservable: agentAudioOutputMuteObservable,
+    handleSpeakerOuputToggleAgent,
   };
 }

@@ -1,6 +1,6 @@
 {
     "name": "rapida-react",
-    "version": "1.0.13",
+    "version": "1.0.23",
     "description": "enables to integrate rapida using react",
     "repository": {
         "type": "git",

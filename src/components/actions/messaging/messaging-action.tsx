@@ -5,7 +5,7 @@ import { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-ag
 import { cn } from "@/rapida/styles";
 import { FC, HTMLAttributes } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { useEnsureVoiceAgent } from "@/rapida/hooks/useVoiceAgent";
+import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import {
   MicVocal,
   PauseCircleIcon,
@@ -14,7 +14,7 @@ import {
   Text,
 } from "lucide-react";
 import { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
-import { useMicInputToggleAgent } from "@/rapida/hooks/useMicInputToggleAgent";
+import { useMicInputToggleAgent } from "@/rapida/hooks/use-mic-input-toggle-agent";
 import { useDisconnectAgent } from "@/rapida/hooks/use-disconnect-agent";
 import { QuickSuggestion } from "@/rapida/components/text/suggestions";
 

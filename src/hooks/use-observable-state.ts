@@ -21,8 +21,29 @@
  *
  *  Author: Prashant <prashant@rapida.ai>
  *
- *  This module provides functions for managing projects through the ProjectService.
  */
+import * as React from "react";
+// @ts-ignore
+import type { Observable } from "rxjs";
 
-export const ASSISTANT_API = "https://assistant-01.rapida.ai";
-export const LOCAL_ASSISTANT_API = "http://assistant.rapida.local";
+/**
+ * @internal
+ */
+export function useObservableState<T>(
+  observable: Observable<T> | undefined,
+  startWith: T,
+  resetWhenObservableChanges = true
+) {
+  const [state, setState] = React.useState<T>(startWith);
+  React.useEffect(() => {
+    if (resetWhenObservableChanges) {
+      setState(startWith);
+    }
+    // observable state doesn't run in SSR
+    if (typeof window === "undefined" || !observable) return;
+    const subscription = observable.subscribe(setState);
+    //
+    return () => subscription.unsubscribe();
+  }, [observable, resetWhenObservableChanges]);
+  return state;
+}

@@ -1,5 +1,5 @@
 import { agentConnectionStateObservable } from "@/rapida/hooks/observables/voice-agent";
-import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
+import { useMaybeVoiceAgentContext } from "@/rapida/hooks/use-voice-agent";
 import { cn } from "@/rapida/styles";
 import React, { FC, HTMLAttributes, useState } from "react";
 

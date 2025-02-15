@@ -1,5 +1,5 @@
 import { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
-import { useEnsureVoiceAgent } from "@/rapida/hooks/useVoiceAgent";
+import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { cn } from "@/rapida/styles";
 import { AudioLines, Send } from "lucide-react";
 import { FC, HTMLAttributes } from "react";

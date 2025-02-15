@@ -3,7 +3,7 @@ import {
   agentEventObserver,
 } from "@/rapida/hooks/observables/voice-agent";
 import { AgentServerEvent } from "@/rapida/types/agent-event";
-import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
+import { useMaybeVoiceAgentContext } from "@/rapida/hooks/use-voice-agent";
 import { cn } from "@/rapida/styles";
 import React, { FC, HTMLAttributes, useState } from "react";
 

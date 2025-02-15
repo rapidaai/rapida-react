@@ -1,9 +1,9 @@
 import { AgentLiveTranscript } from "@/rapida/components/live-transcript";
-import { useMultibandMicrophoneTrackVolume } from "@/rapida/hooks/useMultibandTrackVolume";
+import { useMultibandMicrophoneTrackVolume } from "@/rapida/hooks/use-multiband-track-volume";
 import { AgentMultibandAudioVisualizer } from "@/rapida/visualization/agent-multiband-audio-visualizer";
 import { FC, HTMLAttributes } from "react";
 import { motion } from "framer-motion";
-import { useMaybeVoiceAgentContext } from "@/rapida/hooks/useVoiceAgent";
+import { useMaybeVoiceAgentContext } from "@/rapida/hooks/use-voice-agent";
 import { Mic } from "lucide-react";
 import { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
 import { cn } from "@/rapida/styles";
