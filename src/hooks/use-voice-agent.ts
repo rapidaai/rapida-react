@@ -35,7 +35,7 @@ export const VoiceAgentContext = React.createContext<VoiceAgent | undefined>(
  * If no room is provided, an error is thrown.
  * @public
  */
-export function useVoiceAgentContext() {
+export function useVoiceAgent() {
   const ctx = React.useContext(VoiceAgentContext);
   if (!ctx) {
     throw Error("tried to access agent context outside");
@@ -47,7 +47,7 @@ export function useVoiceAgentContext() {
  * Returns the room context if it exists, otherwise undefined.
  * @public
  */
-export function useMaybeVoiceAgentContext() {
+export function useMaybeVoiceAgent() {
   return React.useContext(VoiceAgentContext);
 }
 
@@ -57,7 +57,7 @@ export function useMaybeVoiceAgentContext() {
  * @public
  */
 export function useEnsureVoiceAgent(agent?: VoiceAgent) {
-  const context = useMaybeVoiceAgentContext();
+  const context = useMaybeVoiceAgent();
   const r = agent ?? context;
   if (!r) {
     throw new Error(

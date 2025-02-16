@@ -25,18 +25,19 @@
 import { VoiceAgent } from "@/rapida/types/voice-agent";
 import { VoiceAgentContext } from "@/rapida/hooks/use-voice-agent";
 import "@/rapida/styles/global-styles";
-import {
-  BrandIcon,
-  UserIcon,
-} from "@/rapida/components/text/conversations/icon";
-import { MessagingAction } from "@/rapida/components/actions/messaging/messaging-action";
-import { ConversationMessages } from "@/rapida/components/text/conversations";
+import { Conversation } from "@/rapida/components/text/conversations";
 import { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
 import { useDisconnectAgent } from "@/rapida/hooks/use-disconnect-agent";
 import { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
 import { useMicInputToggleAgent } from "@/rapida/hooks/use-mic-input-toggle-agent";
 import { useSpeakerOuputToggleAgent } from "@/rapida/hooks/use-speaker-output-toggle-agent";
 import { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
+import { AgentMultibandAudioVisualizer } from "./components/visualization/agent-multiband-audio-visualizer";
+import { AgentLiveTranscript } from "./components/live-transcript";
+import {
+  useEnsureVoiceAgent,
+  useMaybeVoiceAgent,
+} from "./hooks/use-voice-agent";
 import {
   useMultiband3DSpeakerTrackVolume,
   useMultibandMicrophoneTrackVolume,
@@ -47,13 +48,13 @@ export {
   MediaDeviceFailure,
   ConnectionConfig,
   AgentConfig,
+  Message,
 } from "@/rapida/types";
 
 export {
-  BrandIcon,
-  UserIcon,
-  MessagingAction,
-  ConversationMessages,
+  Conversation,
+  AgentMultibandAudioVisualizer,
+  AgentLiveTranscript,
 
   // context
   VoiceAgent,
@@ -68,4 +69,6 @@ export {
   useMultiband3DSpeakerTrackVolume,
   useMultibandMicrophoneTrackVolume,
   useSelectInputDeviceAgent,
+  useEnsureVoiceAgent,
+  useMaybeVoiceAgent,
 };
