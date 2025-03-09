@@ -23,24 +23,65 @@
  *
  */
 
-import { Message } from "./message";
-import { ConnectionState } from "./connection-state";
-import { MediaDeviceFailure } from "./media-device-failure";
-import { AgentConfig, InputOptions, OutputOptions } from "./agent-config";
-import { ConnectionConfig } from "./connection-config";
-export const DEFAULT_DEVICE_ID = "default";
-import { Feedback } from "./feedback";
-import { MessageRole, MessageStatus } from "./message";
-export { Channel } from "./channel";
-export {
-  Feedback,
-  MessageRole,
-  Message,
-  MessageStatus,
-  ConnectionState,
-  MediaDeviceFailure,
-  AgentConfig,
-  InputOptions,
-  OutputOptions,
-  ConnectionConfig,
-};
+import { Feedback } from "@/rapida/types/feedback";
+
+/**
+ *
+ */
+export enum MessageRole {
+  // text channel for input and output
+  System = "system",
+
+  // audio channel for input and output
+  User = "user",
+}
+
+/**
+ *
+ */
+export enum MessageStatus {
+  /**
+   * Pending status for the message
+   */
+  Pending = "pending",
+
+  /**
+   * complete the message
+   */
+  Complete = "complete",
+}
+
+/**
+ *
+ */
+export interface Message {
+  /**
+   * id of the message
+   */
+  id: string;
+
+  /**
+   * role of the message who had sent it
+   */
+  role: MessageRole;
+
+  /**
+   * list of sentences in the message
+   */
+  messages: string[];
+
+  /**
+   * feedback given to the message
+   */
+  feedback?: Feedback;
+
+  /**
+   *time
+   */
+  time: Date;
+
+  /**
+   *
+   */
+  status: MessageStatus;
+}

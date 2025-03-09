@@ -1,6 +1,6 @@
 import {
   agentConnectionStateObservable,
-  agentEventObserver,
+  agentServerEventObserver,
 } from "@/rapida/hooks/observables/voice-agent";
 import { AgentServerEvent } from "@/rapida/types/agent-event";
 import { useMaybeVoiceAgent } from "@/rapida/hooks/use-voice-agent";
@@ -38,16 +38,16 @@ export const AgentLiveTranscript: FC<AgentLiveTranscriptProps> = ({
 
   //
   React.useEffect(() => {
-    const serverEventListner = agentEventObserver(agentContext!).subscribe(
-      (agentEvents) => {
-        if (
-          agentEvents?.eventType === AgentServerEvent.RecieveTranscript ||
-          agentEvents?.eventType === AgentServerEvent.Complete
-        ) {
-          setTranscript(agentEvents.transcript);
-        }
+    const serverEventListner = agentServerEventObserver(
+      agentContext!
+    ).subscribe((agentEvents) => {
+      if (
+        agentEvents?.eventType === AgentServerEvent.Transcript ||
+        agentEvents?.eventType === AgentServerEvent.Complete
+      ) {
+        setTranscript(agentEvents.transcript);
       }
-    );
+    });
     return () => {
       serverEventListner.unsubscribe();
     };

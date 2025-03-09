@@ -97,8 +97,7 @@ export function agentObserver(agent: VoiceAgent) {
     AgentEvent.InputChannelSwitch,
 
     //
-    AgentEvent.Disconnected,
-    AgentEvent.Connected,
+    AgentEvent.ConnectionChanged,
 
     //
     AgentEvent.AudioInputMuteToggle,
@@ -251,7 +250,36 @@ export function agentInputObservable(agent: VoiceAgent) {
  * @param agent
  * @returns
  */
-export function agentEventObserver(agent: VoiceAgent) {
+export function agentMessageChangeEventObserver(agent: VoiceAgent) {
+  const observable = observeVoiceAgentEvents(
+    agent,
+    AgentEvent.ServerEvent,
+    AgentEvent.MessageFeedback
+  ).pipe(
+    map((v) => {
+      return {
+        eventType: v,
+        events: agent.events,
+        chats: agent.messages,
+        transcript: agent.transcript,
+      };
+    }),
+    startWith({
+      eventType: undefined,
+      events: agent.events,
+      chats: agent.messages,
+      transcript: agent.transcript,
+    })
+  );
+  return observable;
+}
+
+/**
+ *
+ * @param agent
+ * @returns
+ */
+export function agentServerEventObserver(agent: VoiceAgent) {
   const observable = agentEventSelector(agent, AgentEvent.ServerEvent).pipe(
     map(([v]) => {
       return {

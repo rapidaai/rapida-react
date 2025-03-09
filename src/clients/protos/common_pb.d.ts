@@ -1172,12 +1172,6 @@ export class AssistantConversationMessage extends jspb.Message {
   setStagesList(value: Array<AssistantMessageStage>): void;
   addStages(value?: AssistantMessageStage, index?: number): AssistantMessageStage;
 
-  getLiked(): boolean;
-  setLiked(value: boolean): void;
-
-  getDisliked(): boolean;
-  setDisliked(value: boolean): void;
-
   hasCreateddate(): boolean;
   clearCreateddate(): void;
   getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
@@ -1193,6 +1187,11 @@ export class AssistantConversationMessage extends jspb.Message {
 
   getAssistantprovidermodelid(): string;
   setAssistantprovidermodelid(value: string): void;
+
+  clearMetadataList(): void;
+  getMetadataList(): Array<Metadata>;
+  setMetadataList(value: Array<Metadata>): void;
+  addMetadata(value?: Metadata, index?: number): Metadata;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantConversationMessage.AsObject;
@@ -1218,12 +1217,11 @@ export namespace AssistantConversationMessage {
     updatedby: string,
     suggestedquestionsList: Array<string>,
     stagesList: Array<AssistantMessageStage.AsObject>,
-    liked: boolean,
-    disliked: boolean,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     assistantid: string,
     assistantprovidermodelid: string,
+    metadataList: Array<Metadata.AsObject>,
   }
 }
 
@@ -1324,15 +1322,10 @@ export class AssistantConversation extends jspb.Message {
   setMetricsList(value: Array<Metric>): void;
   addMetrics(value?: Metric, index?: number): Metric;
 
-  hasArguments(): boolean;
-  clearArguments(): void;
-  getArguments(): google_protobuf_struct_pb.Struct | undefined;
-  setArguments(value?: google_protobuf_struct_pb.Struct): void;
-
-  hasMetadata(): boolean;
-  clearMetadata(): void;
-  getMetadata(): google_protobuf_struct_pb.Struct | undefined;
-  setMetadata(value?: google_protobuf_struct_pb.Struct): void;
+  clearMetadataList(): void;
+  getMetadataList(): Array<Metadata>;
+  setMetadataList(value: Array<Metadata>): void;
+  addMetadata(value?: Metadata, index?: number): Metadata;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantConversation.AsObject;
@@ -1364,8 +1357,173 @@ export namespace AssistantConversation {
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     contextsList: Array<AssistantConversationContext.AsObject>,
     metricsList: Array<Metric.AsObject>,
-    arguments?: google_protobuf_struct_pb.Struct.AsObject,
-    metadata?: google_protobuf_struct_pb.Struct.AsObject,
+    metadataList: Array<Metadata.AsObject>,
+  }
+}
+
+export class GetAllAssistantConversationRequest extends jspb.Message {
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): Paginate | undefined;
+  setPaginate(value?: Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<Criteria>;
+  setCriteriasList(value: Array<Criteria>): void;
+  addCriterias(value?: Criteria, index?: number): Criteria;
+
+  getSource(): SourceMap[keyof SourceMap];
+  setSource(value: SourceMap[keyof SourceMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantConversationRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantConversationRequest): GetAllAssistantConversationRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantConversationRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantConversationRequest;
+  static deserializeBinaryFromReader(message: GetAllAssistantConversationRequest, reader: jspb.BinaryReader): GetAllAssistantConversationRequest;
+}
+
+export namespace GetAllAssistantConversationRequest {
+  export type AsObject = {
+    assistantid: string,
+    paginate?: Paginate.AsObject,
+    criteriasList: Array<Criteria.AsObject>,
+    source: SourceMap[keyof SourceMap],
+  }
+}
+
+export class GetAllAssistantConversationResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<AssistantConversation>;
+  setDataList(value: Array<AssistantConversation>): void;
+  addData(value?: AssistantConversation, index?: number): AssistantConversation;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): Error | undefined;
+  setError(value?: Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): Paginated | undefined;
+  setPaginated(value?: Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantConversationResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantConversationResponse): GetAllAssistantConversationResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantConversationResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantConversationResponse;
+  static deserializeBinaryFromReader(message: GetAllAssistantConversationResponse, reader: jspb.BinaryReader): GetAllAssistantConversationResponse;
+}
+
+export namespace GetAllAssistantConversationResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<AssistantConversation.AsObject>,
+    error?: Error.AsObject,
+    paginated?: Paginated.AsObject,
+  }
+}
+
+export class GetAllConversationMessageRequest extends jspb.Message {
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  getAssistantconversationid(): string;
+  setAssistantconversationid(value: string): void;
+
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): Paginate | undefined;
+  setPaginate(value?: Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<Criteria>;
+  setCriteriasList(value: Array<Criteria>): void;
+  addCriterias(value?: Criteria, index?: number): Criteria;
+
+  hasOrder(): boolean;
+  clearOrder(): void;
+  getOrder(): Ordering | undefined;
+  setOrder(value?: Ordering): void;
+
+  getSource(): SourceMap[keyof SourceMap];
+  setSource(value: SourceMap[keyof SourceMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllConversationMessageRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllConversationMessageRequest): GetAllConversationMessageRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllConversationMessageRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllConversationMessageRequest;
+  static deserializeBinaryFromReader(message: GetAllConversationMessageRequest, reader: jspb.BinaryReader): GetAllConversationMessageRequest;
+}
+
+export namespace GetAllConversationMessageRequest {
+  export type AsObject = {
+    assistantid: string,
+    assistantconversationid: string,
+    paginate?: Paginate.AsObject,
+    criteriasList: Array<Criteria.AsObject>,
+    order?: Ordering.AsObject,
+    source: SourceMap[keyof SourceMap],
+  }
+}
+
+export class GetAllConversationMessageResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<AssistantConversationMessage>;
+  setDataList(value: Array<AssistantConversationMessage>): void;
+  addData(value?: AssistantConversationMessage, index?: number): AssistantConversationMessage;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): Error | undefined;
+  setError(value?: Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): Paginated | undefined;
+  setPaginated(value?: Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllConversationMessageResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllConversationMessageResponse): GetAllConversationMessageResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllConversationMessageResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllConversationMessageResponse;
+  static deserializeBinaryFromReader(message: GetAllConversationMessageResponse, reader: jspb.BinaryReader): GetAllConversationMessageResponse;
+}
+
+export namespace GetAllConversationMessageResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<AssistantConversationMessage.AsObject>,
+    error?: Error.AsObject,
+    paginated?: Paginated.AsObject,
   }
 }
 

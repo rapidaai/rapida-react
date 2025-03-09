@@ -31,8 +31,13 @@ import {
   ConnectionConfig,
   ConnectionState,
   DEFAULT_DEVICE_ID,
+  Feedback,
 } from "@/rapida/types";
-import { AssistantTalk } from "@/rapida/clients/talk";
+import {
+  AssistantTalk,
+  CreateConversationMetric,
+  CreateMessageMetric,
+} from "@/rapida/clients/talk";
 import { BidirectionalStream } from "@/rapida/clients/protos/talk-api_pb_service";
 import {
   AssistantMessagingRequest,
@@ -48,9 +53,15 @@ import {
 import { WavRecorder, WavStreamPlayer } from "@/rapida/wavtools/index.js";
 import { AgentServerEvent } from "@/rapida/types/agent-event";
 import { getStringFromProtoStruct } from "@/rapida/utils/rapida_metadata";
+import { TalkServiceClient } from "@/rapida/clients/protos/talk-api_pb_service";
+import { toDate } from "@/rapida/utils";
+import { MessageRole, MessageStatus } from "@/rapida/types/message";
+import { getFeedback } from "@/rapida/types/feedback";
 
 export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEventCallback>) {
-  // connection state default connection is disconnected
+  /**
+   * connection state default connection is disconnected
+   */
   state: ConnectionState = ConnectionState.Disconnected;
 
   // input channel for in
@@ -117,10 +128,16 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
 
   private agentMessagingId: string | undefined;
 
-  private connection:
+  /**
+   * an connection for talking client
+   * when you are conversing with agent then this client will get used
+   * work with bi-driectional request <> response
+   */
+  private talkingConnection:
     | BidirectionalStream<AssistantMessagingRequest, AssistantMessagingResponse>
     | undefined;
 
+  //
   private agentConfig: AgentConfig;
   private connectionConfig: ConnectionConfig;
   /**
@@ -131,11 +148,20 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
     super();
     this.agentConfig = agentConfig;
     this.connectionConfig = connection;
-    //
+
+    // still work in progress
+    this.outputChannel = this.agentConfig.outputOptions.defaultChannel;
+    this.inputChannel = this.agentConfig.inputOptions.defaultChannel;
 
     //
-    this.audioPlayer = new WavStreamPlayer({ sampleRate: 24000 });
-    this.audioRecorder = new WavRecorder({ sampleRate: 24000 });
+    this.audioPlayer = new WavStreamPlayer(
+      this.agentConfig.outputOptions.playerOption
+    );
+    this.audioRecorder = new WavRecorder(
+      this.agentConfig.inputOptions.recorderOption
+    );
+
+    //
     this.agentMessagingId = undefined;
     this.agentEvents = [];
     this.agentMessages = [];
@@ -158,7 +184,7 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
     await this.audioPlayer.interrupt();
 
     //
-    this.connection?.end();
+    this.talkingConnection?.end();
   }
 
   async connect() {
@@ -181,13 +207,13 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
       await this.audioPlayer.connect();
       await this.audioRecorder.begin(this.inputDeviceId);
       //
-      this.connection = AssistantTalk(
+      this.talkingConnection = AssistantTalk(
         this.connectionConfig.streamClient,
         this.connectionConfig.auth
       );
-      this.connection?.on("data", await this.onDataChange);
-      this.connection?.on("end", await this.onEnd);
-      this.connection?.on("status", this.onStatusChange);
+      this.talkingConnection?.on("data", await this.onDataChange);
+      this.talkingConnection?.on("end", await this.onEnd);
+      this.talkingConnection?.on("status", this.onStatusChange);
 
       //starting recording
       await this.startRecording(true);
@@ -260,10 +286,13 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
   };
 
   onSendText = async (text: string) => {
-    await this.connect();
-    this.connection?.write(
-      this.createAssistantRequest("user", [toTextContent(text)])
-    );
+    if (!this.isConnected) await this.connect();
+    if (this.inputChannel == Channel.Text) {
+      // only send text when you know the channel is text
+      this.talkingConnection?.write(
+        this.createAssistantRequest("user", [toTextContent(text)])
+      );
+    }
   };
 
   private createAudioMessage(mono: Uint8Array): Content {
@@ -309,11 +338,13 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
    * @param mono
    */
   private onSendAudio = async (mono: Int16Array) => {
-    this.connection?.write(
-      this.createAssistantRequest("user", [
-        this.createAudioMessage(this.arrayBufferToUint8(mono)),
-      ])
-    );
+    if (this.inputChannel == Channel.Audio)
+      // only send the audio when you know it's audio
+      this.talkingConnection?.write(
+        this.createAssistantRequest("user", [
+          this.createAudioMessage(this.arrayBufferToUint8(mono)),
+        ])
+      );
   };
 
   /**
@@ -332,21 +363,40 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
    * @returns
    */
   private onDataChange = async (response: AssistantMessagingResponse) => {
+    //
+    this.agentConfig.onCallback(response);
+    //
     switch (response.getDataCase()) {
       case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
         break;
       case AssistantMessagingResponse.DataCase.EVENT:
         if (response.getEvent()) {
           switch (response.getEvent()?.getName()) {
-            case AgentServerEvent.RecieveTranscript:
+            case AgentServerEvent.Transcript:
               const agentTranscript = getStringFromProtoStruct(
                 response.getEvent()?.getMeta(),
                 "text"
               );
-              if (agentTranscript) this.agentTranscript = agentTranscript;
+              if (agentTranscript) {
+                this.agentTranscript = agentTranscript;
+                if (this.agentMessages.length > 0) {
+                  const lastMessage =
+                    this.agentMessages[this.agentMessages.length - 1];
+                  if (lastMessage.role === MessageRole.User) {
+                    this.agentMessages.pop();
+                  }
+                }
+                this.agentMessages.push({
+                  id: "unknown-message",
+                  role: MessageRole.User,
+                  messages: [agentTranscript],
+                  time: toDate(response.getEvent()?.getTime()),
+                  status: MessageStatus.Pending,
+                });
+              }
               this.emit(
                 AgentEvent.ServerEvent,
-                AgentServerEvent.RecieveTranscript,
+                AgentServerEvent.Transcript,
                 response.getEvent()!
               );
               break;
@@ -359,10 +409,18 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
                 response.getEvent()!
               );
               break;
-            case AgentServerEvent.SendGeneration:
+            case AgentServerEvent.CompleteGeneration:
+              if (this.agentMessages.length > 0) {
+                const lastMessage =
+                  this.agentMessages[this.agentMessages.length - 1];
+                if (lastMessage.role === MessageRole.System) {
+                  lastMessage.status = MessageStatus.Complete;
+                }
+              }
+              //
               this.emit(
                 AgentEvent.ServerEvent,
-                AgentServerEvent.SendGeneration,
+                AgentServerEvent.CompleteGeneration,
                 response.getEvent()!
               );
               break;
@@ -381,42 +439,80 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
                 response.getEvent()!
               );
               break;
-            case AgentServerEvent.CompleteGeneration:
+            case AgentServerEvent.Generation:
+              // generation started mark the previous message of user to complete
+              if (this.agentMessages.length > 0) {
+                const lastMessage =
+                  this.agentMessages[this.agentMessages.length - 1];
+                if (lastMessage.role === MessageRole.User) {
+                  lastMessage.status = MessageStatus.Complete;
+                }
+              }
+              //
+              const msgid = getStringFromProtoStruct(
+                response.getEvent()?.getMeta(),
+                "messageid"
+              );
               const agentMessage = getStringFromProtoStruct(
                 response.getEvent()?.getMeta(),
                 "text"
               );
-
-              if (agentMessage)
+              if (agentMessage) {
+                this.agentMessages = this.agentMessages.filter(
+                  (msg) => msg.id !== msgid || msg.role !== MessageRole.System
+                );
                 this.agentMessages.push({
-                  role: "system",
+                  id: msgid!,
+                  role: MessageRole.System,
                   messages: [agentMessage],
+                  time: toDate(response.getEvent()?.getTime()),
+                  status: MessageStatus.Pending,
                 });
+              }
               this.emit(
                 AgentEvent.ServerEvent,
-                AgentServerEvent.CompleteGeneration,
+                AgentServerEvent.Generation,
                 response.getEvent()!
               );
               break;
-            case AgentServerEvent.Recieve:
+            case AgentServerEvent.Start:
+              //
+              if (this.agentMessages.length > 0) {
+                const lastMessage =
+                  this.agentMessages[this.agentMessages.length - 1];
+                if (lastMessage && lastMessage.role === MessageRole.User) {
+                  this.agentMessages.pop();
+                }
+              }
+
               const userMessage = getStringFromProtoStruct(
                 response.getEvent()?.getMeta(),
                 "text"
               );
-              if (userMessage)
+              const messageid = getStringFromProtoStruct(
+                response.getEvent()?.getMeta(),
+                "messageid"
+              );
+              if (userMessage) {
+                this.agentMessages = this.agentMessages.filter(
+                  (msg) => msg.id !== messageid || msg.role !== MessageRole.User
+                );
                 this.agentMessages.push({
-                  role: "user",
+                  id: messageid!,
+                  role: MessageRole.User,
                   messages: [userMessage],
+                  time: toDate(response.getEvent()?.getTime()),
+                  status: MessageStatus.Complete,
                 });
+              }
               this.emit(
                 AgentEvent.ServerEvent,
-                AgentServerEvent.Recieve,
+                AgentServerEvent.Start,
                 response.getEvent()!
               );
               break;
           }
           this.agentEvents.push(response.getEvent()!);
-          // ;
         }
         return;
       case AssistantMessagingResponse.DataCase.MESSAGE:
@@ -505,6 +601,7 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
     }
     this.state = state;
     this.emit(AgentEvent.ConnectionChanged, this.state);
+    this.connectionConfig.onConnectionChange(state);
     return true;
   }
 
@@ -532,6 +629,58 @@ export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEve
     }
     this.outputChannel = output;
     this.emit(AgentEvent.OutputChannelSwitch, this.outputChannel);
+  }
+
+  //
+  createMessageMetric(
+    messageId: string,
+    metrics: {
+      name: string;
+      description: string;
+      value: string;
+    }[]
+  ) {
+    CreateMessageMetric(
+      this.connectionConfig.conversationClient,
+      this.agentConfig.definition.getAssistantid(),
+      this.agentMessagingId!,
+      messageId,
+      metrics,
+      () => {
+        //
+        const feedback = getFeedback(metrics[metrics.length - 1]?.value);
+        this.agentMessages = this.agentMessages.map((message) => {
+          if (message.id === messageId && message.role === MessageRole.System) {
+            return {
+              ...message,
+              feedback: feedback,
+            };
+          }
+          return message;
+        });
+        this.emit(AgentEvent.MessageFeedback, getFeedback(feedback));
+      },
+      this.connectionConfig.auth
+    );
+  }
+
+  createConversationMetric(
+    metrics: {
+      name: string;
+      description: string;
+      value: string;
+    }[]
+  ) {
+    CreateConversationMetric(
+      this.connectionConfig.conversationClient,
+      this.agentConfig.definition.getAssistantid(),
+      this.agentMessagingId!,
+      metrics,
+      () => {
+        console.dir("message metric got created");
+      },
+      this.connectionConfig.auth
+    );
   }
 
   // /** @internal */

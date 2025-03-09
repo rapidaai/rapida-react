@@ -125,43 +125,41 @@ export namespace AssistantMessagingResponse {
   }
 }
 
-export class GetAllAssistantConversationRequest extends jspb.Message {
+export class CreateMessageMetricRequest extends jspb.Message {
   getAssistantid(): string;
   setAssistantid(value: string): void;
 
-  hasPaginate(): boolean;
-  clearPaginate(): void;
-  getPaginate(): common_pb.Paginate | undefined;
-  setPaginate(value?: common_pb.Paginate): void;
+  getAssistantconversationid(): string;
+  setAssistantconversationid(value: string): void;
 
-  clearCriteriasList(): void;
-  getCriteriasList(): Array<common_pb.Criteria>;
-  setCriteriasList(value: Array<common_pb.Criteria>): void;
-  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+  getMessageid(): string;
+  setMessageid(value: string): void;
 
-  getSource(): common_pb.SourceMap[keyof common_pb.SourceMap];
-  setSource(value: common_pb.SourceMap[keyof common_pb.SourceMap]): void;
+  clearMetricsList(): void;
+  getMetricsList(): Array<common_pb.Metric>;
+  setMetricsList(value: Array<common_pb.Metric>): void;
+  addMetrics(value?: common_pb.Metric, index?: number): common_pb.Metric;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllAssistantConversationRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllAssistantConversationRequest): GetAllAssistantConversationRequest.AsObject;
+  toObject(includeInstance?: boolean): CreateMessageMetricRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateMessageMetricRequest): CreateMessageMetricRequest.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAllAssistantConversationRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllAssistantConversationRequest;
-  static deserializeBinaryFromReader(message: GetAllAssistantConversationRequest, reader: jspb.BinaryReader): GetAllAssistantConversationRequest;
+  static serializeBinaryToWriter(message: CreateMessageMetricRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateMessageMetricRequest;
+  static deserializeBinaryFromReader(message: CreateMessageMetricRequest, reader: jspb.BinaryReader): CreateMessageMetricRequest;
 }
 
-export namespace GetAllAssistantConversationRequest {
+export namespace CreateMessageMetricRequest {
   export type AsObject = {
     assistantid: string,
-    paginate?: common_pb.Paginate.AsObject,
-    criteriasList: Array<common_pb.Criteria.AsObject>,
-    source: common_pb.SourceMap[keyof common_pb.SourceMap],
+    assistantconversationid: string,
+    messageid: string,
+    metricsList: Array<common_pb.Metric.AsObject>,
   }
 }
 
-export class GetAllAssistantConversationResponse extends jspb.Message {
+export class CreateMessageMetricResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
@@ -169,87 +167,65 @@ export class GetAllAssistantConversationResponse extends jspb.Message {
   setSuccess(value: boolean): void;
 
   clearDataList(): void;
-  getDataList(): Array<common_pb.AssistantConversation>;
-  setDataList(value: Array<common_pb.AssistantConversation>): void;
-  addData(value?: common_pb.AssistantConversation, index?: number): common_pb.AssistantConversation;
+  getDataList(): Array<common_pb.Metric>;
+  setDataList(value: Array<common_pb.Metric>): void;
+  addData(value?: common_pb.Metric, index?: number): common_pb.Metric;
 
   hasError(): boolean;
   clearError(): void;
   getError(): common_pb.Error | undefined;
   setError(value?: common_pb.Error): void;
 
-  hasPaginated(): boolean;
-  clearPaginated(): void;
-  getPaginated(): common_pb.Paginated | undefined;
-  setPaginated(value?: common_pb.Paginated): void;
-
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllAssistantConversationResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllAssistantConversationResponse): GetAllAssistantConversationResponse.AsObject;
+  toObject(includeInstance?: boolean): CreateMessageMetricResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateMessageMetricResponse): CreateMessageMetricResponse.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAllAssistantConversationResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllAssistantConversationResponse;
-  static deserializeBinaryFromReader(message: GetAllAssistantConversationResponse, reader: jspb.BinaryReader): GetAllAssistantConversationResponse;
+  static serializeBinaryToWriter(message: CreateMessageMetricResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateMessageMetricResponse;
+  static deserializeBinaryFromReader(message: CreateMessageMetricResponse, reader: jspb.BinaryReader): CreateMessageMetricResponse;
 }
 
-export namespace GetAllAssistantConversationResponse {
+export namespace CreateMessageMetricResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    dataList: Array<common_pb.AssistantConversation.AsObject>,
+    dataList: Array<common_pb.Metric.AsObject>,
     error?: common_pb.Error.AsObject,
-    paginated?: common_pb.Paginated.AsObject,
   }
 }
 
-export class GetAllConversationMessageRequest extends jspb.Message {
+export class CreateConversationMetricRequest extends jspb.Message {
   getAssistantid(): string;
   setAssistantid(value: string): void;
 
   getAssistantconversationid(): string;
   setAssistantconversationid(value: string): void;
 
-  hasPaginate(): boolean;
-  clearPaginate(): void;
-  getPaginate(): common_pb.Paginate | undefined;
-  setPaginate(value?: common_pb.Paginate): void;
-
-  clearCriteriasList(): void;
-  getCriteriasList(): Array<common_pb.Criteria>;
-  setCriteriasList(value: Array<common_pb.Criteria>): void;
-  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
-
-  hasOrder(): boolean;
-  clearOrder(): void;
-  getOrder(): common_pb.Ordering | undefined;
-  setOrder(value?: common_pb.Ordering): void;
-
-  getSource(): common_pb.SourceMap[keyof common_pb.SourceMap];
-  setSource(value: common_pb.SourceMap[keyof common_pb.SourceMap]): void;
+  clearMetricsList(): void;
+  getMetricsList(): Array<common_pb.Metric>;
+  setMetricsList(value: Array<common_pb.Metric>): void;
+  addMetrics(value?: common_pb.Metric, index?: number): common_pb.Metric;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllConversationMessageRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllConversationMessageRequest): GetAllConversationMessageRequest.AsObject;
+  toObject(includeInstance?: boolean): CreateConversationMetricRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateConversationMetricRequest): CreateConversationMetricRequest.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAllConversationMessageRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllConversationMessageRequest;
-  static deserializeBinaryFromReader(message: GetAllConversationMessageRequest, reader: jspb.BinaryReader): GetAllConversationMessageRequest;
+  static serializeBinaryToWriter(message: CreateConversationMetricRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateConversationMetricRequest;
+  static deserializeBinaryFromReader(message: CreateConversationMetricRequest, reader: jspb.BinaryReader): CreateConversationMetricRequest;
 }
 
-export namespace GetAllConversationMessageRequest {
+export namespace CreateConversationMetricRequest {
   export type AsObject = {
     assistantid: string,
     assistantconversationid: string,
-    paginate?: common_pb.Paginate.AsObject,
-    criteriasList: Array<common_pb.Criteria.AsObject>,
-    order?: common_pb.Ordering.AsObject,
-    source: common_pb.SourceMap[keyof common_pb.SourceMap],
+    metricsList: Array<common_pb.Metric.AsObject>,
   }
 }
 
-export class GetAllConversationMessageResponse extends jspb.Message {
+export class CreateConversationMetricResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
@@ -257,83 +233,9 @@ export class GetAllConversationMessageResponse extends jspb.Message {
   setSuccess(value: boolean): void;
 
   clearDataList(): void;
-  getDataList(): Array<common_pb.AssistantConversationMessage>;
-  setDataList(value: Array<common_pb.AssistantConversationMessage>): void;
-  addData(value?: common_pb.AssistantConversationMessage, index?: number): common_pb.AssistantConversationMessage;
-
-  hasError(): boolean;
-  clearError(): void;
-  getError(): common_pb.Error | undefined;
-  setError(value?: common_pb.Error): void;
-
-  hasPaginated(): boolean;
-  clearPaginated(): void;
-  getPaginated(): common_pb.Paginated | undefined;
-  setPaginated(value?: common_pb.Paginated): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllConversationMessageResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllConversationMessageResponse): GetAllConversationMessageResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAllConversationMessageResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllConversationMessageResponse;
-  static deserializeBinaryFromReader(message: GetAllConversationMessageResponse, reader: jspb.BinaryReader): GetAllConversationMessageResponse;
-}
-
-export namespace GetAllConversationMessageResponse {
-  export type AsObject = {
-    code: number,
-    success: boolean,
-    dataList: Array<common_pb.AssistantConversationMessage.AsObject>,
-    error?: common_pb.Error.AsObject,
-    paginated?: common_pb.Paginated.AsObject,
-  }
-}
-
-export class MessageFeedbackRequest extends jspb.Message {
-  getAssistantid(): string;
-  setAssistantid(value: string): void;
-
-  getAssistantconversationid(): string;
-  setAssistantconversationid(value: string): void;
-
-  getAssistantconversationmessageid(): string;
-  setAssistantconversationmessageid(value: string): void;
-
-  getFeedback(): string;
-  setFeedback(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): MessageFeedbackRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: MessageFeedbackRequest): MessageFeedbackRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: MessageFeedbackRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): MessageFeedbackRequest;
-  static deserializeBinaryFromReader(message: MessageFeedbackRequest, reader: jspb.BinaryReader): MessageFeedbackRequest;
-}
-
-export namespace MessageFeedbackRequest {
-  export type AsObject = {
-    assistantid: string,
-    assistantconversationid: string,
-    assistantconversationmessageid: string,
-    feedback: string,
-  }
-}
-
-export class MessageFeedbackResponse extends jspb.Message {
-  getCode(): number;
-  setCode(value: number): void;
-
-  getSuccess(): boolean;
-  setSuccess(value: boolean): void;
-
-  hasData(): boolean;
-  clearData(): void;
-  getData(): common_pb.AssistantConversationMessage | undefined;
-  setData(value?: common_pb.AssistantConversationMessage): void;
+  getDataList(): Array<common_pb.Metric>;
+  setDataList(value: Array<common_pb.Metric>): void;
+  addData(value?: common_pb.Metric, index?: number): common_pb.Metric;
 
   hasError(): boolean;
   clearError(): void;
@@ -341,20 +243,20 @@ export class MessageFeedbackResponse extends jspb.Message {
   setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): MessageFeedbackResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: MessageFeedbackResponse): MessageFeedbackResponse.AsObject;
+  toObject(includeInstance?: boolean): CreateConversationMetricResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateConversationMetricResponse): CreateConversationMetricResponse.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: MessageFeedbackResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): MessageFeedbackResponse;
-  static deserializeBinaryFromReader(message: MessageFeedbackResponse, reader: jspb.BinaryReader): MessageFeedbackResponse;
+  static serializeBinaryToWriter(message: CreateConversationMetricResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateConversationMetricResponse;
+  static deserializeBinaryFromReader(message: CreateConversationMetricResponse, reader: jspb.BinaryReader): CreateConversationMetricResponse;
 }
 
-export namespace MessageFeedbackResponse {
+export namespace CreateConversationMetricResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    data?: common_pb.AssistantConversationMessage.AsObject,
+    dataList: Array<common_pb.Metric.AsObject>,
     error?: common_pb.Error.AsObject,
   }
 }

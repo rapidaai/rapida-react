@@ -23,14 +23,9 @@
  *
  */
 import { Event } from "@/rapida/clients/protos/common_pb";
-import { Channel, ConnectionState } from "@/rapida/types";
+import { Channel, ConnectionState, Feedback } from "@/rapida/types";
 
 export enum AgentEvent {
-  /**
-   * When the connection to the server has been established
-   */
-  Connected = "onConnected",
-  Disconnected = "onDisconnected",
   ConnectionChanged = "onConnectionChanged",
 
   /**
@@ -52,6 +47,12 @@ export enum AgentEvent {
 
   // when server sent data to client
   DataReceived = "onDataReceived",
+
+  // when message feedback is received
+  MessageFeedback = "onMessageFeedback",
+
+  // when conversation feedback is received
+  ConversationFeedback = "onConversationFeedback",
 }
 
 /**
@@ -60,15 +61,20 @@ export enum AgentEvent {
  * or interaction between an agent and a user.
  */
 export enum AgentServerEvent {
-  StartConversation = "OnStartConversation",
-  Interruption = "OnInterruption",
-  Listen = "OnListen",
-  Complete = "OnComplete",
-  RecieveTranscript = "OnRecieveTranscript",
-  Recieve = "OnRecieve",
-  SendGeneration = "OnSendGeneration",
-  CompleteGeneration = "OnCompleteGeneration",
-  CompleteConversation = "OnCompleteConversation",
+  //
+  Interruption = "talk.onInterrupt",
+  Transcript = "talk.onTranscript",
+
+  // start and complete
+  Start = "talk.onStart",
+  Complete = "talk.onComplete",
+
+  Generation = "talk.onGeneration",
+  CompleteGeneration = "talk.onCompleteGeneration",
+
+  // start conversation
+  StartConversation = "talk.onStartConversation",
+  CompleteConversation = "talk.onCompleteConversation",
 }
 
 /**
@@ -110,4 +116,8 @@ export type AgentEventCallback = {
 
   // when server sent an event to client
   onServerEvent: (eventType: AgentServerEvent, event: Event) => void;
+
+  //
+  onMessageFeedback: (feedback: Feedback) => void;
+  onConversationFeedback: (feedback: Feedback) => void;
 };

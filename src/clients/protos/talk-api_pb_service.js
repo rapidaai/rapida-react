@@ -2,6 +2,7 @@
 // file: talk-api.proto
 
 var talk_api_pb = require("./talk-api_pb");
+var common_pb = require("./common_pb");
 var grpc = require("@improbable-eng/grpc-web").grpc;
 
 var TalkService = (function () {
@@ -33,8 +34,8 @@ TalkService.GetAllAssistantConversation = {
   service: TalkService,
   requestStream: false,
   responseStream: false,
-  requestType: talk_api_pb.GetAllAssistantConversationRequest,
-  responseType: talk_api_pb.GetAllAssistantConversationResponse
+  requestType: common_pb.GetAllAssistantConversationRequest,
+  responseType: common_pb.GetAllAssistantConversationResponse
 };
 
 TalkService.GetAllConversationMessage = {
@@ -42,17 +43,26 @@ TalkService.GetAllConversationMessage = {
   service: TalkService,
   requestStream: false,
   responseStream: false,
-  requestType: talk_api_pb.GetAllConversationMessageRequest,
-  responseType: talk_api_pb.GetAllConversationMessageResponse
+  requestType: common_pb.GetAllConversationMessageRequest,
+  responseType: common_pb.GetAllConversationMessageResponse
 };
 
-TalkService.MessageFeedback = {
-  methodName: "MessageFeedback",
+TalkService.CreateMessageMetric = {
+  methodName: "CreateMessageMetric",
   service: TalkService,
   requestStream: false,
   responseStream: false,
-  requestType: talk_api_pb.MessageFeedbackRequest,
-  responseType: talk_api_pb.MessageFeedbackResponse
+  requestType: talk_api_pb.CreateMessageMetricRequest,
+  responseType: talk_api_pb.CreateMessageMetricResponse
+};
+
+TalkService.CreateConversationMetric = {
+  methodName: "CreateConversationMetric",
+  service: TalkService,
+  requestStream: false,
+  responseStream: false,
+  requestType: talk_api_pb.CreateConversationMetricRequest,
+  responseType: talk_api_pb.CreateConversationMetricResponse
 };
 
 exports.TalkService = TalkService;
@@ -208,11 +218,42 @@ TalkServiceClient.prototype.getAllConversationMessage = function getAllConversat
   };
 };
 
-TalkServiceClient.prototype.messageFeedback = function messageFeedback(requestMessage, metadata, callback) {
+TalkServiceClient.prototype.createMessageMetric = function createMessageMetric(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(TalkService.MessageFeedback, {
+  var client = grpc.unary(TalkService.CreateMessageMetric, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+TalkServiceClient.prototype.createConversationMetric = function createConversationMetric(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(TalkService.CreateConversationMetric, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

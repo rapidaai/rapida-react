@@ -1,4 +1,4 @@
-import { agentEventObserver } from "@/rapida/hooks/observables/voice-agent";
+import { agentMessageChangeEventObserver } from "@/rapida/hooks/observables/voice-agent";
 import { Message } from "@/rapida/types";
 import { useMaybeVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { cn } from "@/rapida/styles";
@@ -35,12 +35,13 @@ export const Conversation: FC<ConversationProps> = ({
   const agentContext = useMaybeVoiceAgent();
   //
   React.useEffect(() => {
-    const serverEventListner = agentEventObserver(agentContext!).subscribe(
-      (agentEvents) => {
-        setChats([...intialConversations, ...agentEvents.chats]);
-        setChanged((prevChanged) => !prevChanged);
-      }
-    );
+    const serverEventListner = agentMessageChangeEventObserver(
+      agentContext!
+    ).subscribe((agentEvents) => {
+      setChats([...intialConversations, ...agentEvents.chats]);
+      setChanged((prevChanged) => !prevChanged);
+    });
+
     return () => {
       serverEventListner.unsubscribe();
     };

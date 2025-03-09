@@ -2,6 +2,7 @@
 // file: talk-api.proto
 
 import * as talk_api_pb from "./talk-api_pb";
+import * as common_pb from "./common_pb";
 import {grpc} from "@improbable-eng/grpc-web";
 
 type TalkServiceAssistantMessaging = {
@@ -27,8 +28,8 @@ type TalkServiceGetAllAssistantConversation = {
   readonly service: typeof TalkService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof talk_api_pb.GetAllAssistantConversationRequest;
-  readonly responseType: typeof talk_api_pb.GetAllAssistantConversationResponse;
+  readonly requestType: typeof common_pb.GetAllAssistantConversationRequest;
+  readonly responseType: typeof common_pb.GetAllAssistantConversationResponse;
 };
 
 type TalkServiceGetAllConversationMessage = {
@@ -36,17 +37,26 @@ type TalkServiceGetAllConversationMessage = {
   readonly service: typeof TalkService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof talk_api_pb.GetAllConversationMessageRequest;
-  readonly responseType: typeof talk_api_pb.GetAllConversationMessageResponse;
+  readonly requestType: typeof common_pb.GetAllConversationMessageRequest;
+  readonly responseType: typeof common_pb.GetAllConversationMessageResponse;
 };
 
-type TalkServiceMessageFeedback = {
+type TalkServiceCreateMessageMetric = {
   readonly methodName: string;
   readonly service: typeof TalkService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof talk_api_pb.MessageFeedbackRequest;
-  readonly responseType: typeof talk_api_pb.MessageFeedbackResponse;
+  readonly requestType: typeof talk_api_pb.CreateMessageMetricRequest;
+  readonly responseType: typeof talk_api_pb.CreateMessageMetricResponse;
+};
+
+type TalkServiceCreateConversationMetric = {
+  readonly methodName: string;
+  readonly service: typeof TalkService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof talk_api_pb.CreateConversationMetricRequest;
+  readonly responseType: typeof talk_api_pb.CreateConversationMetricResponse;
 };
 
 export class TalkService {
@@ -55,7 +65,8 @@ export class TalkService {
   static readonly AssistantTalk: TalkServiceAssistantTalk;
   static readonly GetAllAssistantConversation: TalkServiceGetAllAssistantConversation;
   static readonly GetAllConversationMessage: TalkServiceGetAllConversationMessage;
-  static readonly MessageFeedback: TalkServiceMessageFeedback;
+  static readonly CreateMessageMetric: TalkServiceCreateMessageMetric;
+  static readonly CreateConversationMetric: TalkServiceCreateConversationMetric;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -93,31 +104,40 @@ export class TalkServiceClient {
   assistantMessaging(requestMessage: talk_api_pb.AssistantMessagingRequest, metadata?: grpc.Metadata): ResponseStream<talk_api_pb.AssistantMessagingResponse>;
   assistantTalk(metadata?: grpc.Metadata): BidirectionalStream<talk_api_pb.AssistantMessagingRequest, talk_api_pb.AssistantMessagingResponse>;
   getAllAssistantConversation(
-    requestMessage: talk_api_pb.GetAllAssistantConversationRequest,
+    requestMessage: common_pb.GetAllAssistantConversationRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: talk_api_pb.GetAllAssistantConversationResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: common_pb.GetAllAssistantConversationResponse|null) => void
   ): UnaryResponse;
   getAllAssistantConversation(
-    requestMessage: talk_api_pb.GetAllAssistantConversationRequest,
-    callback: (error: ServiceError|null, responseMessage: talk_api_pb.GetAllAssistantConversationResponse|null) => void
+    requestMessage: common_pb.GetAllAssistantConversationRequest,
+    callback: (error: ServiceError|null, responseMessage: common_pb.GetAllAssistantConversationResponse|null) => void
   ): UnaryResponse;
   getAllConversationMessage(
-    requestMessage: talk_api_pb.GetAllConversationMessageRequest,
+    requestMessage: common_pb.GetAllConversationMessageRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: talk_api_pb.GetAllConversationMessageResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: common_pb.GetAllConversationMessageResponse|null) => void
   ): UnaryResponse;
   getAllConversationMessage(
-    requestMessage: talk_api_pb.GetAllConversationMessageRequest,
-    callback: (error: ServiceError|null, responseMessage: talk_api_pb.GetAllConversationMessageResponse|null) => void
+    requestMessage: common_pb.GetAllConversationMessageRequest,
+    callback: (error: ServiceError|null, responseMessage: common_pb.GetAllConversationMessageResponse|null) => void
   ): UnaryResponse;
-  messageFeedback(
-    requestMessage: talk_api_pb.MessageFeedbackRequest,
+  createMessageMetric(
+    requestMessage: talk_api_pb.CreateMessageMetricRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: talk_api_pb.MessageFeedbackResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: talk_api_pb.CreateMessageMetricResponse|null) => void
   ): UnaryResponse;
-  messageFeedback(
-    requestMessage: talk_api_pb.MessageFeedbackRequest,
-    callback: (error: ServiceError|null, responseMessage: talk_api_pb.MessageFeedbackResponse|null) => void
+  createMessageMetric(
+    requestMessage: talk_api_pb.CreateMessageMetricRequest,
+    callback: (error: ServiceError|null, responseMessage: talk_api_pb.CreateMessageMetricResponse|null) => void
+  ): UnaryResponse;
+  createConversationMetric(
+    requestMessage: talk_api_pb.CreateConversationMetricRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: talk_api_pb.CreateConversationMetricResponse|null) => void
+  ): UnaryResponse;
+  createConversationMetric(
+    requestMessage: talk_api_pb.CreateConversationMetricRequest,
+    callback: (error: ServiceError|null, responseMessage: talk_api_pb.CreateConversationMetricResponse|null) => void
   ): UnaryResponse;
 }
 

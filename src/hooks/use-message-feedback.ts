@@ -25,37 +25,24 @@
 import * as React from "react";
 import { VoiceAgent } from "@/rapida/types/voice-agent";
 import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
-import { useObservableState } from "@/rapida/hooks/use-observable-state";
-import { agentConnectionStateObservable } from "@/rapida/hooks/observables/voice-agent";
+import { Feedback } from "@/rapida/types/feedback";
 
 /**
  * Custom hook for managing agent connection in a voice system.
  * @returns An object containing the connection handler and connection status.
  */
-export function useConnectAgent() {
+export function useMessageFeedback() {
   // Get the voice agent instance
   const agent = useEnsureVoiceAgent();
 
   // Set up the connect agent and memoize the result
-  const {
-    _agentConnectionStateObservable,
-    handleConnectAgent,
-    handleDisconnectAgent,
-  } = React.useMemo(() => setupConnectAgent(), []);
-
-  // Create a memoized observable for the agent's connection state
-  const observable = React.useMemo(
-    () => _agentConnectionStateObservable(agent),
-    [agent, _agentConnectionStateObservable]
+  const { handleMessageFeedback, handleHelpfulnessFeedback } = React.useMemo(
+    () => setupMessageFeedback(agent),
+    []
   );
 
-  // Use the observable to track the agent's connection state
-  const { isConnected } = useObservableState(observable, {
-    isConnected: agent.isConnected,
-  });
-
   // Return the connection handler and the current connection status
-  return { handleConnectAgent, handleDisconnectAgent, isConnected };
+  return { handleMessageFeedback, handleHelpfulnessFeedback };
 }
 
 /**
@@ -63,24 +50,43 @@ export function useConnectAgent() {
  *
  * @returns An object containing the agent connection state observable and a function to handle agent connection.
  */
-function setupConnectAgent() {
+function setupMessageFeedback(agent: VoiceAgent) {
   /**
    * Handles the connection of a voice agent.
    *
    * @param agent - The VoiceAgent to be connected.
    * @returns A promise that resolves when the agent is connected.
    */
-  const handleConnectAgent = async (agent: VoiceAgent) => {
-    await agent.connect();
+  const handleMessageFeedback = async (
+    messageId: string,
+    name: string,
+    description: string,
+    value: string
+  ) => {
+    await agent.createMessageMetric(messageId, [
+      {
+        name: name,
+        description: description,
+        value: value,
+      },
+    ]);
   };
 
-  const handleDisconnectAgent = async (agent: VoiceAgent) => {
-    await agent.disconnect();
+  const handleHelpfulnessFeedback = async (
+    messageId: string,
+    value: Feedback
+  ) => {
+    await agent.createMessageMetric(messageId, [
+      {
+        name: "feedback",
+        description: "feedback given by end-user",
+        value: value,
+      },
+    ]);
   };
 
   return {
-    _agentConnectionStateObservable: agentConnectionStateObservable,
-    handleConnectAgent,
-    handleDisconnectAgent,
+    handleHelpfulnessFeedback,
+    handleMessageFeedback,
   };
 }

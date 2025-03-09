@@ -42,8 +42,7 @@ type AgentMultibandAudioVisualizerProps = {
   barWidth: number;
   minBarHeight: number;
   maxBarHeight: number;
-  accentColor: string;
-  accentShade?: number;
+  barColor?: string;
   frequencies: Float32Array[] | number[][];
 };
 
@@ -53,8 +52,7 @@ export const AgentMultibandAudioVisualizer = ({
   barWidth,
   minBarHeight,
   maxBarHeight,
-  accentColor,
-  accentShade,
+  barColor = "bg-white",
   frequencies,
 }: AgentMultibandAudioVisualizerProps) => {
   const summedFrequencies = frequencies.map((bandFrequencies) => {
@@ -99,14 +97,12 @@ export const AgentMultibandAudioVisualizer = ({
     <div className={cn(classNames, "flex flex-row items-center")}>
       {summedFrequencies.map((frequency, index) => {
         const isCenter = index === Math.floor(summedFrequencies.length / 2);
-        let color = `cartesia-500`;
         let transform;
-        color = `${accentColor}${accentShade ? "-" + accentShade : ""}`;
 
         return (
           <div
             className={cn(
-              `bg-${color} bg-white`,
+              barColor,
               "rounded-full",
               isCenter && state === "listening" ? "animate-pulse" : ""
             )}
