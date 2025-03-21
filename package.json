@@ -1,6 +1,6 @@
 {
     "name": "rapida-react",
-    "version": "1.0.36",
+    "version": "1.0.36-v1",
     "description": "An easy to use react client for building generative ai application using Rapida platform.",
     "repository": {
         "type": "git",

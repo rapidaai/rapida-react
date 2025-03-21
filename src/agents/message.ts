@@ -23,7 +23,7 @@
  *
  */
 
-import { Feedback } from "@/rapida/types/feedback";
+import { Feedback } from "./feedback";
 
 /**
  *

@@ -22,46 +22,25 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import * as React from "react";
-import { VoiceAgent } from "@/rapida/types/voice-agent";
-import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
-import { useObservableState } from "@/rapida/hooks/use-observable-state";
-import { agentAudioInputMuteObservable } from "@/rapida/hooks/observables/voice-agent";
 
 /**
- * use mic toggle agent
- * @returns
+ * Enum representing various server events related to agent interactions.
+ * These events are used to track and manage different stages of a conversation
+ * or interaction between an agent and a user.
  */
-export function useMicInputToggleAgent() {
+export enum AgentServerEvent {
   //
-  const agent = useEnsureVoiceAgent();
+  Interruption = "talk.onInterrupt",
+  Transcript = "talk.onTranscript",
 
-  //
-  const { _agentAudioInputMuteObservable, handleMicInputToggleAgent } =
-    React.useMemo(() => micInputToggleAgent(), []);
+  // start and complete
+  Start = "talk.onStart",
+  Complete = "talk.onComplete",
 
-  const observable = React.useMemo(
-    () => _agentAudioInputMuteObservable(agent),
-    [agent, _agentAudioInputMuteObservable]
-  );
+  Generation = "talk.onGeneration",
+  CompleteGeneration = "talk.onCompleteGeneration",
 
-  const { isEnable } = useObservableState(observable, {
-    isEnable: agent.isAudioInputEnable,
-  });
-
-  return { handleMicInputToggleAgent, isEnable };
-}
-
-/**
- * For toggleing mic for a given agent
- * @returns
- */
-function micInputToggleAgent() {
-  const handleMicInputToggleAgent = async (agent: VoiceAgent) => {
-    await agent.toggelAudioInput();
-  };
-  return {
-    _agentAudioInputMuteObservable: agentAudioInputMuteObservable,
-    handleMicInputToggleAgent,
-  };
+  // start conversation
+  StartConversation = "talk.onStartConversation",
+  CompleteConversation = "talk.onCompleteConversation",
 }

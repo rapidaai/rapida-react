@@ -25,14 +25,7 @@
 import { DeviceManager } from "@/rapida/devices/device-manager";
 import { EventEmitter } from "events";
 import type TypedEmitter from "typed-emitter";
-import {
-  AgentConfig,
-  Channel,
-  ConnectionConfig,
-  ConnectionState,
-  DEFAULT_DEVICE_ID,
-  Feedback,
-} from "@/rapida/constants";
+import { DEFAULT_DEVICE_ID } from "@/rapida/constants";
 import {
   AssistantTalk,
   CreateConversationMetric,
@@ -43,20 +36,26 @@ import {
   AssistantMessagingRequest,
   AssistantMessagingResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
-import { AgentEvent, AgentEventCallback } from "@/rapida/types/agent-event";
+import {
+  AgentEvent,
+  AgentEventCallback,
+  AgentServerEvent,
+} from "@/rapida/events/agent-event";
 import { Content, Event, Message } from "@/rapida/clients/protos/common_pb";
-import { Message as LocalMessage } from "@/rapida/constants";
+import { Message as LocalMessage } from "@/rapida/agents/message";
 import {
   toStreamAudioContent,
   toTextContent,
 } from "@/rapida/utils/rapida_content";
 import { WavRecorder, WavStreamPlayer } from "@/rapida/wavtools/index.js";
-import { AgentServerEvent } from "@/rapida/types/agent-event";
 import { getStringFromProtoStruct } from "@/rapida/utils/rapida_metadata";
-import { TalkServiceClient } from "@/rapida/clients/protos/talk-api_pb_service";
 import { toDate } from "@/rapida/utils";
-import { MessageRole, MessageStatus } from "@/rapida/types/message";
-import { getFeedback } from "@/rapida/types/feedback";
+import { MessageRole, MessageStatus } from "@/rapida/agents/message";
+import { getFeedback } from "@/rapida/agents/feedback";
+import { ConnectionState } from "@/rapida/connections/connection-state";
+import { Channel } from "@/rapida/channels";
+import { AgentConfig } from "@/rapida/agents/agent-config";
+import { ConnectionConfig } from "@/rapida/connections/connection-config";
 
 export class VoiceAgent extends (EventEmitter as new () => TypedEmitter<AgentEventCallback>) {
   /**
