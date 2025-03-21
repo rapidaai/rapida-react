@@ -22,7 +22,7 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { DEFAULT_DEVICE_ID } from "@/rapida/types";
+import { DEFAULT_DEVICE_ID } from "@/rapida/constants";
 import { isSafari } from "@/rapida/utils";
 
 export class DeviceManager {

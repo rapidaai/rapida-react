@@ -30,7 +30,7 @@ import {
   agentInputMediaDeviceChangeObservable,
 } from "@/rapida/hooks/observables/voice-agent";
 import { useMaybeVoiceAgent } from "@/rapida/hooks/use-voice-agent";
-import { VoiceAgent } from "@/rapida/types/voice-agent";
+import { VoiceAgent } from "@/rapida/events/voice-agent";
 
 /** @public */
 interface UseMediaDeviceSelectProps {

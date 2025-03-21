@@ -23,7 +23,7 @@
  *
  */
 import { Event } from "@/rapida/clients/protos/common_pb";
-import { Channel, ConnectionState, Feedback } from "@/rapida/types";
+import { Channel, ConnectionState, Feedback } from "@/rapida/constants";
 
 export enum AgentEvent {
   ConnectionChanged = "onConnectionChanged",

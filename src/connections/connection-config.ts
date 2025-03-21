@@ -26,14 +26,28 @@ import { TalkServiceClient } from "@/rapida/clients/protos/talk-api_pb_service";
 import { grpc } from "@improbable-eng/grpc-web";
 import { ASSISTANT_API, LOCAL_ASSISTANT_API } from "@/rapida/configs";
 import { ClientAuthInfo, UserAuthInfo } from "@/rapida/clients";
-import { ConnectionState } from "@/rapida/types/connection-state";
+import { ConnectionState } from "./connection-state";
 
 /**
  *
  */
 interface ConnectionCallback {
+  /**
+   *
+   * @returns
+   */
   onError?: () => void;
+
+  /**
+   *
+   * @returns
+   */
   onConnect?: () => void;
+
+  /**
+   *
+   * @returns
+   */
   onDisconnect?: () => void;
 }
 

@@ -1,5 +1,5 @@
 import { agentMessageChangeEventObserver } from "@/rapida/hooks/observables/voice-agent";
-import { Message } from "@/rapida/types";
+import { Message } from "@/rapida/agents/message";
 import { useMaybeVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { cn } from "@/rapida/styles";
 import React, { FC, HTMLAttributes, useEffect, useRef, useState } from "react";

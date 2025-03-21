@@ -32,7 +32,7 @@ import {
   ConnectionState,
   DEFAULT_DEVICE_ID,
   Feedback,
-} from "@/rapida/types";
+} from "@/rapida/constants";
 import {
   AssistantTalk,
   CreateConversationMetric,
@@ -45,7 +45,7 @@ import {
 } from "@/rapida/clients/protos/talk-api_pb";
 import { AgentEvent, AgentEventCallback } from "@/rapida/types/agent-event";
 import { Content, Event, Message } from "@/rapida/clients/protos/common_pb";
-import { Message as LocalMessage } from "@/rapida/types";
+import { Message as LocalMessage } from "@/rapida/constants";
 import {
   toStreamAudioContent,
   toTextContent,

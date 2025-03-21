@@ -25,7 +25,7 @@
 import { Subject, map, Observable, startWith, finalize, concat } from "rxjs";
 import { VoiceAgent } from "@/rapida/types/voice-agent";
 import { AgentEvent, AgentEventCallback } from "@/rapida/types/agent-event";
-import { ConnectionState } from "@/rapida/types";
+import { ConnectionState } from "@/rapida/constants";
 
 /**
  *

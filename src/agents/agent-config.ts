@@ -26,11 +26,11 @@ import { AssistantDefinition } from "@/rapida/clients/protos/talk-api_pb";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
 import { AssistantMessagingResponse } from "../clients/protos/talk-api_pb";
-import { AgentServerEvent } from "@/rapida/types/agent-event";
+import { AgentServerEvent } from "@/rapida/events/agent-event";
 import * as google_protobuf_struct_pb from "google-protobuf/google/protobuf/struct_pb";
 import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
-import { Channel } from "@/rapida/types/channel";
-import { DEFAULT_DEVICE_ID } from "@/rapida/types";
+import { Channel } from "@/rapida/channels";
+import { DEFAULT_DEVICE_ID } from "@/rapida/constants";
 
 /**
  * Callbacks for agent
@@ -58,7 +58,7 @@ interface AgentCallback {
     args: google_protobuf_struct_pb.Struct | undefined
   ) => void;
 
-  //
+  // on complete message
   onMessage?: (arg: AssistantConversationMessage | undefined) => void;
 }
 
@@ -366,34 +366,8 @@ export class AgentConfig {
    * @param onCompleteConversation - Callback function triggered when the entire conversation is completed.
    * @returns The current instance of the AgentConfig, allowing for method chaining.
    */
-  withAgentCallback(
-    //on complete of message process
-    onStart: () => void,
-    onComplete: () => void,
-
-    //
-    onTranscript: (transcript: string) => void,
-    // on interruption
-    onInterrupt: () => void,
-
-    // generation
-    onGeneration: () => void,
-    onCompleteGeneration: () => void,
-
-    // conversation callback
-    onStartConversation: () => void,
-    onCompleteConversation: () => void
-  ): this {
-    this.callbacks = {
-      onStart,
-      onComplete,
-      onTranscript,
-      onInterrupt,
-      onGeneration,
-      onCompleteGeneration,
-      onStartConversation,
-      onCompleteConversation,
-    };
+  withAgentCallback(cl: AgentCallback): this {
+    this.callbacks = cl;
     return this;
   }
 

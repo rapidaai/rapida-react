@@ -34,7 +34,7 @@ import { useSpeakerOuputToggleAgent } from "@/rapida/hooks/use-speaker-output-to
 import { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
 import { AgentMultibandAudioVisualizer } from "./components/visualization/agent-multiband-audio-visualizer";
 import { AgentLiveTranscript } from "./components/live-transcript";
-import { InputOptions, OutputOptions } from "./types/agent-config";
+import { InputOptions, OutputOptions } from "./constants/agent-config";
 import { useMessageFeedback } from "./hooks/use-message-feedback";
 import { useConversationFeedback } from "./hooks/use-conversation-feedback";
 
@@ -58,7 +58,7 @@ export {
   Feedback,
   MessageRole,
   MessageStatus,
-} from "@/rapida/types";
+} from "@/rapida/constants";
 
 export {
   Conversation,

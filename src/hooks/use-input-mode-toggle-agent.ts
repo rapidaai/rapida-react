@@ -27,7 +27,7 @@ import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { useObservableState } from "@/rapida/hooks/use-observable-state";
 import * as React from "react";
 import { agentInputObservable } from "@/rapida/hooks/observables/voice-agent";
-import { Channel } from "@/rapida/types";
+import { Channel } from "@/rapida/constants";
 
 export function useInputModeToggleAgent() {
   // ensure that voice agent is initializesd
