@@ -54,6 +54,7 @@ import {
 } from "@/rapida/utils/rapida_header";
 import { grpc } from "@improbable-eng/grpc-web";
 import { ALL_REGION } from "@/rapida/utils/rapida_region";
+import { RapidaSource } from "@/rapida/utils/rapida_source";
 
 /**
  * Configures gRPC metadata with platform-specific and environment-specific headers.
@@ -91,7 +92,6 @@ export const WithAuthContext = (
       metadata.set(key, value);
     }
   }
-  console.dir(metadata);
   return metadata;
 };
 
@@ -102,11 +102,13 @@ export interface UserAuthInfo {
   authorization: string;
   [HEADER_AUTH_ID]: string;
   [HEADER_PROJECT_ID]?: string;
+  [HEADER_SOURCE_KEY]?: RapidaSource;
 }
 
 export interface ClientAuthInfo {
   [HEADER_API_KEY]: string;
   [HEADER_AUTH_ID]?: string;
+  [HEADER_SOURCE_KEY]?: RapidaSource;
 }
 
 interface ClientInfo {

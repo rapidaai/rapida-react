@@ -262,7 +262,7 @@ export const useMultiband3DSpeakerTrackVolume = (
 
   useEffect(() => {
     const updateVolume = () => {
-      if (!agentContext?.player?.getFrequencies) {
+      if (!agentContext?.player?.analyser) {
         return;
       }
 
