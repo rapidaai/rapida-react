@@ -26,8 +26,10 @@ import { getBrowser } from "@/rapida/utils/rapida_client";
 import { RapidaEnvironment } from "@/rapida/utils/rapida_environment";
 import {
   DEBUGGER_SOURCE,
+  getRapidaSourceValue,
   RAPIDA_APP_SOURCE,
   RapidaSource,
+  TYPESCRIPTSDK_SOURCE,
 } from "@/rapida/utils/rapida_source";
 import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 import moment from "moment";
@@ -71,10 +73,18 @@ export const GetEnvironment = (): RapidaEnvironment => {
  * @returns
  */
 export const GetSource = (): RapidaSource => {
-  if (isElectron()) return RAPIDA_APP_SOURCE;
-  return DEBUGGER_SOURCE;
+  const envSource = process.env.RAPIDA_SOURCE as RapidaSource;
+  if (envSource && getRapidaSourceValue(envSource)) {
+    return envSource;
+  }
+
+  return TYPESCRIPTSDK_SOURCE; // Default fallback
 };
 
+/**
+ *
+ * @returns
+ */
 export const isElectron = (): boolean => {
   return window.isElectron != undefined ? window.isElectron : false;
 };

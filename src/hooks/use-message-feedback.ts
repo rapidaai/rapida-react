@@ -23,7 +23,7 @@
  *
  */
 import * as React from "react";
-import { VoiceAgent } from "@/rapida/agents";
+import { VoiceAgent } from "@/rapida/agents/voice-agent";
 import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { Feedback } from "@/rapida/agents/feedback";
 

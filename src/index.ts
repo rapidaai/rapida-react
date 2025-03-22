@@ -22,68 +22,35 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { VoiceAgent } from "@/rapida/types/voice-agent";
-import { VoiceAgentContext } from "@/rapida/hooks/use-voice-agent";
-import "@/rapida/styles/global-styles";
-import { Conversation } from "@/rapida/components/text/conversations";
-import { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
-import { useDisconnectAgent } from "@/rapida/hooks/use-disconnect-agent";
-import { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
-import { useMicInputToggleAgent } from "@/rapida/hooks/use-mic-input-toggle-agent";
-import { useSpeakerOuputToggleAgent } from "@/rapida/hooks/use-speaker-output-toggle-agent";
-import { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
-import { AgentMultibandAudioVisualizer } from "./components/visualization/agent-multiband-audio-visualizer";
-import { AgentLiveTranscript } from "./components/live-transcript";
-import { InputOptions, OutputOptions } from "./constants/agent-config";
-import { useMessageFeedback } from "./hooks/use-message-feedback";
-import { useConversationFeedback } from "./hooks/use-conversation-feedback";
+export { VoiceAgent } from "@/rapida/agents/voice-agent";
+export { VoiceAgentContext } from "@/rapida/hooks/use-voice-agent";
+export { Conversation } from "@/rapida/components/text/conversations";
+export { AgentMultibandAudioVisualizer } from "./components/visualization/agent-multiband-audio-visualizer";
+export { AgentLiveTranscript } from "./components/live-transcript";
 
-import {
-  useEnsureVoiceAgent,
-  useMaybeVoiceAgent,
-} from "./hooks/use-voice-agent";
-import {
-  useMultiband3DSpeakerTrackVolume,
-  useMultibandMicrophoneTrackVolume,
-} from "@/rapida/hooks/use-multiband-track-volume";
+// all hooks
+export { useMessageFeedback } from "./hooks/use-message-feedback";
+export { useConversationFeedback } from "./hooks/use-conversation-feedback";
+export { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
+export { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
+export { useSpeakerOuputToggleAgent } from "@/rapida/hooks/use-speaker-output-toggle-agent";
+export { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
+export { ConnectionState } from "./connections/connection-state";
+export { Channel } from "./channels/index";
+export { MediaDeviceFailure } from "./devices/device-failure";
 export {
-  Channel,
-  ConnectionState,
-  MediaDeviceFailure,
-  ConnectionConfig,
   InputOptions,
   OutputOptions,
   AgentConfig,
-  Message,
-  Feedback,
-  MessageRole,
-  MessageStatus,
-} from "@/rapida/constants";
-
+} from "./agents/agent-config";
+export { Message, MessageRole, MessageStatus } from "./agents/message";
+export { Feedback } from "./agents/feedback";
 export {
-  Conversation,
-  AgentMultibandAudioVisualizer,
-  AgentLiveTranscript,
-
-  //
-
-  // context
-  VoiceAgent,
-  VoiceAgentContext,
-
-  // hooks
-  useConnectAgent,
-  useDisconnectAgent,
-  useInputModeToggleAgent,
-  useMicInputToggleAgent,
-  useSpeakerOuputToggleAgent,
-  useMultiband3DSpeakerTrackVolume,
-  useMultibandMicrophoneTrackVolume,
-  useSelectInputDeviceAgent,
   useEnsureVoiceAgent,
   useMaybeVoiceAgent,
-
-  //
-  useMessageFeedback,
-  useConversationFeedback,
-};
+} from "./hooks/use-voice-agent";
+export {
+  useMultiband3DSpeakerTrackVolume,
+  useMultibandMicrophoneTrackVolume,
+} from "@/rapida/hooks/use-multiband-track-volume";
+export { ConnectionConfig } from "./connections/connection-config";

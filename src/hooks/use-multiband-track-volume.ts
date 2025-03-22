@@ -158,7 +158,7 @@ export const useMultibandSpeakerTrackVolume = (
 
   useEffect(() => {
     const updateVolume = () => {
-      if (!agentContext?.player?.getFrequencies) {
+      if (!agentContext?.player?.analyser) {
         return;
       }
 

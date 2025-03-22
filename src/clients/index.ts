@@ -91,6 +91,7 @@ export const WithAuthContext = (
       metadata.set(key, value);
     }
   }
+  console.dir(metadata);
   return metadata;
 };
 

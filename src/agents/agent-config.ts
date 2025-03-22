@@ -26,7 +26,7 @@ import { AssistantDefinition } from "@/rapida/clients/protos/talk-api_pb";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
 import { AssistantMessagingResponse } from "../clients/protos/talk-api_pb";
-import { AgentServerEvent } from "@/rapida/events/agent-event";
+import { AgentServerEvent } from "@/rapida/events/agent-server-event";
 import * as google_protobuf_struct_pb from "google-protobuf/google/protobuf/struct_pb";
 import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
 import { Channel } from "@/rapida/channels";

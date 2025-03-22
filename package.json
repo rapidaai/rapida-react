@@ -1,6 +1,6 @@
 {
     "name": "rapida-react",
-    "version": "1.0.36-v1",
+    "version": "1.0.37",
     "description": "An easy to use react client for building generative ai application using Rapida platform.",
     "repository": {
         "type": "git",
@@ -36,8 +36,14 @@
                 {
                     "targets": {
                         "chrome": 100,
+                        "firefox": 91,
                         "safari": 15,
-                        "firefox": 91
+                        "edge": 100,
+                        "opera": 85,
+                        "ios": 15,
+                        "android": 100,
+                        "samsung": 16,
+                        "ie": 11
                     }
                 }
             ],
@@ -72,7 +78,7 @@
         "ts-loader": "^9.5.2",
         "ts-node": "^10.9.2",
         "tslib": "^2.6.2",
-        "tsup": "^8.3.6",
+        "tsup": "^8.4.0",
         "typescript": "^5.7.3",
         "unplugin-tailwindcss-mangle": "^4.0.2"
     },

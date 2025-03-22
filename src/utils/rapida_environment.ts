@@ -24,8 +24,8 @@
  */
 
 export enum RapidaEnvironment {
-  PRODUCTION = 'production',
-  DEVELOPMENT = 'development',
+  PRODUCTION = "production",
+  DEVELOPMENT = "development",
 }
 
 // Get returns the string value of the RapidaEnvironment
@@ -43,7 +43,7 @@ export function fromStr(label: string): RapidaEnvironment {
       return RapidaEnvironment.DEVELOPMENT;
     default:
       console.warn(
-        "The environment is not supported. Only 'production' and 'development' are allowed.",
+        "The environment is not supported. Only 'production' and 'development' are allowed."
       );
       return RapidaEnvironment.DEVELOPMENT;
   }
