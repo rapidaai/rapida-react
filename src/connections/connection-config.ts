@@ -144,21 +144,14 @@ export class ConnectionConfig {
    * );
    * ```
    */
-  withConnectionCallback(
-    onConnect?: () => void,
-    onDisconnect?: () => void,
-    onError?: () => void
-  ): this {
+  withConnectionCallback(cl: ConnectionCallback): this {
     // Implement connection callback logic here if needed.
     // For example, you can subscribe to events or set up listeners.
-    this.callbacks = {
-      onConnect: onConnect,
-      onDisconnect: onDisconnect,
-      onError: onError,
-    };
+    this.callbacks = cl;
     return this;
   }
 
+  //
   onConnectionChange(connection: ConnectionState) {
     if (connection === ConnectionState.Connected) {
       if (this.callbacks && this.callbacks?.onConnect) {
@@ -169,5 +162,6 @@ export class ConnectionConfig {
     if (this.callbacks && this.callbacks?.onDisconnect) {
       this.callbacks.onDisconnect();
     }
+    return;
   }
 }
