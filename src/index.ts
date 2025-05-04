@@ -1,3 +1,4 @@
+import { useAgentDeployment } from "./hooks/use-agent-deployment";
 /*
  *  Copyright (c) 2024. Rapida
  *
@@ -35,6 +36,7 @@ export { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
 export { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
 export { useSpeakerOuputToggleAgent } from "@/rapida/hooks/use-speaker-output-toggle-agent";
 export { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
+export { useAgentDeployment } from "@/rapida/hooks/use-agent-deployment";
 export { ConnectionState } from "./connections/connection-state";
 export { Channel } from "./channels/index";
 export { MediaDeviceFailure } from "./devices/device-failure";
@@ -54,3 +56,35 @@ export {
   useMultibandMicrophoneTrackVolume,
 } from "@/rapida/hooks/use-multiband-track-volume";
 export { ConnectionConfig } from "./connections/connection-config";
+export * from "@/rapida/utils/rapida_value";
+export * from "@/rapida/utils/rapida_source";
+export * from "@/rapida/agents/agent-deployment";
+export { useAgentMessage } from "@/rapida/hooks/use-agent-message";
+
+export {
+  HEADER_ENVIRONMENT_KEY,
+  HEADER_SOURCE_KEY,
+  HEADER_REGION_KEY,
+  HEADER_API_KEY,
+  HEADER_AUTH_ID,
+  HEADER_PROJECT_ID,
+  HEADER_USER_AGENT,
+  HEADER_LANGUAGE,
+  HEADER_PLATFORM,
+  HEADER_SCREEN_WIDTH,
+  HEADER_SCREEN_HEIGHT,
+  HEADER_WINDOW_WIDTH,
+  HEADER_WINDOW_HEIGHT,
+  HEADER_TIMEZONE,
+  HEADER_COLOR_DEPTH,
+  HEADER_DEVICE_MEMORY,
+  HEADER_HARDWARE_CONCURRENCY,
+  HEADER_CONNECTION_TYPE,
+  HEADER_CONNECTION_EFFECTIVE_TYPE,
+  HEADER_COOKIES_ENABLED,
+  HEADER_DO_NOT_TRACK,
+  HEADER_REFERRER,
+  HEADER_REMOTE_URL,
+  HEADER_LATITUDE,
+  HEADER_LONGITUDE,
+} from "@/rapida/utils/rapida_header";

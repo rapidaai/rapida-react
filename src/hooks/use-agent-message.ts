@@ -22,34 +22,31 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
+import {
+  agentInitializeObservable,
+  agentMessageChangeEventObserver,
+} from "@/rapida/hooks/observables/voice-agent";
+import { useObservableState } from "@/rapida/hooks/use-observable-state";
+import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
+import React from "react";
 
-export enum AgentEvent {
-  Initialized = "onInitialized",
-  ConnectionChanged = "onConnectionChanged",
+/**
+ * Custom hook for managing agent connection in a voice system.
+ * @returns An object containing the connection handler and connection status.
+ */
+export function useAgentMessage() {
+  // Get the voice agent instance
+  const agent = useEnsureVoiceAgent();
+  const observable = React.useMemo(
+    () => agentMessageChangeEventObserver(agent),
+    [agent]
+  );
 
-  /**
-   * When input or output devices on the machine have changed.
-   */
-  InputMediaDeviceChanged = "onInputMediaDeviceChanged",
-  OutputMediaDeviceChanged = "onOutputMediaDeviceChanged",
-
-  // when audio muting / unmuting
-  AudioInputMuteToggle = "onAudioInputMuteToggle",
-  AudioOutputMuteToggle = "onAudioOutputMuteToggle",
-
-  // when user is switching channel
-  InputChannelSwitch = "onInputChannelSwitch",
-  OutputChannelSwitch = "onOutputChannelSwitch",
-
-  // when server sent something
-  ServerEvent = "onServerEvent",
-
-  // when server sent data to client
-  DataReceived = "onDataReceived",
-
-  // when message feedback is received
-  MessageFeedback = "onMessageFeedback",
-
-  // when conversation feedback is received
-  ConversationFeedback = "onConversationFeedback",
+  const { chats } = useObservableState(observable, {
+    eventType: undefined,
+    events: agent.events,
+    chats: agent.messages,
+    transcript: agent.transcript,
+  });
+  return { messages: chats };
 }

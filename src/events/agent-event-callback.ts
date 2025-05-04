@@ -24,6 +24,7 @@
  */
 import { Feedback } from "@/rapida/agents/feedback";
 import { Channel } from "@/rapida/channels";
+import { Assistant } from "@/rapida/clients/protos/assistant-api_pb";
 import { Event } from "@/rapida/clients/protos/common_pb";
 import { ConnectionState } from "@/rapida/connections/connection-state";
 import { AgentServerEvent } from "@/rapida/events/agent-server-event";
@@ -46,6 +47,8 @@ import { AgentServerEvent } from "@/rapida/events/agent-server-event";
  * and interactive voice-enabled applications.
  */
 export type AgentEventCallback = {
+  onInitialized: (assistant: Assistant) => void;
+
   onConnected: () => void;
   onDisconnected: () => void;
   // on change of connection state

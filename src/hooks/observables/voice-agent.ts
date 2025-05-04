@@ -247,6 +247,26 @@ export function agentInputObservable(agent: VoiceAgent) {
 }
 
 /**
+ * overserving the input channel
+ * @param agent
+ * @returns
+ */
+export function agentInitializeObservable(agent: VoiceAgent) {
+  const observable = observeVoiceAgentEvents(
+    agent,
+    AgentEvent.Initialized
+  ).pipe(
+    map((_agent: VoiceAgent) => {
+      return {
+        deployment: _agent.getDeployment(),
+        assistant: _agent.assistant,
+      };
+    })
+  );
+  return observable;
+}
+
+/**
  *
  * @param agent
  * @returns

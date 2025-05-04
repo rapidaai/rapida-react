@@ -24,29 +24,32 @@
  */
 
 export type RapidaSource =
-  | 'web-plugin'
-  | 'debugger'
-  | 'rapida-app'
-  | 'node-sdk'
-  | 'go-sdk'
-  | 'typescript-sdk'
-  | 'java-sdk'
-  | 'php-sdk'
-  | 'rust-sdk'
-  | 'python-sdk';
+  | "web-plugin"
+  | "debugger"
+  | "rapida-app"
+  | "node-sdk"
+  | "go-sdk"
+  | "typescript-sdk"
+  | "java-sdk"
+  | "php-sdk"
+  | "rust-sdk"
+  | "python-sdk"
+  | "react-native-sdk"
+  | "react-sdk";
 
-export const WEB_PLUGIN_SOURCE: RapidaSource = 'web-plugin';
-export const DEBUGGER_SOURCE: RapidaSource = 'debugger';
-export const RAPIDA_APP_SOURCE: RapidaSource = 'rapida-app';
+export const WEB_PLUGIN_SOURCE: RapidaSource = "web-plugin";
+export const DEBUGGER_SOURCE: RapidaSource = "debugger";
+export const RAPIDA_APP_SOURCE: RapidaSource = "rapida-app";
 
-export const PYTHONSDK_SOURCE: RapidaSource = 'python-sdk';
-export const NODESDK_SOURCE: RapidaSource = 'node-sdk';
-export const GOSDK_SOURCE: RapidaSource = 'go-sdk';
-export const TYPESCRIPTSDK_SOURCE: RapidaSource = 'typescript-sdk';
-export const JAVASDK_SOURCE: RapidaSource = 'java-sdk';
-export const PHPSDK_SOURCE: RapidaSource = 'php-sdk';
-export const RUSTSDK_SOURCE: RapidaSource = 'rust-sdk';
-
+export const PYTHONSDK_SOURCE: RapidaSource = "python-sdk";
+export const NODESDK_SOURCE: RapidaSource = "node-sdk";
+export const GOSDK_SOURCE: RapidaSource = "go-sdk";
+export const TYPESCRIPTSDK_SOURCE: RapidaSource = "typescript-sdk";
+export const JAVASDK_SOURCE: RapidaSource = "java-sdk";
+export const PHPSDK_SOURCE: RapidaSource = "php-sdk";
+export const RUSTSDK_SOURCE: RapidaSource = "rust-sdk";
+export const REACTNATIVESDK_SOURCE: RapidaSource = "react-native-sdk";
+export const REACTSDK_SOURCE: RapidaSource = "react-sdk";
 // Get returns the string value of the RapidaSource
 export function getRapidaSourceValue(source: RapidaSource): string {
   return source;
@@ -56,30 +59,34 @@ export function getRapidaSourceValue(source: RapidaSource): string {
 // or 'web-plugin' if the string does not match any source.
 export function fromStr(label: string): RapidaSource {
   switch (label.toLowerCase()) {
-    case 'web-plugin':
+    case "web-plugin":
       return WEB_PLUGIN_SOURCE;
-    case 'debugger':
+    case "debugger":
       return DEBUGGER_SOURCE;
-    case 'rapida-app':
+    case "rapida-app":
       return RAPIDA_APP_SOURCE;
-    case 'python-sdk':
+    case "python-sdk":
       return PYTHONSDK_SOURCE;
-    case 'node-sdk':
+    case "node-sdk":
       return NODESDK_SOURCE;
-    case 'go-sdk':
+    case "go-sdk":
       return GOSDK_SOURCE;
-    case 'typescript-sdk':
+    case "typescript-sdk":
       return TYPESCRIPTSDK_SOURCE;
-    case 'java-sdk':
+    case "java-sdk":
       return JAVASDK_SOURCE;
-    case 'php-sdk':
+    case "php-sdk":
       return PHPSDK_SOURCE;
-    case 'rust-sdk':
+    case "rust-sdk":
       return RUSTSDK_SOURCE;
+    case "react-native-sdk":
+      return REACTNATIVESDK_SOURCE;
+    case "react-sdk":
+      return REACTSDK_SOURCE;
 
     default:
       console.warn(
-        "The source is not supported. Only 'web-plugin', 'debugger', 'rapida-app', and 'sdk' are allowed.",
+        "The source is not supported. Only 'web-plugin', 'debugger', 'rapida-app', and 'sdk' are allowed."
       );
       return WEB_PLUGIN_SOURCE;
   }

@@ -41,6 +41,19 @@ import {
   CreateMessageMetric,
 } from "@/rapida/clients/talk";
 import { getFeedback } from "@/rapida/agents/feedback";
+import {
+  Assistant,
+  GetAssistantResponse,
+} from "@/rapida/clients/protos/assistant-api_pb";
+import { GetAssistant } from "@/rapida/clients/assistant";
+import { ServiceError } from "@/rapida/clients/protos/talk-api_pb_service";
+import { RapidaSource, REACTSDK_SOURCE } from "@/rapida/utils/rapida_source";
+import {
+  AgentDeployment,
+  GetDeployment,
+} from "@/rapida/agents/agent-deployment";
+import { HEADER_SOURCE_KEY } from "@/rapida/utils/rapida_header";
+import { AssistantWebpluginDeployment } from "@/rapida/clients/protos/assistant-deployment_pb";
 
 //
 export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCallback>) {
@@ -73,9 +86,12 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    */
   // @ts-ignore
   protected talkingConnection: any;
-  // | BidirectionalStream<AssistantMessagingRequest, AssistantMessagingResponse>
-  // | undefined;
-  // |
+
+  // as the api takes bytes of array can have text byte ot audio byte
+  private rapidaAssistant: Assistant | null = null;
+  get assistant(): Assistant | null {
+    return this.rapidaAssistant;
+  }
 
   //
   protected agentConfig: AgentConfig;
@@ -125,8 +141,26 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     this.agentEvents = [];
     this.agentMessages = [];
     this.agentTranscript = "";
+
+    this.getAssistant()
+      .then((data) => {
+        this.rapidaAssistant = data;
+        this.emit(AgentEvent.Initialized, this.rapidaAssistant);
+      })
+      .catch((error) => {
+        console.error("Failed to initialize assistant:", error);
+      });
   }
 
+  public getDeployment(): AgentDeployment | undefined {
+    if (this.rapidaAssistant == null) {
+      return undefined;
+    }
+    return GetDeployment(
+      this.assistant!,
+      this.connectionConfig.auth.Client?.[HEADER_SOURCE_KEY] ?? REACTSDK_SOURCE
+    );
+  }
   /**
    * Message builder
    * @param role
@@ -191,7 +225,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    * @param messageId
    * @param metrics
    */
-  createMessageMetric(
+  public createMessageMetric(
     messageId: string,
     metrics: {
       name: string;
@@ -227,7 +261,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    *
    * @param metrics
    */
-  createConversationMetric(
+  public createConversationMetric(
     metrics: {
       name: string;
       description: string;
@@ -316,6 +350,29 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     if (this.onRecieve) this.onRecieve(response);
   };
 
+  /**
+   *
+   * @returns
+   */
+  protected getAssistant = async (): Promise<Assistant> => {
+    return new Promise((resolve, reject) => {
+      GetAssistant(
+        this.connectionConfig.assistantClient,
+        this.agentConfig.id,
+        this.agentConfig.version || null,
+        (err: ServiceError | null, response: GetAssistantResponse | null) => {
+          if (err) {
+            reject(err);
+          } else if (response && response.getData()) {
+            resolve(response.getData()!);
+          } else {
+            reject(new Error("No response received"));
+          }
+        },
+        this.connectionConfig.auth
+      );
+    });
+  };
   /**
    *
    * @param response

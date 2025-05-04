@@ -62,25 +62,6 @@ export function isIOS(): boolean {
   return getBrowser()?.os === "iOS";
 }
 
-export const GetEnvironment = (): RapidaEnvironment => {
-  return process.env.NODE_ENV !== "development"
-    ? RapidaEnvironment.PRODUCTION
-    : RapidaEnvironment.DEVELOPMENT;
-};
-
-/**
- *
- * @returns
- */
-export const GetSource = (): RapidaSource => {
-  const envSource = process.env.RAPIDA_SOURCE as RapidaSource;
-  if (envSource && getRapidaSourceValue(envSource)) {
-    return envSource;
-  }
-
-  return TYPESCRIPTSDK_SOURCE; // Default fallback
-};
-
 /**
  *
  * @returns

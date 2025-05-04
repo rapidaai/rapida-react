@@ -43,7 +43,7 @@ import { Agent } from "@/rapida/agents/";
 
 export class VoiceAgent extends Agent {
   // input channel for in
-  // as the api takes bytes of array can have text byte ot audio byte
+
   /**
    * input media device id
    */
@@ -97,25 +97,31 @@ export class VoiceAgent extends Agent {
     );
   }
 
-  async disconnect() {
+  public disconnect = async () => {
     await this.disconnectAgent();
-
     if (this.inputChannel == Channel.Audio) {
       await this.stopRecording();
     }
-  }
-
-  connect = async () => {
+  };
+  public connect = async () => {
     try {
-      await this.connectAgent();
-      const devices = await this.audioRecorder.listDevices();
-      if (devices.length === 0) {
+      if (this.assistant == null) {
+        console.warn(
+          "the assistant is not initialize, check the configuration and try again"
+        );
         return;
       }
-      this.inputDeviceId = devices[0].deviceId;
-      this.outputDeviceId = devices[0].deviceId;
-
+      await this.connectAgent();
+      // check if input options contains audio then list the device or something
+      // this.agentConfig.inputOptions.channels.
       if (this.inputChannel == Channel.Audio) {
+        const devices = await this.audioRecorder.listDevices();
+        if (devices.length === 0) {
+          return;
+        }
+        this.inputDeviceId = devices[0].deviceId;
+        this.outputDeviceId = devices[0].deviceId;
+
         // start recording
         await this.startRecording(true);
       }
@@ -408,21 +414,7 @@ export class VoiceAgent extends Agent {
                 response.getEvent()!
               );
               break;
-            case AgentServerEvent.CompleteGeneration:
-              if (this.agentMessages.length > 0) {
-                const lastMessage =
-                  this.agentMessages[this.agentMessages.length - 1];
-                if (lastMessage.role === MessageRole.System) {
-                  lastMessage.status = MessageStatus.Complete;
-                }
-              }
-              //
-              this.emit(
-                AgentEvent.ServerEvent,
-                AgentServerEvent.CompleteGeneration,
-                response.getEvent()!
-              );
-              break;
+
             case AgentServerEvent.CompleteConversation:
               this.emit(
                 AgentEvent.ServerEvent,
@@ -438,6 +430,7 @@ export class VoiceAgent extends Agent {
                 response.getEvent()!
               );
               break;
+            case AgentServerEvent.CompleteGeneration:
             case AgentServerEvent.Generation:
               // generation started mark the previous message of user to complete
               if (this.agentMessages.length > 0) {
@@ -465,12 +458,19 @@ export class VoiceAgent extends Agent {
                   role: MessageRole.System,
                   messages: [agentMessage],
                   time: toDate(response.getEvent()?.getTime()),
-                  status: MessageStatus.Pending,
+                  status:
+                    response.getEvent()?.getName() ==
+                    AgentServerEvent.CompleteGeneration
+                      ? MessageStatus.Complete
+                      : MessageStatus.Pending,
                 });
               }
               this.emit(
                 AgentEvent.ServerEvent,
-                AgentServerEvent.Generation,
+                response.getEvent()?.getName() ==
+                  AgentServerEvent.CompleteGeneration
+                  ? AgentServerEvent.CompleteGeneration
+                  : AgentServerEvent.Generation,
                 response.getEvent()!
               );
               break;
@@ -522,7 +522,6 @@ export class VoiceAgent extends Agent {
         )
           return;
         this.onChangeConversation(conversation?.getAssistantconversationid());
-
         const responseContent =
           conversation.getResponse()?.getContentsList() || [];
         for (const content of responseContent) {

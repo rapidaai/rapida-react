@@ -25,8 +25,14 @@
 import { TalkServiceClient } from "@/rapida/clients/protos/talk-api_pb_service";
 import { grpc } from "@improbable-eng/grpc-web";
 import { ASSISTANT_API, LOCAL_ASSISTANT_API } from "@/rapida/configs";
-import { ClientAuthInfo, UserAuthInfo } from "@/rapida/clients";
+import { ClientAuthInfo, getClientInfo, UserAuthInfo } from "@/rapida/clients";
 import { ConnectionState } from "./connection-state";
+import { AssistantServiceClient } from "@/rapida/clients/protos/assistant-api_pb_service";
+import { HEADER_SOURCE_KEY } from "../utils/rapida_header";
+import {
+  RAPIDA_APP_SOURCE,
+  REACTSDK_SOURCE,
+} from "@/rapida/utils/rapida_source";
 
 /**
  *
@@ -67,6 +73,11 @@ export class ConnectionConfig {
   conversationClient: TalkServiceClient;
 
   /**
+   * gRPC client for assistant apis
+   */
+  assistantClient: AssistantServiceClient;
+
+  /**
    * Authentication information for the client, supporting both client and user authentication.
    */
   auth: ClientAuthInfo | UserAuthInfo;
@@ -83,24 +94,40 @@ export class ConnectionConfig {
    * @param endpoint - (Optional) Custom API endpoint for connecting to the TalkService.
    *                   If not provided, it defaults to `ASSISTANT_API`.
    */
-  constructor(auth: ClientAuthInfo | UserAuthInfo, endpoint?: string) {
+  constructor(
+    auth: ClientAuthInfo | UserAuthInfo,
+    endpoint?: string,
+    debug?: boolean
+  ) {
     this.auth = auth;
-
+    this.auth.Client = getClientInfo(this.auth.Client);
     // If a custom endpoint is provided, use it to initialize the clients.
     if (endpoint) {
-      this.conversationClient = new TalkServiceClient(endpoint);
+      this.conversationClient = new TalkServiceClient(endpoint, {
+        debug: debug ? debug : false,
+      });
       this.streamClient = new TalkServiceClient(endpoint, {
         transport: grpc.WebsocketTransport(), // Enables WebSocket transport for real-time communication.
-        debug: true, // Enables debugging for troubleshooting.
+        debug: debug ? debug : false, // Enables debugging for troubleshooting.
+      });
+      this.assistantClient = new AssistantServiceClient(endpoint, {
+        debug: debug ? debug : false,
       });
       return;
     }
 
     // Default to the ASSISTANT_API endpoint if no custom endpoint is provided.
-    this.conversationClient = new TalkServiceClient(ASSISTANT_API);
+    this.conversationClient = new TalkServiceClient(ASSISTANT_API, {
+      debug: debug ? debug : false,
+    });
+
     this.streamClient = new TalkServiceClient(ASSISTANT_API, {
       transport: grpc.WebsocketTransport(),
-      debug: true,
+      debug: debug ? debug : false,
+    });
+
+    this.assistantClient = new AssistantServiceClient(ASSISTANT_API, {
+      debug: debug ? debug : false,
     });
   }
 
@@ -117,11 +144,16 @@ export class ConnectionConfig {
    * @param endpoint
    * @returns
    */
-  withCustomEndpoint(endpoint: string): this {
-    this.conversationClient = new TalkServiceClient(endpoint);
+  withCustomEndpoint(endpoint: string, debug?: boolean): this {
+    this.conversationClient = new TalkServiceClient(endpoint, {
+      debug: debug ? debug : false,
+    });
     this.streamClient = new TalkServiceClient(endpoint, {
       transport: grpc.WebsocketTransport(),
-      debug: true,
+      debug: debug ? debug : false,
+    });
+    this.assistantClient = new AssistantServiceClient(endpoint, {
+      debug: debug ? debug : false,
     });
     return this;
   }
