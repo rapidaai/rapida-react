@@ -28,11 +28,18 @@ import { ASSISTANT_API, LOCAL_ASSISTANT_API } from "@/rapida/configs";
 import { ClientAuthInfo, getClientInfo, UserAuthInfo } from "@/rapida/clients";
 import { ConnectionState } from "./connection-state";
 import { AssistantServiceClient } from "@/rapida/clients/protos/assistant-api_pb_service";
-import { HEADER_SOURCE_KEY } from "../utils/rapida_header";
 import {
+  DEBUGGER_SOURCE,
   RAPIDA_APP_SOURCE,
   REACTSDK_SOURCE,
-} from "@/rapida/utils/rapida_source";
+  WEB_PLUGIN_SOURCE,
+} from "../utils/rapida_source";
+import {
+  HEADER_API_KEY,
+  HEADER_AUTH_ID,
+  HEADER_PROJECT_ID,
+  HEADER_SOURCE_KEY,
+} from "@/rapida/utils/rapida_header";
 
 /**
  *
@@ -86,6 +93,72 @@ export class ConnectionConfig {
    *
    */
   callbacks?: ConnectionCallback;
+
+  /**
+   * an utils for debugger credentials
+   * @param param0
+   * @returns
+   */
+  static WithDebugger({
+    authorization,
+    userId,
+    projectId,
+  }: {
+    authorization: string;
+    userId: string;
+    projectId: string;
+  }): UserAuthInfo {
+    return {
+      authorization,
+      [HEADER_AUTH_ID]: userId,
+      [HEADER_PROJECT_ID]: projectId,
+      Client: {
+        [HEADER_SOURCE_KEY]: DEBUGGER_SOURCE,
+      },
+    };
+  }
+
+  /**
+   *
+   * @param param0
+   * @returns
+   */
+  static WithWebpluginClient({
+    apiKey,
+    userId,
+  }: {
+    apiKey: string;
+    userId: string;
+  }): ClientAuthInfo {
+    return {
+      [HEADER_API_KEY]: apiKey,
+      [HEADER_AUTH_ID]: userId,
+      Client: {
+        [HEADER_SOURCE_KEY]: WEB_PLUGIN_SOURCE,
+      },
+    };
+  }
+
+  /**
+   *
+   * @param param0
+   * @returns
+   */
+  static WithSDK({
+    apiKey,
+    userId,
+  }: {
+    apiKey: string;
+    userId: string;
+  }): ClientAuthInfo {
+    return {
+      [HEADER_API_KEY]: apiKey,
+      [HEADER_AUTH_ID]: userId,
+      Client: {
+        [HEADER_SOURCE_KEY]: REACTSDK_SOURCE,
+      },
+    };
+  }
 
   /**
    * Creates a new Connection instance, initializing the conversation and streaming clients.

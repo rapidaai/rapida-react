@@ -40,7 +40,6 @@ export type RapidaSource =
 export const WEB_PLUGIN_SOURCE: RapidaSource = "web-plugin";
 export const DEBUGGER_SOURCE: RapidaSource = "debugger";
 export const RAPIDA_APP_SOURCE: RapidaSource = "rapida-app";
-
 export const PYTHONSDK_SOURCE: RapidaSource = "python-sdk";
 export const NODESDK_SOURCE: RapidaSource = "node-sdk";
 export const GOSDK_SOURCE: RapidaSource = "go-sdk";
@@ -50,7 +49,6 @@ export const PHPSDK_SOURCE: RapidaSource = "php-sdk";
 export const RUSTSDK_SOURCE: RapidaSource = "rust-sdk";
 export const REACTNATIVESDK_SOURCE: RapidaSource = "react-native-sdk";
 export const REACTSDK_SOURCE: RapidaSource = "react-sdk";
-// Get returns the string value of the RapidaSource
 export function getRapidaSourceValue(source: RapidaSource): string {
   return source;
 }
