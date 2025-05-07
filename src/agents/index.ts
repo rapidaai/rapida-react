@@ -326,7 +326,11 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     if (this.state !== ConnectionState.Connected) {
       return;
     }
-    await this.talkingConnection?.end();
+    try {
+      await this.talkingConnection?.end();
+    } catch (error) {
+      console.error("Error ending talking connection:", error);
+    }
   };
   /**
    * call it when end of stream
