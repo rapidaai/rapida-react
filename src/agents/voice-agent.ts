@@ -23,7 +23,6 @@
  *
  */
 import { DeviceManager } from "@/rapida/devices/device-manager";
-import { DEFAULT_DEVICE_ID } from "@/rapida/constants";
 import { AssistantMessagingResponse } from "@/rapida/clients/protos/talk-api_pb";
 import { AgentEvent } from "@/rapida/events/agent-event";
 import { AgentServerEvent } from "@/rapida/events/agent-server-event";
@@ -32,7 +31,6 @@ import {
   toStreamAudioContent,
   toTextContent,
 } from "@/rapida/utils/rapida_content";
-import { WavRecorder, WavStreamPlayer } from "@/rapida/wavtools/index.js";
 import { getStringFromProtoStruct } from "@/rapida/utils/rapida_metadata";
 import { toDate } from "@/rapida/utils";
 import { MessageRole, MessageStatus } from "@/rapida/agents/message";
@@ -40,43 +38,47 @@ import { Channel } from "@/rapida/channels";
 import { AgentConfig } from "@/rapida/agents/agent-config";
 import { ConnectionConfig } from "@/rapida/connections/connection-config";
 import { Agent } from "@/rapida/agents/";
+import { Input } from "@/rapida/audio/input";
+import { Output } from "@/rapida/audio/output";
+import { isAndroidDevice, isIosDevice } from "@/rapida/audio/compatibility";
+import { arrayBufferToUint8 } from "@/rapida/audio/audio";
 
 export class VoiceAgent extends Agent {
-  // input channel for in
+  private input: Input | null = null;
+  private output: Output | null = null;
+  private preliminaryInputStream: MediaStream | null = null;
+  private volume: number = 1;
+
+  private inputFrequencyData?: Uint8Array;
+  private outputFrequencyData?: Uint8Array;
+
+  public getInputByteFrequencyData = () => {
+    if (this.input) {
+      this.inputFrequencyData ??= new Uint8Array(
+        this.input.analyser.frequencyBinCount
+      );
+      this.input.analyser.getByteFrequencyData(this.inputFrequencyData);
+    }
+    return this.inputFrequencyData;
+  };
+
+  public getOutputByteFrequencyData = () => {
+    if (this.output) {
+      this.outputFrequencyData ??= new Uint8Array(
+        this.output.analyser.frequencyBinCount
+      );
+      this.output.analyser.getByteFrequencyData(this.outputFrequencyData);
+    }
+    return this.outputFrequencyData;
+  };
 
   /**
    * input media device id
    */
   inputChannel: Channel = Channel.Audio;
   private audioInputPaused: boolean = true;
-  private inputDeviceId: string = DEFAULT_DEVICE_ID;
-  get inputMediaDevice(): string {
-    return this.inputDeviceId;
-  }
-
-  private audioRecorder: WavRecorder;
-  get recorder() {
-    return this.audioRecorder;
-  }
-
-  /**
-   * output media device id
-   */
-  // changing the channel if you want to control the output to text or audio
-  private outputChannel: Channel = Channel.Audio;
-
-  // later will impliment mute speaker
+  outputChannel: Channel = Channel.Audio;
   private audioOutputPaused: boolean = true;
-  private outputDeviceId: string = DEFAULT_DEVICE_ID;
-  get outputMediaDevice(): string {
-    return this.outputDeviceId;
-  }
-
-  // player one is audio player another is recorder
-  private audioPlayer: WavStreamPlayer;
-  get player() {
-    return this.audioPlayer;
-  }
 
   /**
    * Creates a new Room, the primary construct for a LiveKit session.
@@ -84,46 +86,161 @@ export class VoiceAgent extends Agent {
    */
   constructor(connection: ConnectionConfig, agentConfig: AgentConfig) {
     super(connection, agentConfig);
-    // still work in progress
     this.outputChannel = this.agentConfig.outputOptions.defaultChannel;
     this.inputChannel = this.agentConfig.inputOptions.defaultChannel;
-
-    //
-    this.audioPlayer = new WavStreamPlayer(
-      this.agentConfig.outputOptions.playerOption
-    );
-    this.audioRecorder = new WavRecorder(
-      this.agentConfig.inputOptions.recorderOption
-    );
   }
 
+  /**
+   * disconnecting the agent and voice if it is connected
+   */
   public disconnect = async () => {
     await this.disconnectAgent();
-    if (this.inputChannel == Channel.Audio) {
-      await this.stopRecording();
+    await this.disconnectAudio();
+  };
+
+  /**
+   * disconnect the audio for the agent
+   */
+  public disconnectAudio = async () => {
+    try {
+      this.preliminaryInputStream?.getTracks().forEach((track) => track.stop());
+      await this.input?.close();
+      await this.output?.close();
+    } catch (error) {
+      console.error("Error during cleanup:", error);
+      // Optionally, you can add more specific error handling or logging here
     }
   };
+
+  private connectDevice = async () => {
+    try {
+      this.preliminaryInputStream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+      });
+      [this.input, this.output] = await Promise.all([
+        Input.create(this.agentConfig.inputOptions.recorderOption),
+        Output.create(this.agentConfig.outputOptions.playerOption),
+      ]);
+
+      this.input.worklet.port.onmessage = this.onInputWorkletMessage;
+      this.output.worklet.port.onmessage = this.onOutputWorkletMessage;
+
+      this.preliminaryInputStream?.getTracks().forEach((track) => track.stop());
+      this.preliminaryInputStream = null;
+    } catch (error) {
+      await this.disconnectAudio();
+      console.log(error);
+      // throw error;
+    }
+  };
+
+  /**
+   *
+   */
+  private connectAudio = async () => {
+    const delayConfig = {
+      default: 0,
+      android: 3_000,
+      ios: 0,
+    };
+    let delay = delayConfig.default;
+    if (isAndroidDevice()) {
+      delay = delayConfig.android ?? delay;
+    } else if (isIosDevice()) {
+      delay = delayConfig.ios ?? delay;
+    }
+    if (delay > 0) {
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+    if (isIosDevice()) {
+      const availableDevices =
+        await window.navigator.mediaDevices.enumerateDevices();
+      const idealDevice = availableDevices.find(
+        (d) =>
+          d.kind === "audioinput" &&
+          ["airpod", "headphone", "earphone"].find((keyword) =>
+            d.label.toLowerCase().includes(keyword)
+          )
+      );
+      if (idealDevice) {
+        this.agentConfig.inputOptions.recorderOption.device =
+          idealDevice.deviceId;
+      }
+    }
+    await this.connectDevice();
+  };
+
+  /**
+   *
+   * Sending a message to server contains audio buffer
+   * Very optimize version that will handle the request and response wihtout modifying
+   * this makes the actual data sent to the server to process
+   * @param event
+   */
+  private onInputWorkletMessage = (event: MessageEvent): void => {
+    const rawAudioPcmData = event.data[0];
+    const maxVolume = event.data[1];
+    if (this.inputChannel == Channel.Audio)
+      this.talkingConnection?.write(
+        this.createAssistantRequest("user", [
+          toStreamAudioContent(arrayBufferToUint8(rawAudioPcmData.buffer)),
+        ])
+      );
+  };
+
+  /**
+   *
+   * @param param0
+   */
+  private onOutputWorkletMessage = ({ data }: MessageEvent): void => {
+    if (data.type === "process") {
+      // this.updateMode(data.finished ? "listening" : "speaking");
+    }
+  };
+
+  /**
+   *
+   */
+  private fadeOutAudio = () => {
+    this.output?.worklet.port.postMessage({ type: "interrupt" });
+    this.output?.gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      this.output.context.currentTime + 2
+    );
+    setTimeout(() => {
+      if (this.output) this.output.gain.gain.value = this.volume;
+      this.output?.worklet.port.postMessage({ type: "clearInterrupted" });
+    }, 2000);
+  };
+
+  /**
+   *
+   * @param chunk
+   */
+  private addAudioChunk = (chunk: ArrayBuffer) => {
+    if (this.output) {
+      this.output.gain.gain.value = this.volume;
+      this.output.worklet.port.postMessage({ type: "clearInterrupted" });
+      this.output.worklet.port.postMessage({
+        type: "buffer",
+        buffer: chunk,
+      });
+    }
+  };
+
+  /**
+   *
+   * @returns
+   */
   public connect = async () => {
     try {
       if (this.assistant == null) {
-        console.warn(
-          "the assistant is not initialize, check the configuration and try again"
-        );
         return;
       }
       await this.connectAgent();
-      // check if input options contains audio then list the device or something
-      // this.agentConfig.inputOptions.channels.
       if (this.inputChannel == Channel.Audio) {
-        const devices = await this.audioRecorder.listDevices();
-        if (devices.length === 0) {
-          return;
-        }
-        this.inputDeviceId = devices[0].deviceId;
-        this.outputDeviceId = devices[0].deviceId;
-
-        // start recording
-        await this.startRecording(true);
+        // connecting audio for sending and recieving audio
+        await this.connectAudio();
       }
     } catch (err) {
       console.error("error while connect " + err);
@@ -132,46 +249,9 @@ export class VoiceAgent extends Agent {
 
   /**
    *
-   *  Audio recording stop and start function controlling jus when audio will start and stop
-   *  doesn't mean connect
-   * start the reocrding for audio recorder
-   * @param clear
-   */
-  private startRecording = async (clear: boolean) => {
-    if ((await this.audioRecorder.getStatus()) != "recording") {
-      await this.audioRecorder.begin(this.inputDeviceId);
-    }
-    if (clear) {
-      await this.audioRecorder.clear();
-    }
-    //
-    await this.audioPlayer.connect();
-    //
-    await this.audioRecorder.record(async (data) => {
-      await this.onSendAudio(data.mono);
-    });
-  };
-
-  private stopRecording = async () => {
-    try {
-      if ((await this.audioRecorder.getStatus()) != "recording") {
-        return;
-      }
-      //
-      await this.audioPlayer.interrupt();
-      //
-      await this.audioRecorder.clear();
-      await this.audioRecorder.end();
-    } catch (err) {
-      console.error("error while stoping the recording " + err);
-    }
-  };
-
-  /**
-   *
    * @param text
    */
-  onSendText = async (text: string) => {
+  public onSendText = async (text: string) => {
     if (!this.isConnected) await this.connect();
     if (this.inputChannel == Channel.Text) {
       // only send text when you know the channel is text
@@ -180,63 +260,6 @@ export class VoiceAgent extends Agent {
       );
     }
   };
-  /**
-   *
-   * @param mono
-   */
-  private onSendAudio = async (mono: Int16Array) => {
-    if (this.inputChannel == Channel.Audio)
-      // only send the audio when you know it's audio
-      this.talkingConnection?.write(
-        this.createAssistantRequest("user", [
-          this.createAudioMessage(this.arrayBufferToUint8(mono)),
-        ])
-      );
-  };
-
-  private createAudioMessage(mono: Uint8Array): Content {
-    return toStreamAudioContent(mono);
-  }
-
-  base64ToArrayBuffer(base64) {
-    const binaryString = atob(base64);
-    const len = binaryString.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) {
-      bytes[i] = binaryString.charCodeAt(i);
-    }
-    return bytes.buffer;
-  }
-
-  /**
-   *
-   * @param float32Array
-   * @returns
-   */
-  floatTo16BitPCM(float32Array) {
-    const buffer = new ArrayBuffer(float32Array.length * 2);
-    const view = new DataView(buffer);
-    let offset = 0;
-    for (let i = 0; i < float32Array.length; i++, offset += 2) {
-      let s = Math.max(-1, Math.min(1, float32Array[i]));
-      view.setInt16(offset, s < 0 ? s * 0x8000 : s * 0x7fff, true);
-    }
-    return buffer;
-  }
-
-  /**
-   * Converts an ArrayBuffer, Int16Array or Float32Array to a base64 string
-   * @param {ArrayBuffer|Int16Array|Float32Array} arrayBuffer
-   * @returns {string}
-   */
-  private arrayBufferToUint8(arrayBuffer) {
-    if (arrayBuffer instanceof Float32Array) {
-      arrayBuffer = this.floatTo16BitPCM(arrayBuffer);
-    } else if (arrayBuffer instanceof Int16Array) {
-      arrayBuffer = arrayBuffer.buffer;
-    }
-    return new Uint8Array(arrayBuffer);
-  }
 
   /**
    * Getting  all the list of deviceid
@@ -256,10 +279,11 @@ export class VoiceAgent extends Agent {
    * @param deviceId the device id
    */
   public setOutputMediaDevice = async (deviceId: string) => {
-    if (this.outputDeviceId === deviceId) {
+    if (this.agentConfig.outputOptions.playerOption.device === deviceId) {
       return;
     }
-    this.outputDeviceId = deviceId;
+    this.agentConfig.outputOptions.playerOption.device = deviceId;
+    await this.connectDevice();
     this.emit(AgentEvent.OutputMediaDeviceChanged, deviceId);
   };
 
@@ -269,107 +293,42 @@ export class VoiceAgent extends Agent {
    * @returns
    */
   public setInputMediaDevice = async (deviceId: string) => {
-    if (this.inputDeviceId === deviceId) {
+    if (this.agentConfig.inputOptions.recorderOption.device === deviceId) {
       return;
     }
-    this.inputDeviceId = deviceId;
+    console.log("changing the input audio with new device id " + deviceId);
+    this.agentConfig.inputOptions.recorderOption.device = deviceId;
+    await this.connectDevice();
     this.emit(AgentEvent.InputMediaDeviceChanged, deviceId);
   };
+
+  get inputMediaDevice(): string | undefined {
+    return this.agentConfig.inputOptions.recorderOption.device;
+  }
 
   /**
    *
    * @param input
    * @returns
    */
-  setInputChannel = async (input: Channel) => {
+  public setInputChannel = async (input: Channel) => {
     if (this.inputChannel == input) {
       return;
     }
     if (input == Channel.Audio) {
-      await this.startRecording(true);
+      await this.connectAudio();
     } else {
-      await this.stopRecording();
+      await this.disconnectAudio();
     }
-
     this.inputChannel = input;
     this.emit(AgentEvent.InputChannelSwitch, this.inputChannel);
   };
 
   /**
    *
-   * @param output
+   * @param response
    * @returns
    */
-  setOutputChannel(output: Channel) {
-    if (this.outputChannel == output) {
-      return;
-    }
-    this.outputChannel = output;
-    this.emit(AgentEvent.OutputChannelSwitch, this.outputChannel);
-  }
-
-  /**
-   * Input for the voice agent
-   * to check if audio in or text in
-   */
-  toggelAudioInput = async () => {
-    if (this.audioInputPaused) {
-      this.audioInputPaused = false;
-      if (this.audioRecorder && this.audioRecorder.getStatus() === "paused") {
-        await this.startRecording(false);
-      }
-      this.emit(AgentEvent.AudioInputMuteToggle, this.audioInputPaused);
-      return;
-    }
-    this.audioInputPaused = true;
-    await this.audioRecorder.pause();
-    this.emit(AgentEvent.AudioInputMuteToggle, this.audioInputPaused);
-  };
-
-  get isAudioInput(): boolean {
-    return this.inputChannel == Channel.Audio;
-  }
-
-  get isAudioInputEnable(): boolean {
-    return this.isConnected && this.isAudioInput && !this.audioInputPaused;
-  }
-
-  /**
-   * if text channel enable
-   */
-  get isTextInput(): boolean {
-    return this.inputChannel == Channel.Text;
-  }
-
-  /**
-   * output for voice agent
-   */
-  toggelAudioOutput = async () => {
-    if (this.audioOutputPaused) {
-      this.audioOutputPaused = false;
-      this.emit(AgentEvent.AudioOutputMuteToggle, this.audioOutputPaused);
-      return;
-    }
-    this.audioOutputPaused = true;
-    await this.audioPlayer.interrupt();
-    await this.emit(AgentEvent.AudioOutputMuteToggle, this.audioOutputPaused);
-  };
-
-  /**
-   * if ouput audio is enabled
-   */
-  get isAudioOutput(): boolean {
-    return this.outputChannel == Channel.Audio;
-  }
-
-  get isAudioOutputEnable(): boolean {
-    return this.isConnected && this.isAudioOutput && !this.audioOutputPaused;
-  }
-
-  get isTextOutput(): boolean {
-    return this.outputChannel == Channel.Text;
-  }
-
   override onRecieve = async (response: AssistantMessagingResponse) => {
     switch (response.getDataCase()) {
       case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
@@ -407,7 +366,10 @@ export class VoiceAgent extends Agent {
               break;
             case AgentServerEvent.Interruption:
               this.agentTranscript = "";
-              await this.audioPlayer.interrupt();
+              // await this.audioPlayer.interrupt();
+              this.fadeOutAudio();
+
+              //
               this.emit(
                 AgentEvent.ServerEvent,
                 AgentServerEvent.Interruption,
@@ -527,10 +489,7 @@ export class VoiceAgent extends Agent {
         for (const content of responseContent) {
           if (content.getContenttype() === "audio") {
             const audioData = content.getContent_asU8();
-            this.audioPlayer.add16BitPCM(
-              new Uint8Array(audioData).buffer,
-              conversation?.getMessageid()
-            );
+            this.addAudioChunk(new Uint8Array(audioData).buffer);
           }
         }
         break;

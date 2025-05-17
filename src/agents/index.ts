@@ -329,7 +329,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     try {
       await this.talkingConnection?.end();
     } catch (error) {
-      console.error("Error ending talking connection:", error);
+      // console.error("Error ending talking connection:", error);
     }
   };
   /**

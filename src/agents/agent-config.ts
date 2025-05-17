@@ -66,14 +66,18 @@ interface AgentCallback {
  *
  */
 export interface PlayerOptions {
+  format: "pcm" | "ulaw";
   sampleRate: number;
+  device?: string;
 }
 
 /**
  *
  */
 export interface RecorderOptions {
+  format: "pcm" | "ulaw";
   sampleRate: number;
+  device?: string;
 }
 
 /**
@@ -89,7 +93,10 @@ export class InputOptions {
   /**
    * sample rate for player
    */
-  protected recorderOptions: RecorderOptions = { sampleRate: 24000 };
+  protected recorderOptions: RecorderOptions = {
+    format: "pcm",
+    sampleRate: 24000,
+  };
   get recorderOption(): RecorderOptions {
     return this.recorderOptions;
   }
@@ -103,22 +110,6 @@ export class InputOptions {
   }
 
   /**
-   * device that will be ouput the media
-   */
-  protected deviceId?: string;
-  get inputDeviceId(): string {
-    return DEFAULT_DEVICE_ID;
-  }
-
-  /**
-   *
-   * @param deviceId
-   */
-  setDeviceId(deviceId: string) {
-    this.deviceId = deviceId;
-  }
-
-  /**
    *
    * @param channels
    * @param channel
@@ -127,15 +118,7 @@ export class InputOptions {
   constructor(channels: Channel[], channel?: Channel, deviceId?: string) {
     this.channels = channels;
     if (channel) this.channel = channel;
-    this.deviceId = deviceId;
-  }
-
-  /**
-   *
-   * @param channel
-   */
-  changeChannel(channel: Channel) {
-    this.channel = channel;
+    if (deviceId) this.recorderOptions.device = deviceId;
   }
 
   /**
@@ -143,9 +126,10 @@ export class InputOptions {
    * @param device
    */
   changeDevice(device: string) {
-    this.deviceId = device;
+    this.recorderOption.device = device;
   }
 }
+
 export class OutputOptions {
   /**
    * enable channels
@@ -156,7 +140,10 @@ export class OutputOptions {
   /**
    * sample rate for player
    */
-  protected playerOptions: PlayerOptions = { sampleRate: 24000 };
+  protected playerOptions: PlayerOptions = {
+    format: "pcm",
+    sampleRate: 24000,
+  };
   get playerOption(): PlayerOptions {
     return this.playerOptions;
   }
@@ -170,14 +157,6 @@ export class OutputOptions {
   }
 
   /**
-   * device that will be ouput the media
-   */
-  protected deviceId?: string;
-  get outputDeviceId(): string {
-    return DEFAULT_DEVICE_ID;
-  }
-
-  /**
    *
    * @param channels
    * @param channel
@@ -186,7 +165,7 @@ export class OutputOptions {
   constructor(channels: Channel[], channel?: Channel, deviceId?: string) {
     this.channels = channels;
     if (channel) this.channel = channel;
-    this.deviceId = deviceId;
+    if (deviceId) this.playerOption.device = deviceId;
   }
 
   /**
@@ -199,18 +178,10 @@ export class OutputOptions {
 
   /**
    *
-   * @param deviceId
-   */
-  setDeviceId(deviceId: string) {
-    this.deviceId = deviceId;
-  }
-
-  /**
-   *
    * @param device
    */
   changeDevice(device: string) {
-    this.deviceId = device;
+    this.playerOption.device = device;
   }
 }
 /**

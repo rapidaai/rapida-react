@@ -34,7 +34,6 @@ export { useMessageFeedback } from "./hooks/use-message-feedback";
 export { useConversationFeedback } from "./hooks/use-conversation-feedback";
 export { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
 export { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
-export { useSpeakerOuputToggleAgent } from "@/rapida/hooks/use-speaker-output-toggle-agent";
 export { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
 export { useAgentDeployment } from "@/rapida/hooks/use-agent-deployment";
 export { ConnectionState } from "./connections/connection-state";

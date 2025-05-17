@@ -23,13 +23,11 @@
  *
  */
 import { DEFAULT_DEVICE_ID } from "@/rapida/constants";
-import { isSafari } from "@/rapida/utils";
+import { isSafari, isMobile } from "@/rapida/utils";
 
 export class DeviceManager {
   private static instance?: DeviceManager;
-
   static mediaDeviceKinds: MediaDeviceKind[] = ["audioinput", "audiooutput"];
-
   static getInstance(): DeviceManager {
     if (this.instance === undefined) {
       this.instance = new DeviceManager();
@@ -44,46 +42,140 @@ export class DeviceManager {
     kind?: MediaDeviceKind,
     requestPermissions: boolean = true
   ): Promise<MediaDeviceInfo[]> {
+    // Check if navigator.mediaDevices is available (not available in some browsers in insecure contexts)
+    if (!navigator.mediaDevices) {
+      console.warn("MediaDevices API not available in this browser or context");
+      return [];
+    }
+
+    // Wait for any pending media permission requests
     if (DeviceManager.userMediaPromiseMap?.size > 0) {
       console.debug("awaiting getUserMedia promise");
       try {
         if (kind) {
-          await DeviceManager.userMediaPromiseMap.get(kind);
+          const pendingPromise = DeviceManager.userMediaPromiseMap.get(kind);
+          if (pendingPromise) {
+            await pendingPromise;
+          }
         } else {
           await Promise.all(DeviceManager.userMediaPromiseMap.values());
         }
       } catch (e: any) {
-        console.warn("error waiting for media permissons");
+        console.warn("error waiting for media permissions:", e);
       }
     }
-    let devices = await navigator.mediaDevices.enumerateDevices();
 
-    if (
-      requestPermissions &&
-      // for safari we need to skip this check, as otherwise it will re-acquire user media and fail on iOS https://bugs.webkit.org/show_bug.cgi?id=179363
-      !(isSafari() && this.hasDeviceInUse(kind))
-    ) {
-      const isDummyDeviceOrEmpty =
-        devices.filter((d) => d.kind === kind).length === 0 ||
-        devices.some((device) => {
-          const noLabel = device.label === "";
-          const isRelevant = kind ? device.kind === kind : true;
-          return noLabel && isRelevant;
-        });
+    // Initial device enumeration
+    let devices: MediaDeviceInfo[] = [];
+    try {
+      devices = await navigator.mediaDevices.enumerateDevices();
+    } catch (error) {
+      console.error("Failed to enumerate devices:", error);
+      return [];
+    }
 
-      if (isDummyDeviceOrEmpty) {
-        const permissionsToAcquire = {
-          video: kind !== "audioinput" && kind !== "audiooutput",
+    // Determine if we need to request permissions
+    const needsPermission = this.needsMediaPermissions(
+      devices,
+      kind,
+      requestPermissions
+    );
+
+    // Request permissions if needed
+    if (needsPermission) {
+      try {
+        // Different approach based on the kind of device we're looking for
+        const constraints: MediaStreamConstraints = {
+          audio:
+            kind === "audioinput" ||
+            (!kind && DeviceManager.mediaDeviceKinds.includes("audioinput")),
+          video:
+            kind === "videoinput" ||
+            (!kind && DeviceManager.mediaDeviceKinds.includes("videoinput")),
         };
-        const stream = await navigator.mediaDevices.getUserMedia(
-          permissionsToAcquire
-        );
+
+        // For audiooutput, we need audio input permissions first in many browsers
+        if (kind === "audiooutput") {
+          constraints.audio = true;
+        }
+
+        // Mobile-specific optimizations
+        if (isMobile()) {
+          // On mobile, we want to minimize the camera usage to save battery
+          // and avoid potential permission issues
+          if (constraints.video && kind !== "videoinput") {
+            // If we're not specifically looking for video devices, prefer audio only on mobile
+            constraints.video = false;
+          }
+
+          // Use simpler constraints for mobile
+          if (constraints.video) {
+            constraints.video = { facingMode: { ideal: "user" } };
+          }
+        }
+
+        // Store the permission request promise
+        const permissionPromise =
+          navigator.mediaDevices.getUserMedia(constraints);
+
+        if (kind) {
+          DeviceManager.userMediaPromiseMap.set(kind, permissionPromise);
+        } else {
+          // If no specific kind, set for all relevant kinds
+          if (constraints.audio) {
+            DeviceManager.userMediaPromiseMap.set(
+              "audioinput",
+              permissionPromise
+            );
+          }
+          if (constraints.video) {
+            DeviceManager.userMediaPromiseMap.set(
+              "videoinput",
+              permissionPromise
+            );
+          }
+        }
+
+        // Request the permissions
+        const stream = await permissionPromise;
+
+        // Re-enumerate devices after permissions granted
         devices = await navigator.mediaDevices.enumerateDevices();
-        stream.getTracks().forEach((track) => {
-          track.stop();
-        });
+
+        // Clean up the stream
+        stream.getTracks().forEach((track) => track.stop());
+
+        // Clear the promise from the map
+        if (kind) {
+          DeviceManager.userMediaPromiseMap.delete(kind);
+        } else {
+          DeviceManager.userMediaPromiseMap.clear();
+        }
+      } catch (error) {
+        console.error("Failed to get user media:", error);
+        // Clear failed promise
+        if (kind) {
+          DeviceManager.userMediaPromiseMap.delete(kind);
+        }
+
+        // On mobile, especially iOS, sometimes we need to just work with what we have
+        if (isMobile()) {
+          console.warn(
+            "Using available devices on mobile despite permission failure"
+          );
+          try {
+            devices = await navigator.mediaDevices.enumerateDevices();
+          } catch (e) {
+            console.error(
+              "Failed to enumerate devices after permission failure:",
+              e
+            );
+          }
+        }
       }
     }
+
+    // Filter by kind if specified
     if (kind) {
       devices = devices.filter((device) => device.kind === kind);
     }
@@ -91,38 +183,130 @@ export class DeviceManager {
     return devices;
   }
 
+  private needsMediaPermissions(
+    devices: MediaDeviceInfo[],
+    kind?: MediaDeviceKind,
+    requestPermissions: boolean = true
+  ): boolean {
+    // Don't request permissions if not asked to
+    if (!requestPermissions) {
+      return false;
+    }
+
+    // Special handling for Safari - particularly important on iOS
+    if (isSafari() && this.hasDeviceInUse(kind)) {
+      return false; // Skip request for Safari if devices are already in use to avoid iOS bug
+    }
+
+    // On iOS, we need to be careful about requesting permissions too frequently
+    // as it can cause the browser to block further requests
+    if (isMobile() && isSafari() && devices.length > 0) {
+      // If we have any device with labels on iOS, assume we have permissions
+      // This helps avoid the iOS Safari issue where repeated permission requests can be problematic
+      const hasAnyLabels = devices.some(
+        (device) => device.label && device.label !== ""
+      );
+      if (hasAnyLabels) {
+        return false;
+      }
+    }
+
+    // Filter relevant devices based on kind
+    const relevantDevices = kind
+      ? devices.filter((d) => d.kind === kind)
+      : devices;
+
+    // Check if we have any unlabeled devices (indicating no permissions)
+    const hasUnlabeledDevices = relevantDevices.some(
+      (device) => !device.label || device.label === ""
+    );
+
+    // Check if we have any devices at all
+    const hasNoDevices = kind
+      ? devices.filter((d) => d.kind === kind).length === 0
+      : devices.length === 0;
+
+    return hasUnlabeledDevices || hasNoDevices;
+  }
+
   async normalizeDeviceId(
     kind: MediaDeviceKind,
     deviceId?: string,
     groupId?: string
   ): Promise<string | undefined> {
-    if (deviceId !== DEFAULT_DEVICE_ID) {
+    // If not default device, return as is
+    if (!deviceId || deviceId !== DEFAULT_DEVICE_ID) {
       return deviceId;
     }
 
-    // resolve actual device id if it's 'default': Chrome returns it when no
-    // device has been chosen
-    const devices = await this.getDevices(kind);
+    try {
+      // Get all devices of specified kind
+      const devices = await this.getDevices(kind);
 
-    const defaultDevice = devices.find((d) => d.deviceId === DEFAULT_DEVICE_ID);
+      // If no devices found, return undefined
+      if (!devices.length) {
+        console.warn(`No ${kind} devices found`);
+        return undefined;
+      }
 
-    if (!defaultDevice) {
-      console.warn("could not reliably determine default device");
+      // Find the default device
+      const defaultDevice = devices.find(
+        (d) => d.deviceId === DEFAULT_DEVICE_ID
+      );
+
+      // Mobile devices often don't have a "default" concept in the same way as desktop
+      if (isMobile() && !defaultDevice) {
+        // On mobile, particularly iOS, just return the first device if no default found
+        console.info(`Using first available ${kind} device on mobile`);
+        return devices[0]?.deviceId;
+      }
+
+      // If no default device found on desktop, return first available device
+      if (!defaultDevice) {
+        console.warn(
+          `No default ${kind} device found, returning first available device`
+        );
+        return devices[0]?.deviceId;
+      }
+
+      // Try to find a device in the same group as the default device
+      const targetGroupId = groupId ?? defaultDevice.groupId;
+      const device = devices.find(
+        (d) => d.deviceId !== DEFAULT_DEVICE_ID && d.groupId === targetGroupId
+      );
+
+      // Return found device or first non-default device
+      if (device) {
+        return device.deviceId;
+      }
+
+      // If no match found, return first non-default device
+      const nonDefaultDevice = devices.find(
+        (d) => d.deviceId !== DEFAULT_DEVICE_ID
+      );
+      if (nonDefaultDevice) {
+        return nonDefaultDevice.deviceId;
+      }
+
+      // Last resort: just return the default device ID
+      return defaultDevice.deviceId;
+    } catch (error) {
+      console.error("Error normalizing device ID:", error);
+
+      // On mobile, attempt to recover by returning first device of the correct kind
+      if (isMobile()) {
+        try {
+          const devices = await this.getDevices(kind, false); // Don't request permissions here
+          if (devices.length > 0) {
+            return devices[0].deviceId;
+          }
+        } catch (e) {
+          console.error("Failed to get fallback device on mobile:", e);
+        }
+      }
+
       return undefined;
     }
-
-    const device = devices.find(
-      (d) =>
-        d.deviceId !== DEFAULT_DEVICE_ID &&
-        d.groupId === (groupId ?? defaultDevice.groupId)
-    );
-
-    if (!device) {
-      console.warn("could not reliably determine default device");
-      return undefined;
-    }
-
-    return device?.deviceId;
   }
 
   private hasDeviceInUse(kind?: MediaDeviceKind): boolean {

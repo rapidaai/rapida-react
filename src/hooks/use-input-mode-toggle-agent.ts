@@ -64,8 +64,7 @@ export function useInputModeToggleAgent() {
  */
 function toggleInputMode() {
   const handleTextToggle = async (agent: VoiceAgent) => {
-    // toggelling the input from audio to text
-    if (agent.isTextInput) {
+    if (agent.inputChannel == Channel.Text) {
       return;
     }
     await agent.setInputChannel(Channel.Text);
@@ -74,7 +73,7 @@ function toggleInputMode() {
 
   const handleVoiceToggle = async (agent: VoiceAgent) => {
     // toggelling the input from audio to text
-    if (agent.isAudioInput) {
+    if (agent.inputChannel == Channel.Audio) {
       console.warn("already in voice mode, ignore in toggle");
       return;
     }

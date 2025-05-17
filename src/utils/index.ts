@@ -23,14 +23,6 @@
  *
  */
 import { getBrowser } from "@/rapida/utils/rapida_client";
-import { RapidaEnvironment } from "@/rapida/utils/rapida_environment";
-import {
-  DEBUGGER_SOURCE,
-  getRapidaSourceValue,
-  RAPIDA_APP_SOURCE,
-  RapidaSource,
-  TYPESCRIPTSDK_SOURCE,
-} from "@/rapida/utils/rapida_source";
 import { Timestamp } from "google-protobuf/google/protobuf/timestamp_pb";
 import moment from "moment";
 
@@ -140,4 +132,65 @@ export function getTimeFromDate(timestamp: Timestamp): string {
   const hours = toDate(timestamp).getHours().toString().padStart(2, "0");
   const minutes = toDate(timestamp).getMinutes().toString().padStart(2, "0");
   return `${hours}:${minutes}`;
+}
+
+/**
+ * Detects if the current device is a mobile device.
+ * This checks both the user agent and screen size to determine if the device is a mobile device.
+ * @returns {boolean} True if the current device is a mobile device, false otherwise.
+ */
+export function isMobile(): boolean {
+  // Check if window exists (for SSR compatibility)
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  // User agent detection for mobile devices
+  const userAgent = window.navigator.userAgent.toLowerCase();
+  const mobileKeywords = [
+    "android",
+    "iphone",
+    "ipod",
+    "ipad",
+    "windows phone",
+    "blackberry",
+    "nokia",
+    "opera mini",
+    "mobile",
+    "tablet",
+  ];
+
+  // Check if any mobile keywords are in the user agent
+  const hasMobileUA = mobileKeywords.some((keyword) =>
+    userAgent.includes(keyword)
+  );
+
+  // Additional check for iOS devices using vendor
+  const isIOS =
+    /iPad|iPhone|iPod/.test(navigator.platform) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+
+  // Additional screen size check (most mobile devices are less than 1024px wide)
+  const hasSmallScreen = window.innerWidth < 1024;
+
+  // Additional touch check - most mobile devices support touch
+  const hasTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+
+  // Consider it mobile if user agent suggests mobile OR it's iOS
+  // AND has either small screen or touch capabilities
+  return (hasMobileUA || isIOS) && (hasSmallScreen || hasTouch);
+}
+
+/**
+ * Detects if the current browser is Safari on iOS.
+ * iOS Safari has specific restrictions around media permissions.
+ * @returns {boolean} True if the current browser is Safari on iOS, false otherwise.
+ */
+export function isIOSSafari(): boolean {
+  return (
+    isMobile() &&
+    isSafari() &&
+    (/iPad|iPhone|iPod/.test(navigator.platform) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1))
+  );
 }

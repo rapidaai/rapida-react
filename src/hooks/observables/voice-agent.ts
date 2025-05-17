@@ -179,40 +179,6 @@ export function agentInputMediaDeviceChangeObservable(agent: VoiceAgent) {
 }
 
 /**
- * for observable of mute and unmute of the input and output of audio
- * @param agent
- * @returns
- */
-export function agentAudioInputMuteObservable(agent: VoiceAgent) {
-  const observable = observeVoiceAgentEvents(
-    agent,
-    AgentEvent.AudioInputMuteToggle
-  ).pipe(
-    map((_agn: VoiceAgent) => {
-      return { isEnable: _agn.isAudioInputEnable };
-    })
-  );
-  return observable;
-}
-
-/**
- * for observable of mute and unmute of the input and output of audio
- * @param agent
- * @returns
- */
-export function agentAudioOutputMuteObservable(agent: VoiceAgent) {
-  const observable = observeVoiceAgentEvents(
-    agent,
-    AgentEvent.AudioOutputMuteToggle
-  ).pipe(
-    map((_agn: VoiceAgent) => {
-      return { isEnable: _agn.isAudioOutputEnable };
-    })
-  );
-  return observable;
-}
-
-/**
  * when connection of agent get changed
  * @param agent
  * @returns
