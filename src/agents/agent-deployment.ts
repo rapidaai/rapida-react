@@ -25,81 +25,27 @@
 import { RapidaSource } from "@/rapida/utils/rapida_source";
 import { Assistant } from "@/rapida/clients/protos/assistant-api_pb";
 import {
-  AssistantDeploymentCapturer,
-  DeploymentAudioProvider,
+  AssistantApiDeployment,
+  AssistantDebuggerDeployment,
+  AssistantWebpluginDeployment,
 } from "@/rapida/clients/protos/assistant-deployment_pb";
-
-export interface AgentDebuggerDeployment {
-  id: string;
-
-  assistantid: string;
-  name: string;
-  role: string;
-  tone: string;
-  experties: string;
-  greeting: string;
-  mistake: string;
-  ending: string;
-  url: string;
-  suggestionList: Array<string>;
-  status: string;
-}
-
-export interface AgentApiDeployment {
-  id: string;
-
-  assistantid: string;
-  name: string;
-  role: string;
-  tone: string;
-  experties: string;
-  greeting: string;
-  mistake: string;
-  ending: string;
-  inputaudioList: Array<DeploymentAudioProvider.AsObject>;
-  outputaudioList: Array<DeploymentAudioProvider.AsObject>;
-  capturersList: Array<AssistantDeploymentCapturer.AsObject>;
-  status: string;
-}
-
-export interface AgentWebpluginDeployment {
-  id: string;
-  assistantid: string;
-  name: string;
-  role: string;
-  tone: string;
-  experties: string;
-  greeting: string;
-  mistake: string;
-  ending: string;
-  inputaudioList: Array<DeploymentAudioProvider.AsObject>;
-  outputaudioList: Array<DeploymentAudioProvider.AsObject>;
-  capturersList: Array<AssistantDeploymentCapturer.AsObject>;
-  url: string;
-  suggestionList: Array<string>;
-  helpcenterenabled: boolean;
-  productcatalogenabled: boolean;
-  articlecatalogenabled: boolean;
-  uploadfileenabled: boolean;
-  status: string;
-}
 
 export type AgentDeployment =
   | {
       type: "debugger";
-      deployment: AgentDebuggerDeployment;
+      deployment: AssistantDebuggerDeployment;
       inAudio: boolean;
       outAudio: boolean;
     }
   | {
       type: "web-plugin";
-      deployment: AgentWebpluginDeployment;
+      deployment: AssistantWebpluginDeployment;
       inAudio: boolean;
       outAudio: boolean;
     }
   | {
       type: "api";
-      deployment: AgentApiDeployment;
+      deployment: AssistantApiDeployment;
       inAudio: boolean;
       outAudio: boolean;
     };
@@ -110,35 +56,35 @@ export const GetDeployment = (
 ): AgentDeployment | undefined => {
   switch (source) {
     case "debugger": {
-      const deployment = assistant.getDebuggerdeployment()?.toObject();
+      const deployment = assistant.getDebuggerdeployment();
       return deployment
         ? {
             type: "debugger",
-            deployment,
-            inAudio: deployment.inputaudioList.length > 0,
-            outAudio: deployment.outputaudioList.length > 0,
+            deployment: deployment,
+            inAudio: deployment.getInputaudio() != undefined,
+            outAudio: deployment.getOutputaudio() != undefined,
           }
         : undefined;
     }
     case "web-plugin": {
-      const deployment = assistant.getWebplugindeployment()?.toObject();
+      const deployment = assistant.getWebplugindeployment();
       return deployment
         ? {
             type: "web-plugin",
-            deployment,
-            inAudio: deployment.inputaudioList.length > 0,
-            outAudio: deployment.outputaudioList.length > 0,
+            deployment: deployment,
+            inAudio: deployment.getInputaudio() != undefined,
+            outAudio: deployment.getOutputaudio() != undefined,
           }
         : undefined;
     }
     default: {
-      const deployment = assistant.getApideployment()?.toObject();
+      const deployment = assistant.getApideployment();
       return deployment
         ? {
             type: "api",
-            deployment,
-            inAudio: deployment.inputaudioList.length > 0,
-            outAudio: deployment.outputaudioList.length > 0,
+            deployment: deployment,
+            inAudio: deployment.getInputaudio() != undefined,
+            outAudio: deployment.getOutputaudio() != undefined,
           }
         : undefined;
     }

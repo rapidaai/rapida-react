@@ -127,15 +127,15 @@ export class AssistantWebpluginDeployment extends jspb.Message {
   getEnding(): string;
   setEnding(value: string): void;
 
-  clearInputaudioList(): void;
-  getInputaudioList(): Array<DeploymentAudioProvider>;
-  setInputaudioList(value: Array<DeploymentAudioProvider>): void;
-  addInputaudio(value?: DeploymentAudioProvider, index?: number): DeploymentAudioProvider;
+  hasInputaudio(): boolean;
+  clearInputaudio(): void;
+  getInputaudio(): DeploymentAudioProvider | undefined;
+  setInputaudio(value?: DeploymentAudioProvider): void;
 
-  clearOutputaudioList(): void;
-  getOutputaudioList(): Array<DeploymentAudioProvider>;
-  setOutputaudioList(value: Array<DeploymentAudioProvider>): void;
-  addOutputaudio(value?: DeploymentAudioProvider, index?: number): DeploymentAudioProvider;
+  hasOutputaudio(): boolean;
+  clearOutputaudio(): void;
+  getOutputaudio(): DeploymentAudioProvider | undefined;
+  setOutputaudio(value?: DeploymentAudioProvider): void;
 
   clearCapturersList(): void;
   getCapturersList(): Array<AssistantDeploymentCapturer>;
@@ -204,8 +204,8 @@ export namespace AssistantWebpluginDeployment {
     greeting: string,
     mistake: string,
     ending: string,
-    inputaudioList: Array<DeploymentAudioProvider.AsObject>,
-    outputaudioList: Array<DeploymentAudioProvider.AsObject>,
+    inputaudio?: DeploymentAudioProvider.AsObject,
+    outputaudio?: DeploymentAudioProvider.AsObject,
     capturersList: Array<AssistantDeploymentCapturer.AsObject>,
     url: string,
     raw?: common_pb.Content.AsObject,
@@ -260,15 +260,15 @@ export class AssistantPhoneDeployment extends jspb.Message {
   getEnding(): string;
   setEnding(value: string): void;
 
-  clearInputaudioList(): void;
-  getInputaudioList(): Array<DeploymentAudioProvider>;
-  setInputaudioList(value: Array<DeploymentAudioProvider>): void;
-  addInputaudio(value?: DeploymentAudioProvider, index?: number): DeploymentAudioProvider;
+  hasInputaudio(): boolean;
+  clearInputaudio(): void;
+  getInputaudio(): DeploymentAudioProvider | undefined;
+  setInputaudio(value?: DeploymentAudioProvider): void;
 
-  clearOutputaudioList(): void;
-  getOutputaudioList(): Array<DeploymentAudioProvider>;
-  setOutputaudioList(value: Array<DeploymentAudioProvider>): void;
-  addOutputaudio(value?: DeploymentAudioProvider, index?: number): DeploymentAudioProvider;
+  hasOutputaudio(): boolean;
+  clearOutputaudio(): void;
+  getOutputaudio(): DeploymentAudioProvider | undefined;
+  setOutputaudio(value?: DeploymentAudioProvider): void;
 
   getPhoneprovidername(): string;
   setPhoneprovidername(value: string): void;
@@ -320,8 +320,8 @@ export namespace AssistantPhoneDeployment {
     greeting: string,
     mistake: string,
     ending: string,
-    inputaudioList: Array<DeploymentAudioProvider.AsObject>,
-    outputaudioList: Array<DeploymentAudioProvider.AsObject>,
+    inputaudio?: DeploymentAudioProvider.AsObject,
+    outputaudio?: DeploymentAudioProvider.AsObject,
     phoneprovidername: string,
     phoneproviderid: string,
     phoneoptionsList: Array<common_pb.Metadata.AsObject>,
@@ -454,15 +454,15 @@ export class AssistantDebuggerDeployment extends jspb.Message {
   getEnding(): string;
   setEnding(value: string): void;
 
-  clearInputaudioList(): void;
-  getInputaudioList(): Array<DeploymentAudioProvider>;
-  setInputaudioList(value: Array<DeploymentAudioProvider>): void;
-  addInputaudio(value?: DeploymentAudioProvider, index?: number): DeploymentAudioProvider;
+  hasInputaudio(): boolean;
+  clearInputaudio(): void;
+  getInputaudio(): DeploymentAudioProvider | undefined;
+  setInputaudio(value?: DeploymentAudioProvider): void;
 
-  clearOutputaudioList(): void;
-  getOutputaudioList(): Array<DeploymentAudioProvider>;
-  setOutputaudioList(value: Array<DeploymentAudioProvider>): void;
-  addOutputaudio(value?: DeploymentAudioProvider, index?: number): DeploymentAudioProvider;
+  hasOutputaudio(): boolean;
+  clearOutputaudio(): void;
+  getOutputaudio(): DeploymentAudioProvider | undefined;
+  setOutputaudio(value?: DeploymentAudioProvider): void;
 
   clearCapturersList(): void;
   getCapturersList(): Array<AssistantDeploymentCapturer>;
@@ -519,8 +519,8 @@ export namespace AssistantDebuggerDeployment {
     greeting: string,
     mistake: string,
     ending: string,
-    inputaudioList: Array<DeploymentAudioProvider.AsObject>,
-    outputaudioList: Array<DeploymentAudioProvider.AsObject>,
+    inputaudio?: DeploymentAudioProvider.AsObject,
+    outputaudio?: DeploymentAudioProvider.AsObject,
     capturersList: Array<AssistantDeploymentCapturer.AsObject>,
     url: string,
     raw?: common_pb.Content.AsObject,
@@ -571,15 +571,15 @@ export class AssistantApiDeployment extends jspb.Message {
   getEnding(): string;
   setEnding(value: string): void;
 
-  clearInputaudioList(): void;
-  getInputaudioList(): Array<DeploymentAudioProvider>;
-  setInputaudioList(value: Array<DeploymentAudioProvider>): void;
-  addInputaudio(value?: DeploymentAudioProvider, index?: number): DeploymentAudioProvider;
+  hasInputaudio(): boolean;
+  clearInputaudio(): void;
+  getInputaudio(): DeploymentAudioProvider | undefined;
+  setInputaudio(value?: DeploymentAudioProvider): void;
 
-  clearOutputaudioList(): void;
-  getOutputaudioList(): Array<DeploymentAudioProvider>;
-  setOutputaudioList(value: Array<DeploymentAudioProvider>): void;
-  addOutputaudio(value?: DeploymentAudioProvider, index?: number): DeploymentAudioProvider;
+  hasOutputaudio(): boolean;
+  clearOutputaudio(): void;
+  getOutputaudio(): DeploymentAudioProvider | undefined;
+  setOutputaudio(value?: DeploymentAudioProvider): void;
 
   clearCapturersList(): void;
   getCapturersList(): Array<AssistantDeploymentCapturer>;
@@ -620,8 +620,8 @@ export namespace AssistantApiDeployment {
     greeting: string,
     mistake: string,
     ending: string,
-    inputaudioList: Array<DeploymentAudioProvider.AsObject>,
-    outputaudioList: Array<DeploymentAudioProvider.AsObject>,
+    inputaudio?: DeploymentAudioProvider.AsObject,
+    outputaudio?: DeploymentAudioProvider.AsObject,
     capturersList: Array<AssistantDeploymentCapturer.AsObject>,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,

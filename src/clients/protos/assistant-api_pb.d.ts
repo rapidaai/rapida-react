@@ -7,15 +7,15 @@ import * as common_pb from "./common_pb";
 import * as assistant_deployment_pb from "./assistant-deployment_pb";
 import * as google_protobuf_struct_pb from "google-protobuf/google/protobuf/struct_pb";
 
-export class AssistantEmbeddedSkill extends jspb.Message {
+export class AssistantTool extends jspb.Message {
   getId(): string;
   setId(value: string): void;
 
   getAssistantid(): string;
   setAssistantid(value: string): void;
 
-  getAssistantskillid(): string;
-  setAssistantskillid(value: string): void;
+  getToolid(): string;
+  setToolid(value: string): void;
 
   getName(): string;
   setName(value: string): void;
@@ -31,31 +31,51 @@ export class AssistantEmbeddedSkill extends jspb.Message {
   getOptions(): google_protobuf_struct_pb.Struct | undefined;
   setOptions(value?: google_protobuf_struct_pb.Struct): void;
 
-  hasAssistantskill(): boolean;
-  clearAssistantskill(): void;
-  getAssistantskill(): AssistantSkill | undefined;
-  setAssistantskill(value?: AssistantSkill): void;
+  hasTool(): boolean;
+  clearTool(): void;
+  getTool(): Tool | undefined;
+  setTool(value?: Tool): void;
+
+  getCode(): string;
+  setCode(value: string): void;
+
+  getStatus(): string;
+  setStatus(value: string): void;
+
+  hasCreateddate(): boolean;
+  clearCreateddate(): void;
+  getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setCreateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasUpdateddate(): boolean;
+  clearUpdateddate(): void;
+  getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantEmbeddedSkill.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantEmbeddedSkill): AssistantEmbeddedSkill.AsObject;
+  toObject(includeInstance?: boolean): AssistantTool.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantTool): AssistantTool.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantEmbeddedSkill, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantEmbeddedSkill;
-  static deserializeBinaryFromReader(message: AssistantEmbeddedSkill, reader: jspb.BinaryReader): AssistantEmbeddedSkill;
+  static serializeBinaryToWriter(message: AssistantTool, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantTool;
+  static deserializeBinaryFromReader(message: AssistantTool, reader: jspb.BinaryReader): AssistantTool;
 }
 
-export namespace AssistantEmbeddedSkill {
+export namespace AssistantTool {
   export type AsObject = {
     id: string,
     assistantid: string,
-    assistantskillid: string,
+    toolid: string,
     name: string,
     projectid: string,
     organizationid: string,
     options?: google_protobuf_struct_pb.Struct.AsObject,
-    assistantskill?: AssistantSkill.AsObject,
+    tool?: Tool.AsObject,
+    code: string,
+    status: string,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
 }
 
@@ -75,10 +95,10 @@ export class Assistant extends jspb.Message {
   getSourceidentifier(): string;
   setSourceidentifier(value: string): void;
 
-  clearAssistantembeddedskillsList(): void;
-  getAssistantembeddedskillsList(): Array<AssistantEmbeddedSkill>;
-  setAssistantembeddedskillsList(value: Array<AssistantEmbeddedSkill>): void;
-  addAssistantembeddedskills(value?: AssistantEmbeddedSkill, index?: number): AssistantEmbeddedSkill;
+  clearAssistanttoolsList(): void;
+  getAssistanttoolsList(): Array<AssistantTool>;
+  setAssistanttoolsList(value: Array<AssistantTool>): void;
+  addAssistanttools(value?: AssistantTool, index?: number): AssistantTool;
 
   getProjectid(): string;
   setProjectid(value: string): void;
@@ -144,16 +164,6 @@ export class Assistant extends jspb.Message {
   getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
-  hasAppappearance(): boolean;
-  clearAppappearance(): void;
-  getAppappearance(): google_protobuf_struct_pb.Struct | undefined;
-  setAppappearance(value?: google_protobuf_struct_pb.Struct): void;
-
-  hasWebappearance(): boolean;
-  clearWebappearance(): void;
-  getWebappearance(): google_protobuf_struct_pb.Struct | undefined;
-  setWebappearance(value?: google_protobuf_struct_pb.Struct): void;
-
   hasDebuggerdeployment(): boolean;
   clearDebuggerdeployment(): void;
   getDebuggerdeployment(): assistant_deployment_pb.AssistantDebuggerDeployment | undefined;
@@ -179,6 +189,16 @@ export class Assistant extends jspb.Message {
   getApideployment(): assistant_deployment_pb.AssistantApiDeployment | undefined;
   setApideployment(value?: assistant_deployment_pb.AssistantApiDeployment): void;
 
+  clearAssistantconversationsList(): void;
+  getAssistantconversationsList(): Array<common_pb.AssistantConversation>;
+  setAssistantconversationsList(value: Array<common_pb.AssistantConversation>): void;
+  addAssistantconversations(value?: common_pb.AssistantConversation, index?: number): common_pb.AssistantConversation;
+
+  clearAssistantwebhooksList(): void;
+  getAssistantwebhooksList(): Array<AssistantWebhook>;
+  setAssistantwebhooksList(value: Array<AssistantWebhook>): void;
+  addAssistantwebhooks(value?: AssistantWebhook, index?: number): AssistantWebhook;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Assistant.AsObject;
   static toObject(includeInstance: boolean, msg: Assistant): Assistant.AsObject;
@@ -196,7 +216,7 @@ export namespace Assistant {
     visibility: string,
     source: string,
     sourceidentifier: string,
-    assistantembeddedskillsList: Array<AssistantEmbeddedSkill.AsObject>,
+    assistanttoolsList: Array<AssistantTool.AsObject>,
     projectid: string,
     organizationid: string,
     assistantprovidermodelid: string,
@@ -213,13 +233,13 @@ export namespace Assistant {
     updateduser?: common_pb.User.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-    appappearance?: google_protobuf_struct_pb.Struct.AsObject,
-    webappearance?: google_protobuf_struct_pb.Struct.AsObject,
     debuggerdeployment?: assistant_deployment_pb.AssistantDebuggerDeployment.AsObject,
     phonedeployment?: assistant_deployment_pb.AssistantPhoneDeployment.AsObject,
     whatsappdeployment?: assistant_deployment_pb.AssistantWhatsappDeployment.AsObject,
     webplugindeployment?: assistant_deployment_pb.AssistantWebpluginDeployment.AsObject,
     apideployment?: assistant_deployment_pb.AssistantApiDeployment.AsObject,
+    assistantconversationsList: Array<common_pb.AssistantConversation.AsObject>,
+    assistantwebhooksList: Array<AssistantWebhook.AsObject>,
   }
 }
 
@@ -229,30 +249,22 @@ export class AssistantProviderModel extends jspb.Message {
 
   hasTemplate(): boolean;
   clearTemplate(): void;
-  getTemplate(): common_pb.AgentPromptTemplate | undefined;
-  setTemplate(value?: common_pb.AgentPromptTemplate): void;
+  getTemplate(): common_pb.TextChatCompletePrompt | undefined;
+  setTemplate(value?: common_pb.TextChatCompletePrompt): void;
 
   getDescription(): string;
   setDescription(value: string): void;
 
-  getProviderid(): string;
-  setProviderid(value: string): void;
+  getModelproviderid(): string;
+  setModelproviderid(value: string): void;
 
-  getModelmodetype(): string;
-  setModelmodetype(value: string): void;
+  getModelprovidername(): string;
+  setModelprovidername(value: string): void;
 
-  getProvidermodelid(): string;
-  setProvidermodelid(value: string): void;
-
-  hasProvidermodel(): boolean;
-  clearProvidermodel(): void;
-  getProvidermodel(): common_pb.ProviderModel | undefined;
-  setProvidermodel(value?: common_pb.ProviderModel): void;
-
-  clearAssistantprovidermodelparametersList(): void;
-  getAssistantprovidermodelparametersList(): Array<common_pb.ProviderModelParameter>;
-  setAssistantprovidermodelparametersList(value: Array<common_pb.ProviderModelParameter>): void;
-  addAssistantprovidermodelparameters(value?: common_pb.ProviderModelParameter, index?: number): common_pb.ProviderModelParameter;
+  clearAssistantmodeloptionsList(): void;
+  getAssistantmodeloptionsList(): Array<common_pb.Metadata>;
+  setAssistantmodeloptionsList(value: Array<common_pb.Metadata>): void;
+  addAssistantmodeloptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
   getStatus(): string;
   setStatus(value: string): void;
@@ -296,13 +308,11 @@ export class AssistantProviderModel extends jspb.Message {
 export namespace AssistantProviderModel {
   export type AsObject = {
     id: string,
-    template?: common_pb.AgentPromptTemplate.AsObject,
+    template?: common_pb.TextChatCompletePrompt.AsObject,
     description: string,
-    providerid: string,
-    modelmodetype: string,
-    providermodelid: string,
-    providermodel?: common_pb.ProviderModel.AsObject,
-    assistantprovidermodelparametersList: Array<common_pb.ProviderModelParameter.AsObject>,
+    modelproviderid: string,
+    modelprovidername: string,
+    assistantmodeloptionsList: Array<common_pb.Metadata.AsObject>,
     status: string,
     createdby: string,
     createduser?: common_pb.User.AsObject,
@@ -323,13 +333,16 @@ export class AssistantKnowledgeConfiguration extends jspb.Message {
   getRerankerenable(): boolean;
   setRerankerenable(value: boolean): void;
 
-  getRerankerprovidermodelid(): string;
-  setRerankerprovidermodelid(value: string): void;
+  getRerankermodelproviderid(): string;
+  setRerankermodelproviderid(value: string): void;
 
-  hasRerankerprovidermodel(): boolean;
-  clearRerankerprovidermodel(): void;
-  getRerankerprovidermodel(): common_pb.ProviderModel | undefined;
-  setRerankerprovidermodel(value?: common_pb.ProviderModel): void;
+  getRerankermodelprovidername(): string;
+  setRerankermodelprovidername(value: string): void;
+
+  clearAssistantknowledgererankeroptionsList(): void;
+  getAssistantknowledgererankeroptionsList(): Array<common_pb.Metadata>;
+  setAssistantknowledgererankeroptionsList(value: Array<common_pb.Metadata>): void;
+  addAssistantknowledgererankeroptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
   getTopk(): number;
   setTopk(value: number): void;
@@ -360,8 +373,9 @@ export namespace AssistantKnowledgeConfiguration {
     id: string,
     knowledgeid: string,
     rerankerenable: boolean,
-    rerankerprovidermodelid: string,
-    rerankerprovidermodel?: common_pb.ProviderModel.AsObject,
+    rerankermodelproviderid: string,
+    rerankermodelprovidername: string,
+    assistantknowledgererankeroptionsList: Array<common_pb.Metadata.AsObject>,
     topk: number,
     scorethreshold: number,
     knowledge?: common_pb.Knowledge.AsObject,
@@ -375,27 +389,19 @@ export class AssistantProviderModelAttribute extends jspb.Message {
 
   hasTemplate(): boolean;
   clearTemplate(): void;
-  getTemplate(): common_pb.AgentPromptTemplate | undefined;
-  setTemplate(value?: common_pb.AgentPromptTemplate): void;
+  getTemplate(): common_pb.TextChatCompletePrompt | undefined;
+  setTemplate(value?: common_pb.TextChatCompletePrompt): void;
 
-  getProviderid(): string;
-  setProviderid(value: string): void;
+  getModelproviderid(): string;
+  setModelproviderid(value: string): void;
 
-  getProvidermodelid(): string;
-  setProvidermodelid(value: string): void;
+  getModelprovidername(): string;
+  setModelprovidername(value: string): void;
 
-  hasProvidermodel(): boolean;
-  clearProvidermodel(): void;
-  getProvidermodel(): common_pb.ProviderModel | undefined;
-  setProvidermodel(value?: common_pb.ProviderModel): void;
-
-  clearAssistantprovidermodelparametersList(): void;
-  getAssistantprovidermodelparametersList(): Array<common_pb.ProviderModelParameter>;
-  setAssistantprovidermodelparametersList(value: Array<common_pb.ProviderModelParameter>): void;
-  addAssistantprovidermodelparameters(value?: common_pb.ProviderModelParameter, index?: number): common_pb.ProviderModelParameter;
-
-  getModelmodetype(): string;
-  setModelmodetype(value: string): void;
+  clearAssistantmodeloptionsList(): void;
+  getAssistantmodeloptionsList(): Array<common_pb.Metadata>;
+  setAssistantmodeloptionsList(value: Array<common_pb.Metadata>): void;
+  addAssistantmodeloptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantProviderModelAttribute.AsObject;
@@ -410,12 +416,10 @@ export class AssistantProviderModelAttribute extends jspb.Message {
 export namespace AssistantProviderModelAttribute {
   export type AsObject = {
     description: string,
-    template?: common_pb.AgentPromptTemplate.AsObject,
-    providerid: string,
-    providermodelid: string,
-    providermodel?: common_pb.ProviderModel.AsObject,
-    assistantprovidermodelparametersList: Array<common_pb.ProviderModelParameter.AsObject>,
-    modelmodetype: string,
+    template?: common_pb.TextChatCompletePrompt.AsObject,
+    modelproviderid: string,
+    modelprovidername: string,
+    assistantmodeloptionsList: Array<common_pb.Metadata.AsObject>,
   }
 }
 
@@ -466,8 +470,16 @@ export class AssistantKnowledgeConfigurationAttribute extends jspb.Message {
   getRerankerenable(): boolean;
   setRerankerenable(value: boolean): void;
 
-  getRerankerprovidermodelid(): string;
-  setRerankerprovidermodelid(value: string): void;
+  getRerankermodelproviderid(): string;
+  setRerankermodelproviderid(value: string): void;
+
+  getRerankermodelprovidername(): string;
+  setRerankermodelprovidername(value: string): void;
+
+  clearAssistantknowledgererankeroptionsList(): void;
+  getAssistantknowledgererankeroptionsList(): Array<common_pb.Metadata>;
+  setAssistantknowledgererankeroptionsList(value: Array<common_pb.Metadata>): void;
+  addAssistantknowledgererankeroptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
   getTopk(): number;
   setTopk(value: number): void;
@@ -495,7 +507,9 @@ export namespace AssistantKnowledgeConfigurationAttribute {
   export type AsObject = {
     knowledgeid: string,
     rerankerenable: boolean,
-    rerankerprovidermodelid: string,
+    rerankermodelproviderid: string,
+    rerankermodelprovidername: string,
+    assistantknowledgererankeroptionsList: Array<common_pb.Metadata.AsObject>,
     topk: number,
     scorethreshold: number,
     retrievalmethod: string,
@@ -504,8 +518,8 @@ export namespace AssistantKnowledgeConfigurationAttribute {
 }
 
 export class AssistantToolConfigurationAttribute extends jspb.Message {
-  getSkillid(): string;
-  setSkillid(value: string): void;
+  getToolid(): string;
+  setToolid(value: string): void;
 
   getCode(): string;
   setCode(value: string): void;
@@ -515,8 +529,8 @@ export class AssistantToolConfigurationAttribute extends jspb.Message {
   getOptions(): google_protobuf_struct_pb.Struct | undefined;
   setOptions(value?: google_protobuf_struct_pb.Struct): void;
 
-  getActive(): boolean;
-  setActive(value: boolean): void;
+  getStatus(): string;
+  setStatus(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantToolConfigurationAttribute.AsObject;
@@ -530,10 +544,10 @@ export class AssistantToolConfigurationAttribute extends jspb.Message {
 
 export namespace AssistantToolConfigurationAttribute {
   export type AsObject = {
-    skillid: string,
+    toolid: string,
     code: string,
     options?: google_protobuf_struct_pb.Struct.AsObject,
-    active: boolean,
+    status: string,
   }
 }
 
@@ -785,6 +799,26 @@ export namespace GetAssistantRequest {
   }
 }
 
+export class DeleteAssistantRequest extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteAssistantRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteAssistantRequest): DeleteAssistantRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteAssistantRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteAssistantRequest;
+  static deserializeBinaryFromReader(message: DeleteAssistantRequest, reader: jspb.BinaryReader): DeleteAssistantRequest;
+}
+
+export namespace DeleteAssistantRequest {
+  export type AsObject = {
+    id: string,
+  }
+}
+
 export class GetAssistantResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
@@ -984,6 +1018,11 @@ export class GetAllAssistantMessageRequest extends jspb.Message {
   getOrder(): common_pb.Ordering | undefined;
   setOrder(value?: common_pb.Ordering): void;
 
+  clearSelectorsList(): void;
+  getSelectorsList(): Array<common_pb.FieldSelector>;
+  setSelectorsList(value: Array<common_pb.FieldSelector>): void;
+  addSelectors(value?: common_pb.FieldSelector, index?: number): common_pb.FieldSelector;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetAllAssistantMessageRequest.AsObject;
   static toObject(includeInstance: boolean, msg: GetAllAssistantMessageRequest): GetAllAssistantMessageRequest.AsObject;
@@ -1000,6 +1039,7 @@ export namespace GetAllAssistantMessageRequest {
     criteriasList: Array<common_pb.Criteria.AsObject>,
     assistantid: string,
     order?: common_pb.Ordering.AsObject,
+    selectorsList: Array<common_pb.FieldSelector.AsObject>,
   }
 }
 
@@ -1211,7 +1251,720 @@ export namespace GetAllAssistantUserConversationResponse {
   }
 }
 
-export class AssistantSkill extends jspb.Message {
+export class GetAllAssistantToolRequest extends jspb.Message {
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): common_pb.Paginate | undefined;
+  setPaginate(value?: common_pb.Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantToolRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantToolRequest): GetAllAssistantToolRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantToolRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantToolRequest;
+  static deserializeBinaryFromReader(message: GetAllAssistantToolRequest, reader: jspb.BinaryReader): GetAllAssistantToolRequest;
+}
+
+export namespace GetAllAssistantToolRequest {
+  export type AsObject = {
+    assistantid: string,
+    paginate?: common_pb.Paginate.AsObject,
+    criteriasList: Array<common_pb.Criteria.AsObject>,
+  }
+}
+
+export class GetAllAssistantToolResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<AssistantTool>;
+  setDataList(value: Array<AssistantTool>): void;
+  addData(value?: AssistantTool, index?: number): AssistantTool;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantToolResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantToolResponse): GetAllAssistantToolResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantToolResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantToolResponse;
+  static deserializeBinaryFromReader(message: GetAllAssistantToolResponse, reader: jspb.BinaryReader): GetAllAssistantToolResponse;
+}
+
+export namespace GetAllAssistantToolResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<AssistantTool.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class AssistantWebhook extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  clearAssistanteventsList(): void;
+  getAssistanteventsList(): Array<string>;
+  setAssistanteventsList(value: Array<string>): void;
+  addAssistantevents(value: string, index?: number): string;
+
+  getDescription(): string;
+  setDescription(value: string): void;
+
+  getHttpmethod(): string;
+  setHttpmethod(value: string): void;
+
+  getHttpurl(): string;
+  setHttpurl(value: string): void;
+
+  getHttpheadersMap(): jspb.Map<string, string>;
+  clearHttpheadersMap(): void;
+  getTimeoutsecond(): number;
+  setTimeoutsecond(value: number): void;
+
+  clearRetrystatuscodesList(): void;
+  getRetrystatuscodesList(): Array<string>;
+  setRetrystatuscodesList(value: Array<string>): void;
+  addRetrystatuscodes(value: string, index?: number): string;
+
+  getRetrycount(): number;
+  setRetrycount(value: number): void;
+
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  getStatus(): string;
+  setStatus(value: string): void;
+
+  getCreatedby(): string;
+  setCreatedby(value: string): void;
+
+  hasCreateduser(): boolean;
+  clearCreateduser(): void;
+  getCreateduser(): common_pb.User | undefined;
+  setCreateduser(value?: common_pb.User): void;
+
+  getUpdatedby(): string;
+  setUpdatedby(value: string): void;
+
+  hasUpdateduser(): boolean;
+  clearUpdateduser(): void;
+  getUpdateduser(): common_pb.User | undefined;
+  setUpdateduser(value?: common_pb.User): void;
+
+  hasCreateddate(): boolean;
+  clearCreateddate(): void;
+  getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setCreateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasUpdateddate(): boolean;
+  clearUpdateddate(): void;
+  getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantWebhook.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantWebhook): AssistantWebhook.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantWebhook, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantWebhook;
+  static deserializeBinaryFromReader(message: AssistantWebhook, reader: jspb.BinaryReader): AssistantWebhook;
+}
+
+export namespace AssistantWebhook {
+  export type AsObject = {
+    id: string,
+    assistanteventsList: Array<string>,
+    description: string,
+    httpmethod: string,
+    httpurl: string,
+    httpheadersMap: Array<[string, string]>,
+    timeoutsecond: number,
+    retrystatuscodesList: Array<string>,
+    retrycount: number,
+    assistantid: string,
+    status: string,
+    createdby: string,
+    createduser?: common_pb.User.AsObject,
+    updatedby: string,
+    updateduser?: common_pb.User.AsObject,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
+export class AssistantWebhookLog extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getWebhookid(): string;
+  setWebhookid(value: string): void;
+
+  hasRequest(): boolean;
+  clearRequest(): void;
+  getRequest(): google_protobuf_struct_pb.Struct | undefined;
+  setRequest(value?: google_protobuf_struct_pb.Struct): void;
+
+  hasResponse(): boolean;
+  clearResponse(): void;
+  getResponse(): google_protobuf_struct_pb.Struct | undefined;
+  setResponse(value?: google_protobuf_struct_pb.Struct): void;
+
+  getStatus(): string;
+  setStatus(value: string): void;
+
+  hasCreateddate(): boolean;
+  clearCreateddate(): void;
+  getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setCreateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasUpdateddate(): boolean;
+  clearUpdateddate(): void;
+  getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantWebhookLog.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantWebhookLog): AssistantWebhookLog.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantWebhookLog, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantWebhookLog;
+  static deserializeBinaryFromReader(message: AssistantWebhookLog, reader: jspb.BinaryReader): AssistantWebhookLog;
+}
+
+export namespace AssistantWebhookLog {
+  export type AsObject = {
+    id: string,
+    webhookid: string,
+    request?: google_protobuf_struct_pb.Struct.AsObject,
+    response?: google_protobuf_struct_pb.Struct.AsObject,
+    status: string,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    assistantid: string,
+  }
+}
+
+export class CreateAssistantWebhookRequest extends jspb.Message {
+  clearAssistanteventsList(): void;
+  getAssistanteventsList(): Array<string>;
+  setAssistanteventsList(value: Array<string>): void;
+  addAssistantevents(value: string, index?: number): string;
+
+  getDescription(): string;
+  setDescription(value: string): void;
+
+  getHttpmethod(): string;
+  setHttpmethod(value: string): void;
+
+  getHttpurl(): string;
+  setHttpurl(value: string): void;
+
+  getHttpheadersMap(): jspb.Map<string, string>;
+  clearHttpheadersMap(): void;
+  getTimeoutsecond(): number;
+  setTimeoutsecond(value: number): void;
+
+  clearRetrystatuscodesList(): void;
+  getRetrystatuscodesList(): Array<string>;
+  setRetrystatuscodesList(value: Array<string>): void;
+  addRetrystatuscodes(value: string, index?: number): string;
+
+  getMaxretrycount(): number;
+  setMaxretrycount(value: number): void;
+
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CreateAssistantWebhookRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateAssistantWebhookRequest): CreateAssistantWebhookRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CreateAssistantWebhookRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateAssistantWebhookRequest;
+  static deserializeBinaryFromReader(message: CreateAssistantWebhookRequest, reader: jspb.BinaryReader): CreateAssistantWebhookRequest;
+}
+
+export namespace CreateAssistantWebhookRequest {
+  export type AsObject = {
+    assistanteventsList: Array<string>,
+    description: string,
+    httpmethod: string,
+    httpurl: string,
+    httpheadersMap: Array<[string, string]>,
+    timeoutsecond: number,
+    retrystatuscodesList: Array<string>,
+    maxretrycount: number,
+    assistantid: string,
+  }
+}
+
+export class CreateAssistantWebhookResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasData(): boolean;
+  clearData(): void;
+  getData(): AssistantWebhook | undefined;
+  setData(value?: AssistantWebhook): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CreateAssistantWebhookResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateAssistantWebhookResponse): CreateAssistantWebhookResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CreateAssistantWebhookResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateAssistantWebhookResponse;
+  static deserializeBinaryFromReader(message: CreateAssistantWebhookResponse, reader: jspb.BinaryReader): CreateAssistantWebhookResponse;
+}
+
+export namespace CreateAssistantWebhookResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    data?: AssistantWebhook.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
+}
+
+export class UpdateAssistantWebhookRequest extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  clearAssistanteventsList(): void;
+  getAssistanteventsList(): Array<string>;
+  setAssistanteventsList(value: Array<string>): void;
+  addAssistantevents(value: string, index?: number): string;
+
+  getDescription(): string;
+  setDescription(value: string): void;
+
+  getHttpmethod(): string;
+  setHttpmethod(value: string): void;
+
+  getHttpurl(): string;
+  setHttpurl(value: string): void;
+
+  getHttpheadersMap(): jspb.Map<string, string>;
+  clearHttpheadersMap(): void;
+  getTimeoutsecond(): number;
+  setTimeoutsecond(value: number): void;
+
+  clearRetrystatuscodesList(): void;
+  getRetrystatuscodesList(): Array<string>;
+  setRetrystatuscodesList(value: Array<string>): void;
+  addRetrystatuscodes(value: string, index?: number): string;
+
+  getMaxretrycount(): number;
+  setMaxretrycount(value: number): void;
+
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): UpdateAssistantWebhookRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: UpdateAssistantWebhookRequest): UpdateAssistantWebhookRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: UpdateAssistantWebhookRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): UpdateAssistantWebhookRequest;
+  static deserializeBinaryFromReader(message: UpdateAssistantWebhookRequest, reader: jspb.BinaryReader): UpdateAssistantWebhookRequest;
+}
+
+export namespace UpdateAssistantWebhookRequest {
+  export type AsObject = {
+    id: string,
+    assistanteventsList: Array<string>,
+    description: string,
+    httpmethod: string,
+    httpurl: string,
+    httpheadersMap: Array<[string, string]>,
+    timeoutsecond: number,
+    retrystatuscodesList: Array<string>,
+    maxretrycount: number,
+    assistantid: string,
+  }
+}
+
+export class UpdateAssistantWebhookResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasData(): boolean;
+  clearData(): void;
+  getData(): AssistantWebhook | undefined;
+  setData(value?: AssistantWebhook): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): UpdateAssistantWebhookResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: UpdateAssistantWebhookResponse): UpdateAssistantWebhookResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: UpdateAssistantWebhookResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): UpdateAssistantWebhookResponse;
+  static deserializeBinaryFromReader(message: UpdateAssistantWebhookResponse, reader: jspb.BinaryReader): UpdateAssistantWebhookResponse;
+}
+
+export namespace UpdateAssistantWebhookResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    data?: AssistantWebhook.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
+}
+
+export class GetAssistantWebhookRequest extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAssistantWebhookRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantWebhookRequest): GetAssistantWebhookRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantWebhookRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantWebhookRequest;
+  static deserializeBinaryFromReader(message: GetAssistantWebhookRequest, reader: jspb.BinaryReader): GetAssistantWebhookRequest;
+}
+
+export namespace GetAssistantWebhookRequest {
+  export type AsObject = {
+    id: string,
+    assistantid: string,
+  }
+}
+
+export class GetAssistantWebhookResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasData(): boolean;
+  clearData(): void;
+  getData(): AssistantWebhook | undefined;
+  setData(value?: AssistantWebhook): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAssistantWebhookResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantWebhookResponse): GetAssistantWebhookResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantWebhookResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantWebhookResponse;
+  static deserializeBinaryFromReader(message: GetAssistantWebhookResponse, reader: jspb.BinaryReader): GetAssistantWebhookResponse;
+}
+
+export namespace GetAssistantWebhookResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    data?: AssistantWebhook.AsObject,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class GetAllAssistantWebhookRequest extends jspb.Message {
+  getWebhookid(): string;
+  setWebhookid(value: string): void;
+
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): common_pb.Paginate | undefined;
+  setPaginate(value?: common_pb.Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantWebhookRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantWebhookRequest): GetAllAssistantWebhookRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantWebhookRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantWebhookRequest;
+  static deserializeBinaryFromReader(message: GetAllAssistantWebhookRequest, reader: jspb.BinaryReader): GetAllAssistantWebhookRequest;
+}
+
+export namespace GetAllAssistantWebhookRequest {
+  export type AsObject = {
+    webhookid: string,
+    assistantid: string,
+    paginate?: common_pb.Paginate.AsObject,
+    criteriasList: Array<common_pb.Criteria.AsObject>,
+  }
+}
+
+export class GetAllAssistantWebhookResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<AssistantWebhook>;
+  setDataList(value: Array<AssistantWebhook>): void;
+  addData(value?: AssistantWebhook, index?: number): AssistantWebhook;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantWebhookResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantWebhookResponse): GetAllAssistantWebhookResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantWebhookResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantWebhookResponse;
+  static deserializeBinaryFromReader(message: GetAllAssistantWebhookResponse, reader: jspb.BinaryReader): GetAllAssistantWebhookResponse;
+}
+
+export namespace GetAllAssistantWebhookResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<AssistantWebhook.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class GetAllAssistantWebhookLogRequest extends jspb.Message {
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): common_pb.Paginate | undefined;
+  setPaginate(value?: common_pb.Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantWebhookLogRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantWebhookLogRequest): GetAllAssistantWebhookLogRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantWebhookLogRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantWebhookLogRequest;
+  static deserializeBinaryFromReader(message: GetAllAssistantWebhookLogRequest, reader: jspb.BinaryReader): GetAllAssistantWebhookLogRequest;
+}
+
+export namespace GetAllAssistantWebhookLogRequest {
+  export type AsObject = {
+    assistantid: string,
+    paginate?: common_pb.Paginate.AsObject,
+    criteriasList: Array<common_pb.Criteria.AsObject>,
+  }
+}
+
+export class GetAllAssistantWebhookLogResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<AssistantWebhookLog>;
+  setDataList(value: Array<AssistantWebhookLog>): void;
+  addData(value?: AssistantWebhookLog, index?: number): AssistantWebhookLog;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantWebhookLogResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantWebhookLogResponse): GetAllAssistantWebhookLogResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantWebhookLogResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantWebhookLogResponse;
+  static deserializeBinaryFromReader(message: GetAllAssistantWebhookLogResponse, reader: jspb.BinaryReader): GetAllAssistantWebhookLogResponse;
+}
+
+export namespace GetAllAssistantWebhookLogResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<AssistantWebhookLog.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class GetAssistantConversationRequest extends jspb.Message {
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  getConversationid(): string;
+  setConversationid(value: string): void;
+
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): common_pb.Paginate | undefined;
+  setPaginate(value?: common_pb.Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+
+  clearSelectorsList(): void;
+  getSelectorsList(): Array<common_pb.FieldSelector>;
+  setSelectorsList(value: Array<common_pb.FieldSelector>): void;
+  addSelectors(value?: common_pb.FieldSelector, index?: number): common_pb.FieldSelector;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAssistantConversationRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantConversationRequest): GetAssistantConversationRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantConversationRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantConversationRequest;
+  static deserializeBinaryFromReader(message: GetAssistantConversationRequest, reader: jspb.BinaryReader): GetAssistantConversationRequest;
+}
+
+export namespace GetAssistantConversationRequest {
+  export type AsObject = {
+    assistantid: string,
+    conversationid: string,
+    paginate?: common_pb.Paginate.AsObject,
+    criteriasList: Array<common_pb.Criteria.AsObject>,
+    selectorsList: Array<common_pb.FieldSelector.AsObject>,
+  }
+}
+
+export class GetAssistantConversationResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasData(): boolean;
+  clearData(): void;
+  getData(): common_pb.AssistantConversation | undefined;
+  setData(value?: common_pb.AssistantConversation): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAssistantConversationResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantConversationResponse): GetAssistantConversationResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantConversationResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantConversationResponse;
+  static deserializeBinaryFromReader(message: GetAssistantConversationResponse, reader: jspb.BinaryReader): GetAssistantConversationResponse;
+}
+
+export namespace GetAssistantConversationResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    data?: common_pb.AssistantConversation.AsObject,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class Tool extends jspb.Message {
   getId(): string;
   setId(value: string): void;
 
@@ -1241,16 +1994,16 @@ export class AssistantSkill extends jspb.Message {
   setVisibility(value: string): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantSkill.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantSkill): AssistantSkill.AsObject;
+  toObject(includeInstance?: boolean): Tool.AsObject;
+  static toObject(includeInstance: boolean, msg: Tool): Tool.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantSkill, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantSkill;
-  static deserializeBinaryFromReader(message: AssistantSkill, reader: jspb.BinaryReader): AssistantSkill;
+  static serializeBinaryToWriter(message: Tool, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Tool;
+  static deserializeBinaryFromReader(message: Tool, reader: jspb.BinaryReader): Tool;
 }
 
-export namespace AssistantSkill {
+export namespace Tool {
   export type AsObject = {
     id: string,
     code: string,
@@ -1263,27 +2016,27 @@ export namespace AssistantSkill {
   }
 }
 
-export class GetAssistantSkillRequest extends jspb.Message {
+export class GetToolRequest extends jspb.Message {
   getId(): string;
   setId(value: string): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAssistantSkillRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAssistantSkillRequest): GetAssistantSkillRequest.AsObject;
+  toObject(includeInstance?: boolean): GetToolRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetToolRequest): GetToolRequest.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAssistantSkillRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAssistantSkillRequest;
-  static deserializeBinaryFromReader(message: GetAssistantSkillRequest, reader: jspb.BinaryReader): GetAssistantSkillRequest;
+  static serializeBinaryToWriter(message: GetToolRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetToolRequest;
+  static deserializeBinaryFromReader(message: GetToolRequest, reader: jspb.BinaryReader): GetToolRequest;
 }
 
-export namespace GetAssistantSkillRequest {
+export namespace GetToolRequest {
   export type AsObject = {
     id: string,
   }
 }
 
-export class GetAssistantSkillResponse extends jspb.Message {
+export class GetToolResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
@@ -1292,8 +2045,8 @@ export class GetAssistantSkillResponse extends jspb.Message {
 
   hasData(): boolean;
   clearData(): void;
-  getData(): AssistantSkill | undefined;
-  setData(value?: AssistantSkill): void;
+  getData(): Tool | undefined;
+  setData(value?: Tool): void;
 
   hasError(): boolean;
   clearError(): void;
@@ -1301,25 +2054,25 @@ export class GetAssistantSkillResponse extends jspb.Message {
   setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAssistantSkillResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAssistantSkillResponse): GetAssistantSkillResponse.AsObject;
+  toObject(includeInstance?: boolean): GetToolResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetToolResponse): GetToolResponse.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAssistantSkillResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAssistantSkillResponse;
-  static deserializeBinaryFromReader(message: GetAssistantSkillResponse, reader: jspb.BinaryReader): GetAssistantSkillResponse;
+  static serializeBinaryToWriter(message: GetToolResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetToolResponse;
+  static deserializeBinaryFromReader(message: GetToolResponse, reader: jspb.BinaryReader): GetToolResponse;
 }
 
-export namespace GetAssistantSkillResponse {
+export namespace GetToolResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    data?: AssistantSkill.AsObject,
+    data?: Tool.AsObject,
     error?: common_pb.Error.AsObject,
   }
 }
 
-export class GetAllAssistantSkillRequest extends jspb.Message {
+export class GetAllToolRequest extends jspb.Message {
   hasPaginate(): boolean;
   clearPaginate(): void;
   getPaginate(): common_pb.Paginate | undefined;
@@ -1331,23 +2084,23 @@ export class GetAllAssistantSkillRequest extends jspb.Message {
   addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllAssistantSkillRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllAssistantSkillRequest): GetAllAssistantSkillRequest.AsObject;
+  toObject(includeInstance?: boolean): GetAllToolRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllToolRequest): GetAllToolRequest.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAllAssistantSkillRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllAssistantSkillRequest;
-  static deserializeBinaryFromReader(message: GetAllAssistantSkillRequest, reader: jspb.BinaryReader): GetAllAssistantSkillRequest;
+  static serializeBinaryToWriter(message: GetAllToolRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllToolRequest;
+  static deserializeBinaryFromReader(message: GetAllToolRequest, reader: jspb.BinaryReader): GetAllToolRequest;
 }
 
-export namespace GetAllAssistantSkillRequest {
+export namespace GetAllToolRequest {
   export type AsObject = {
     paginate?: common_pb.Paginate.AsObject,
     criteriasList: Array<common_pb.Criteria.AsObject>,
   }
 }
 
-export class GetAllAssistantSkillResponse extends jspb.Message {
+export class GetAllToolResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
@@ -1355,9 +2108,9 @@ export class GetAllAssistantSkillResponse extends jspb.Message {
   setSuccess(value: boolean): void;
 
   clearDataList(): void;
-  getDataList(): Array<AssistantSkill>;
-  setDataList(value: Array<AssistantSkill>): void;
-  addData(value?: AssistantSkill, index?: number): AssistantSkill;
+  getDataList(): Array<Tool>;
+  setDataList(value: Array<Tool>): void;
+  addData(value?: Tool, index?: number): Tool;
 
   hasError(): boolean;
   clearError(): void;
@@ -1370,94 +2123,20 @@ export class GetAllAssistantSkillResponse extends jspb.Message {
   setPaginated(value?: common_pb.Paginated): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllAssistantSkillResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllAssistantSkillResponse): GetAllAssistantSkillResponse.AsObject;
+  toObject(includeInstance?: boolean): GetAllToolResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllToolResponse): GetAllToolResponse.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAllAssistantSkillResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllAssistantSkillResponse;
-  static deserializeBinaryFromReader(message: GetAllAssistantSkillResponse, reader: jspb.BinaryReader): GetAllAssistantSkillResponse;
+  static serializeBinaryToWriter(message: GetAllToolResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllToolResponse;
+  static deserializeBinaryFromReader(message: GetAllToolResponse, reader: jspb.BinaryReader): GetAllToolResponse;
 }
 
-export namespace GetAllAssistantSkillResponse {
+export namespace GetAllToolResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    dataList: Array<AssistantSkill.AsObject>,
-    error?: common_pb.Error.AsObject,
-    paginated?: common_pb.Paginated.AsObject,
-  }
-}
-
-export class GetAllAssistantEmbeddedSkillRequest extends jspb.Message {
-  getAssistantid(): string;
-  setAssistantid(value: string): void;
-
-  hasPaginate(): boolean;
-  clearPaginate(): void;
-  getPaginate(): common_pb.Paginate | undefined;
-  setPaginate(value?: common_pb.Paginate): void;
-
-  clearCriteriasList(): void;
-  getCriteriasList(): Array<common_pb.Criteria>;
-  setCriteriasList(value: Array<common_pb.Criteria>): void;
-  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllAssistantEmbeddedSkillRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllAssistantEmbeddedSkillRequest): GetAllAssistantEmbeddedSkillRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAllAssistantEmbeddedSkillRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllAssistantEmbeddedSkillRequest;
-  static deserializeBinaryFromReader(message: GetAllAssistantEmbeddedSkillRequest, reader: jspb.BinaryReader): GetAllAssistantEmbeddedSkillRequest;
-}
-
-export namespace GetAllAssistantEmbeddedSkillRequest {
-  export type AsObject = {
-    assistantid: string,
-    paginate?: common_pb.Paginate.AsObject,
-    criteriasList: Array<common_pb.Criteria.AsObject>,
-  }
-}
-
-export class GetAllAssistantEmbeddedSkillResponse extends jspb.Message {
-  getCode(): number;
-  setCode(value: number): void;
-
-  getSuccess(): boolean;
-  setSuccess(value: boolean): void;
-
-  clearDataList(): void;
-  getDataList(): Array<AssistantEmbeddedSkill>;
-  setDataList(value: Array<AssistantEmbeddedSkill>): void;
-  addData(value?: AssistantEmbeddedSkill, index?: number): AssistantEmbeddedSkill;
-
-  hasError(): boolean;
-  clearError(): void;
-  getError(): common_pb.Error | undefined;
-  setError(value?: common_pb.Error): void;
-
-  hasPaginated(): boolean;
-  clearPaginated(): void;
-  getPaginated(): common_pb.Paginated | undefined;
-  setPaginated(value?: common_pb.Paginated): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllAssistantEmbeddedSkillResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllAssistantEmbeddedSkillResponse): GetAllAssistantEmbeddedSkillResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAllAssistantEmbeddedSkillResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllAssistantEmbeddedSkillResponse;
-  static deserializeBinaryFromReader(message: GetAllAssistantEmbeddedSkillResponse, reader: jspb.BinaryReader): GetAllAssistantEmbeddedSkillResponse;
-}
-
-export namespace GetAllAssistantEmbeddedSkillResponse {
-  export type AsObject = {
-    code: number,
-    success: boolean,
-    dataList: Array<AssistantEmbeddedSkill.AsObject>,
+    dataList: Array<Tool.AsObject>,
     error?: common_pb.Error.AsObject,
     paginated?: common_pb.Paginated.AsObject,
   }

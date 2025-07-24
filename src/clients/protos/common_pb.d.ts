@@ -5,6 +5,26 @@ import * as jspb from "google-protobuf";
 import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
 import * as google_protobuf_struct_pb from "google-protobuf/google/protobuf/struct_pb";
 
+export class FieldSelector extends jspb.Message {
+  getField(): string;
+  setField(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): FieldSelector.AsObject;
+  static toObject(includeInstance: boolean, msg: FieldSelector): FieldSelector.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: FieldSelector, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): FieldSelector;
+  static deserializeBinaryFromReader(message: FieldSelector, reader: jspb.BinaryReader): FieldSelector;
+}
+
+export namespace FieldSelector {
+  export type AsObject = {
+    field: string,
+  }
+}
+
 export class Criteria extends jspb.Message {
   getKey(): string;
   setKey(value: string): void;
@@ -236,6 +256,34 @@ export namespace Metadata {
   }
 }
 
+export class Argument extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getValue(): string;
+  setValue(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Argument.AsObject;
+  static toObject(includeInstance: boolean, msg: Argument): Argument.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Argument, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Argument;
+  static deserializeBinaryFromReader(message: Argument, reader: jspb.BinaryReader): Argument;
+}
+
+export namespace Argument {
+  export type AsObject = {
+    id: string,
+    name: string,
+    value: string,
+  }
+}
+
 export class Variable extends jspb.Message {
   getId(): string;
   setId(value: string): void;
@@ -250,19 +298,6 @@ export class Variable extends jspb.Message {
   clearDefaultvalue(): void;
   getDefaultvalue(): string;
   setDefaultvalue(value: string): void;
-
-  hasIn(): boolean;
-  clearIn(): void;
-  getIn(): string;
-  setIn(value: string): void;
-
-  getRequired(): boolean;
-  setRequired(value: boolean): void;
-
-  hasLabel(): boolean;
-  clearLabel(): void;
-  getLabel(): string;
-  setLabel(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Variable.AsObject;
@@ -280,37 +315,6 @@ export namespace Variable {
     name: string,
     type: string,
     defaultvalue: string,
-    pb_in: string,
-    required: boolean,
-    label: string,
-  }
-}
-
-export class ProviderModelParameter extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  getProvidermodelvariableid(): string;
-  setProvidermodelvariableid(value: string): void;
-
-  getValue(): string;
-  setValue(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ProviderModelParameter.AsObject;
-  static toObject(includeInstance: boolean, msg: ProviderModelParameter): ProviderModelParameter.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ProviderModelParameter, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ProviderModelParameter;
-  static deserializeBinaryFromReader(message: ProviderModelParameter, reader: jspb.BinaryReader): ProviderModelParameter;
-}
-
-export namespace ProviderModelParameter {
-  export type AsObject = {
-    id: string,
-    providermodelvariableid: string,
-    value: string,
   }
 }
 
@@ -361,130 +365,6 @@ export namespace Provider {
     website: string,
     status: string,
     connectconfigurationList: Array<Variable.AsObject>,
-  }
-}
-
-export class ProviderModelVariable extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  getProvidermodelid(): string;
-  setProvidermodelid(value: string): void;
-
-  getKey(): string;
-  setKey(value: string): void;
-
-  getName(): string;
-  setName(value: string): void;
-
-  getDescription(): string;
-  setDescription(value: string): void;
-
-  getDefaultvalue(): string;
-  setDefaultvalue(value: string): void;
-
-  getType(): string;
-  setType(value: string): void;
-
-  getPlace(): string;
-  setPlace(value: string): void;
-
-  clearMetadatasList(): void;
-  getMetadatasList(): Array<Metadata>;
-  setMetadatasList(value: Array<Metadata>): void;
-  addMetadatas(value?: Metadata, index?: number): Metadata;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ProviderModelVariable.AsObject;
-  static toObject(includeInstance: boolean, msg: ProviderModelVariable): ProviderModelVariable.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ProviderModelVariable, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ProviderModelVariable;
-  static deserializeBinaryFromReader(message: ProviderModelVariable, reader: jspb.BinaryReader): ProviderModelVariable;
-}
-
-export namespace ProviderModelVariable {
-  export type AsObject = {
-    id: string,
-    providermodelid: string,
-    key: string,
-    name: string,
-    description: string,
-    defaultvalue: string,
-    type: string,
-    place: string,
-    metadatasList: Array<Metadata.AsObject>,
-  }
-}
-
-export class ProviderModel extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  getName(): string;
-  setName(value: string): void;
-
-  getDescription(): string;
-  setDescription(value: string): void;
-
-  getHumanname(): string;
-  setHumanname(value: string): void;
-
-  getCategory(): string;
-  setCategory(value: string): void;
-
-  getStatus(): string;
-  setStatus(value: string): void;
-
-  getOwner(): string;
-  setOwner(value: string): void;
-
-  hasProvider(): boolean;
-  clearProvider(): void;
-  getProvider(): Provider | undefined;
-  setProvider(value?: Provider): void;
-
-  clearParametersList(): void;
-  getParametersList(): Array<ProviderModelVariable>;
-  setParametersList(value: Array<ProviderModelVariable>): void;
-  addParameters(value?: ProviderModelVariable, index?: number): ProviderModelVariable;
-
-  clearMetadatasList(): void;
-  getMetadatasList(): Array<Metadata>;
-  setMetadatasList(value: Array<Metadata>): void;
-  addMetadatas(value?: Metadata, index?: number): Metadata;
-
-  getProviderid(): string;
-  setProviderid(value: string): void;
-
-  getEndpoint(): string;
-  setEndpoint(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ProviderModel.AsObject;
-  static toObject(includeInstance: boolean, msg: ProviderModel): ProviderModel.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ProviderModel, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ProviderModel;
-  static deserializeBinaryFromReader(message: ProviderModel, reader: jspb.BinaryReader): ProviderModel;
-}
-
-export namespace ProviderModel {
-  export type AsObject = {
-    id: string,
-    name: string,
-    description: string,
-    humanname: string,
-    category: string,
-    status: string,
-    owner: string,
-    provider?: Provider.AsObject,
-    parametersList: Array<ProviderModelVariable.AsObject>,
-    metadatasList: Array<Metadata.AsObject>,
-    providerid: string,
-    endpoint: string,
   }
 }
 
@@ -723,11 +603,6 @@ export class FunctionCall extends jspb.Message {
   getArguments(): string;
   setArguments(value: string): void;
 
-  hasArgs(): boolean;
-  clearArgs(): void;
-  getArgs(): google_protobuf_struct_pb.Struct | undefined;
-  setArgs(value?: google_protobuf_struct_pb.Struct): void;
-
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): FunctionCall.AsObject;
   static toObject(includeInstance: boolean, msg: FunctionCall): FunctionCall.AsObject;
@@ -742,7 +617,6 @@ export namespace FunctionCall {
   export type AsObject = {
     name: string,
     arguments: string,
-    args?: google_protobuf_struct_pb.Struct.AsObject,
   }
 }
 
@@ -762,13 +636,16 @@ export class Knowledge extends jspb.Message {
   getLanguage(): string;
   setLanguage(value: string): void;
 
-  getEmbeddingprovidermodelid(): string;
-  setEmbeddingprovidermodelid(value: string): void;
+  getEmbeddingmodelproviderid(): string;
+  setEmbeddingmodelproviderid(value: string): void;
 
-  hasEmbeddingprovidermodel(): boolean;
-  clearEmbeddingprovidermodel(): void;
-  getEmbeddingprovidermodel(): ProviderModel | undefined;
-  setEmbeddingprovidermodel(value?: ProviderModel): void;
+  getEmbeddingmodelprovidername(): string;
+  setEmbeddingmodelprovidername(value: string): void;
+
+  clearKnowledgeembeddingmodeloptionsList(): void;
+  getKnowledgeembeddingmodeloptionsList(): Array<Metadata>;
+  setKnowledgeembeddingmodeloptionsList(value: Array<Metadata>): void;
+  addKnowledgeembeddingmodeloptions(value?: Metadata, index?: number): Metadata;
 
   getStatus(): string;
   setStatus(value: string): void;
@@ -824,9 +701,6 @@ export class Knowledge extends jspb.Message {
   getWordcount(): number;
   setWordcount(value: number): void;
 
-  getEmbeddingproviderid(): string;
-  setEmbeddingproviderid(value: string): void;
-
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Knowledge.AsObject;
   static toObject(includeInstance: boolean, msg: Knowledge): Knowledge.AsObject;
@@ -844,8 +718,9 @@ export namespace Knowledge {
     description: string,
     visibility: string,
     language: string,
-    embeddingprovidermodelid: string,
-    embeddingprovidermodel?: ProviderModel.AsObject,
+    embeddingmodelproviderid: string,
+    embeddingmodelprovidername: string,
+    knowledgeembeddingmodeloptionsList: Array<Metadata.AsObject>,
     status: string,
     createdby: string,
     createduser?: User.AsObject,
@@ -860,37 +735,6 @@ export namespace Knowledge {
     documentcount: number,
     tokencount: number,
     wordcount: number,
-    embeddingproviderid: string,
-  }
-}
-
-export class AgentPromptTemplate extends jspb.Message {
-  getType(): string;
-  setType(value: string): void;
-
-  getPrompt(): string;
-  setPrompt(value: string): void;
-
-  clearPromptvariablesList(): void;
-  getPromptvariablesList(): Array<Variable>;
-  setPromptvariablesList(value: Array<Variable>): void;
-  addPromptvariables(value?: Variable, index?: number): Variable;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AgentPromptTemplate.AsObject;
-  static toObject(includeInstance: boolean, msg: AgentPromptTemplate): AgentPromptTemplate.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AgentPromptTemplate, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AgentPromptTemplate;
-  static deserializeBinaryFromReader(message: AgentPromptTemplate, reader: jspb.BinaryReader): AgentPromptTemplate;
-}
-
-export namespace AgentPromptTemplate {
-  export type AsObject = {
-    type: string,
-    prompt: string,
-    promptvariablesList: Array<Variable.AsObject>,
   }
 }
 
@@ -918,30 +762,6 @@ export namespace TextPrompt {
   }
 }
 
-export class FilePrompt extends jspb.Message {
-  getName(): string;
-  setName(value: string): void;
-
-  getAccepts(): string;
-  setAccepts(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): FilePrompt.AsObject;
-  static toObject(includeInstance: boolean, msg: FilePrompt): FilePrompt.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: FilePrompt, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): FilePrompt;
-  static deserializeBinaryFromReader(message: FilePrompt, reader: jspb.BinaryReader): FilePrompt;
-}
-
-export namespace FilePrompt {
-  export type AsObject = {
-    name: string,
-    accepts: string,
-  }
-}
-
 export class TextChatCompletePrompt extends jspb.Message {
   clearPromptList(): void;
   getPromptList(): Array<TextPrompt>;
@@ -966,118 +786,6 @@ export class TextChatCompletePrompt extends jspb.Message {
 export namespace TextChatCompletePrompt {
   export type AsObject = {
     promptList: Array<TextPrompt.AsObject>,
-    promptvariablesList: Array<Variable.AsObject>,
-  }
-}
-
-export class TextCompletePrompt extends jspb.Message {
-  hasPrompt(): boolean;
-  clearPrompt(): void;
-  getPrompt(): TextPrompt | undefined;
-  setPrompt(value?: TextPrompt): void;
-
-  clearPromptvariablesList(): void;
-  getPromptvariablesList(): Array<Variable>;
-  setPromptvariablesList(value: Array<Variable>): void;
-  addPromptvariables(value?: Variable, index?: number): Variable;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): TextCompletePrompt.AsObject;
-  static toObject(includeInstance: boolean, msg: TextCompletePrompt): TextCompletePrompt.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: TextCompletePrompt, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): TextCompletePrompt;
-  static deserializeBinaryFromReader(message: TextCompletePrompt, reader: jspb.BinaryReader): TextCompletePrompt;
-}
-
-export namespace TextCompletePrompt {
-  export type AsObject = {
-    prompt?: TextPrompt.AsObject,
-    promptvariablesList: Array<Variable.AsObject>,
-  }
-}
-
-export class TextToImagePrompt extends jspb.Message {
-  hasPrompt(): boolean;
-  clearPrompt(): void;
-  getPrompt(): TextPrompt | undefined;
-  setPrompt(value?: TextPrompt): void;
-
-  clearPromptvariablesList(): void;
-  getPromptvariablesList(): Array<Variable>;
-  setPromptvariablesList(value: Array<Variable>): void;
-  addPromptvariables(value?: Variable, index?: number): Variable;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): TextToImagePrompt.AsObject;
-  static toObject(includeInstance: boolean, msg: TextToImagePrompt): TextToImagePrompt.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: TextToImagePrompt, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): TextToImagePrompt;
-  static deserializeBinaryFromReader(message: TextToImagePrompt, reader: jspb.BinaryReader): TextToImagePrompt;
-}
-
-export namespace TextToImagePrompt {
-  export type AsObject = {
-    prompt?: TextPrompt.AsObject,
-    promptvariablesList: Array<Variable.AsObject>,
-  }
-}
-
-export class TextToSpeechPrompt extends jspb.Message {
-  hasPrompt(): boolean;
-  clearPrompt(): void;
-  getPrompt(): TextPrompt | undefined;
-  setPrompt(value?: TextPrompt): void;
-
-  clearPromptvariablesList(): void;
-  getPromptvariablesList(): Array<Variable>;
-  setPromptvariablesList(value: Array<Variable>): void;
-  addPromptvariables(value?: Variable, index?: number): Variable;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): TextToSpeechPrompt.AsObject;
-  static toObject(includeInstance: boolean, msg: TextToSpeechPrompt): TextToSpeechPrompt.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: TextToSpeechPrompt, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): TextToSpeechPrompt;
-  static deserializeBinaryFromReader(message: TextToSpeechPrompt, reader: jspb.BinaryReader): TextToSpeechPrompt;
-}
-
-export namespace TextToSpeechPrompt {
-  export type AsObject = {
-    prompt?: TextPrompt.AsObject,
-    promptvariablesList: Array<Variable.AsObject>,
-  }
-}
-
-export class SpeechToTextPrompt extends jspb.Message {
-  hasPrompt(): boolean;
-  clearPrompt(): void;
-  getPrompt(): FilePrompt | undefined;
-  setPrompt(value?: FilePrompt): void;
-
-  clearPromptvariablesList(): void;
-  getPromptvariablesList(): Array<Variable>;
-  setPromptvariablesList(value: Array<Variable>): void;
-  addPromptvariables(value?: Variable, index?: number): Variable;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): SpeechToTextPrompt.AsObject;
-  static toObject(includeInstance: boolean, msg: SpeechToTextPrompt): SpeechToTextPrompt.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: SpeechToTextPrompt, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): SpeechToTextPrompt;
-  static deserializeBinaryFromReader(message: SpeechToTextPrompt, reader: jspb.BinaryReader): SpeechToTextPrompt;
-}
-
-export namespace SpeechToTextPrompt {
-  export type AsObject = {
-    prompt?: FilePrompt.AsObject,
     promptvariablesList: Array<Variable.AsObject>,
   }
 }
@@ -1229,13 +937,20 @@ export class AssistantConversationContext extends jspb.Message {
   getId(): string;
   setId(value: string): void;
 
-  getContext(): string;
-  setContext(value: string): void;
-
   hasMetadata(): boolean;
   clearMetadata(): void;
   getMetadata(): google_protobuf_struct_pb.Struct | undefined;
   setMetadata(value?: google_protobuf_struct_pb.Struct): void;
+
+  hasResult(): boolean;
+  clearResult(): void;
+  getResult(): google_protobuf_struct_pb.Struct | undefined;
+  setResult(value?: google_protobuf_struct_pb.Struct): void;
+
+  hasQuery(): boolean;
+  clearQuery(): void;
+  getQuery(): google_protobuf_struct_pb.Struct | undefined;
+  setQuery(value?: google_protobuf_struct_pb.Struct): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantConversationContext.AsObject;
@@ -1250,8 +965,9 @@ export class AssistantConversationContext extends jspb.Message {
 export namespace AssistantConversationContext {
   export type AsObject = {
     id: string,
-    context: string,
     metadata?: google_protobuf_struct_pb.Struct.AsObject,
+    result?: google_protobuf_struct_pb.Struct.AsObject,
+    query?: google_protobuf_struct_pb.Struct.AsObject,
   }
 }
 
@@ -1327,6 +1043,16 @@ export class AssistantConversation extends jspb.Message {
   setMetadataList(value: Array<Metadata>): void;
   addMetadata(value?: Metadata, index?: number): Metadata;
 
+  clearArgumentsList(): void;
+  getArgumentsList(): Array<Argument>;
+  setArgumentsList(value: Array<Argument>): void;
+  addArguments(value?: Argument, index?: number): Argument;
+
+  clearOptionsList(): void;
+  getOptionsList(): Array<Metadata>;
+  setOptionsList(value: Array<Metadata>): void;
+  addOptions(value?: Metadata, index?: number): Metadata;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantConversation.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantConversation): AssistantConversation.AsObject;
@@ -1358,6 +1084,8 @@ export namespace AssistantConversation {
     contextsList: Array<AssistantConversationContext.AsObject>,
     metricsList: Array<Metric.AsObject>,
     metadataList: Array<Metadata.AsObject>,
+    argumentsList: Array<Argument.AsObject>,
+    optionsList: Array<Metadata.AsObject>,
   }
 }
 
@@ -1537,6 +1265,8 @@ export interface SourceMap {
   JAVA_SDK: 6;
   PHP_SDK: 7;
   RUST_SDK: 8;
+  REACT_SDK: 9;
+  TWILIO_CALL: 10;
 }
 
 export const Source: SourceMap;
