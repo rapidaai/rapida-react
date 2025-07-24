@@ -23,9 +23,9 @@
  *
  */
 import * as React from "react";
-import { VoiceAgent } from "@/rapida/types/voice-agent";
+import { VoiceAgent } from "@/rapida/agents/voice-agent";
 import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
-import { Feedback } from "@/rapida/types/feedback";
+import { Feedback } from "@/rapida/agents/feedback";
 
 /**
  * Custom hook for managing agent connection in a voice system.

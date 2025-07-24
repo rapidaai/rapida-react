@@ -23,9 +23,10 @@
  *
  */
 import { Subject, map, Observable, startWith, finalize, concat } from "rxjs";
-import { VoiceAgent } from "@/rapida/types/voice-agent";
-import { AgentEvent, AgentEventCallback } from "@/rapida/types/agent-event";
-import { ConnectionState } from "@/rapida/types";
+import { VoiceAgent } from "@/rapida/agents/voice-agent";
+import { AgentEvent } from "@/rapida/events/agent-event";
+import { AgentEventCallback } from "@/rapida/events/agent-event-callback";
+import { ConnectionState } from "@/rapida/connections/connection-state";
 
 /**
  *
@@ -178,40 +179,6 @@ export function agentInputMediaDeviceChangeObservable(agent: VoiceAgent) {
 }
 
 /**
- * for observable of mute and unmute of the input and output of audio
- * @param agent
- * @returns
- */
-export function agentAudioInputMuteObservable(agent: VoiceAgent) {
-  const observable = observeVoiceAgentEvents(
-    agent,
-    AgentEvent.AudioInputMuteToggle
-  ).pipe(
-    map((_agn: VoiceAgent) => {
-      return { isEnable: _agn.isAudioInputEnable };
-    })
-  );
-  return observable;
-}
-
-/**
- * for observable of mute and unmute of the input and output of audio
- * @param agent
- * @returns
- */
-export function agentAudioOutputMuteObservable(agent: VoiceAgent) {
-  const observable = observeVoiceAgentEvents(
-    agent,
-    AgentEvent.AudioOutputMuteToggle
-  ).pipe(
-    map((_agn: VoiceAgent) => {
-      return { isEnable: _agn.isAudioOutputEnable };
-    })
-  );
-  return observable;
-}
-
-/**
  * when connection of agent get changed
  * @param agent
  * @returns
@@ -240,6 +207,26 @@ export function agentInputObservable(agent: VoiceAgent) {
   ).pipe(
     map((_agent: VoiceAgent) => {
       return { channel: _agent.inputChannel };
+    })
+  );
+  return observable;
+}
+
+/**
+ * overserving the input channel
+ * @param agent
+ * @returns
+ */
+export function agentInitializeObservable(agent: VoiceAgent) {
+  const observable = observeVoiceAgentEvents(
+    agent,
+    AgentEvent.Initialized
+  ).pipe(
+    map((_agent: VoiceAgent) => {
+      return {
+        deployment: _agent.getDeployment(),
+        assistant: _agent.assistant,
+      };
     })
   );
   return observable;

@@ -23,7 +23,7 @@
  *
  */
 import * as React from "react";
-import { VoiceAgent } from "@/rapida/types/voice-agent";
+import { VoiceAgent } from "@/rapida/agents/voice-agent";
 import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { useObservableState } from "@/rapida/hooks/use-observable-state";
 import { agentConnectionStateObservable } from "@/rapida/hooks/observables/voice-agent";

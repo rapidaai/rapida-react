@@ -22,7 +22,7 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import type { VoiceAgent } from "@/rapida/types/voice-agent";
+import { VoiceAgent } from "@/rapida/agents/voice-agent";
 import * as React from "react";
 
 /** @public */

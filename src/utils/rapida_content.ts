@@ -76,7 +76,10 @@ export const MULTI_MEDIA_CONTENT_FORMAT_URL: ResponseContentFormat = "url";
  * @param str
  * @returns
  */
-export const toTextContent = (str: string, format?: ResponseContentFormat) => {
+export const toTextContent = (
+  str: string,
+  format?: ResponseContentFormat
+): Content => {
   const cnt = new Content();
   if (format) cnt.setContentformat(format);
   else cnt.setContentformat(TEXT_CONTENT_FORMAT_RAW);

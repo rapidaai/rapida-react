@@ -33,7 +33,7 @@ export function useObservableState<T>(
   observable: Observable<T> | undefined,
   startWith: T,
   resetWhenObservableChanges = true
-) {
+): T {
   const [state, setState] = React.useState<T>(startWith);
   React.useEffect(() => {
     if (resetWhenObservableChanges) {

@@ -1,3 +1,4 @@
+import { useAgentDeployment } from "./hooks/use-agent-deployment";
 /*
  *  Copyright (c) 2024. Rapida
  *
@@ -22,68 +23,72 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { VoiceAgent } from "@/rapida/types/voice-agent";
-import { VoiceAgentContext } from "@/rapida/hooks/use-voice-agent";
-import "@/rapida/styles/global-styles";
-import { Conversation } from "@/rapida/components/text/conversations";
-import { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
-import { useDisconnectAgent } from "@/rapida/hooks/use-disconnect-agent";
-import { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
-import { useMicInputToggleAgent } from "@/rapida/hooks/use-mic-input-toggle-agent";
-import { useSpeakerOuputToggleAgent } from "@/rapida/hooks/use-speaker-output-toggle-agent";
-import { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
-import { AgentMultibandAudioVisualizer } from "./components/visualization/agent-multiband-audio-visualizer";
-import { AgentLiveTranscript } from "./components/live-transcript";
-import { InputOptions, OutputOptions } from "./types/agent-config";
-import { useMessageFeedback } from "./hooks/use-message-feedback";
-import { useConversationFeedback } from "./hooks/use-conversation-feedback";
+export { VoiceAgent } from "@/rapida/agents/voice-agent";
+export { VoiceAgentContext } from "@/rapida/hooks/use-voice-agent";
+export { Conversation } from "@/rapida/components/text/conversations";
+export { AgentMultibandAudioVisualizer } from "./components/visualization/agent-multiband-audio-visualizer";
+export { AgentLiveTranscript } from "./components/live-transcript";
 
-import {
-  useEnsureVoiceAgent,
-  useMaybeVoiceAgent,
-} from "./hooks/use-voice-agent";
-import {
-  useMultiband3DSpeakerTrackVolume,
-  useMultibandMicrophoneTrackVolume,
-} from "@/rapida/hooks/use-multiband-track-volume";
 export {
-  Channel,
-  ConnectionState,
-  MediaDeviceFailure,
-  ConnectionConfig,
+  toTextContent,
+  toContentText,
+  toStreamAudioContent,
+} from "./utils/rapida_content";
+// all hooks
+export { useMessageFeedback } from "./hooks/use-message-feedback";
+export { useConversationFeedback } from "./hooks/use-conversation-feedback";
+export { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
+export { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
+export { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
+export { useAgentDeployment } from "@/rapida/hooks/use-agent-deployment";
+export { ConnectionState } from "./connections/connection-state";
+export { Channel } from "./channels/index";
+export { MediaDeviceFailure } from "./devices/device-failure";
+export {
   InputOptions,
   OutputOptions,
   AgentConfig,
-  Message,
-  Feedback,
-  MessageRole,
-  MessageStatus,
-} from "@/rapida/types";
-
+} from "./agents/agent-config";
+export { Message, MessageRole, MessageStatus } from "./agents/message";
+export { Feedback } from "./agents/feedback";
 export {
-  Conversation,
-  AgentMultibandAudioVisualizer,
-  AgentLiveTranscript,
-
-  //
-
-  // context
-  VoiceAgent,
-  VoiceAgentContext,
-
-  // hooks
-  useConnectAgent,
-  useDisconnectAgent,
-  useInputModeToggleAgent,
-  useMicInputToggleAgent,
-  useSpeakerOuputToggleAgent,
-  useMultiband3DSpeakerTrackVolume,
-  useMultibandMicrophoneTrackVolume,
-  useSelectInputDeviceAgent,
   useEnsureVoiceAgent,
   useMaybeVoiceAgent,
+} from "./hooks/use-voice-agent";
+export {
+  useMultiband3DSpeakerTrackVolume,
+  useMultibandMicrophoneTrackVolume,
+} from "@/rapida/hooks/use-multiband-track-volume";
+export { ConnectionConfig } from "./connections/connection-config";
+export * from "@/rapida/utils/rapida_value";
+export * from "@/rapida/utils/rapida_source";
+export * from "@/rapida/agents/agent-deployment";
+export { useAgentMessage } from "@/rapida/hooks/use-agent-message";
 
-  //
-  useMessageFeedback,
-  useConversationFeedback,
-};
+export {
+  HEADER_ENVIRONMENT_KEY,
+  HEADER_SOURCE_KEY,
+  HEADER_REGION_KEY,
+  HEADER_API_KEY,
+  HEADER_AUTH_ID,
+  HEADER_PROJECT_ID,
+  HEADER_USER_AGENT,
+  HEADER_LANGUAGE,
+  HEADER_PLATFORM,
+  HEADER_SCREEN_WIDTH,
+  HEADER_SCREEN_HEIGHT,
+  HEADER_WINDOW_WIDTH,
+  HEADER_WINDOW_HEIGHT,
+  HEADER_TIMEZONE,
+  HEADER_COLOR_DEPTH,
+  HEADER_DEVICE_MEMORY,
+  HEADER_HARDWARE_CONCURRENCY,
+  HEADER_CONNECTION_TYPE,
+  HEADER_CONNECTION_EFFECTIVE_TYPE,
+  HEADER_COOKIES_ENABLED,
+  HEADER_DO_NOT_TRACK,
+  HEADER_REFERRER,
+  HEADER_REMOTE_URL,
+  HEADER_LATITUDE,
+  HEADER_LONGITUDE,
+} from "@/rapida/utils/rapida_header";

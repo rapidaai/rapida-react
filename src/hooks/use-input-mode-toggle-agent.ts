@@ -22,33 +22,40 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { VoiceAgent } from "@/rapida/types/voice-agent";
+import { VoiceAgent } from "@/rapida/agents/voice-agent";
 import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { useObservableState } from "@/rapida/hooks/use-observable-state";
 import * as React from "react";
 import { agentInputObservable } from "@/rapida/hooks/observables/voice-agent";
-import { Channel } from "@/rapida/types";
+import { Channel } from "@/rapida/channels";
 
 export function useInputModeToggleAgent() {
   // ensure that voice agent is initializesd
   const agent = useEnsureVoiceAgent();
 
+  /**
+   *
+   */
   // observe
-  const { _agentInputObservable, handleInputToggle } = React.useMemo(
-    () => toggleInputMode(),
-    []
-  );
+  const { _agentInputObservable, handleTextToggle, handleVoiceToggle } =
+    React.useMemo(() => toggleInputMode(), []);
 
+  /**
+   *
+   */
   const observable = React.useMemo(
     () => _agentInputObservable(agent),
     [agent, _agentInputObservable]
   );
 
+  /**
+   *
+   */
   const { channel } = useObservableState(observable, {
     channel: agent.inputChannel,
   });
 
-  return { handleInputToggle, channel };
+  return { handleTextToggle, handleVoiceToggle, channel };
 }
 
 /**
@@ -56,18 +63,27 @@ export function useInputModeToggleAgent() {
  * @returns
  */
 function toggleInputMode() {
-  const handleInputToggle = async (agent: VoiceAgent) => {
-    // toggelling the input from audio to text
-    if (agent.isAudioInput) {
-      await agent.setInputChannel(Channel.Text);
+  const handleTextToggle = async (agent: VoiceAgent) => {
+    if (agent.inputChannel == Channel.Text) {
       return;
     }
-    if (agent.isTextInput) {
-      await agent.setInputChannel(Channel.Audio);
-    }
+    await agent.setInputChannel(Channel.Text);
+    return;
   };
+
+  const handleVoiceToggle = async (agent: VoiceAgent) => {
+    // toggelling the input from audio to text
+    if (agent.inputChannel == Channel.Audio) {
+      console.warn("already in voice mode, ignore in toggle");
+      return;
+    }
+    await agent.setInputChannel(Channel.Audio);
+    return;
+  };
+
   return {
     _agentInputObservable: agentInputObservable,
-    handleInputToggle,
+    handleVoiceToggle,
+    handleTextToggle,
   };
 }

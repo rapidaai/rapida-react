@@ -24,7 +24,6 @@
  *  Utility functions for working with gRPC metadata in Rapida applications.
  */
 
-import { GetEnvironment, GetSource } from "@/rapida/utils";
 import {
   HEADER_ENVIRONMENT_KEY,
   HEADER_SOURCE_KEY,
@@ -54,6 +53,7 @@ import {
 } from "@/rapida/utils/rapida_header";
 import { grpc } from "@improbable-eng/grpc-web";
 import { ALL_REGION } from "@/rapida/utils/rapida_region";
+import { RapidaSource } from "@/rapida/utils/rapida_source";
 
 /**
  * Configures gRPC metadata with platform-specific and environment-specific headers.
@@ -63,12 +63,6 @@ import { ALL_REGION } from "@/rapida/utils/rapida_region";
  */
 export const WithPlatform = (il: grpc.Metadata): grpc.Metadata => {
   // Set the source header based on the platform
-  il.set(HEADER_SOURCE_KEY, GetSource());
-
-  // Set the environment header if in production
-
-  il.set(HEADER_ENVIRONMENT_KEY, GetEnvironment());
-
   // Set the region header to 'all' by default
   il.set(HEADER_REGION_KEY, ALL_REGION);
 
@@ -85,15 +79,20 @@ export const WithAuthContext = (
   authHeader?: ClientAuthInfo | UserAuthInfo
 ): grpc.Metadata => {
   const metadata = WithClientContext(WithPlatform(new grpc.Metadata()));
-  // Set each authentication header in the metadata
   if (authHeader) {
     for (const [key, value] of Object.entries(authHeader)) {
-      metadata.set(key, value);
+      if (key === "Client") {
+        // Handle nested Client object
+        for (const [clientKey, clientValue] of Object.entries(value)) {
+          metadata.set(clientKey, clientValue as string);
+        }
+      } else {
+        metadata.set(key, value);
+      }
     }
   }
   return metadata;
 };
-
 /**
  * an client information that will help to create an authentication token and header informatioan
  */
@@ -101,14 +100,17 @@ export interface UserAuthInfo {
   authorization: string;
   [HEADER_AUTH_ID]: string;
   [HEADER_PROJECT_ID]?: string;
+  Client?: Partial<ClientInfo>;
 }
 
 export interface ClientAuthInfo {
   [HEADER_API_KEY]: string;
   [HEADER_AUTH_ID]?: string;
+  Client?: Partial<ClientInfo>;
 }
 
 interface ClientInfo {
+  [HEADER_SOURCE_KEY]?: RapidaSource;
   [HEADER_USER_AGENT]: string;
   [HEADER_LANGUAGE]: string;
   [HEADER_PLATFORM]: string;
@@ -138,7 +140,9 @@ interface ClientInfo {
  *
  * @returns {ClientInfo} A promise that resolves to an object containing client information.
  */
-const getClientInfo = (): ClientInfo => {
+export const getClientInfo = (
+  additionalInfo: Partial<ClientInfo> = {}
+): ClientInfo => {
   const screen_width = window.screen.width;
   const screen_height = window.screen.height;
 
@@ -162,17 +166,9 @@ const getClientInfo = (): ClientInfo => {
     [HEADER_DO_NOT_TRACK]: navigator.doNotTrack,
     [HEADER_REFERRER]: document.referrer,
     [HEADER_REMOTE_URL]: window.location.href,
+    ...additionalInfo,
   };
-  if ("geolocation" in navigator) {
-    try {
-      navigator.geolocation.getCurrentPosition((position) => {
-        baseInfo[HEADER_LATITUDE] = position.coords.latitude;
-        baseInfo[HEADER_LONGITUDE] = position.coords.longitude;
-      });
-    } catch (error) {
-      console.warn("Geolocation not available or permission denied");
-    }
-  }
+
   return baseInfo;
 };
 

@@ -60,14 +60,8 @@ export const useMultibandMicrophoneTrackVolume = (
 
   useEffect(() => {
     const updateVolume = () => {
-      if (!agentContext || agentContext.recorder.getStatus() !== "recording") {
-        return;
-      }
-
-      const frequencies =
-        agentContext.recorder.getFrequencies("frequency")?.values;
+      const frequencies = agentContext?.getInputByteFrequencyData();
       if (!frequencies || frequencies.length === 0) return;
-
       // Calculate the frequency range we want to analyze
       const startIndex = Math.floor(frequencies.length * loPass);
       const endIndex = Math.floor(frequencies.length * hiPass);
@@ -158,14 +152,8 @@ export const useMultibandSpeakerTrackVolume = (
 
   useEffect(() => {
     const updateVolume = () => {
-      if (!agentContext?.player?.getFrequencies) {
-        return;
-      }
-
-      const frequencies =
-        agentContext.player.getFrequencies("frequency")?.values;
+      const frequencies = agentContext?.getOutputByteFrequencyData();
       if (!frequencies || frequencies.length === 0) return;
-
       // Calculate the frequency range we want to analyze
       const startIndex = Math.floor(frequencies.length * loPass);
       const endIndex = Math.floor(frequencies.length * hiPass);
@@ -262,14 +250,8 @@ export const useMultiband3DSpeakerTrackVolume = (
 
   useEffect(() => {
     const updateVolume = () => {
-      if (!agentContext?.player?.getFrequencies) {
-        return;
-      }
-
-      const frequencies =
-        agentContext.player.getFrequencies("frequency")?.values;
+      const frequencies = agentContext?.getOutputByteFrequencyData();
       if (!frequencies || frequencies.length === 0) return;
-
       // Calculate the frequency range we want to analyze
       const startIndex = Math.floor(frequencies.length * loPass);
       const endIndex = Math.floor(frequencies.length * hiPass);

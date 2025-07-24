@@ -30,7 +30,7 @@ import {
   agentInputMediaDeviceChangeObservable,
 } from "@/rapida/hooks/observables/voice-agent";
 import { useMaybeVoiceAgent } from "@/rapida/hooks/use-voice-agent";
-import { VoiceAgent } from "@/rapida/types/voice-agent";
+import { VoiceAgent } from "@/rapida/agents/voice-agent";
 
 /** @public */
 interface UseMediaDeviceSelectProps {
@@ -73,7 +73,11 @@ export function useSelectInputDeviceAgent({
     () => browserMediaDeviceObserver("audioinput", onError, requestPermissions),
     [requestPermissions, onError]
   );
-  const devices = useObservableState(deviceObserver, [] as MediaDeviceInfo[]);
+  // @ts-ignore
+  const devices: MediaDeviceInfo[] = useObservableState(
+    deviceObserver,
+    [] as MediaDeviceInfo[]
+  );
   //
   const [currentDeviceId, setCurrentDeviceId] = React.useState<string>(
     voiceAgentContext?.inputMediaDevice ?? ""

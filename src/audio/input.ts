@@ -1,0 +1,69 @@
+import { loadRawAudioProcessor } from "./raw-audio-processor";
+import { RecorderOptions } from "@/rapida/agents/agent-config";
+
+const LIBSAMPLERATE_JS =
+  "https://cdn.jsdelivr.net/npm/@alexanderolsen/libsamplerate-js@2.1.2/dist/libsamplerate.worklet.js";
+
+export class Input {
+  public static async create({
+    sampleRate,
+    format,
+  }: RecorderOptions): Promise<Input> {
+    let context: AudioContext | null = null;
+    let inputStream: MediaStream | null = null;
+
+    try {
+      const options: MediaTrackConstraints = {
+        sampleRate: { ideal: sampleRate },
+        echoCancellation: { ideal: true },
+        noiseSuppression: { ideal: true },
+      };
+
+      const supportsSampleRateConstraint =
+        navigator.mediaDevices.getSupportedConstraints().sampleRate;
+
+      context = new window.AudioContext(
+        supportsSampleRateConstraint ? { sampleRate } : {}
+      );
+      const analyser = context.createAnalyser();
+      if (!supportsSampleRateConstraint) {
+        await context.audioWorklet.addModule(LIBSAMPLERATE_JS);
+      }
+      await loadRawAudioProcessor(context.audioWorklet);
+      inputStream = await navigator.mediaDevices.getUserMedia({
+        audio: options,
+      });
+
+      const source = context.createMediaStreamSource(inputStream);
+      const worklet = new AudioWorkletNode(context, "raw-audio-processor");
+      worklet.port.postMessage({ type: "setFormat", format, sampleRate });
+
+      source.connect(analyser);
+      analyser.connect(worklet);
+
+      await context.resume();
+
+      return new Input(context, analyser, worklet, inputStream);
+    } catch (error) {
+      inputStream?.getTracks().forEach((track) => track.stop());
+      context?.close();
+      throw error;
+    }
+  }
+
+  private constructor(
+    public readonly context: AudioContext,
+    public readonly analyser: AnalyserNode,
+    public readonly worklet: AudioWorkletNode,
+    public readonly inputStream: MediaStream
+  ) {}
+
+  public async close() {
+    this.inputStream.getTracks().forEach((track) => track.stop());
+    await this.context.close();
+  }
+
+  public setMuted(isMuted: boolean) {
+    this.worklet.port.postMessage({ type: "setMuted", isMuted });
+  }
+}

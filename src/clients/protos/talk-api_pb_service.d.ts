@@ -59,6 +59,24 @@ type TalkServiceCreateConversationMetric = {
   readonly responseType: typeof talk_api_pb.CreateConversationMetricResponse;
 };
 
+type TalkServiceInitiateAssistantTalk = {
+  readonly methodName: string;
+  readonly service: typeof TalkService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof talk_api_pb.InitiateAssistantTalkRequest;
+  readonly responseType: typeof talk_api_pb.InitiateAssistantTalkResponse;
+};
+
+type TalkServiceInitiateBulkAssistantTalk = {
+  readonly methodName: string;
+  readonly service: typeof TalkService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof talk_api_pb.InitiateBulkAssistantTalkRequest;
+  readonly responseType: typeof talk_api_pb.InitiateBulkAssistantTalkResponse;
+};
+
 export class TalkService {
   static readonly serviceName: string;
   static readonly AssistantMessaging: TalkServiceAssistantMessaging;
@@ -67,6 +85,8 @@ export class TalkService {
   static readonly GetAllConversationMessage: TalkServiceGetAllConversationMessage;
   static readonly CreateMessageMetric: TalkServiceCreateMessageMetric;
   static readonly CreateConversationMetric: TalkServiceCreateConversationMetric;
+  static readonly InitiateAssistantTalk: TalkServiceInitiateAssistantTalk;
+  static readonly InitiateBulkAssistantTalk: TalkServiceInitiateBulkAssistantTalk;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -138,6 +158,24 @@ export class TalkServiceClient {
   createConversationMetric(
     requestMessage: talk_api_pb.CreateConversationMetricRequest,
     callback: (error: ServiceError|null, responseMessage: talk_api_pb.CreateConversationMetricResponse|null) => void
+  ): UnaryResponse;
+  initiateAssistantTalk(
+    requestMessage: talk_api_pb.InitiateAssistantTalkRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: talk_api_pb.InitiateAssistantTalkResponse|null) => void
+  ): UnaryResponse;
+  initiateAssistantTalk(
+    requestMessage: talk_api_pb.InitiateAssistantTalkRequest,
+    callback: (error: ServiceError|null, responseMessage: talk_api_pb.InitiateAssistantTalkResponse|null) => void
+  ): UnaryResponse;
+  initiateBulkAssistantTalk(
+    requestMessage: talk_api_pb.InitiateBulkAssistantTalkRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: talk_api_pb.InitiateBulkAssistantTalkResponse|null) => void
+  ): UnaryResponse;
+  initiateBulkAssistantTalk(
+    requestMessage: talk_api_pb.InitiateBulkAssistantTalkRequest,
+    callback: (error: ServiceError|null, responseMessage: talk_api_pb.InitiateBulkAssistantTalkResponse|null) => void
   ): UnaryResponse;
 }
 
