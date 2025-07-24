@@ -1,0 +1,3 @@
+[submodule "src/clients/protos/artifacts"]
+	path = src/clients/protos/artifacts
+	url = git@github.com:lexatic/internal-bridge.git
