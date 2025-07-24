@@ -29,6 +29,11 @@ export { Conversation } from "@/rapida/components/text/conversations";
 export { AgentMultibandAudioVisualizer } from "./components/visualization/agent-multiband-audio-visualizer";
 export { AgentLiveTranscript } from "./components/live-transcript";
 
+export {
+  toTextContent,
+  toContentText,
+  toStreamAudioContent,
+} from "./utils/rapida_content";
 // all hooks
 export { useMessageFeedback } from "./hooks/use-message-feedback";
 export { useConversationFeedback } from "./hooks/use-conversation-feedback";

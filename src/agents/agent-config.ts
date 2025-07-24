@@ -347,6 +347,12 @@ export class AgentConfig {
    * @param response
    * @returns
    */
+
+  //   The TODO suggests two potential approaches:
+
+  // Adding a check to filter out audio chunks
+  // Implementing a debounce mechanism
+  // These suggestions can guide the team in finding an appropriate solution to optimize the onMessage callback handling.
   onCallback(response: AssistantMessagingResponse): void {
     // check if callback is register then call it off
     switch (response.getDataCase()) {

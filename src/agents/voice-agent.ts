@@ -26,7 +26,6 @@ import { DeviceManager } from "@/rapida/devices/device-manager";
 import { AssistantMessagingResponse } from "@/rapida/clients/protos/talk-api_pb";
 import { AgentEvent } from "@/rapida/events/agent-event";
 import { AgentServerEvent } from "@/rapida/events/agent-server-event";
-import { Content } from "@/rapida/clients/protos/common_pb";
 import {
   toStreamAudioContent,
   toTextContent,
@@ -52,22 +51,28 @@ export class VoiceAgent extends Agent {
   private inputFrequencyData?: Uint8Array;
   private outputFrequencyData?: Uint8Array;
 
-  public getInputByteFrequencyData = () => {
+  public getInputByteFrequencyData = (): Uint8Array | undefined => {
     if (this.input) {
-      this.inputFrequencyData ??= new Uint8Array(
+      this.inputFrequencyData = new Uint8Array(
         this.input.analyser.frequencyBinCount
       );
-      this.input.analyser.getByteFrequencyData(this.inputFrequencyData);
+      // Use type assertion to satisfy TypeScript
+      (this.input.analyser.getByteFrequencyData as (array: Uint8Array) => void)(
+        this.inputFrequencyData
+      );
     }
     return this.inputFrequencyData;
   };
 
-  public getOutputByteFrequencyData = () => {
+  public getOutputByteFrequencyData = (): Uint8Array | undefined => {
     if (this.output) {
-      this.outputFrequencyData ??= new Uint8Array(
+      this.outputFrequencyData = new Uint8Array(
         this.output.analyser.frequencyBinCount
       );
-      this.output.analyser.getByteFrequencyData(this.outputFrequencyData);
+      // Use type assertion to satisfy TypeScript
+      (
+        this.output.analyser.getByteFrequencyData as (array: Uint8Array) => void
+      )(this.outputFrequencyData);
     }
     return this.outputFrequencyData;
   };
