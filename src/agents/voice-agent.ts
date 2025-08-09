@@ -373,6 +373,14 @@ export class VoiceAgent extends Agent {
           break;
         case AssistantConversationInterruption.InterruptionType
           .INTERRUPTION_TYPE_WORD:
+          // when interrupt then mark last message completed
+          if (this.agentMessages.length > 0) {
+            const lastIndex = this.agentMessages.length - 1;
+            this.agentMessages[lastIndex] = {
+              ...this.agentMessages[lastIndex],
+              status: MessageStatus.Complete,
+            };
+          }
           this.interruptAudio();
           break;
         default:
