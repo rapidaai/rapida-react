@@ -526,7 +526,6 @@ export class VoiceAgent extends Agent {
    * @returns
    */
   override onRecieve = async (response: AssistantMessagingResponse) => {
-    console.dir(response);
     switch (response.getDataCase()) {
       case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
         break;
@@ -545,7 +544,6 @@ export class VoiceAgent extends Agent {
         this.onChangeConversation(conversation?.getAssistantconversationid());
         break;
       case AssistantMessagingResponse.DataCase.MESSAGE:
-        console.dir(response.toObject());
         break;
       default:
         break;

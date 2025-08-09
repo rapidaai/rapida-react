@@ -34,27 +34,78 @@ import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
 import { AssistantMessagingResponse } from "../clients/protos/talk-api_pb";
 import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
 import { Channel } from "@/rapida/channels";
+import { toContentText } from "@/rapida/utils/rapida_content";
+
+export interface ConversationUserMessage
+  extends AssistantConversationUserMessage.AsObject {
+  messageText?: string;
+}
+
+export class ConversationUserMessage {
+  constructor(config?: AssistantConversationUserMessage) {
+    if (config) {
+      Object.assign(this, config.toObject());
+      this.messageText = toContentText(config.getMessage()?.getContentsList());
+    }
+  }
+}
+
+export interface ConversationAssistantMessage
+  extends AssistantConversationAssistantMessage.AsObject {
+  messageText?: string;
+}
+
+export class ConversationAssistantMessage {
+  constructor(config?: AssistantConversationAssistantMessage) {
+    if (config) {
+      Object.assign(this, config.toObject());
+      this.messageText = toContentText(config.getMessage()?.getContentsList());
+    }
+  }
+}
+
+export interface ConversationMessage
+  extends AssistantConversationMessage.AsObject {
+  userMessage?: string;
+  systemMessage?: string;
+}
+
+export class ConversationMessage {
+  constructor(config?: AssistantConversationMessage) {
+    if (config) {
+      Object.assign(this, config.toObject());
+      this.userMessage = toContentText(config.getRequest()?.getContentsList());
+      this.systemMessage = toContentText(
+        config.getResponse()?.getContentsList()
+      );
+    }
+  }
+}
 
 /**
  * Callbacks for agent
  */
 interface AgentCallback {
-  onStart?: (args: AssistantConversationConfiguration | undefined) => void;
+  onStart?: (
+    args: AssistantConversationConfiguration.AsObject | undefined
+  ) => void;
 
   // transcripting or user speaking
-  onTranscript?: (args: AssistantConversationUserMessage | undefined) => void;
+  onTranscript?: (args: ConversationUserMessage | undefined) => void;
 
   // interrupted //
   // there might be two kind of interruption
   // vad // word
-  onInterrupt?: (args: AssistantConversationInterruption | undefined) => void;
+  onInterrupt?: (
+    args: AssistantConversationInterruption.AsObject | undefined
+  ) => void;
 
   // generation
-  onGeneration?: (
-    args: AssistantConversationAssistantMessage | undefined
-  ) => void;
+  onGeneration?: (args: ConversationAssistantMessage | undefined) => void;
+
+  //
   // on complete message
-  onMessage?: (arg: AssistantConversationMessage | undefined) => void;
+  onMessage?: (arg: ConversationMessage | undefined) => void;
 }
 
 /**
@@ -349,27 +400,33 @@ export class AgentConfig {
         break;
       case AssistantMessagingResponse.DataCase.INTERRUPTION:
         if (this.callbacks && this.callbacks?.onInterrupt) {
-          this.callbacks.onInterrupt(response.getInterruption());
+          this.callbacks.onInterrupt(response.getInterruption()?.toObject());
         }
         break;
       case AssistantMessagingResponse.DataCase.USER:
         if (this.callbacks && this.callbacks?.onTranscript) {
-          this.callbacks.onTranscript(response.getUser());
+          this.callbacks.onTranscript(
+            new ConversationUserMessage(response.getUser())
+          );
         }
         break;
       case AssistantMessagingResponse.DataCase.ASSISTANT:
         if (this.callbacks && this.callbacks?.onGeneration) {
-          this.callbacks.onGeneration(response.getAssistant());
+          this.callbacks.onGeneration(
+            new ConversationAssistantMessage(response.getAssistant())
+          );
         }
         break;
       case AssistantMessagingResponse.DataCase.CONFIGURATION:
         if (this.callbacks && this.callbacks?.onStart) {
-          this.callbacks.onStart(response.getConfiguration());
+          this.callbacks.onStart(response.getConfiguration()?.toObject());
         }
         break;
       case AssistantMessagingResponse.DataCase.MESSAGE:
         if (this.callbacks && this.callbacks?.onMessage) {
-          this.callbacks.onMessage(response.getMessage());
+          this.callbacks.onMessage(
+            new ConversationMessage(response.getMessage())
+          );
         }
         break;
       default:
