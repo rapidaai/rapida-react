@@ -1045,3 +1045,221 @@ export namespace UpdateEndpointDetailRequest {
   }
 }
 
+export class EndpointLog extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getEndpointid(): string;
+  setEndpointid(value: string): void;
+
+  getSource(): string;
+  setSource(value: string): void;
+
+  getStatus(): string;
+  setStatus(value: string): void;
+
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  getOrganizationid(): string;
+  setOrganizationid(value: string): void;
+
+  getEndpointprovidermodelid(): string;
+  setEndpointprovidermodelid(value: string): void;
+
+  getTimetaken(): string;
+  setTimetaken(value: string): void;
+
+  hasCreateddate(): boolean;
+  clearCreateddate(): void;
+  getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setCreateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasUpdateddate(): boolean;
+  clearUpdateddate(): void;
+  getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  clearMetricsList(): void;
+  getMetricsList(): Array<common_pb.Metric>;
+  setMetricsList(value: Array<common_pb.Metric>): void;
+  addMetrics(value?: common_pb.Metric, index?: number): common_pb.Metric;
+
+  clearMetadataList(): void;
+  getMetadataList(): Array<common_pb.Metadata>;
+  setMetadataList(value: Array<common_pb.Metadata>): void;
+  addMetadata(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
+
+  clearArgumentsList(): void;
+  getArgumentsList(): Array<common_pb.Argument>;
+  setArgumentsList(value: Array<common_pb.Argument>): void;
+  addArguments(value?: common_pb.Argument, index?: number): common_pb.Argument;
+
+  clearOptionsList(): void;
+  getOptionsList(): Array<common_pb.Metadata>;
+  setOptionsList(value: Array<common_pb.Metadata>): void;
+  addOptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): EndpointLog.AsObject;
+  static toObject(includeInstance: boolean, msg: EndpointLog): EndpointLog.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: EndpointLog, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): EndpointLog;
+  static deserializeBinaryFromReader(message: EndpointLog, reader: jspb.BinaryReader): EndpointLog;
+}
+
+export namespace EndpointLog {
+  export type AsObject = {
+    id: string,
+    endpointid: string,
+    source: string,
+    status: string,
+    projectid: string,
+    organizationid: string,
+    endpointprovidermodelid: string,
+    timetaken: string,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    metricsList: Array<common_pb.Metric.AsObject>,
+    metadataList: Array<common_pb.Metadata.AsObject>,
+    argumentsList: Array<common_pb.Argument.AsObject>,
+    optionsList: Array<common_pb.Metadata.AsObject>,
+  }
+}
+
+export class GetAllEndpointLogRequest extends jspb.Message {
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): common_pb.Paginate | undefined;
+  setPaginate(value?: common_pb.Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+
+  getEndpointid(): string;
+  setEndpointid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllEndpointLogRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllEndpointLogRequest): GetAllEndpointLogRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllEndpointLogRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllEndpointLogRequest;
+  static deserializeBinaryFromReader(message: GetAllEndpointLogRequest, reader: jspb.BinaryReader): GetAllEndpointLogRequest;
+}
+
+export namespace GetAllEndpointLogRequest {
+  export type AsObject = {
+    paginate?: common_pb.Paginate.AsObject,
+    criteriasList: Array<common_pb.Criteria.AsObject>,
+    endpointid: string,
+  }
+}
+
+export class GetAllEndpointLogResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<EndpointLog>;
+  setDataList(value: Array<EndpointLog>): void;
+  addData(value?: EndpointLog, index?: number): EndpointLog;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllEndpointLogResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllEndpointLogResponse): GetAllEndpointLogResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllEndpointLogResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllEndpointLogResponse;
+  static deserializeBinaryFromReader(message: GetAllEndpointLogResponse, reader: jspb.BinaryReader): GetAllEndpointLogResponse;
+}
+
+export namespace GetAllEndpointLogResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<EndpointLog.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class GetEndpointLogRequest extends jspb.Message {
+  getEndpointid(): string;
+  setEndpointid(value: string): void;
+
+  getId(): string;
+  setId(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetEndpointLogRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetEndpointLogRequest): GetEndpointLogRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetEndpointLogRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetEndpointLogRequest;
+  static deserializeBinaryFromReader(message: GetEndpointLogRequest, reader: jspb.BinaryReader): GetEndpointLogRequest;
+}
+
+export namespace GetEndpointLogRequest {
+  export type AsObject = {
+    endpointid: string,
+    id: string,
+  }
+}
+
+export class GetEndpointLogResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasData(): boolean;
+  clearData(): void;
+  getData(): EndpointLog | undefined;
+  setData(value?: EndpointLog): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetEndpointLogResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetEndpointLogResponse): GetEndpointLogResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetEndpointLogResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetEndpointLogResponse;
+  static deserializeBinaryFromReader(message: GetEndpointLogResponse, reader: jspb.BinaryReader): GetEndpointLogResponse;
+}
+
+export namespace GetEndpointLogResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    data?: EndpointLog.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
+}
+

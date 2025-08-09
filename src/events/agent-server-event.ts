@@ -32,15 +32,7 @@ export enum AgentServerEvent {
   //
   Interruption = "talk.onInterrupt",
   Transcript = "talk.onTranscript",
-
+  Generation = "talk.onGeneration",
   // start and complete
   Start = "talk.onStart",
-  Complete = "talk.onComplete",
-
-  Generation = "talk.onGeneration",
-  CompleteGeneration = "talk.onCompleteGeneration",
-
-  // start conversation
-  StartConversation = "talk.onStartConversation",
-  CompleteConversation = "talk.onCompleteConversation",
 }

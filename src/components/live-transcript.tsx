@@ -30,6 +30,11 @@ import { AgentServerEvent } from "@/rapida/events/agent-server-event";
 import { useMaybeVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { cn } from "@/rapida/styles";
 import React, { FC, HTMLAttributes, useState } from "react";
+import {
+  AssistantConversationInterruption,
+  AssistantConversationUserMessage,
+} from "@/rapida/clients/protos/talk-api_pb";
+import { toContentText, toTextContent } from "@/rapida/utils/rapida_content";
 
 /**
  * agent live transcript props
@@ -65,11 +70,11 @@ export const AgentLiveTranscript: FC<AgentLiveTranscriptProps> = ({
     const serverEventListner = agentServerEventObserver(
       agentContext!
     ).subscribe((agentEvents) => {
-      if (
-        agentEvents?.eventType === AgentServerEvent.Transcript ||
-        agentEvents?.eventType === AgentServerEvent.Complete
-      ) {
-        setTranscript(agentEvents.transcript);
+      if (agentEvents?.eventType === AgentServerEvent.Transcript) {
+        if (agentEvents.argument) {
+          let arg = agentEvents.argument as AssistantConversationUserMessage;
+          setTranscript(toContentText(arg.getMessage()?.getContentsList()));
+        }
       }
     });
     return () => {

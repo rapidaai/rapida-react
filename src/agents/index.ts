@@ -32,7 +32,7 @@ import { ConnectionState } from "@/rapida/connections/connection-state";
 import { AgentEventCallback } from "@/rapida/events/agent-event-callback";
 import { EventEmitter } from "events";
 import type TypedEmitter from "typed-emitter";
-import { Content, Event, Message } from "@/rapida/clients/protos/common_pb";
+import { Content, Message } from "@/rapida/clients/protos/common_pb";
 import { Message as LocalMessage, MessageRole } from "@/rapida/agents/message";
 import { AgentEvent } from "@/rapida/events/agent-event";
 import {
@@ -97,29 +97,12 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
   protected agentConfig: AgentConfig;
   protected connectionConfig: ConnectionConfig;
 
-  //
-  /**
-   *
-   */
-  protected agentEvents: Event[];
-  get events(): Event[] {
-    return this.agentEvents;
-  }
-
   /**
    *
    */
   protected agentMessages: LocalMessage[];
   get messages(): LocalMessage[] {
     return this.agentMessages;
-  }
-
-  /**
-   *
-   */
-  protected agentTranscript: string = "";
-  get transcript(): string {
-    return this.agentTranscript;
   }
 
   /**
@@ -138,9 +121,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     //
     //
     this.agentMessagingId = undefined;
-    this.agentEvents = [];
     this.agentMessages = [];
-    this.agentTranscript = "";
 
     this.getAssistant()
       .then((data) => {
@@ -350,8 +331,8 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    * @returns
    */
   protected onDataChange = async (response: AssistantMessagingResponse) => {
-    this.agentConfig.onCallback(response);
     if (this.onRecieve) this.onRecieve(response);
+    this.agentConfig.onCallback(response);
   };
 
   /**

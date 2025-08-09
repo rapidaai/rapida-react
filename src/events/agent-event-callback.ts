@@ -25,7 +25,12 @@
 import { Feedback } from "@/rapida/agents/feedback";
 import { Channel } from "@/rapida/channels";
 import { Assistant } from "@/rapida/clients/protos/assistant-api_pb";
-import { Event } from "@/rapida/clients/protos/common_pb";
+import {
+  AssistantConversationAssistantMessage,
+  AssistantConversationConfiguration,
+  AssistantConversationInterruption,
+  AssistantConversationUserMessage,
+} from "@/rapida/clients/protos/talk-api_pb";
 import { ConnectionState } from "@/rapida/connections/connection-state";
 import { AgentServerEvent } from "@/rapida/events/agent-server-event";
 
@@ -69,7 +74,14 @@ export type AgentEventCallback = {
   onOutputChannelSwitch: (cnl: Channel) => void;
 
   // when server sent an event to client
-  onServerEvent: (eventType: AgentServerEvent, event: Event) => void;
+  onServerEvent: (
+    eventType: AgentServerEvent,
+    event?:
+      | AssistantConversationConfiguration
+      | AssistantConversationInterruption
+      | AssistantConversationUserMessage
+      | AssistantConversationAssistantMessage
+  ) => void;
 
   //
   onMessageFeedback: (feedback: Feedback) => void;

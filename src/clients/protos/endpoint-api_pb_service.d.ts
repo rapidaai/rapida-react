@@ -104,6 +104,24 @@ type EndpointServiceUpdateEndpointDetail = {
   readonly responseType: typeof endpoint_api_pb.GetEndpointResponse;
 };
 
+type EndpointServiceGetAllEndpointLog = {
+  readonly methodName: string;
+  readonly service: typeof EndpointService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof endpoint_api_pb.GetAllEndpointLogRequest;
+  readonly responseType: typeof endpoint_api_pb.GetAllEndpointLogResponse;
+};
+
+type EndpointServiceGetEndpointLog = {
+  readonly methodName: string;
+  readonly service: typeof EndpointService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof endpoint_api_pb.GetEndpointLogRequest;
+  readonly responseType: typeof endpoint_api_pb.GetEndpointLogResponse;
+};
+
 export class EndpointService {
   static readonly serviceName: string;
   static readonly GetEndpoint: EndpointServiceGetEndpoint;
@@ -117,6 +135,8 @@ export class EndpointService {
   static readonly CreateEndpointTag: EndpointServiceCreateEndpointTag;
   static readonly ForkEndpoint: EndpointServiceForkEndpoint;
   static readonly UpdateEndpointDetail: EndpointServiceUpdateEndpointDetail;
+  static readonly GetAllEndpointLog: EndpointServiceGetAllEndpointLog;
+  static readonly GetEndpointLog: EndpointServiceGetEndpointLog;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -249,6 +269,24 @@ export class EndpointServiceClient {
   updateEndpointDetail(
     requestMessage: endpoint_api_pb.UpdateEndpointDetailRequest,
     callback: (error: ServiceError|null, responseMessage: endpoint_api_pb.GetEndpointResponse|null) => void
+  ): UnaryResponse;
+  getAllEndpointLog(
+    requestMessage: endpoint_api_pb.GetAllEndpointLogRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: endpoint_api_pb.GetAllEndpointLogResponse|null) => void
+  ): UnaryResponse;
+  getAllEndpointLog(
+    requestMessage: endpoint_api_pb.GetAllEndpointLogRequest,
+    callback: (error: ServiceError|null, responseMessage: endpoint_api_pb.GetAllEndpointLogResponse|null) => void
+  ): UnaryResponse;
+  getEndpointLog(
+    requestMessage: endpoint_api_pb.GetEndpointLogRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: endpoint_api_pb.GetEndpointLogResponse|null) => void
+  ): UnaryResponse;
+  getEndpointLog(
+    requestMessage: endpoint_api_pb.GetEndpointLogRequest,
+    callback: (error: ServiceError|null, responseMessage: endpoint_api_pb.GetEndpointLogResponse|null) => void
   ): UnaryResponse;
 }
 

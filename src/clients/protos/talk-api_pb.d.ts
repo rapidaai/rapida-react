@@ -3,6 +3,7 @@
 
 import * as jspb from "google-protobuf";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
+import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
 import * as common_pb from "./common_pb";
 
 export class AssistantDefinition extends jspb.Message {
@@ -76,6 +77,148 @@ export namespace AssistantMessagingRequest {
   }
 }
 
+export class AssistantConversationConfiguration extends jspb.Message {
+  getAssistantconversationid(): string;
+  setAssistantconversationid(value: string): void;
+
+  hasAssistant(): boolean;
+  clearAssistant(): void;
+  getAssistant(): AssistantDefinition | undefined;
+  setAssistant(value?: AssistantDefinition): void;
+
+  hasTime(): boolean;
+  clearTime(): void;
+  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantConversationConfiguration.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantConversationConfiguration): AssistantConversationConfiguration.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantConversationConfiguration, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantConversationConfiguration;
+  static deserializeBinaryFromReader(message: AssistantConversationConfiguration, reader: jspb.BinaryReader): AssistantConversationConfiguration;
+}
+
+export namespace AssistantConversationConfiguration {
+  export type AsObject = {
+    assistantconversationid: string,
+    assistant?: AssistantDefinition.AsObject,
+    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
+export class AssistantConversationInterruption extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getType(): AssistantConversationInterruption.InterruptionTypeMap[keyof AssistantConversationInterruption.InterruptionTypeMap];
+  setType(value: AssistantConversationInterruption.InterruptionTypeMap[keyof AssistantConversationInterruption.InterruptionTypeMap]): void;
+
+  hasTime(): boolean;
+  clearTime(): void;
+  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantConversationInterruption.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantConversationInterruption): AssistantConversationInterruption.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantConversationInterruption, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantConversationInterruption;
+  static deserializeBinaryFromReader(message: AssistantConversationInterruption, reader: jspb.BinaryReader): AssistantConversationInterruption;
+}
+
+export namespace AssistantConversationInterruption {
+  export type AsObject = {
+    id: string,
+    type: AssistantConversationInterruption.InterruptionTypeMap[keyof AssistantConversationInterruption.InterruptionTypeMap],
+    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+
+  export interface InterruptionTypeMap {
+    INTERRUPTION_TYPE_UNSPECIFIED: 0;
+    INTERRUPTION_TYPE_VAD: 1;
+    INTERRUPTION_TYPE_WORD: 2;
+  }
+
+  export const InterruptionType: InterruptionTypeMap;
+}
+
+export class AssistantConversationUserMessage extends jspb.Message {
+  hasMessage(): boolean;
+  clearMessage(): void;
+  getMessage(): common_pb.Message | undefined;
+  setMessage(value?: common_pb.Message): void;
+
+  getId(): string;
+  setId(value: string): void;
+
+  getCompleted(): boolean;
+  setCompleted(value: boolean): void;
+
+  hasTime(): boolean;
+  clearTime(): void;
+  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantConversationUserMessage.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantConversationUserMessage): AssistantConversationUserMessage.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantConversationUserMessage, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantConversationUserMessage;
+  static deserializeBinaryFromReader(message: AssistantConversationUserMessage, reader: jspb.BinaryReader): AssistantConversationUserMessage;
+}
+
+export namespace AssistantConversationUserMessage {
+  export type AsObject = {
+    message?: common_pb.Message.AsObject,
+    id: string,
+    completed: boolean,
+    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
+export class AssistantConversationAssistantMessage extends jspb.Message {
+  hasMessage(): boolean;
+  clearMessage(): void;
+  getMessage(): common_pb.Message | undefined;
+  setMessage(value?: common_pb.Message): void;
+
+  getId(): string;
+  setId(value: string): void;
+
+  getCompleted(): boolean;
+  setCompleted(value: boolean): void;
+
+  hasTime(): boolean;
+  clearTime(): void;
+  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantConversationAssistantMessage.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantConversationAssistantMessage): AssistantConversationAssistantMessage.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantConversationAssistantMessage, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantConversationAssistantMessage;
+  static deserializeBinaryFromReader(message: AssistantConversationAssistantMessage, reader: jspb.BinaryReader): AssistantConversationAssistantMessage;
+}
+
+export namespace AssistantConversationAssistantMessage {
+  export type AsObject = {
+    message?: common_pb.Message.AsObject,
+    id: string,
+    completed: boolean,
+    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
 export class AssistantMessagingResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
@@ -88,15 +231,30 @@ export class AssistantMessagingResponse extends jspb.Message {
   getError(): common_pb.Error | undefined;
   setError(value?: common_pb.Error): void;
 
+  hasConfiguration(): boolean;
+  clearConfiguration(): void;
+  getConfiguration(): AssistantConversationConfiguration | undefined;
+  setConfiguration(value?: AssistantConversationConfiguration): void;
+
+  hasInterruption(): boolean;
+  clearInterruption(): void;
+  getInterruption(): AssistantConversationInterruption | undefined;
+  setInterruption(value?: AssistantConversationInterruption): void;
+
+  hasUser(): boolean;
+  clearUser(): void;
+  getUser(): AssistantConversationUserMessage | undefined;
+  setUser(value?: AssistantConversationUserMessage): void;
+
+  hasAssistant(): boolean;
+  clearAssistant(): void;
+  getAssistant(): AssistantConversationAssistantMessage | undefined;
+  setAssistant(value?: AssistantConversationAssistantMessage): void;
+
   hasMessage(): boolean;
   clearMessage(): void;
   getMessage(): common_pb.AssistantConversationMessage | undefined;
   setMessage(value?: common_pb.AssistantConversationMessage): void;
-
-  hasEvent(): boolean;
-  clearEvent(): void;
-  getEvent(): common_pb.Event | undefined;
-  setEvent(value?: common_pb.Event): void;
 
   getDataCase(): AssistantMessagingResponse.DataCase;
   serializeBinary(): Uint8Array;
@@ -114,14 +272,20 @@ export namespace AssistantMessagingResponse {
     code: number,
     success: boolean,
     error?: common_pb.Error.AsObject,
+    configuration?: AssistantConversationConfiguration.AsObject,
+    interruption?: AssistantConversationInterruption.AsObject,
+    user?: AssistantConversationUserMessage.AsObject,
+    assistant?: AssistantConversationAssistantMessage.AsObject,
     message?: common_pb.AssistantConversationMessage.AsObject,
-    event?: common_pb.Event.AsObject,
   }
 
   export enum DataCase {
     DATA_NOT_SET = 0,
-    MESSAGE = 3,
-    EVENT = 5,
+    CONFIGURATION = 9,
+    INTERRUPTION = 10,
+    USER = 11,
+    ASSISTANT = 12,
+    MESSAGE = 13,
   }
 }
 

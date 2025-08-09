@@ -44,7 +44,7 @@ AssistantService.CreateAssistant = {
   requestStream: false,
   responseStream: false,
   requestType: assistant_api_pb.CreateAssistantRequest,
-  responseType: assistant_api_pb.CreateAssistantResponse
+  responseType: assistant_api_pb.GetAssistantResponse
 };
 
 AssistantService.CreateAssistantProviderModel = {
@@ -53,7 +53,7 @@ AssistantService.CreateAssistantProviderModel = {
   requestStream: false,
   responseStream: false,
   requestType: assistant_api_pb.CreateAssistantProviderModelRequest,
-  responseType: assistant_api_pb.CreateAssistantProviderModelResponse
+  responseType: assistant_api_pb.GetAssistantProviderModelResponse
 };
 
 AssistantService.CreateAssistantKnowledgeConfiguration = {
@@ -80,7 +80,7 @@ AssistantService.UpdateAssistantVersion = {
   requestStream: false,
   responseStream: false,
   requestType: assistant_api_pb.UpdateAssistantVersionRequest,
-  responseType: assistant_api_pb.UpdateAssistantVersionResponse
+  responseType: assistant_api_pb.GetAssistantResponse
 };
 
 AssistantService.UpdateAssistantDetail = {
@@ -137,6 +137,33 @@ AssistantService.GetAllAssistantTool = {
   responseType: assistant_api_pb.GetAllAssistantToolResponse
 };
 
+AssistantService.GetAssistantConversation = {
+  methodName: "GetAssistantConversation",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.GetAssistantConversationRequest,
+  responseType: assistant_api_pb.GetAssistantConversationResponse
+};
+
+AssistantService.DeleteAssistant = {
+  methodName: "DeleteAssistant",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.DeleteAssistantRequest,
+  responseType: assistant_api_pb.GetAssistantResponse
+};
+
+AssistantService.GetAssistantWebhookLog = {
+  methodName: "GetAssistantWebhookLog",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.GetAssistantWebhookLogRequest,
+  responseType: assistant_api_pb.GetAssistantWebhookLogResponse
+};
+
 AssistantService.GetAllAssistantWebhookLog = {
   methodName: "GetAllAssistantWebhookLog",
   service: AssistantService,
@@ -170,7 +197,7 @@ AssistantService.CreateAssistantWebhook = {
   requestStream: false,
   responseStream: false,
   requestType: assistant_api_pb.CreateAssistantWebhookRequest,
-  responseType: assistant_api_pb.CreateAssistantWebhookResponse
+  responseType: assistant_api_pb.GetAssistantWebhookResponse
 };
 
 AssistantService.UpdateAssistantWebhook = {
@@ -179,25 +206,61 @@ AssistantService.UpdateAssistantWebhook = {
   requestStream: false,
   responseStream: false,
   requestType: assistant_api_pb.UpdateAssistantWebhookRequest,
-  responseType: assistant_api_pb.UpdateAssistantWebhookResponse
+  responseType: assistant_api_pb.GetAssistantWebhookResponse
 };
 
-AssistantService.GetAssistantConversation = {
-  methodName: "GetAssistantConversation",
+AssistantService.DeleteAssistantWebhook = {
+  methodName: "DeleteAssistantWebhook",
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.GetAssistantConversationRequest,
-  responseType: assistant_api_pb.GetAssistantConversationResponse
+  requestType: assistant_api_pb.DeleteAssistantWebhookRequest,
+  responseType: assistant_api_pb.GetAssistantWebhookResponse
 };
 
-AssistantService.DeleteAssistant = {
-  methodName: "DeleteAssistant",
+AssistantService.GetAssistantAnalysis = {
+  methodName: "GetAssistantAnalysis",
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.DeleteAssistantRequest,
-  responseType: common_pb.BaseResponse
+  requestType: assistant_api_pb.GetAssistantAnalysisRequest,
+  responseType: assistant_api_pb.GetAssistantAnalysisResponse
+};
+
+AssistantService.UpdateAssistantAnalysis = {
+  methodName: "UpdateAssistantAnalysis",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.UpdateAssistantAnalysisRequest,
+  responseType: assistant_api_pb.GetAssistantAnalysisResponse
+};
+
+AssistantService.CreateAssistantAnalysis = {
+  methodName: "CreateAssistantAnalysis",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.CreateAssistantAnalysisRequest,
+  responseType: assistant_api_pb.GetAssistantAnalysisResponse
+};
+
+AssistantService.DeleteAssistantAnalysis = {
+  methodName: "DeleteAssistantAnalysis",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.DeleteAssistantAnalysisRequest,
+  responseType: assistant_api_pb.GetAssistantAnalysisResponse
+};
+
+AssistantService.GetAllAssistantAnalysis = {
+  methodName: "GetAllAssistantAnalysis",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.GetAllAssistantAnalysisRequest,
+  responseType: assistant_api_pb.GetAllAssistantAnalysisResponse
 };
 
 exports.AssistantService = AssistantService;
@@ -641,6 +704,99 @@ AssistantServiceClient.prototype.getAllAssistantTool = function getAllAssistantT
   };
 };
 
+AssistantServiceClient.prototype.getAssistantConversation = function getAssistantConversation(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAssistantConversation, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.deleteAssistant = function deleteAssistant(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.DeleteAssistant, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.getAssistantWebhookLog = function getAssistantWebhookLog(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAssistantWebhookLog, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
 AssistantServiceClient.prototype.getAllAssistantWebhookLog = function getAllAssistantWebhookLog(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
@@ -796,11 +952,11 @@ AssistantServiceClient.prototype.updateAssistantWebhook = function updateAssista
   };
 };
 
-AssistantServiceClient.prototype.getAssistantConversation = function getAssistantConversation(requestMessage, metadata, callback) {
+AssistantServiceClient.prototype.deleteAssistantWebhook = function deleteAssistantWebhook(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(AssistantService.GetAssistantConversation, {
+  var client = grpc.unary(AssistantService.DeleteAssistantWebhook, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -827,11 +983,135 @@ AssistantServiceClient.prototype.getAssistantConversation = function getAssistan
   };
 };
 
-AssistantServiceClient.prototype.deleteAssistant = function deleteAssistant(requestMessage, metadata, callback) {
+AssistantServiceClient.prototype.getAssistantAnalysis = function getAssistantAnalysis(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(AssistantService.DeleteAssistant, {
+  var client = grpc.unary(AssistantService.GetAssistantAnalysis, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.updateAssistantAnalysis = function updateAssistantAnalysis(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.UpdateAssistantAnalysis, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.createAssistantAnalysis = function createAssistantAnalysis(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.CreateAssistantAnalysis, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.deleteAssistantAnalysis = function deleteAssistantAnalysis(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.DeleteAssistantAnalysis, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.getAllAssistantAnalysis = function getAllAssistantAnalysis(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAllAssistantAnalysis, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

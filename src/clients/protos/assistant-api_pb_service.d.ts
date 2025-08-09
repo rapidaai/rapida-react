@@ -38,7 +38,7 @@ type AssistantServiceCreateAssistant = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof assistant_api_pb.CreateAssistantRequest;
-  readonly responseType: typeof assistant_api_pb.CreateAssistantResponse;
+  readonly responseType: typeof assistant_api_pb.GetAssistantResponse;
 };
 
 type AssistantServiceCreateAssistantProviderModel = {
@@ -47,7 +47,7 @@ type AssistantServiceCreateAssistantProviderModel = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof assistant_api_pb.CreateAssistantProviderModelRequest;
-  readonly responseType: typeof assistant_api_pb.CreateAssistantProviderModelResponse;
+  readonly responseType: typeof assistant_api_pb.GetAssistantProviderModelResponse;
 };
 
 type AssistantServiceCreateAssistantKnowledgeConfiguration = {
@@ -74,7 +74,7 @@ type AssistantServiceUpdateAssistantVersion = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof assistant_api_pb.UpdateAssistantVersionRequest;
-  readonly responseType: typeof assistant_api_pb.UpdateAssistantVersionResponse;
+  readonly responseType: typeof assistant_api_pb.GetAssistantResponse;
 };
 
 type AssistantServiceUpdateAssistantDetail = {
@@ -131,6 +131,33 @@ type AssistantServiceGetAllAssistantTool = {
   readonly responseType: typeof assistant_api_pb.GetAllAssistantToolResponse;
 };
 
+type AssistantServiceGetAssistantConversation = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.GetAssistantConversationRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantConversationResponse;
+};
+
+type AssistantServiceDeleteAssistant = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.DeleteAssistantRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantResponse;
+};
+
+type AssistantServiceGetAssistantWebhookLog = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.GetAssistantWebhookLogRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantWebhookLogResponse;
+};
+
 type AssistantServiceGetAllAssistantWebhookLog = {
   readonly methodName: string;
   readonly service: typeof AssistantService;
@@ -164,7 +191,7 @@ type AssistantServiceCreateAssistantWebhook = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof assistant_api_pb.CreateAssistantWebhookRequest;
-  readonly responseType: typeof assistant_api_pb.CreateAssistantWebhookResponse;
+  readonly responseType: typeof assistant_api_pb.GetAssistantWebhookResponse;
 };
 
 type AssistantServiceUpdateAssistantWebhook = {
@@ -173,25 +200,61 @@ type AssistantServiceUpdateAssistantWebhook = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof assistant_api_pb.UpdateAssistantWebhookRequest;
-  readonly responseType: typeof assistant_api_pb.UpdateAssistantWebhookResponse;
+  readonly responseType: typeof assistant_api_pb.GetAssistantWebhookResponse;
 };
 
-type AssistantServiceGetAssistantConversation = {
+type AssistantServiceDeleteAssistantWebhook = {
   readonly methodName: string;
   readonly service: typeof AssistantService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof assistant_api_pb.GetAssistantConversationRequest;
-  readonly responseType: typeof assistant_api_pb.GetAssistantConversationResponse;
+  readonly requestType: typeof assistant_api_pb.DeleteAssistantWebhookRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantWebhookResponse;
 };
 
-type AssistantServiceDeleteAssistant = {
+type AssistantServiceGetAssistantAnalysis = {
   readonly methodName: string;
   readonly service: typeof AssistantService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof assistant_api_pb.DeleteAssistantRequest;
-  readonly responseType: typeof common_pb.BaseResponse;
+  readonly requestType: typeof assistant_api_pb.GetAssistantAnalysisRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantAnalysisResponse;
+};
+
+type AssistantServiceUpdateAssistantAnalysis = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.UpdateAssistantAnalysisRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantAnalysisResponse;
+};
+
+type AssistantServiceCreateAssistantAnalysis = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.CreateAssistantAnalysisRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantAnalysisResponse;
+};
+
+type AssistantServiceDeleteAssistantAnalysis = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.DeleteAssistantAnalysisRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantAnalysisResponse;
+};
+
+type AssistantServiceGetAllAssistantAnalysis = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.GetAllAssistantAnalysisRequest;
+  readonly responseType: typeof assistant_api_pb.GetAllAssistantAnalysisResponse;
 };
 
 export class AssistantService {
@@ -210,13 +273,20 @@ export class AssistantService {
   static readonly GetAllConversationMessage: AssistantServiceGetAllConversationMessage;
   static readonly CreateAssistantToolConfiguration: AssistantServiceCreateAssistantToolConfiguration;
   static readonly GetAllAssistantTool: AssistantServiceGetAllAssistantTool;
+  static readonly GetAssistantConversation: AssistantServiceGetAssistantConversation;
+  static readonly DeleteAssistant: AssistantServiceDeleteAssistant;
+  static readonly GetAssistantWebhookLog: AssistantServiceGetAssistantWebhookLog;
   static readonly GetAllAssistantWebhookLog: AssistantServiceGetAllAssistantWebhookLog;
   static readonly GetAllAssistantWebhook: AssistantServiceGetAllAssistantWebhook;
   static readonly GetAssistantWebhook: AssistantServiceGetAssistantWebhook;
   static readonly CreateAssistantWebhook: AssistantServiceCreateAssistantWebhook;
   static readonly UpdateAssistantWebhook: AssistantServiceUpdateAssistantWebhook;
-  static readonly GetAssistantConversation: AssistantServiceGetAssistantConversation;
-  static readonly DeleteAssistant: AssistantServiceDeleteAssistant;
+  static readonly DeleteAssistantWebhook: AssistantServiceDeleteAssistantWebhook;
+  static readonly GetAssistantAnalysis: AssistantServiceGetAssistantAnalysis;
+  static readonly UpdateAssistantAnalysis: AssistantServiceUpdateAssistantAnalysis;
+  static readonly CreateAssistantAnalysis: AssistantServiceCreateAssistantAnalysis;
+  static readonly DeleteAssistantAnalysis: AssistantServiceDeleteAssistantAnalysis;
+  static readonly GetAllAssistantAnalysis: AssistantServiceGetAllAssistantAnalysis;
 }
 
 type ToolServiceGetAllTool = {
@@ -305,20 +375,20 @@ export class AssistantServiceClient {
   createAssistant(
     requestMessage: assistant_api_pb.CreateAssistantRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.CreateAssistantResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantResponse|null) => void
   ): UnaryResponse;
   createAssistant(
     requestMessage: assistant_api_pb.CreateAssistantRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.CreateAssistantResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantResponse|null) => void
   ): UnaryResponse;
   createAssistantProviderModel(
     requestMessage: assistant_api_pb.CreateAssistantProviderModelRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.CreateAssistantProviderModelResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantProviderModelResponse|null) => void
   ): UnaryResponse;
   createAssistantProviderModel(
     requestMessage: assistant_api_pb.CreateAssistantProviderModelRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.CreateAssistantProviderModelResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantProviderModelResponse|null) => void
   ): UnaryResponse;
   createAssistantKnowledgeConfiguration(
     requestMessage: assistant_api_pb.CreateAssistantKnowledgeConfigurationRequest,
@@ -341,11 +411,11 @@ export class AssistantServiceClient {
   updateAssistantVersion(
     requestMessage: assistant_api_pb.UpdateAssistantVersionRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.UpdateAssistantVersionResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantResponse|null) => void
   ): UnaryResponse;
   updateAssistantVersion(
     requestMessage: assistant_api_pb.UpdateAssistantVersionRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.UpdateAssistantVersionResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantResponse|null) => void
   ): UnaryResponse;
   updateAssistantDetail(
     requestMessage: assistant_api_pb.UpdateAssistantDetailRequest,
@@ -401,6 +471,33 @@ export class AssistantServiceClient {
     requestMessage: assistant_api_pb.GetAllAssistantToolRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAllAssistantToolResponse|null) => void
   ): UnaryResponse;
+  getAssistantConversation(
+    requestMessage: assistant_api_pb.GetAssistantConversationRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantConversationResponse|null) => void
+  ): UnaryResponse;
+  getAssistantConversation(
+    requestMessage: assistant_api_pb.GetAssistantConversationRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantConversationResponse|null) => void
+  ): UnaryResponse;
+  deleteAssistant(
+    requestMessage: assistant_api_pb.DeleteAssistantRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantResponse|null) => void
+  ): UnaryResponse;
+  deleteAssistant(
+    requestMessage: assistant_api_pb.DeleteAssistantRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantResponse|null) => void
+  ): UnaryResponse;
+  getAssistantWebhookLog(
+    requestMessage: assistant_api_pb.GetAssistantWebhookLogRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantWebhookLogResponse|null) => void
+  ): UnaryResponse;
+  getAssistantWebhookLog(
+    requestMessage: assistant_api_pb.GetAssistantWebhookLogRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantWebhookLogResponse|null) => void
+  ): UnaryResponse;
   getAllAssistantWebhookLog(
     requestMessage: assistant_api_pb.GetAllAssistantWebhookLogRequest,
     metadata: grpc.Metadata,
@@ -431,38 +528,74 @@ export class AssistantServiceClient {
   createAssistantWebhook(
     requestMessage: assistant_api_pb.CreateAssistantWebhookRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.CreateAssistantWebhookResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantWebhookResponse|null) => void
   ): UnaryResponse;
   createAssistantWebhook(
     requestMessage: assistant_api_pb.CreateAssistantWebhookRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.CreateAssistantWebhookResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantWebhookResponse|null) => void
   ): UnaryResponse;
   updateAssistantWebhook(
     requestMessage: assistant_api_pb.UpdateAssistantWebhookRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.UpdateAssistantWebhookResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantWebhookResponse|null) => void
   ): UnaryResponse;
   updateAssistantWebhook(
     requestMessage: assistant_api_pb.UpdateAssistantWebhookRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.UpdateAssistantWebhookResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantWebhookResponse|null) => void
   ): UnaryResponse;
-  getAssistantConversation(
-    requestMessage: assistant_api_pb.GetAssistantConversationRequest,
+  deleteAssistantWebhook(
+    requestMessage: assistant_api_pb.DeleteAssistantWebhookRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantConversationResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantWebhookResponse|null) => void
   ): UnaryResponse;
-  getAssistantConversation(
-    requestMessage: assistant_api_pb.GetAssistantConversationRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantConversationResponse|null) => void
+  deleteAssistantWebhook(
+    requestMessage: assistant_api_pb.DeleteAssistantWebhookRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantWebhookResponse|null) => void
   ): UnaryResponse;
-  deleteAssistant(
-    requestMessage: assistant_api_pb.DeleteAssistantRequest,
+  getAssistantAnalysis(
+    requestMessage: assistant_api_pb.GetAssistantAnalysisRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: common_pb.BaseResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAnalysisResponse|null) => void
   ): UnaryResponse;
-  deleteAssistant(
-    requestMessage: assistant_api_pb.DeleteAssistantRequest,
-    callback: (error: ServiceError|null, responseMessage: common_pb.BaseResponse|null) => void
+  getAssistantAnalysis(
+    requestMessage: assistant_api_pb.GetAssistantAnalysisRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAnalysisResponse|null) => void
+  ): UnaryResponse;
+  updateAssistantAnalysis(
+    requestMessage: assistant_api_pb.UpdateAssistantAnalysisRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAnalysisResponse|null) => void
+  ): UnaryResponse;
+  updateAssistantAnalysis(
+    requestMessage: assistant_api_pb.UpdateAssistantAnalysisRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAnalysisResponse|null) => void
+  ): UnaryResponse;
+  createAssistantAnalysis(
+    requestMessage: assistant_api_pb.CreateAssistantAnalysisRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAnalysisResponse|null) => void
+  ): UnaryResponse;
+  createAssistantAnalysis(
+    requestMessage: assistant_api_pb.CreateAssistantAnalysisRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAnalysisResponse|null) => void
+  ): UnaryResponse;
+  deleteAssistantAnalysis(
+    requestMessage: assistant_api_pb.DeleteAssistantAnalysisRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAnalysisResponse|null) => void
+  ): UnaryResponse;
+  deleteAssistantAnalysis(
+    requestMessage: assistant_api_pb.DeleteAssistantAnalysisRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAnalysisResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantAnalysis(
+    requestMessage: assistant_api_pb.GetAllAssistantAnalysisRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAllAssistantAnalysisResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantAnalysis(
+    requestMessage: assistant_api_pb.GetAllAssistantAnalysisRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAllAssistantAnalysisResponse|null) => void
   ): UnaryResponse;
 }
 

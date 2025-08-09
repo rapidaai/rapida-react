@@ -27,6 +27,13 @@ import { VoiceAgent } from "@/rapida/agents/voice-agent";
 import { AgentEvent } from "@/rapida/events/agent-event";
 import { AgentEventCallback } from "@/rapida/events/agent-event-callback";
 import { ConnectionState } from "@/rapida/connections/connection-state";
+import {
+  AssistantConversationAssistantMessage,
+  AssistantConversationConfiguration,
+  AssistantConversationInterruption,
+  AssistantConversationUserMessage,
+} from "@/rapida/clients/protos/talk-api_pb";
+import { AgentServerEvent } from "@/rapida/events/agent-server-event";
 
 /**
  *
@@ -246,16 +253,12 @@ export function agentMessageChangeEventObserver(agent: VoiceAgent) {
     map((v) => {
       return {
         eventType: v,
-        events: agent.events,
         chats: agent.messages,
-        transcript: agent.transcript,
       };
     }),
     startWith({
       eventType: undefined,
-      events: agent.events,
       chats: agent.messages,
-      transcript: agent.transcript,
     })
   );
   return observable;
@@ -266,21 +269,34 @@ export function agentMessageChangeEventObserver(agent: VoiceAgent) {
  * @param agent
  * @returns
  */
-export function agentServerEventObserver(agent: VoiceAgent) {
+export function agentServerEventObserver(agent: VoiceAgent): Observable<{
+  eventType?: AgentServerEvent;
+  argument?:
+    | AssistantConversationConfiguration
+    | AssistantConversationInterruption
+    | AssistantConversationUserMessage
+    | AssistantConversationAssistantMessage;
+}> {
   const observable = agentEventSelector(agent, AgentEvent.ServerEvent).pipe(
-    map(([v]) => {
-      return {
-        eventType: v,
-        events: agent.events,
-        chats: agent.messages,
-        transcript: agent.transcript,
-      };
-    }),
+    map(
+      ([eventType, argument]: [
+        AgentServerEvent,
+        (
+          | AssistantConversationConfiguration
+          | AssistantConversationInterruption
+          | AssistantConversationUserMessage
+          | AssistantConversationAssistantMessage
+        )
+      ]) => {
+        return {
+          eventType: eventType,
+          argument: argument,
+        };
+      }
+    ),
     startWith({
       eventType: undefined,
-      events: agent.events,
-      chats: agent.messages,
-      transcript: agent.transcript,
+      argument: undefined,
     })
   );
   return observable;

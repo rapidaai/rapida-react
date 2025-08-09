@@ -23,10 +23,16 @@
  *
  */
 import { DeviceManager } from "@/rapida/devices/device-manager";
-import { AssistantMessagingResponse } from "@/rapida/clients/protos/talk-api_pb";
+import {
+  AssistantConversationAssistantMessage,
+  AssistantConversationInterruption,
+  AssistantConversationUserMessage,
+  AssistantMessagingResponse,
+} from "@/rapida/clients/protos/talk-api_pb";
 import { AgentEvent } from "@/rapida/events/agent-event";
 import { AgentServerEvent } from "@/rapida/events/agent-server-event";
 import {
+  toContentText,
   toStreamAudioContent,
   toTextContent,
 } from "@/rapida/utils/rapida_content";
@@ -206,7 +212,7 @@ export class VoiceAgent extends Agent {
   /**
    *
    */
-  private fadeOutAudio = () => {
+  private interruptAudio = () => {
     this.output?.worklet.port.postMessage({ type: "interrupt" });
     this.output?.gain.gain.exponentialRampToValueAtTime(
       0.0001,
@@ -216,6 +222,25 @@ export class VoiceAgent extends Agent {
       if (this.output) this.output.gain.gain.value = this.volume;
       this.output?.worklet.port.postMessage({ type: "clearInterrupted" });
     }, 2000);
+  };
+
+  /**
+   *
+   * @param duration
+   * @returns
+   */
+  private fadeOutAudio = (duration: number = 2) => {
+    if (!this.output) return;
+
+    const currentTime = this.output.context.currentTime;
+    this.output.gain.gain.exponentialRampToValueAtTime(
+      0.0001,
+      currentTime + duration
+    );
+
+    setTimeout(() => {
+      if (this.output) this.output.gain.gain.value = this.volume;
+    }, duration * 1000);
   };
 
   /**
@@ -331,172 +356,196 @@ export class VoiceAgent extends Agent {
 
   /**
    *
-   * @param response
-   * @returns
+   * @param interruptionData
    */
-  override onRecieve = async (response: AssistantMessagingResponse) => {
-    switch (response.getDataCase()) {
-      case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
-        break;
-      case AssistantMessagingResponse.DataCase.EVENT:
-        if (response.getEvent()) {
-          switch (response.getEvent()?.getName()) {
-            case AgentServerEvent.Transcript:
-              const agentTranscript = getStringFromProtoStruct(
-                response.getEvent()?.getMeta(),
-                "text"
-              );
-              if (agentTranscript) {
-                this.agentTranscript = agentTranscript;
-                if (this.agentMessages.length > 0) {
-                  const lastMessage =
-                    this.agentMessages[this.agentMessages.length - 1];
-                  if (lastMessage.role === MessageRole.User) {
-                    this.agentMessages.pop();
-                  }
-                }
-                this.agentMessages.push({
-                  id: "unknown-message",
-                  role: MessageRole.User,
-                  messages: [agentTranscript],
-                  time: toDate(response.getEvent()?.getTime()),
-                  status: MessageStatus.Pending,
-                });
-              }
-              this.emit(
-                AgentEvent.ServerEvent,
-                AgentServerEvent.Transcript,
-                response.getEvent()!
-              );
-              break;
-            case AgentServerEvent.Interruption:
-              this.agentTranscript = "";
-              // await this.audioPlayer.interrupt();
-              this.fadeOutAudio();
+  private onHandleInterruption = (
+    interruptionData: AssistantConversationInterruption | undefined
+  ) => {
+    if (interruptionData) {
+      switch (interruptionData.getType()) {
+        case AssistantConversationInterruption.InterruptionType
+          .INTERRUPTION_TYPE_UNSPECIFIED:
+          console.log("Unspecified interruption type");
+          break;
+        case AssistantConversationInterruption.InterruptionType
+          .INTERRUPTION_TYPE_VAD:
+          this.fadeOutAudio();
+          break;
+        case AssistantConversationInterruption.InterruptionType
+          .INTERRUPTION_TYPE_WORD:
+          this.interruptAudio();
+          break;
+        default:
+          console.log("Unknown interruption type");
+      }
+      this.emit(
+        AgentEvent.ServerEvent,
+        AgentServerEvent.Interruption,
+        interruptionData
+      );
+    }
+  };
 
-              //
-              this.emit(
-                AgentEvent.ServerEvent,
-                AgentServerEvent.Interruption,
-                response.getEvent()!
-              );
-              break;
+  private onHandleUser = (
+    userContent: AssistantConversationUserMessage | undefined
+  ) => {
+    if (userContent) {
+      const agentTranscript = toContentText(
+        userContent.getMessage()?.getContentsList()
+      );
+      if (agentTranscript) {
+        if (this.agentMessages.length > 0) {
+          const lastMessage = this.agentMessages[this.agentMessages.length - 1];
+          if (
+            lastMessage.role === MessageRole.User &&
+            lastMessage.status != MessageStatus.Complete
+          ) {
+            this.agentMessages.pop();
+          }
+        }
+        this.agentMessages.push({
+          id: userContent.getId(),
+          role: MessageRole.User,
+          messages: [agentTranscript],
+          time: toDate(userContent?.getTime()),
+          status: userContent.getCompleted()
+            ? MessageStatus.Complete
+            : MessageStatus.Pending,
+        });
+      }
+      this.emit(
+        AgentEvent.ServerEvent,
+        AgentServerEvent.Transcript,
+        userContent
+      );
+    }
+  };
 
-            case AgentServerEvent.CompleteConversation:
-              this.emit(
-                AgentEvent.ServerEvent,
-                AgentServerEvent.CompleteConversation,
-                response.getEvent()!
-              );
-              await this.disconnect();
-              break;
-            case AgentServerEvent.Complete:
-              this.emit(
-                AgentEvent.ServerEvent,
-                AgentServerEvent.Complete,
-                response.getEvent()!
-              );
-              break;
-            case AgentServerEvent.CompleteGeneration:
-            case AgentServerEvent.Generation:
-              // generation started mark the previous message of user to complete
-              if (this.agentMessages.length > 0) {
-                const lastMessage =
-                  this.agentMessages[this.agentMessages.length - 1];
-                if (lastMessage.role === MessageRole.User) {
-                  lastMessage.status = MessageStatus.Complete;
-                }
-              }
-              //
-              const msgid = getStringFromProtoStruct(
-                response.getEvent()?.getMeta(),
-                "messageid"
-              );
-              const agentMessage = getStringFromProtoStruct(
-                response.getEvent()?.getMeta(),
-                "text"
-              );
-              if (agentMessage) {
-                this.agentMessages = this.agentMessages.filter(
-                  (msg) => msg.id !== msgid || msg.role !== MessageRole.System
-                );
+  private onHandleAssistant = (
+    systemContent: AssistantConversationAssistantMessage | undefined
+  ) => {
+    if (systemContent) {
+      const responseContent =
+        systemContent?.getMessage()?.getContentsList() || [];
+      if (
+        responseContent.filter((x) => x.getContenttype() == "text").length > 0
+      ) {
+        const systemTranscript = toContentText(
+          responseContent.filter((x) => x.getContenttype() == "text")
+        );
+        if (systemTranscript) {
+          if (systemContent.getCompleted()) {
+            // Complete message
+            if (this.agentMessages.length > 0) {
+              const lastMessage =
+                this.agentMessages[this.agentMessages.length - 1];
+              if (
+                lastMessage.role === MessageRole.System &&
+                lastMessage.status === MessageStatus.Pending
+              ) {
+                // Update the existing message to complete
+                lastMessage.messages = [systemTranscript]; // Replace with complete message
+                lastMessage.status = MessageStatus.Complete;
+                lastMessage.time = toDate(systemContent?.getTime());
+              } else {
+                // Unexpected case: complete message without pending, create new
                 this.agentMessages.push({
-                  id: msgid!,
+                  id: systemContent.getId(),
                   role: MessageRole.System,
-                  messages: [agentMessage],
-                  time: toDate(response.getEvent()?.getTime()),
-                  status:
-                    response.getEvent()?.getName() ==
-                    AgentServerEvent.CompleteGeneration
-                      ? MessageStatus.Complete
-                      : MessageStatus.Pending,
-                });
-              }
-              this.emit(
-                AgentEvent.ServerEvent,
-                response.getEvent()?.getName() ==
-                  AgentServerEvent.CompleteGeneration
-                  ? AgentServerEvent.CompleteGeneration
-                  : AgentServerEvent.Generation,
-                response.getEvent()!
-              );
-              break;
-            case AgentServerEvent.Start:
-              //
-              if (this.agentMessages.length > 0) {
-                const lastMessage =
-                  this.agentMessages[this.agentMessages.length - 1];
-                if (lastMessage && lastMessage.role === MessageRole.User) {
-                  this.agentMessages.pop();
-                }
-              }
-
-              const userMessage = getStringFromProtoStruct(
-                response.getEvent()?.getMeta(),
-                "text"
-              );
-              const messageid = getStringFromProtoStruct(
-                response.getEvent()?.getMeta(),
-                "messageid"
-              );
-              if (userMessage) {
-                this.agentMessages = this.agentMessages.filter(
-                  (msg) => msg.id !== messageid || msg.role !== MessageRole.User
-                );
-                this.agentMessages.push({
-                  id: messageid!,
-                  role: MessageRole.User,
-                  messages: [userMessage],
-                  time: toDate(response.getEvent()?.getTime()),
+                  messages: [systemTranscript],
+                  time: toDate(systemContent?.getTime()),
                   status: MessageStatus.Complete,
                 });
               }
-              this.emit(
-                AgentEvent.ServerEvent,
-                AgentServerEvent.Start,
-                response.getEvent()!
-              );
-              break;
+            } else {
+              this.agentMessages.push({
+                id: systemContent.getId(),
+                role: MessageRole.System,
+                messages: [systemTranscript],
+                time: toDate(systemContent?.getTime()),
+                status: MessageStatus.Complete,
+              });
+            }
+          } else {
+            // Chunk
+            if (this.agentMessages.length > 0) {
+              const lastMessage =
+                this.agentMessages[this.agentMessages.length - 1];
+              if (
+                lastMessage.role === MessageRole.System &&
+                lastMessage.status === MessageStatus.Pending
+              ) {
+                // Update existing message with new chunk
+                lastMessage.messages[0] += systemTranscript; // Merge strings
+                lastMessage.time = toDate(systemContent?.getTime());
+              } else {
+                // Create new pending message for chunk
+                this.agentMessages.push({
+                  id: systemContent.getId(),
+                  role: MessageRole.System,
+                  messages: [systemTranscript],
+                  time: toDate(systemContent?.getTime()),
+                  status: MessageStatus.Pending,
+                });
+              }
+            } else {
+              // Create new pending message for chunk if no messages exist
+              this.agentMessages.push({
+                id: systemContent.getId(),
+                role: MessageRole.System,
+                messages: [systemTranscript],
+                time: toDate(systemContent?.getTime()),
+                status: MessageStatus.Pending,
+              });
+            }
           }
-          this.agentEvents.push(response.getEvent()!);
         }
-        return;
-      case AssistantMessagingResponse.DataCase.MESSAGE:
-        const conversation = response.getMessage();
-        if (
-          !conversation?.getAssistantconversationid() ||
-          !conversation?.getMessageid()
-        )
-          return;
-        this.onChangeConversation(conversation?.getAssistantconversationid());
-        const responseContent =
-          conversation.getResponse()?.getContentsList() || [];
+      }
+
+      if (
+        responseContent.filter((x) => x.getContenttype() == "audio").length > 0
+      ) {
         for (const content of responseContent) {
           if (content.getContenttype() === "audio") {
             const audioData = content.getContent_asU8();
             this.addAudioChunk(new Uint8Array(audioData).buffer);
           }
         }
+      }
+      this.emit(
+        AgentEvent.ServerEvent,
+        AgentServerEvent.Generation,
+        systemContent
+      );
+    }
+  };
+
+  /**
+   *
+   * @param response
+   * @returns
+   */
+  override onRecieve = async (response: AssistantMessagingResponse) => {
+    console.dir(response);
+    switch (response.getDataCase()) {
+      case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
+        break;
+      case AssistantMessagingResponse.DataCase.INTERRUPTION:
+        this.onHandleInterruption(response.getInterruption());
+        break;
+      case AssistantMessagingResponse.DataCase.USER:
+        this.onHandleUser(response.getUser());
+        break;
+      case AssistantMessagingResponse.DataCase.ASSISTANT:
+        this.onHandleAssistant(response.getAssistant());
+        break;
+      case AssistantMessagingResponse.DataCase.CONFIGURATION:
+        const conversation = response.getConfiguration();
+        if (!conversation?.getAssistantconversationid()) return;
+        this.onChangeConversation(conversation?.getAssistantconversationid());
+        break;
+      case AssistantMessagingResponse.DataCase.MESSAGE:
+        console.dir(response.toObject());
         break;
       default:
         break;

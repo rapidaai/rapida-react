@@ -110,6 +110,24 @@ EndpointService.UpdateEndpointDetail = {
   responseType: endpoint_api_pb.GetEndpointResponse
 };
 
+EndpointService.GetAllEndpointLog = {
+  methodName: "GetAllEndpointLog",
+  service: EndpointService,
+  requestStream: false,
+  responseStream: false,
+  requestType: endpoint_api_pb.GetAllEndpointLogRequest,
+  responseType: endpoint_api_pb.GetAllEndpointLogResponse
+};
+
+EndpointService.GetEndpointLog = {
+  methodName: "GetEndpointLog",
+  service: EndpointService,
+  requestStream: false,
+  responseStream: false,
+  requestType: endpoint_api_pb.GetEndpointLogRequest,
+  responseType: endpoint_api_pb.GetEndpointLogResponse
+};
+
 exports.EndpointService = EndpointService;
 
 function EndpointServiceClient(serviceHost, options) {
@@ -432,6 +450,68 @@ EndpointServiceClient.prototype.updateEndpointDetail = function updateEndpointDe
     callback = arguments[1];
   }
   var client = grpc.unary(EndpointService.UpdateEndpointDetail, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+EndpointServiceClient.prototype.getAllEndpointLog = function getAllEndpointLog(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(EndpointService.GetAllEndpointLog, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+EndpointServiceClient.prototype.getEndpointLog = function getEndpointLog(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(EndpointService.GetEndpointLog, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

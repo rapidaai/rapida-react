@@ -534,38 +534,6 @@ export namespace Message {
   }
 }
 
-export class Event extends jspb.Message {
-  getName(): string;
-  setName(value: string): void;
-
-  hasMeta(): boolean;
-  clearMeta(): void;
-  getMeta(): google_protobuf_struct_pb.Struct | undefined;
-  setMeta(value?: google_protobuf_struct_pb.Struct): void;
-
-  hasTime(): boolean;
-  clearTime(): void;
-  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Event.AsObject;
-  static toObject(includeInstance: boolean, msg: Event): Event.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Event, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Event;
-  static deserializeBinaryFromReader(message: Event, reader: jspb.BinaryReader): Event;
-}
-
-export namespace Event {
-  export type AsObject = {
-    name: string,
-    meta?: google_protobuf_struct_pb.Struct.AsObject,
-    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-  }
-}
-
 export class ToolCall extends jspb.Message {
   getId(): string;
   setId(value: string): void;

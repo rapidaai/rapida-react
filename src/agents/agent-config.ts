@@ -22,42 +22,37 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { AssistantDefinition } from "@/rapida/clients/protos/talk-api_pb";
+import {
+  AssistantConversationAssistantMessage,
+  AssistantConversationConfiguration,
+  AssistantConversationInterruption,
+  AssistantConversationUserMessage,
+  AssistantDefinition,
+} from "@/rapida/clients/protos/talk-api_pb";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
 import { AssistantMessagingResponse } from "../clients/protos/talk-api_pb";
-import { AgentServerEvent } from "@/rapida/events/agent-server-event";
-import * as google_protobuf_struct_pb from "google-protobuf/google/protobuf/struct_pb";
 import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
 import { Channel } from "@/rapida/channels";
-import { DEFAULT_DEVICE_ID } from "@/rapida/constants";
 
 /**
  * Callbacks for agent
  */
 interface AgentCallback {
-  onStart?: (args: google_protobuf_struct_pb.Struct | undefined) => void;
-  onComplete?: (args: google_protobuf_struct_pb.Struct | undefined) => void;
+  onStart?: (args: AssistantConversationConfiguration | undefined) => void;
 
-  //
-  onTranscript?: (args: google_protobuf_struct_pb.Struct | undefined) => void;
-  // on interruption
-  onInterrupt?: (args: google_protobuf_struct_pb.Struct | undefined) => void;
+  // transcripting or user speaking
+  onTranscript?: (args: AssistantConversationUserMessage | undefined) => void;
+
+  // interrupted //
+  // there might be two kind of interruption
+  // vad // word
+  onInterrupt?: (args: AssistantConversationInterruption | undefined) => void;
 
   // generation
-  onGeneration?: (args: google_protobuf_struct_pb.Struct | undefined) => void;
-  onCompleteGeneration?: (
-    args: google_protobuf_struct_pb.Struct | undefined
+  onGeneration?: (
+    args: AssistantConversationAssistantMessage | undefined
   ) => void;
-
-  // conversation callback
-  onStartConversation?: (
-    args: google_protobuf_struct_pb.Struct | undefined
-  ) => void;
-  onCompleteConversation?: (
-    args: google_protobuf_struct_pb.Struct | undefined
-  ) => void;
-
   // on complete message
   onMessage?: (arg: AssistantConversationMessage | undefined) => void;
 }
@@ -326,15 +321,11 @@ export class AgentConfig {
   /**
    * Sets up callback functions for various events in the agent's conversation lifecycle.
    *
-   * @param onStartConversation - Callback function triggered when a conversation starts.
-   * @param onInterruption - Callback function triggered when the conversation is interrupted.
-   * @param onListen - Callback function triggered when the agent starts listening.
-   * @param onComplete - Callback function triggered when a specific action or process is completed.
-   * @param onReceiveTranscript - Callback function triggered when a transcript is received.
-   * @param onReceive - Callback function triggered when any message is received.
-   * @param onSendGeneration - Callback function triggered before sending a generated response.
-   * @param onCompleteGeneration - Callback function triggered after completing the generation of a response.
-   * @param onCompleteConversation - Callback function triggered when the entire conversation is completed.
+   * @param onStart - Callback function triggered when a conversation starts.
+   * @param onTranscript - Callback function triggered when transcripting or user is speaking.
+   * @param onInterrupt - Callback function triggered when the conversation is interrupted (VAD or word-based).
+   * @param onGeneration - Callback function triggered during the generation of the assistant's response.
+   * @param onMessage - Callback function triggered when a complete message (from user or assistant) is received.
    * @returns The current instance of the AgentConfig, allowing for method chaining.
    */
   withAgentCallback(cl: AgentCallback): this {
@@ -348,8 +339,6 @@ export class AgentConfig {
    * @returns
    */
 
-  //   The TODO suggests two potential approaches:
-
   // Adding a check to filter out audio chunks
   // Implementing a debounce mechanism
   // These suggestions can guide the team in finding an appropriate solution to optimize the onMessage callback handling.
@@ -358,58 +347,26 @@ export class AgentConfig {
     switch (response.getDataCase()) {
       case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
         break;
-      case AssistantMessagingResponse.DataCase.EVENT:
-        if (response.getEvent()) {
-          switch (response.getEvent()?.getName()) {
-            case AgentServerEvent.Transcript:
-              if (this.callbacks && this.callbacks?.onTranscript) {
-                this.callbacks.onTranscript(response.getEvent()?.getMeta());
-              }
-              break;
-            case AgentServerEvent.Interruption:
-              if (this.callbacks && this.callbacks?.onInterrupt) {
-                this.callbacks.onInterrupt(response.getEvent()?.getMeta());
-              }
-              break;
-            case AgentServerEvent.Generation:
-              if (this.callbacks && this.callbacks?.onGeneration) {
-                this.callbacks.onGeneration(response.getEvent()?.getMeta());
-              }
-              break;
-            case AgentServerEvent.CompleteConversation:
-              if (this.callbacks && this.callbacks?.onCompleteConversation) {
-                this.callbacks.onCompleteConversation(
-                  response.getEvent()?.getMeta()
-                );
-              }
-              break;
-            case AgentServerEvent.Complete:
-              if (this.callbacks && this.callbacks?.onComplete) {
-                this.callbacks.onComplete(response.getEvent()?.getMeta());
-              }
-              break;
-            case AgentServerEvent.CompleteGeneration:
-              if (this.callbacks && this.callbacks?.onCompleteGeneration) {
-                this.callbacks.onCompleteGeneration(
-                  response.getEvent()?.getMeta()
-                );
-              }
-              break;
-            case AgentServerEvent.Start:
-              if (this.callbacks && this.callbacks?.onStart) {
-                this.callbacks.onStart(response.getEvent()?.getMeta());
-              }
-              break;
-            case AgentServerEvent.StartConversation:
-              if (this.callbacks && this.callbacks?.onStartConversation) {
-                this.callbacks.onStartConversation(
-                  response.getEvent()?.getMeta()
-                );
-              }
-              break;
-          }
+      case AssistantMessagingResponse.DataCase.INTERRUPTION:
+        if (this.callbacks && this.callbacks?.onInterrupt) {
+          this.callbacks.onInterrupt(response.getInterruption());
         }
-        return;
+        break;
+      case AssistantMessagingResponse.DataCase.USER:
+        if (this.callbacks && this.callbacks?.onTranscript) {
+          this.callbacks.onTranscript(response.getUser());
+        }
+        break;
+      case AssistantMessagingResponse.DataCase.ASSISTANT:
+        if (this.callbacks && this.callbacks?.onGeneration) {
+          this.callbacks.onGeneration(response.getAssistant());
+        }
+        break;
+      case AssistantMessagingResponse.DataCase.CONFIGURATION:
+        if (this.callbacks && this.callbacks?.onStart) {
+          this.callbacks.onStart(response.getConfiguration());
+        }
+        break;
       case AssistantMessagingResponse.DataCase.MESSAGE:
         if (this.callbacks && this.callbacks?.onMessage) {
           this.callbacks.onMessage(response.getMessage());

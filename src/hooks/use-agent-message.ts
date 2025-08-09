@@ -22,10 +22,7 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import {
-  agentInitializeObservable,
-  agentMessageChangeEventObserver,
-} from "@/rapida/hooks/observables/voice-agent";
+import { agentMessageChangeEventObserver } from "@/rapida/hooks/observables/voice-agent";
 import { useObservableState } from "@/rapida/hooks/use-observable-state";
 import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import React from "react";
@@ -44,9 +41,7 @@ export function useAgentMessage() {
 
   const { chats } = useObservableState(observable, {
     eventType: undefined,
-    events: agent.events,
     chats: agent.messages,
-    transcript: agent.transcript,
   });
   return { messages: chats };
 }
