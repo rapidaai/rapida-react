@@ -406,7 +406,7 @@ export class VoiceAgent extends Agent {
           const lastMessage = this.agentMessages[this.agentMessages.length - 1];
           if (
             lastMessage.role === MessageRole.User &&
-            lastMessage.status != MessageStatus.Complete
+            lastMessage.id === userContent.getId()
           ) {
             this.agentMessages.pop();
           }
