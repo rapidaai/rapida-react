@@ -3,6 +3,10 @@
 
 var assistant_api_pb = require("./assistant-api_pb");
 var common_pb = require("./common_pb");
+var assistant_tool_pb = require("./assistant-tool_pb");
+var assistant_analysis_pb = require("./assistant-analysis_pb");
+var assistant_webhook_pb = require("./assistant-webhook_pb");
+var assistant_knowledge_pb = require("./assistant-knowledge_pb");
 var grpc = require("@improbable-eng/grpc-web").grpc;
 
 var AssistantService = (function () {
@@ -29,15 +33,6 @@ AssistantService.GetAllAssistant = {
   responseType: assistant_api_pb.GetAllAssistantResponse
 };
 
-AssistantService.GetAllAssistantProviderModel = {
-  methodName: "GetAllAssistantProviderModel",
-  service: AssistantService,
-  requestStream: false,
-  responseStream: false,
-  requestType: assistant_api_pb.GetAllAssistantProviderModelRequest,
-  responseType: assistant_api_pb.GetAllAssistantProviderModelResponse
-};
-
 AssistantService.CreateAssistant = {
   methodName: "CreateAssistant",
   service: AssistantService,
@@ -47,6 +42,24 @@ AssistantService.CreateAssistant = {
   responseType: assistant_api_pb.GetAssistantResponse
 };
 
+AssistantService.DeleteAssistant = {
+  methodName: "DeleteAssistant",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.DeleteAssistantRequest,
+  responseType: assistant_api_pb.GetAssistantResponse
+};
+
+AssistantService.GetAllAssistantProviderModel = {
+  methodName: "GetAllAssistantProviderModel",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.GetAllAssistantProviderModelRequest,
+  responseType: assistant_api_pb.GetAllAssistantProviderModelResponse
+};
+
 AssistantService.CreateAssistantProviderModel = {
   methodName: "CreateAssistantProviderModel",
   service: AssistantService,
@@ -54,15 +67,6 @@ AssistantService.CreateAssistantProviderModel = {
   responseStream: false,
   requestType: assistant_api_pb.CreateAssistantProviderModelRequest,
   responseType: assistant_api_pb.GetAssistantProviderModelResponse
-};
-
-AssistantService.CreateAssistantKnowledgeConfiguration = {
-  methodName: "CreateAssistantKnowledgeConfiguration",
-  service: AssistantService,
-  requestStream: false,
-  responseStream: false,
-  requestType: assistant_api_pb.CreateAssistantKnowledgeConfigurationRequest,
-  responseType: assistant_api_pb.GetAssistantResponse
 };
 
 AssistantService.CreateAssistantTag = {
@@ -101,15 +105,6 @@ AssistantService.GetAllAssistantMessage = {
   responseType: assistant_api_pb.GetAllAssistantMessageResponse
 };
 
-AssistantService.GetAllAssistantConversation = {
-  methodName: "GetAllAssistantConversation",
-  service: AssistantService,
-  requestStream: false,
-  responseStream: false,
-  requestType: common_pb.GetAllAssistantConversationRequest,
-  responseType: common_pb.GetAllAssistantConversationResponse
-};
-
 AssistantService.GetAllConversationMessage = {
   methodName: "GetAllConversationMessage",
   service: AssistantService,
@@ -119,22 +114,22 @@ AssistantService.GetAllConversationMessage = {
   responseType: common_pb.GetAllConversationMessageResponse
 };
 
-AssistantService.CreateAssistantToolConfiguration = {
-  methodName: "CreateAssistantToolConfiguration",
+AssistantService.GetAllMessage = {
+  methodName: "GetAllMessage",
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.CreateAssistantToolConfigurationRequest,
-  responseType: assistant_api_pb.GetAssistantResponse
+  requestType: assistant_api_pb.GetAllMessageRequest,
+  responseType: assistant_api_pb.GetAllMessageResponse
 };
 
-AssistantService.GetAllAssistantTool = {
-  methodName: "GetAllAssistantTool",
+AssistantService.GetAllAssistantConversation = {
+  methodName: "GetAllAssistantConversation",
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.GetAllAssistantToolRequest,
-  responseType: assistant_api_pb.GetAllAssistantToolResponse
+  requestType: common_pb.GetAllAssistantConversationRequest,
+  responseType: common_pb.GetAllAssistantConversationResponse
 };
 
 AssistantService.GetAssistantConversation = {
@@ -146,22 +141,13 @@ AssistantService.GetAssistantConversation = {
   responseType: assistant_api_pb.GetAssistantConversationResponse
 };
 
-AssistantService.DeleteAssistant = {
-  methodName: "DeleteAssistant",
-  service: AssistantService,
-  requestStream: false,
-  responseStream: false,
-  requestType: assistant_api_pb.DeleteAssistantRequest,
-  responseType: assistant_api_pb.GetAssistantResponse
-};
-
 AssistantService.GetAssistantWebhookLog = {
   methodName: "GetAssistantWebhookLog",
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.GetAssistantWebhookLogRequest,
-  responseType: assistant_api_pb.GetAssistantWebhookLogResponse
+  requestType: assistant_webhook_pb.GetAssistantWebhookLogRequest,
+  responseType: assistant_webhook_pb.GetAssistantWebhookLogResponse
 };
 
 AssistantService.GetAllAssistantWebhookLog = {
@@ -169,8 +155,8 @@ AssistantService.GetAllAssistantWebhookLog = {
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.GetAllAssistantWebhookLogRequest,
-  responseType: assistant_api_pb.GetAllAssistantWebhookLogResponse
+  requestType: assistant_webhook_pb.GetAllAssistantWebhookLogRequest,
+  responseType: assistant_webhook_pb.GetAllAssistantWebhookLogResponse
 };
 
 AssistantService.GetAllAssistantWebhook = {
@@ -178,8 +164,8 @@ AssistantService.GetAllAssistantWebhook = {
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.GetAllAssistantWebhookRequest,
-  responseType: assistant_api_pb.GetAllAssistantWebhookResponse
+  requestType: assistant_webhook_pb.GetAllAssistantWebhookRequest,
+  responseType: assistant_webhook_pb.GetAllAssistantWebhookResponse
 };
 
 AssistantService.GetAssistantWebhook = {
@@ -187,8 +173,8 @@ AssistantService.GetAssistantWebhook = {
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.GetAssistantWebhookRequest,
-  responseType: assistant_api_pb.GetAssistantWebhookResponse
+  requestType: assistant_webhook_pb.GetAssistantWebhookRequest,
+  responseType: assistant_webhook_pb.GetAssistantWebhookResponse
 };
 
 AssistantService.CreateAssistantWebhook = {
@@ -196,8 +182,8 @@ AssistantService.CreateAssistantWebhook = {
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.CreateAssistantWebhookRequest,
-  responseType: assistant_api_pb.GetAssistantWebhookResponse
+  requestType: assistant_webhook_pb.CreateAssistantWebhookRequest,
+  responseType: assistant_webhook_pb.GetAssistantWebhookResponse
 };
 
 AssistantService.UpdateAssistantWebhook = {
@@ -205,8 +191,8 @@ AssistantService.UpdateAssistantWebhook = {
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.UpdateAssistantWebhookRequest,
-  responseType: assistant_api_pb.GetAssistantWebhookResponse
+  requestType: assistant_webhook_pb.UpdateAssistantWebhookRequest,
+  responseType: assistant_webhook_pb.GetAssistantWebhookResponse
 };
 
 AssistantService.DeleteAssistantWebhook = {
@@ -214,8 +200,8 @@ AssistantService.DeleteAssistantWebhook = {
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.DeleteAssistantWebhookRequest,
-  responseType: assistant_api_pb.GetAssistantWebhookResponse
+  requestType: assistant_webhook_pb.DeleteAssistantWebhookRequest,
+  responseType: assistant_webhook_pb.GetAssistantWebhookResponse
 };
 
 AssistantService.GetAssistantAnalysis = {
@@ -223,8 +209,8 @@ AssistantService.GetAssistantAnalysis = {
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.GetAssistantAnalysisRequest,
-  responseType: assistant_api_pb.GetAssistantAnalysisResponse
+  requestType: assistant_analysis_pb.GetAssistantAnalysisRequest,
+  responseType: assistant_analysis_pb.GetAssistantAnalysisResponse
 };
 
 AssistantService.UpdateAssistantAnalysis = {
@@ -232,8 +218,8 @@ AssistantService.UpdateAssistantAnalysis = {
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.UpdateAssistantAnalysisRequest,
-  responseType: assistant_api_pb.GetAssistantAnalysisResponse
+  requestType: assistant_analysis_pb.UpdateAssistantAnalysisRequest,
+  responseType: assistant_analysis_pb.GetAssistantAnalysisResponse
 };
 
 AssistantService.CreateAssistantAnalysis = {
@@ -241,8 +227,8 @@ AssistantService.CreateAssistantAnalysis = {
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.CreateAssistantAnalysisRequest,
-  responseType: assistant_api_pb.GetAssistantAnalysisResponse
+  requestType: assistant_analysis_pb.CreateAssistantAnalysisRequest,
+  responseType: assistant_analysis_pb.GetAssistantAnalysisResponse
 };
 
 AssistantService.DeleteAssistantAnalysis = {
@@ -250,8 +236,8 @@ AssistantService.DeleteAssistantAnalysis = {
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.DeleteAssistantAnalysisRequest,
-  responseType: assistant_api_pb.GetAssistantAnalysisResponse
+  requestType: assistant_analysis_pb.DeleteAssistantAnalysisRequest,
+  responseType: assistant_analysis_pb.GetAssistantAnalysisResponse
 };
 
 AssistantService.GetAllAssistantAnalysis = {
@@ -259,8 +245,98 @@ AssistantService.GetAllAssistantAnalysis = {
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.GetAllAssistantAnalysisRequest,
-  responseType: assistant_api_pb.GetAllAssistantAnalysisResponse
+  requestType: assistant_analysis_pb.GetAllAssistantAnalysisRequest,
+  responseType: assistant_analysis_pb.GetAllAssistantAnalysisResponse
+};
+
+AssistantService.CreateAssistantTool = {
+  methodName: "CreateAssistantTool",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_tool_pb.CreateAssistantToolRequest,
+  responseType: assistant_tool_pb.GetAssistantToolResponse
+};
+
+AssistantService.GetAssistantTool = {
+  methodName: "GetAssistantTool",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_tool_pb.GetAssistantToolRequest,
+  responseType: assistant_tool_pb.GetAssistantToolResponse
+};
+
+AssistantService.GetAllAssistantTool = {
+  methodName: "GetAllAssistantTool",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_tool_pb.GetAllAssistantToolRequest,
+  responseType: assistant_tool_pb.GetAllAssistantToolResponse
+};
+
+AssistantService.DeleteAssistantTool = {
+  methodName: "DeleteAssistantTool",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_tool_pb.DeleteAssistantToolRequest,
+  responseType: assistant_tool_pb.GetAssistantToolResponse
+};
+
+AssistantService.UpdateAssistantTool = {
+  methodName: "UpdateAssistantTool",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_tool_pb.UpdateAssistantToolRequest,
+  responseType: assistant_tool_pb.GetAssistantToolResponse
+};
+
+AssistantService.CreateAssistantKnowledge = {
+  methodName: "CreateAssistantKnowledge",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_knowledge_pb.CreateAssistantKnowledgeRequest,
+  responseType: assistant_knowledge_pb.GetAssistantKnowledgeResponse
+};
+
+AssistantService.GetAssistantKnowledge = {
+  methodName: "GetAssistantKnowledge",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_knowledge_pb.GetAssistantKnowledgeRequest,
+  responseType: assistant_knowledge_pb.GetAssistantKnowledgeResponse
+};
+
+AssistantService.GetAllAssistantKnowledge = {
+  methodName: "GetAllAssistantKnowledge",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_knowledge_pb.GetAllAssistantKnowledgeRequest,
+  responseType: assistant_knowledge_pb.GetAllAssistantKnowledgeResponse
+};
+
+AssistantService.DeleteAssistantKnowledge = {
+  methodName: "DeleteAssistantKnowledge",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_knowledge_pb.DeleteAssistantKnowledgeRequest,
+  responseType: assistant_knowledge_pb.GetAssistantKnowledgeResponse
+};
+
+AssistantService.UpdateAssistantKnowledge = {
+  methodName: "UpdateAssistantKnowledge",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_knowledge_pb.UpdateAssistantKnowledgeRequest,
+  responseType: assistant_knowledge_pb.GetAssistantKnowledgeResponse
 };
 
 exports.AssistantService = AssistantService;
@@ -332,37 +408,6 @@ AssistantServiceClient.prototype.getAllAssistant = function getAllAssistant(requ
   };
 };
 
-AssistantServiceClient.prototype.getAllAssistantProviderModel = function getAllAssistantProviderModel(requestMessage, metadata, callback) {
-  if (arguments.length === 2) {
-    callback = arguments[1];
-  }
-  var client = grpc.unary(AssistantService.GetAllAssistantProviderModel, {
-    request: requestMessage,
-    host: this.serviceHost,
-    metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onEnd: function (response) {
-      if (callback) {
-        if (response.status !== grpc.Code.OK) {
-          var err = new Error(response.statusMessage);
-          err.code = response.status;
-          err.metadata = response.trailers;
-          callback(err, null);
-        } else {
-          callback(null, response.message);
-        }
-      }
-    }
-  });
-  return {
-    cancel: function () {
-      callback = null;
-      client.close();
-    }
-  };
-};
-
 AssistantServiceClient.prototype.createAssistant = function createAssistant(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
@@ -394,11 +439,11 @@ AssistantServiceClient.prototype.createAssistant = function createAssistant(requ
   };
 };
 
-AssistantServiceClient.prototype.createAssistantProviderModel = function createAssistantProviderModel(requestMessage, metadata, callback) {
+AssistantServiceClient.prototype.deleteAssistant = function deleteAssistant(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(AssistantService.CreateAssistantProviderModel, {
+  var client = grpc.unary(AssistantService.DeleteAssistant, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -425,11 +470,42 @@ AssistantServiceClient.prototype.createAssistantProviderModel = function createA
   };
 };
 
-AssistantServiceClient.prototype.createAssistantKnowledgeConfiguration = function createAssistantKnowledgeConfiguration(requestMessage, metadata, callback) {
+AssistantServiceClient.prototype.getAllAssistantProviderModel = function getAllAssistantProviderModel(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(AssistantService.CreateAssistantKnowledgeConfiguration, {
+  var client = grpc.unary(AssistantService.GetAllAssistantProviderModel, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.createAssistantProviderModel = function createAssistantProviderModel(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.CreateAssistantProviderModel, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -580,37 +656,6 @@ AssistantServiceClient.prototype.getAllAssistantMessage = function getAllAssista
   };
 };
 
-AssistantServiceClient.prototype.getAllAssistantConversation = function getAllAssistantConversation(requestMessage, metadata, callback) {
-  if (arguments.length === 2) {
-    callback = arguments[1];
-  }
-  var client = grpc.unary(AssistantService.GetAllAssistantConversation, {
-    request: requestMessage,
-    host: this.serviceHost,
-    metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onEnd: function (response) {
-      if (callback) {
-        if (response.status !== grpc.Code.OK) {
-          var err = new Error(response.statusMessage);
-          err.code = response.status;
-          err.metadata = response.trailers;
-          callback(err, null);
-        } else {
-          callback(null, response.message);
-        }
-      }
-    }
-  });
-  return {
-    cancel: function () {
-      callback = null;
-      client.close();
-    }
-  };
-};
-
 AssistantServiceClient.prototype.getAllConversationMessage = function getAllConversationMessage(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
@@ -642,11 +687,11 @@ AssistantServiceClient.prototype.getAllConversationMessage = function getAllConv
   };
 };
 
-AssistantServiceClient.prototype.createAssistantToolConfiguration = function createAssistantToolConfiguration(requestMessage, metadata, callback) {
+AssistantServiceClient.prototype.getAllMessage = function getAllMessage(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(AssistantService.CreateAssistantToolConfiguration, {
+  var client = grpc.unary(AssistantService.GetAllMessage, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -673,11 +718,11 @@ AssistantServiceClient.prototype.createAssistantToolConfiguration = function cre
   };
 };
 
-AssistantServiceClient.prototype.getAllAssistantTool = function getAllAssistantTool(requestMessage, metadata, callback) {
+AssistantServiceClient.prototype.getAllAssistantConversation = function getAllAssistantConversation(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(AssistantService.GetAllAssistantTool, {
+  var client = grpc.unary(AssistantService.GetAllAssistantConversation, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -709,37 +754,6 @@ AssistantServiceClient.prototype.getAssistantConversation = function getAssistan
     callback = arguments[1];
   }
   var client = grpc.unary(AssistantService.GetAssistantConversation, {
-    request: requestMessage,
-    host: this.serviceHost,
-    metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onEnd: function (response) {
-      if (callback) {
-        if (response.status !== grpc.Code.OK) {
-          var err = new Error(response.statusMessage);
-          err.code = response.status;
-          err.metadata = response.trailers;
-          callback(err, null);
-        } else {
-          callback(null, response.message);
-        }
-      }
-    }
-  });
-  return {
-    cancel: function () {
-      callback = null;
-      client.close();
-    }
-  };
-};
-
-AssistantServiceClient.prototype.deleteAssistant = function deleteAssistant(requestMessage, metadata, callback) {
-  if (arguments.length === 2) {
-    callback = arguments[1];
-  }
-  var client = grpc.unary(AssistantService.DeleteAssistant, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -1138,100 +1152,315 @@ AssistantServiceClient.prototype.getAllAssistantAnalysis = function getAllAssist
   };
 };
 
+AssistantServiceClient.prototype.createAssistantTool = function createAssistantTool(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.CreateAssistantTool, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.getAssistantTool = function getAssistantTool(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAssistantTool, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.getAllAssistantTool = function getAllAssistantTool(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAllAssistantTool, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.deleteAssistantTool = function deleteAssistantTool(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.DeleteAssistantTool, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.updateAssistantTool = function updateAssistantTool(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.UpdateAssistantTool, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.createAssistantKnowledge = function createAssistantKnowledge(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.CreateAssistantKnowledge, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.getAssistantKnowledge = function getAssistantKnowledge(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAssistantKnowledge, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.getAllAssistantKnowledge = function getAllAssistantKnowledge(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAllAssistantKnowledge, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.deleteAssistantKnowledge = function deleteAssistantKnowledge(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.DeleteAssistantKnowledge, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.updateAssistantKnowledge = function updateAssistantKnowledge(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.UpdateAssistantKnowledge, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
 exports.AssistantServiceClient = AssistantServiceClient;
-
-var ToolService = (function () {
-  function ToolService() {}
-  ToolService.serviceName = "assistant_api.ToolService";
-  return ToolService;
-}());
-
-ToolService.GetAllTool = {
-  methodName: "GetAllTool",
-  service: ToolService,
-  requestStream: false,
-  responseStream: false,
-  requestType: assistant_api_pb.GetAllToolRequest,
-  responseType: assistant_api_pb.GetAllToolResponse
-};
-
-ToolService.GetTool = {
-  methodName: "GetTool",
-  service: ToolService,
-  requestStream: false,
-  responseStream: false,
-  requestType: assistant_api_pb.GetToolRequest,
-  responseType: assistant_api_pb.GetToolResponse
-};
-
-exports.ToolService = ToolService;
-
-function ToolServiceClient(serviceHost, options) {
-  this.serviceHost = serviceHost;
-  this.options = options || {};
-}
-
-ToolServiceClient.prototype.getAllTool = function getAllTool(requestMessage, metadata, callback) {
-  if (arguments.length === 2) {
-    callback = arguments[1];
-  }
-  var client = grpc.unary(ToolService.GetAllTool, {
-    request: requestMessage,
-    host: this.serviceHost,
-    metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onEnd: function (response) {
-      if (callback) {
-        if (response.status !== grpc.Code.OK) {
-          var err = new Error(response.statusMessage);
-          err.code = response.status;
-          err.metadata = response.trailers;
-          callback(err, null);
-        } else {
-          callback(null, response.message);
-        }
-      }
-    }
-  });
-  return {
-    cancel: function () {
-      callback = null;
-      client.close();
-    }
-  };
-};
-
-ToolServiceClient.prototype.getTool = function getTool(requestMessage, metadata, callback) {
-  if (arguments.length === 2) {
-    callback = arguments[1];
-  }
-  var client = grpc.unary(ToolService.GetTool, {
-    request: requestMessage,
-    host: this.serviceHost,
-    metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onEnd: function (response) {
-      if (callback) {
-        if (response.status !== grpc.Code.OK) {
-          var err = new Error(response.statusMessage);
-          err.code = response.status;
-          err.metadata = response.trailers;
-          callback(err, null);
-        } else {
-          callback(null, response.message);
-        }
-      }
-    }
-  });
-  return {
-    cancel: function () {
-      callback = null;
-      client.close();
-    }
-  };
-};
-
-exports.ToolServiceClient = ToolServiceClient;
 
