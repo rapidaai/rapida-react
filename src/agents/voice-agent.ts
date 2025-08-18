@@ -544,6 +544,8 @@ export class VoiceAgent extends Agent {
         this.onHandleUser(response.getUser());
         break;
       case AssistantMessagingResponse.DataCase.ASSISTANT:
+        console.dir(response.getAssistant()?.getId());
+        console.dir(response.getAssistant()?.getMessage()?.toObject());
         this.onHandleAssistant(response.getAssistant());
         break;
       case AssistantMessagingResponse.DataCase.CONFIGURATION:
