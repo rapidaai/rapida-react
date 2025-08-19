@@ -348,11 +348,6 @@ export {
   CreateMessageMetricResponse,
   CreateConversationMetricRequest,
   CreateConversationMetricResponse,
-  InitiateAssistantTalkParameter,
-  InitiateAssistantTalkRequest,
-  InitiateAssistantTalkResponse,
-  InitiateBulkAssistantTalkRequest,
-  InitiateBulkAssistantTalkResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
 export {
   AssistantAnalysis,
@@ -435,7 +430,6 @@ export {
   GetAllProjectCredentialRequest,
   CreateProjectCredentialResponse,
   GetAllProjectCredentialResponse,
-  LeadCreationRequest,
 } from "@/rapida/clients/protos/web-api_pb";
 export {
   FieldSelector,
@@ -650,9 +644,14 @@ export {
   AuthenticationService,
   OrganizationService,
   ProjectService,
-  LeadService,
   AuthenticationServiceClient,
   OrganizationServiceClient,
   ProjectServiceClient,
-  LeadServiceClient,
 } from "@/rapida/clients/protos/web-api_pb_service";
+export { CreatePhoneCall, CreateBulkPhoneCall } from "./clients/call";
+export {
+  CreateBulkPhoneCallRequest,
+  CreateBulkPhoneCallResponse,
+  CreatePhoneCallRequest,
+  CreatePhoneCallResponse,
+} from "@/rapida/clients/protos/talk-api_pb";

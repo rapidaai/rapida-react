@@ -425,33 +425,11 @@ export namespace CreateConversationMetricResponse {
   }
 }
 
-export class InitiateAssistantTalkParameter extends jspb.Message {
-  getItemsMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
-  clearItemsMap(): void;
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): InitiateAssistantTalkParameter.AsObject;
-  static toObject(includeInstance: boolean, msg: InitiateAssistantTalkParameter): InitiateAssistantTalkParameter.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: InitiateAssistantTalkParameter, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): InitiateAssistantTalkParameter;
-  static deserializeBinaryFromReader(message: InitiateAssistantTalkParameter, reader: jspb.BinaryReader): InitiateAssistantTalkParameter;
-}
-
-export namespace InitiateAssistantTalkParameter {
-  export type AsObject = {
-    itemsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
-  }
-}
-
-export class InitiateAssistantTalkRequest extends jspb.Message {
+export class CreatePhoneCallRequest extends jspb.Message {
   hasAssistant(): boolean;
   clearAssistant(): void;
   getAssistant(): AssistantDefinition | undefined;
   setAssistant(value?: AssistantDefinition): void;
-
-  getSource(): common_pb.SourceMap[keyof common_pb.SourceMap];
-  setSource(value: common_pb.SourceMap[keyof common_pb.SourceMap]): void;
 
   getMetadataMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
   clearMetadataMap(): void;
@@ -459,33 +437,34 @@ export class InitiateAssistantTalkRequest extends jspb.Message {
   clearArgsMap(): void;
   getOptionsMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
   clearOptionsMap(): void;
-  hasParams(): boolean;
-  clearParams(): void;
-  getParams(): InitiateAssistantTalkParameter | undefined;
-  setParams(value?: InitiateAssistantTalkParameter): void;
+  getFromnumber(): string;
+  setFromnumber(value: string): void;
+
+  getTonumber(): string;
+  setTonumber(value: string): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): InitiateAssistantTalkRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: InitiateAssistantTalkRequest): InitiateAssistantTalkRequest.AsObject;
+  toObject(includeInstance?: boolean): CreatePhoneCallRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: CreatePhoneCallRequest): CreatePhoneCallRequest.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: InitiateAssistantTalkRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): InitiateAssistantTalkRequest;
-  static deserializeBinaryFromReader(message: InitiateAssistantTalkRequest, reader: jspb.BinaryReader): InitiateAssistantTalkRequest;
+  static serializeBinaryToWriter(message: CreatePhoneCallRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreatePhoneCallRequest;
+  static deserializeBinaryFromReader(message: CreatePhoneCallRequest, reader: jspb.BinaryReader): CreatePhoneCallRequest;
 }
 
-export namespace InitiateAssistantTalkRequest {
+export namespace CreatePhoneCallRequest {
   export type AsObject = {
     assistant?: AssistantDefinition.AsObject,
-    source: common_pb.SourceMap[keyof common_pb.SourceMap],
     metadataMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
     argsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
     optionsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
-    params?: InitiateAssistantTalkParameter.AsObject,
+    fromnumber: string,
+    tonumber: string,
   }
 }
 
-export class InitiateAssistantTalkResponse extends jspb.Message {
+export class CreatePhoneCallResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
@@ -494,8 +473,8 @@ export class InitiateAssistantTalkResponse extends jspb.Message {
 
   hasData(): boolean;
   clearData(): void;
-  getData(): InitiateAssistantTalkParameter | undefined;
-  setData(value?: InitiateAssistantTalkParameter): void;
+  getData(): common_pb.AssistantConversation | undefined;
+  setData(value?: common_pb.AssistantConversation): void;
 
   hasError(): boolean;
   clearError(): void;
@@ -503,32 +482,29 @@ export class InitiateAssistantTalkResponse extends jspb.Message {
   setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): InitiateAssistantTalkResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: InitiateAssistantTalkResponse): InitiateAssistantTalkResponse.AsObject;
+  toObject(includeInstance?: boolean): CreatePhoneCallResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: CreatePhoneCallResponse): CreatePhoneCallResponse.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: InitiateAssistantTalkResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): InitiateAssistantTalkResponse;
-  static deserializeBinaryFromReader(message: InitiateAssistantTalkResponse, reader: jspb.BinaryReader): InitiateAssistantTalkResponse;
+  static serializeBinaryToWriter(message: CreatePhoneCallResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreatePhoneCallResponse;
+  static deserializeBinaryFromReader(message: CreatePhoneCallResponse, reader: jspb.BinaryReader): CreatePhoneCallResponse;
 }
 
-export namespace InitiateAssistantTalkResponse {
+export namespace CreatePhoneCallResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    data?: InitiateAssistantTalkParameter.AsObject,
+    data?: common_pb.AssistantConversation.AsObject,
     error?: common_pb.Error.AsObject,
   }
 }
 
-export class InitiateBulkAssistantTalkRequest extends jspb.Message {
+export class CreateBulkPhoneCallRequest extends jspb.Message {
   hasAssistant(): boolean;
   clearAssistant(): void;
   getAssistant(): AssistantDefinition | undefined;
   setAssistant(value?: AssistantDefinition): void;
-
-  getSource(): common_pb.SourceMap[keyof common_pb.SourceMap];
-  setSource(value: common_pb.SourceMap[keyof common_pb.SourceMap]): void;
 
   getMetadataMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
   clearMetadataMap(): void;
@@ -536,33 +512,32 @@ export class InitiateBulkAssistantTalkRequest extends jspb.Message {
   clearArgsMap(): void;
   getOptionsMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
   clearOptionsMap(): void;
-  clearParamsList(): void;
-  getParamsList(): Array<InitiateAssistantTalkParameter>;
-  setParamsList(value: Array<InitiateAssistantTalkParameter>): void;
-  addParams(value?: InitiateAssistantTalkParameter, index?: number): InitiateAssistantTalkParameter;
+  clearPhonecallsList(): void;
+  getPhonecallsList(): Array<CreatePhoneCallRequest>;
+  setPhonecallsList(value: Array<CreatePhoneCallRequest>): void;
+  addPhonecalls(value?: CreatePhoneCallRequest, index?: number): CreatePhoneCallRequest;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): InitiateBulkAssistantTalkRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: InitiateBulkAssistantTalkRequest): InitiateBulkAssistantTalkRequest.AsObject;
+  toObject(includeInstance?: boolean): CreateBulkPhoneCallRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateBulkPhoneCallRequest): CreateBulkPhoneCallRequest.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: InitiateBulkAssistantTalkRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): InitiateBulkAssistantTalkRequest;
-  static deserializeBinaryFromReader(message: InitiateBulkAssistantTalkRequest, reader: jspb.BinaryReader): InitiateBulkAssistantTalkRequest;
+  static serializeBinaryToWriter(message: CreateBulkPhoneCallRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateBulkPhoneCallRequest;
+  static deserializeBinaryFromReader(message: CreateBulkPhoneCallRequest, reader: jspb.BinaryReader): CreateBulkPhoneCallRequest;
 }
 
-export namespace InitiateBulkAssistantTalkRequest {
+export namespace CreateBulkPhoneCallRequest {
   export type AsObject = {
     assistant?: AssistantDefinition.AsObject,
-    source: common_pb.SourceMap[keyof common_pb.SourceMap],
     metadataMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
     argsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
     optionsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
-    paramsList: Array<InitiateAssistantTalkParameter.AsObject>,
+    phonecallsList: Array<CreatePhoneCallRequest.AsObject>,
   }
 }
 
-export class InitiateBulkAssistantTalkResponse extends jspb.Message {
+export class CreateBulkPhoneCallResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
@@ -570,9 +545,9 @@ export class InitiateBulkAssistantTalkResponse extends jspb.Message {
   setSuccess(value: boolean): void;
 
   clearDataList(): void;
-  getDataList(): Array<InitiateAssistantTalkParameter>;
-  setDataList(value: Array<InitiateAssistantTalkParameter>): void;
-  addData(value?: InitiateAssistantTalkParameter, index?: number): InitiateAssistantTalkParameter;
+  getDataList(): Array<common_pb.AssistantConversation>;
+  setDataList(value: Array<common_pb.AssistantConversation>): void;
+  addData(value?: common_pb.AssistantConversation, index?: number): common_pb.AssistantConversation;
 
   hasError(): boolean;
   clearError(): void;
@@ -580,20 +555,20 @@ export class InitiateBulkAssistantTalkResponse extends jspb.Message {
   setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): InitiateBulkAssistantTalkResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: InitiateBulkAssistantTalkResponse): InitiateBulkAssistantTalkResponse.AsObject;
+  toObject(includeInstance?: boolean): CreateBulkPhoneCallResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateBulkPhoneCallResponse): CreateBulkPhoneCallResponse.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: InitiateBulkAssistantTalkResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): InitiateBulkAssistantTalkResponse;
-  static deserializeBinaryFromReader(message: InitiateBulkAssistantTalkResponse, reader: jspb.BinaryReader): InitiateBulkAssistantTalkResponse;
+  static serializeBinaryToWriter(message: CreateBulkPhoneCallResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateBulkPhoneCallResponse;
+  static deserializeBinaryFromReader(message: CreateBulkPhoneCallResponse, reader: jspb.BinaryReader): CreateBulkPhoneCallResponse;
 }
 
-export namespace InitiateBulkAssistantTalkResponse {
+export namespace CreateBulkPhoneCallResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    dataList: Array<InitiateAssistantTalkParameter.AsObject>,
+    dataList: Array<common_pb.AssistantConversation.AsObject>,
     error?: common_pb.Error.AsObject,
   }
 }

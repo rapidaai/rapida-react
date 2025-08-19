@@ -65,22 +65,22 @@ TalkService.CreateConversationMetric = {
   responseType: talk_api_pb.CreateConversationMetricResponse
 };
 
-TalkService.InitiateAssistantTalk = {
-  methodName: "InitiateAssistantTalk",
+TalkService.CreatePhoneCall = {
+  methodName: "CreatePhoneCall",
   service: TalkService,
   requestStream: false,
   responseStream: false,
-  requestType: talk_api_pb.InitiateAssistantTalkRequest,
-  responseType: talk_api_pb.InitiateAssistantTalkResponse
+  requestType: talk_api_pb.CreatePhoneCallRequest,
+  responseType: talk_api_pb.CreatePhoneCallResponse
 };
 
-TalkService.InitiateBulkAssistantTalk = {
-  methodName: "InitiateBulkAssistantTalk",
+TalkService.CreateBulkPhoneCall = {
+  methodName: "CreateBulkPhoneCall",
   service: TalkService,
   requestStream: false,
   responseStream: false,
-  requestType: talk_api_pb.InitiateBulkAssistantTalkRequest,
-  responseType: talk_api_pb.InitiateBulkAssistantTalkResponse
+  requestType: talk_api_pb.CreateBulkPhoneCallRequest,
+  responseType: talk_api_pb.CreateBulkPhoneCallResponse
 };
 
 exports.TalkService = TalkService;
@@ -298,11 +298,11 @@ TalkServiceClient.prototype.createConversationMetric = function createConversati
   };
 };
 
-TalkServiceClient.prototype.initiateAssistantTalk = function initiateAssistantTalk(requestMessage, metadata, callback) {
+TalkServiceClient.prototype.createPhoneCall = function createPhoneCall(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(TalkService.InitiateAssistantTalk, {
+  var client = grpc.unary(TalkService.CreatePhoneCall, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -329,11 +329,11 @@ TalkServiceClient.prototype.initiateAssistantTalk = function initiateAssistantTa
   };
 };
 
-TalkServiceClient.prototype.initiateBulkAssistantTalk = function initiateBulkAssistantTalk(requestMessage, metadata, callback) {
+TalkServiceClient.prototype.createBulkPhoneCall = function createBulkPhoneCall(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(TalkService.InitiateBulkAssistantTalk, {
+  var client = grpc.unary(TalkService.CreateBulkPhoneCall, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

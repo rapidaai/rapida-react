@@ -267,20 +267,6 @@ export class ProjectService {
   static readonly GetAllProjectCredential: ProjectServiceGetAllProjectCredential;
 }
 
-type LeadServiceCreateLead = {
-  readonly methodName: string;
-  readonly service: typeof LeadService;
-  readonly requestStream: false;
-  readonly responseStream: false;
-  readonly requestType: typeof web_api_pb.LeadCreationRequest;
-  readonly responseType: typeof common_pb.BaseResponse;
-};
-
-export class LeadService {
-  static readonly serviceName: string;
-  static readonly CreateLead: LeadServiceCreateLead;
-}
-
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
 export type Status = { details: string, code: number; metadata: grpc.Metadata }
 
@@ -549,21 +535,6 @@ export class ProjectServiceClient {
   getAllProjectCredential(
     requestMessage: web_api_pb.GetAllProjectCredentialRequest,
     callback: (error: ServiceError|null, responseMessage: web_api_pb.GetAllProjectCredentialResponse|null) => void
-  ): UnaryResponse;
-}
-
-export class LeadServiceClient {
-  readonly serviceHost: string;
-
-  constructor(serviceHost: string, options?: grpc.RpcOptions);
-  createLead(
-    requestMessage: web_api_pb.LeadCreationRequest,
-    metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: common_pb.BaseResponse|null) => void
-  ): UnaryResponse;
-  createLead(
-    requestMessage: web_api_pb.LeadCreationRequest,
-    callback: (error: ServiceError|null, responseMessage: common_pb.BaseResponse|null) => void
   ): UnaryResponse;
 }
 
