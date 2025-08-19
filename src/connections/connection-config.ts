@@ -29,6 +29,8 @@ import {
   LOCAL_ASSISTANT_API,
   WEB_API,
   LOCAL_WEB_API,
+  ENDPOINT_API,
+  LOCAL_ENDPOINT_API,
 } from "@/rapida/configs";
 import { ClientAuthInfo, getClientInfo, UserAuthInfo } from "@/rapida/clients";
 import { ConnectionState } from "./connection-state";
@@ -57,7 +59,6 @@ import {
   HEADER_AUTH_ID,
   HEADER_PROJECT_ID,
   HEADER_SOURCE_KEY,
-  HEADER_ENVIRONMENT_KEY,
 } from "@/rapida/utils/rapida_header";
 
 /**
@@ -108,6 +109,25 @@ export class ConnectionConfig {
     };
   }
 
+  static WithPersonalToken({
+    authorization,
+    userId,
+    projectId,
+  }: {
+    authorization: string;
+    userId: string;
+    projectId: string;
+  }): UserAuthInfo {
+    return {
+      authorization,
+      [HEADER_AUTH_ID]: userId,
+      [HEADER_PROJECT_ID]: projectId,
+      Client: {
+        [HEADER_SOURCE_KEY]: DEBUGGER_SOURCE,
+      },
+    };
+  }
+
   /**
    *
    * @param param0
@@ -118,7 +138,7 @@ export class ConnectionConfig {
     userId,
   }: {
     apiKey: string;
-    userId: string;
+    userId?: string;
   }): ClientAuthInfo {
     return {
       [HEADER_API_KEY]: apiKey,
@@ -138,7 +158,7 @@ export class ConnectionConfig {
     userId,
   }: {
     apiKey: string;
-    userId: string;
+    userId?: string;
   }): ClientAuthInfo {
     return {
       [HEADER_API_KEY]: apiKey,
@@ -152,6 +172,7 @@ export class ConnectionConfig {
   _endpoint: {
     assistant: string;
     web: string;
+    endpoint: string;
   };
 
   _debug: boolean;
@@ -162,15 +183,21 @@ export class ConnectionConfig {
 
   constructor(
     endpoint: {
-      assistant: string;
-      web: string;
+      assistant?: string;
+      web?: string;
+      endpoint?: string;
     } = {
       assistant: ASSISTANT_API,
       web: WEB_API,
+      endpoint: ENDPOINT_API,
     },
     debug: boolean = false
   ) {
-    this._endpoint = endpoint;
+    this._endpoint = {
+      assistant: endpoint.assistant || ASSISTANT_API,
+      web: endpoint.web || WEB_API,
+      endpoint: endpoint.endpoint || ENDPOINT_API,
+    };
     this._debug = debug;
   }
 
@@ -274,17 +301,27 @@ export class ConnectionConfig {
     return this.withCustomEndpoint({
       assistant: LOCAL_ASSISTANT_API,
       web: LOCAL_WEB_API,
+      endpoint: LOCAL_ENDPOINT_API,
     });
   }
 
   withCustomEndpoint(
     endpoint: {
-      assistant: string;
-      web: string;
+      assistant?: string;
+      web?: string;
+      endpoint?: string;
+    } = {
+      assistant: ASSISTANT_API,
+      web: WEB_API,
+      endpoint: ENDPOINT_API,
     },
     debug?: boolean
   ): this {
-    this._endpoint = endpoint;
+    this._endpoint = {
+      assistant: endpoint.assistant || ASSISTANT_API,
+      web: endpoint.web || WEB_API,
+      endpoint: endpoint.endpoint || ENDPOINT_API,
+    };
     if (debug !== undefined) this._debug = debug;
     return this;
   }
@@ -301,11 +338,13 @@ export class AssistantConnectionConfig extends ConnectionConfig {
   constructor(
     auth: ClientAuthInfo | UserAuthInfo,
     endpoint: {
-      assistant: string;
-      web: string;
+      assistant?: string;
+      web?: string;
+      endpoint?: string;
     } = {
       assistant: ASSISTANT_API,
       web: WEB_API,
+      endpoint: ENDPOINT_API,
     },
     debug: boolean = false
   ) {

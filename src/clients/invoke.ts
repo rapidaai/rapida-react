@@ -37,7 +37,6 @@ import {
   InvokeResponse,
 } from "@/rapida/clients/protos/invoker-api_pb";
 import p from "google-protobuf/google/protobuf/any_pb";
-import { DeploymentClient } from "@/rapida/clients/protos/invoker-api_pb_service";
 import { StringToAny } from "@/rapida/utils/rapida_value";
 import { ConnectionConfig } from "@/rapida/connections/connection-config";
 
@@ -55,16 +54,21 @@ import { ConnectionConfig } from "@/rapida/connections/connection-config";
 export function Invoke(
   config: ConnectionConfig,
   endpointId: string,
-  endpointProviderModelId: string,
   parameters: Map<string, p.Any>,
   cb: (err: ServiceError | null, response: InvokeResponse | null) => void,
   authHeader: ClientAuthInfo | UserAuthInfo,
+  version?: string,
   metadata?: Map<string, string>
 ) {
   const req = new InvokeRequest();
   const endpoint = new EndpointDefinition();
   endpoint.setEndpointid(endpointId);
-  endpoint.setVersion(`vrsn_${endpointProviderModelId}`);
+  if (version) {
+    endpoint.setVersion(version);
+  } else {
+    endpoint.setVersion("latest");
+  }
+
   req.setEndpoint(endpoint);
 
   // Set the parameters for the request

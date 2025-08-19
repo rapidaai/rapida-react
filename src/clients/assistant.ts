@@ -198,7 +198,7 @@ export function UpdateAssistantVersion(
   assistantId: string,
   assistantProviderModelId: string,
   cb: (err: ServiceError | null, response: GetAssistantResponse | null) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new UpdateAssistantVersionRequest();
   req.setAssistantid(assistantId);
@@ -301,7 +301,7 @@ export function CreateAssistantProviderModel(
   modelProviderName: string,
   modelProviderOptions: Array<Metadata>,
   description: string,
-  authHeader: ClientAuthInfo | UserAuthInfo,
+  authHeader: UserAuthInfo,
   cb: (
     err: ServiceError | null,
     response: GetAssistantProviderModelResponse | null
@@ -339,7 +339,7 @@ export function CreateAssistant(
   tagsList: Array<string>,
   assistantProviderModel: CreateAssistantProviderModelRequest,
   tags: string[],
-  authHeader: ClientAuthInfo | UserAuthInfo,
+  authHeader: UserAuthInfo,
   cb: (err: ServiceError | null, response: GetAssistantResponse | null) => void,
   assistantKnowledgeConfig?: Array<CreateAssistantKnowledgeRequest>,
   assistantToolConfig?: Array<CreateAssistantToolRequest>
@@ -375,7 +375,7 @@ export function CreateAssistantTag(
   assistantId: string,
   tags: string[],
   cb: (err: ServiceError | null, response: GetAssistantResponse | null) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new CreateAssistantTagRequest();
   req.setTagsList(tags);
@@ -404,7 +404,7 @@ export function UpdateAssistantDetail(
   name: string,
   description: string,
   cb: (err: ServiceError | null, response: GetAssistantResponse | null) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new UpdateAssistantDetailRequest();
   req.setName(name);
@@ -641,7 +641,7 @@ export function CreateAssistantDebuggerDeployment(
     err: ServiceError | null,
     response: AssistantDebuggerDeploymentResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo,
+  authHeader: UserAuthInfo,
   inputAudio?: {
     providerId: string;
     provider: string;
@@ -770,7 +770,7 @@ export function CreateAssistantApiDeployment(
     err: ServiceError | null,
     response: AssistantApiDeploymentResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo,
+  authHeader: UserAuthInfo,
   inputAudio?: {
     providerId: string;
     provider: string;
@@ -904,7 +904,7 @@ export function CreateAssistantWebpluginDeployment(
     err: ServiceError | null,
     response: AssistantWebpluginDeploymentResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo,
+  authHeader: UserAuthInfo,
   inputAudio?: {
     providerId: string;
     provider: string;
@@ -1046,7 +1046,7 @@ export function CreateAssistantPhoneDeployment(
     err: ServiceError | null,
     response: AssistantPhoneDeploymentResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo,
+  authHeader: UserAuthInfo,
   inputAudio?: {
     providerId: string;
     provider: string;
@@ -1183,7 +1183,7 @@ export function CreateAssistantWhatsappDeployment(
     err: ServiceError | null,
     response: AssistantWhatsappDeploymentResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new CreateAssistantWhatsappDeploymentRequest();
   const deployment = new AssistantWhatsappDeployment();
@@ -1301,7 +1301,7 @@ export function CreateWebhook(
     err: ServiceError | null,
     response: GetAssistantWebhookResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo,
+  authHeader: UserAuthInfo,
   description?: string
 ) {
   const req = new CreateAssistantWebhookRequest();
@@ -1360,7 +1360,7 @@ export function UpdateWebhook(
     err: ServiceError | null,
     response: GetAssistantWebhookResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo,
+  authHeader: UserAuthInfo,
   description?: string
 ) {
   const req = new UpdateAssistantWebhookRequest();
@@ -1431,7 +1431,7 @@ export function DeleteAssistantWebhook(
     err: ServiceError | null,
     response: GetAssistantWebhookResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new DeleteAssistantWebhookRequest();
   req.setAssistantid(assistantId);
@@ -1482,7 +1482,7 @@ export function DeleteAssistant(
   connectionConfig: ConnectionConfig,
   assistantId: string,
   cb: (err: ServiceError | null, response: GetAssistantResponse | null) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new DeleteAssistantRequest();
   req.setId(assistantId);
@@ -1562,7 +1562,7 @@ export function CreateAnalysis(
     err: ServiceError | null,
     response: GetAssistantAnalysisResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo,
+  authHeader: UserAuthInfo,
   description?: string
 ) {
   const req = new CreateAssistantAnalysisRequest();
@@ -1613,7 +1613,7 @@ export function UpdateAnalysis(
     err: ServiceError | null,
     response: GetAssistantAnalysisResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo,
+  authHeader: UserAuthInfo,
   description?: string
 ) {
   const req = new UpdateAssistantAnalysisRequest();
@@ -1679,7 +1679,7 @@ export function DeleteAssistantAnalysis(
     err: ServiceError | null,
     response: GetAssistantAnalysisResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new DeleteAssistantAnalysisRequest();
   req.setAssistantid(assistantId);
@@ -1832,7 +1832,7 @@ export function CreateAssistantTool(
     err: ServiceError | null,
     response: GetAssistantToolResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new CreateAssistantToolRequest();
   req.setAssistantid(assistantId);
@@ -1879,7 +1879,7 @@ export function UpdateAssistantTool(
     err: ServiceError | null,
     response: GetAssistantToolResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new UpdateAssistantToolRequest();
   req.setId(assistantToolId);
@@ -1943,7 +1943,7 @@ export function DeleteAssistantTool(
     err: ServiceError | null,
     response: GetAssistantToolResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new DeleteAssistantToolRequest();
   req.setAssistantid(assistantId);
@@ -2029,7 +2029,7 @@ export function CreateAssistantKnowledge(
     err: ServiceError | null,
     response: GetAssistantKnowledgeResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new CreateAssistantKnowledgeRequest();
   req.setKnowledgeid(knowledgeId);
@@ -2085,7 +2085,7 @@ export function UpdateAssistantKnowledge(
     err: ServiceError | null,
     response: GetAssistantKnowledgeResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new UpdateAssistantKnowledgeRequest();
   req.setKnowledgeid(knowledgeId);
@@ -2152,7 +2152,7 @@ export function DeleteAssistantKnowledge(
     err: ServiceError | null,
     response: GetAssistantKnowledgeResponse | null
   ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
+  authHeader: UserAuthInfo
 ) {
   const req = new DeleteAssistantKnowledgeRequest();
   req.setAssistantid(assistantId);
