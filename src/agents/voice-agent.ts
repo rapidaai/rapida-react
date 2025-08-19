@@ -41,10 +41,7 @@ import { toDate } from "@/rapida/utils";
 import { MessageRole, MessageStatus } from "@/rapida/agents/message";
 import { Channel } from "@/rapida/channels";
 import { AgentConfig } from "@/rapida/agents/agent-config";
-import {
-  AssistantConnectionConfig,
-  ConnectionConfig,
-} from "@/rapida/connections/connection-config";
+import { AssistantConnectionConfig } from "@/rapida/connections/connection-config";
 import { Agent } from "@/rapida/agents/";
 import { Input } from "@/rapida/audio/input";
 import { Output } from "@/rapida/audio/output";

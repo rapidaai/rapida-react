@@ -314,6 +314,20 @@ export class AssistantConnectionConfig extends ConnectionConfig {
     this._auth.Client = getClientInfo(this._auth.Client);
   }
 
+  get conversationClient(): TalkServiceClient {
+    return new TalkServiceClient(
+      this._endpoint.assistant,
+      this.getClientOptions()
+    );
+  }
+
+  get assistantClient(): AssistantServiceClient {
+    return new AssistantServiceClient(
+      this._endpoint.assistant,
+      this.getClientOptions()
+    );
+  }
+
   get streamClient(): TalkServiceClient {
     return new TalkServiceClient(this._endpoint.assistant, {
       ...this.getClientOptions(),
