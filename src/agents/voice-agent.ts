@@ -41,7 +41,10 @@ import { toDate } from "@/rapida/utils";
 import { MessageRole, MessageStatus } from "@/rapida/agents/message";
 import { Channel } from "@/rapida/channels";
 import { AgentConfig } from "@/rapida/agents/agent-config";
-import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import {
+  AssistantConnectionConfig,
+  ConnectionConfig,
+} from "@/rapida/connections/connection-config";
 import { Agent } from "@/rapida/agents/";
 import { Input } from "@/rapida/audio/input";
 import { Output } from "@/rapida/audio/output";
@@ -95,7 +98,7 @@ export class VoiceAgent extends Agent {
    * Creates a new Room, the primary construct for a LiveKit session.
    * @param options
    */
-  constructor(connection: ConnectionConfig, agentConfig: AgentConfig) {
+  constructor(connection: AssistantConnectionConfig, agentConfig: AgentConfig) {
     super(connection, agentConfig);
     this.outputChannel = this.agentConfig.outputOptions.defaultChannel;
     this.inputChannel = this.agentConfig.inputOptions.defaultChannel;
@@ -544,13 +547,13 @@ export class VoiceAgent extends Agent {
         this.onHandleUser(response.getUser());
         break;
       case AssistantMessagingResponse.DataCase.ASSISTANT:
-        console.dir(response.getAssistant()?.getId());
-        if (response.getAssistant()?.getMessage()?.getContentsList())
-          console.dir(
-            toContentText(
-              response.getAssistant()?.getMessage()?.getContentsList()
-            )
-          );
+        // console.dir(response.getAssistant()?.getId());
+        // if (response.getAssistant()?.getMessage()?.getContentsList())
+        //   console.dir(
+        //     toContentText(
+        //       response.getAssistant()?.getMessage()?.getContentsList()
+        //     )
+        //   );
         this.onHandleAssistant(response.getAssistant());
         break;
       case AssistantMessagingResponse.DataCase.CONFIGURATION:

@@ -24,5 +24,7 @@
  *  This module provides functions for managing projects through the ProjectService.
  */
 
+export const WEB_API = "https://api.rapida.ai";
 export const ASSISTANT_API = "https://assistant-01.rapida.ai";
 export const LOCAL_ASSISTANT_API = "http://assistant.rapida.local";
+export const LOCAL_WEB_API = "http://dev.rapida.local";

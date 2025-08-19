@@ -27,7 +27,10 @@ import {
   AssistantMessagingRequest,
   AssistantMessagingResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
-import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import {
+  AssistantConnectionConfig,
+  ConnectionConfig,
+} from "@/rapida/connections/connection-config";
 import { ConnectionState } from "@/rapida/connections/connection-state";
 import { AgentEventCallback } from "@/rapida/events/agent-event-callback";
 import { EventEmitter } from "events";
@@ -53,7 +56,6 @@ import {
   GetDeployment,
 } from "@/rapida/agents/agent-deployment";
 import { HEADER_SOURCE_KEY } from "@/rapida/utils/rapida_header";
-import { AssistantWebpluginDeployment } from "@/rapida/clients/protos/assistant-deployment_pb";
 
 //
 export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCallback>) {
@@ -95,7 +97,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
 
   //
   protected agentConfig: AgentConfig;
-  protected connectionConfig: ConnectionConfig;
+  protected connectionConfig: AssistantConnectionConfig;
 
   /**
    *
@@ -112,7 +114,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    * @param onRecieve
    */
   protected constructor(
-    connection: ConnectionConfig,
+    connection: AssistantConnectionConfig,
     agentConfig: AgentConfig
   ) {
     super();
@@ -215,7 +217,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     }[]
   ) {
     CreateMessageMetric(
-      this.connectionConfig.conversationClient,
+      this.connectionConfig,
       this.agentConfig.definition.getAssistantid(),
       this.agentMessagingId!,
       messageId,
@@ -250,7 +252,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     }[]
   ) {
     CreateConversationMetric(
-      this.connectionConfig.conversationClient,
+      this.connectionConfig,
       this.agentConfig.definition.getAssistantid(),
       this.agentMessagingId!,
       metrics,
@@ -342,7 +344,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
   protected getAssistant = async (): Promise<Assistant> => {
     return new Promise((resolve, reject) => {
       GetAssistant(
-        this.connectionConfig.assistantClient,
+        this.connectionConfig,
         this.agentConfig.id,
         this.agentConfig.version || null,
         (err: ServiceError | null, response: GetAssistantResponse | null) => {

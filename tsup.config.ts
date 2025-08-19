@@ -8,7 +8,7 @@ export default defineConfig({
   dts: true,
   clean: true,
   sourcemap: true,
-  external: ["react", "react-dom"],
+  external: ["react", "react-dom", "grpc-web"],
   loader: {
     ".js": "jsx",
     ".jsx": "jsx",

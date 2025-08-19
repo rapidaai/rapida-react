@@ -24,11 +24,6 @@
  *  This module provides functions for managing projects through the ProjectService.
  */
 import {
-  AssistantMessagingRequest,
-  AssistantDefinition,
-  AssistantMessagingResponse,
-} from "@/rapida/clients/protos/talk-api_pb";
-import {
   GetAllConversationMessageRequest,
   GetAllConversationMessageResponse,
   GetAllAssistantConversationResponse,
@@ -40,11 +35,7 @@ import {
   UserAuthInfo,
   WithAuthContext,
 } from "@/rapida/clients";
-import {
-  ServiceError,
-  BidirectionalStream,
-  ResponseStream,
-} from "@/rapida/clients/protos/talk-api_pb_service";
+import { ServiceError } from "@/rapida/clients/protos/talk-api_pb_service";
 import { Criteria, Paginate, Message } from "@/rapida/clients/protos/common_pb";
 import { TalkServiceClient } from "@/rapida/clients/protos/talk-api_pb_service";
 import {
@@ -55,83 +46,96 @@ import {
   CreateMessageMetricResponse,
   CreateMessageMetricRequest,
 } from "./protos/talk-api_pb";
-import {
-  fromStageStr,
-  UndefinedStage,
-  AuthenticationStage,
-  TranscriptionStage,
-  AssistantIdentificationStage,
-  QueryFormulationStage,
-  InformationRetrievalStage,
-  DocumentRetrievalStage,
-  ContextAugmentationStage,
-  TextGenerationStage,
-  OutputEvaluationStage,
-} from "@/rapida/utils/rapida_stages";
+import { ConnectionConfig } from "@/rapida/connections/connection-config";
 
 /**
  *
- * @param stage
+ * @param authHeader
  * @returns
  */
-export function GetStageMessage(stage: string): string {
-  switch (fromStageStr(stage)) {
-    case UndefinedStage:
-      return "is undefined. Please wait...";
-    case AuthenticationStage:
-      return "is authenticating...";
-    case TranscriptionStage:
-      return "is transcribing the audio...";
-    case AssistantIdentificationStage:
-      return "is identifying the assistant...";
-    case QueryFormulationStage:
-      return "is formulating the query...";
-    case InformationRetrievalStage:
-      return "is retrieving information...";
-    case DocumentRetrievalStage:
-      return "is retrieving documents...";
-    case ContextAugmentationStage:
-      return "is augmenting the context...";
-    case TextGenerationStage:
-      return "is generating the text...";
-    case OutputEvaluationStage:
-      return "is evaluating the output...";
-    default:
-      return "Unknown stage. Please wait...";
-  }
+export function AssistantTalk(
+  conversationStreamClient: TalkServiceClient,
+  authHeader: UserAuthInfo | ClientAuthInfo
+) {
+  return conversationStreamClient.assistantTalk(WithAuthContext(authHeader));
 }
 
 /**
  *
+ * @param conversationClient
  * @param assistantId
- * @param assistantProviderModelId
- * @param message
- * @param authHeader
+ * @param assistantConversationId
+ * @param assistantConversationMessageId
  * @param cb
+ * @param authHeader
  */
-export function AssistantMessaging(
-  conversationClient: TalkServiceClient,
+export function CreateMessageMetric(
+  connectionConfig: ConnectionConfig,
   assistantId: string,
-  assistantProviderModelId: string,
-  conversation: {
-    message: Message;
-    assistantConversationId?: string | null;
-  },
+  assistantConversationId: string,
+  messageId: string,
+  metrics: { name: string; value: string; description: string }[],
+  cb: (
+    err: ServiceError | null,
+    uvcr: CreateMessageMetricResponse | null
+  ) => void,
   authHeader: ClientAuthInfo | UserAuthInfo
-): ResponseStream<AssistantMessagingResponse> {
-  const req = new AssistantMessagingRequest();
-  const ad = new AssistantDefinition();
-  ad.setAssistantid(assistantId);
-  ad.setVersion(assistantProviderModelId);
-  req.setAssistant(ad);
-
-  if (conversation.assistantConversationId) {
-    req.setAssistantconversationid(conversation.assistantConversationId);
+) {
+  const req = new CreateMessageMetricRequest();
+  req.setAssistantid(assistantId);
+  req.setAssistantconversationid(assistantConversationId);
+  req.setMessageid(messageId);
+  for (var mtr of metrics) {
+    const _m = new Metric();
+    _m.setName(mtr.name);
+    _m.setValue(mtr.value);
+    _m.setDescription(mtr.description);
+    req.addMetrics(_m);
   }
-  req.setMessage(conversation.message);
-  const ctx = WithAuthContext(authHeader);
-  return conversationClient.assistantMessaging(req, ctx);
+  connectionConfig.conversationClient.createMessageMetric(
+    req,
+    WithAuthContext(authHeader),
+    cb
+  );
 }
+
+/**
+ *
+ * @param conversationClient
+ * @param assistantId
+ * @param assistantConversationId
+ * @param metrics
+ * @param cb
+ * @param authHeader
+ */
+export function CreateConversationMetric(
+  connectionConfig: ConnectionConfig,
+  assistantId: string,
+  assistantConversationId: string,
+  metrics: { name: string; value: string; description: string }[],
+  cb: (
+    err: ServiceError | null,
+    uvcr: CreateConversationMetricResponse | null
+  ) => void,
+  authHeader: ClientAuthInfo | UserAuthInfo
+) {
+  const req = new CreateConversationMetricRequest();
+  req.setAssistantid(assistantId);
+  req.setAssistantconversationid(assistantConversationId);
+  for (var mtr of metrics) {
+    const _m = new Metric();
+    _m.setName(mtr.name);
+    _m.setValue(mtr.value);
+    _m.setDescription(mtr.description);
+    req.addMetrics(_m);
+  }
+  connectionConfig.conversationClient.createConversationMetric(
+    req,
+    WithAuthContext(authHeader),
+    cb
+  );
+}
+
 /**
  *
  * @param assistantId
@@ -142,7 +146,7 @@ export function AssistantMessaging(
  * @param authHeader
  */
 export function GetAllAssistantConversation(
-  conversationClient: TalkServiceClient,
+  connectionConfig: ConnectionConfig,
   assistantId: string,
   page: number,
   pageSize: number,
@@ -165,7 +169,7 @@ export function GetAllAssistantConversation(
   paginate.setPage(page);
   paginate.setPagesize(pageSize);
   req.setPaginate(paginate);
-  conversationClient.getAllAssistantConversation(
+  connectionConfig.conversationClient.getAllAssistantConversation(
     req,
     WithAuthContext(authHeader),
     cb
@@ -183,7 +187,7 @@ export function GetAllAssistantConversation(
  * @param authHeader
  */
 export function GetAllAssistantConversationMessage(
-  conversationClient: TalkServiceClient,
+  connectionConfig: ConnectionConfig,
   assistantId: string,
   assistantConversationId: string,
   page: number,
@@ -208,91 +212,7 @@ export function GetAllAssistantConversationMessage(
   paginate.setPage(page);
   paginate.setPagesize(pageSize);
   req.setPaginate(paginate);
-  conversationClient.getAllConversationMessage(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
-}
-
-/**
- *
- * @param authHeader
- * @returns
- */
-export function AssistantTalk(
-  conversationStreamClient: TalkServiceClient,
-  authHeader: UserAuthInfo | ClientAuthInfo
-): BidirectionalStream<AssistantMessagingRequest, AssistantMessagingResponse> {
-  return conversationStreamClient.assistantTalk(WithAuthContext(authHeader));
-}
-
-/**
- *
- * @param conversationClient
- * @param assistantId
- * @param assistantConversationId
- * @param assistantConversationMessageId
- * @param cb
- * @param authHeader
- */
-export function CreateMessageMetric(
-  conversationClient: TalkServiceClient,
-  assistantId: string,
-  assistantConversationId: string,
-  messageId: string,
-  metrics: { name: string; value: string; description: string }[],
-  cb: (
-    err: ServiceError | null,
-    uvcr: CreateMessageMetricResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new CreateMessageMetricRequest();
-  req.setAssistantid(assistantId);
-  req.setAssistantconversationid(assistantConversationId);
-  req.setMessageid(messageId);
-  for (var mtr of metrics) {
-    const _m = new Metric();
-    _m.setName(mtr.name);
-    _m.setValue(mtr.value);
-    _m.setDescription(mtr.description);
-    req.addMetrics(_m);
-  }
-  conversationClient.createMessageMetric(req, WithAuthContext(authHeader), cb);
-}
-
-/**
- *
- * @param conversationClient
- * @param assistantId
- * @param assistantConversationId
- * @param metrics
- * @param cb
- * @param authHeader
- */
-export function CreateConversationMetric(
-  conversationClient: TalkServiceClient,
-  assistantId: string,
-  assistantConversationId: string,
-  metrics: { name: string; value: string; description: string }[],
-  cb: (
-    err: ServiceError | null,
-    uvcr: CreateConversationMetricResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new CreateConversationMetricRequest();
-  req.setAssistantid(assistantId);
-  req.setAssistantconversationid(assistantConversationId);
-  for (var mtr of metrics) {
-    const _m = new Metric();
-    _m.setName(mtr.name);
-    _m.setValue(mtr.value);
-    _m.setDescription(mtr.description);
-    req.addMetrics(_m);
-  }
-  conversationClient.createConversationMetric(
+  connectionConfig.conversationClient.getAllConversationMessage(
     req,
     WithAuthContext(authHeader),
     cb
