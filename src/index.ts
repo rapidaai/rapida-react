@@ -204,9 +204,7 @@ export {
   CreateConversationMetric,
   GetAllAssistantConversation,
 } from "@/rapida/clients/talk";
-
 export { ServiceError } from "./clients/protos/audit-logging-api_pb_service";
-export { BidirectionalStream } from "@/rapida/clients/protos/talk-api_pb_service";
 export {
   CreateKnowledge,
   GetKnowledgeBase,
