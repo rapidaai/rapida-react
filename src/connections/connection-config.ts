@@ -51,7 +51,7 @@ import { DeploymentClient } from "@/rapida/clients/protos/invoker-api_pb_service
 
 import {
   DEBUGGER_SOURCE,
-  REACTSDK_SOURCE,
+  SDK_SOURCE,
   WEB_PLUGIN_SOURCE,
 } from "../utils/rapida_source";
 import {
@@ -164,7 +164,7 @@ export class ConnectionConfig {
       [HEADER_API_KEY]: apiKey,
       [HEADER_AUTH_ID]: userId,
       Client: {
-        [HEADER_SOURCE_KEY]: REACTSDK_SOURCE,
+        [HEADER_SOURCE_KEY]: SDK_SOURCE,
       },
     };
   }
@@ -174,8 +174,8 @@ export class ConnectionConfig {
     web: string;
     endpoint: string;
   };
-
   _debug: boolean;
+  _auth?: ClientAuthInfo | UserAuthInfo;
 
   getClientOptions() {
     return { debug: this._debug };
@@ -305,6 +305,15 @@ export class ConnectionConfig {
     });
   }
 
+  withAuth(auth: ClientAuthInfo | UserAuthInfo): this {
+    this._auth = auth;
+    return this;
+  }
+
+  get auth(): ClientAuthInfo | UserAuthInfo | undefined {
+    return this._auth;
+  }
+
   withCustomEndpoint(
     endpoint: {
       assistant?: string;
@@ -332,7 +341,7 @@ export class ConnectionConfig {
  * and a streaming client for real-time communication.
  */
 export class AssistantConnectionConfig extends ConnectionConfig {
-  private _auth: ClientAuthInfo | UserAuthInfo;
+  _auth: ClientAuthInfo | UserAuthInfo;
   private _callbacks?: ConnectionCallback;
 
   constructor(

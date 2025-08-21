@@ -9664,16 +9664,10 @@ proto.GetAllConversationMessageResponse.prototype.hasPaginated = function() {
  */
 proto.Source = {
   WEB_PLUGIN: 0,
-  RAPIDA_APP: 1,
-  PYTHON_SDK: 2,
-  NODE_SDK: 3,
-  GO_SDK: 4,
-  TYPESCRIPT_SDK: 5,
-  JAVA_SDK: 6,
-  PHP_SDK: 7,
-  RUST_SDK: 8,
-  REACT_SDK: 9,
-  TWILIO_CALL: 10
+  DEBUGGER: 1,
+  SDK: 2,
+  PHONE_CALL: 3,
+  WHATSAPP: 4
 };
 
 goog.object.extend(exports, proto);

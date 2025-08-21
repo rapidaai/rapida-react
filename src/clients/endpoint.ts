@@ -59,8 +59,8 @@ import {
   ClientAuthInfo,
   WithAuthContext,
 } from "@/rapida/clients";
-import { ServiceError } from "@/rapida/clients/protos/web-api_pb_service";
 import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import { ServiceError } from "@/rapida/clients/protos/talk-api_pb_service";
 
 /**
  * Retrieve all endpoints based on pagination and filtering criteria.
@@ -70,7 +70,7 @@ import { ConnectionConfig } from "@/rapida/connections/connection-config";
  * @param criteria - List of filtering criteria.
  * @param authHeader - Authentication headers for the request.
  * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
+ 
  */
 export function GetAllEndpoint(
   config: ConnectionConfig,
@@ -109,7 +109,7 @@ export function GetAllEndpoint(
  * @param endpointProviderModelId - The ID of the endpoint provider model.
  * @param authHeader - Authentication headers for the request.
  * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
+ 
  */
 export function UpdateEndpointVersion(
   config: ConnectionConfig,
@@ -140,7 +140,7 @@ export function UpdateEndpointVersion(
  * @param criteria - List of filtering criteria.
  * @param authHeader - Authentication headers for the request.
  * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
+ 
  */
 export function GetAllEndpointProviderModel(
   config: ConnectionConfig,
@@ -180,7 +180,7 @@ export function GetAllEndpointProviderModel(
  * @param endpointProviderModelId - Optional ID of the endpoint provider model.
  * @param authHeader - Authentication headers for the request.
  * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
+ 
  */
 export function GetEndpoint(
   config: ConnectionConfig,
@@ -208,7 +208,7 @@ export function GetEndpoint(
  * @param endpointProviderModel - The provider model attributes.
  * @param authHeader - Authentication headers for the request.
  * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
+ 
  */
 export function CreateEndpointProviderModel(
   config: ConnectionConfig,
@@ -240,7 +240,7 @@ export function CreateEndpointProviderModel(
  * @param tags - List of tags to associate with the endpoint.
  * @param authHeader - Authentication headers for the request.
  * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
+ 
  */
 export function CreateEndpoint(
   config: ConnectionConfig,
@@ -275,7 +275,7 @@ export function CreateEndpoint(
  * @param tags - List of tags to add.
  * @param authHeader - Authentication headers for the request.
  * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
+ 
  */
 export function CreateEndpointTag(
   config: ConnectionConfig,
@@ -302,7 +302,7 @@ export function CreateEndpointTag(
  * @param description - The new description for the endpoint.
  * @param authHeader - Authentication headers for the request.
  * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
+ 
  */
 export function UpdateEndpointDetail(
   config: ConnectionConfig,
@@ -334,7 +334,7 @@ export function UpdateEndpointDetail(
  * @param retryables - List of error codes that should trigger a retry.
  * @param authHeader - Authentication headers for the request.
  * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
+ 
  */
 export function CreateEndpointRetryConfiguration(
   config: ConnectionConfig,
@@ -375,7 +375,7 @@ export function CreateEndpointRetryConfiguration(
  * @param matchThreshold - The threshold for cache match.
  * @param authHeader - Authentication headers for the request.
  * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
+ 
  */
 export function CreateEndpointCacheConfiguration(
   config: ConnectionConfig,

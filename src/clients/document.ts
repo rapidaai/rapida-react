@@ -32,12 +32,10 @@ import {
   WithAuthContext,
 } from "@/rapida/clients";
 import { ServiceError } from "@/rapida/clients/protos/web-api_pb_service";
-
 import {
   IndexKnowledgeDocumentRequest,
   IndexKnowledgeDocumentResponse,
 } from "@/rapida/clients/protos/document-api_pb";
-import { DocumentServiceClient } from "./protos/document-api_pb_service";
 import { ConnectionConfig } from "@/rapida/connections/connection-config";
 
 /**

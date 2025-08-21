@@ -50,7 +50,7 @@ import {
 } from "@/rapida/clients/protos/assistant-api_pb";
 import { GetAssistant } from "@/rapida/clients/assistant";
 import { ServiceError } from "@/rapida/clients/protos/talk-api_pb_service";
-import { RapidaSource, REACTSDK_SOURCE } from "@/rapida/utils/rapida_source";
+import { RapidaSource, SDK_SOURCE } from "@/rapida/utils/rapida_source";
 import {
   AgentDeployment,
   GetDeployment,
@@ -141,7 +141,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     }
     return GetDeployment(
       this.assistant!,
-      this.connectionConfig.auth.Client?.[HEADER_SOURCE_KEY] ?? REACTSDK_SOURCE
+      this.connectionConfig.auth.Client?.[HEADER_SOURCE_KEY] ?? SDK_SOURCE
     );
   }
   /**
