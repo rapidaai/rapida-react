@@ -55,7 +55,6 @@ import {
   UpdateKnowledgeDetailRequest,
   UpdateKnowledgeDocumentSegmentRequest,
 } from "@/rapida/clients/protos/knowledge-api_pb";
-import { KnowledgeServiceClient } from "@/rapida/clients/protos/knowledge-api_pb_service";
 import { DeleteKnowledgeDocumentSegmentRequest } from "./protos/knowledge-api_pb";
 import {
   RapidaDocumentPreProcessing,

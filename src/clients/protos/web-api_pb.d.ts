@@ -1479,6 +1479,11 @@ export class ProjectCredential extends jspb.Message {
   getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
+  hasCreateduser(): boolean;
+  clearCreateduser(): void;
+  getCreateduser(): common_pb.User | undefined;
+  setCreateduser(value?: common_pb.User): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ProjectCredential.AsObject;
   static toObject(includeInstance: boolean, msg: ProjectCredential): ProjectCredential.AsObject;
@@ -1501,6 +1506,7 @@ export namespace ProjectCredential {
     updatedby: string,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    createduser?: common_pb.User.AsObject,
   }
 }
 
@@ -1635,26 +1641,6 @@ export namespace GetAllProjectCredentialResponse {
     dataList: Array<ProjectCredential.AsObject>,
     error?: common_pb.Error.AsObject,
     paginated?: common_pb.Paginated.AsObject,
-  }
-}
-
-export class LeadCreationRequest extends jspb.Message {
-  getEmail(): string;
-  setEmail(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): LeadCreationRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: LeadCreationRequest): LeadCreationRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: LeadCreationRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): LeadCreationRequest;
-  static deserializeBinaryFromReader(message: LeadCreationRequest, reader: jspb.BinaryReader): LeadCreationRequest;
-}
-
-export namespace LeadCreationRequest {
-  export type AsObject = {
-    email: string,
   }
 }
 

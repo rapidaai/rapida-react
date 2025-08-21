@@ -24,14 +24,14 @@
  *  This module provides functions for managing projects through the ProjectService.
  */
 
-export const WEB_API = "https://api.rapida.ai";
 export const ASSISTANT_API = "https://assistant-01.rapida.ai";
+export const WEB_API = "https://api.rapida.ai";
 export const ENDPOINT_API = "https://api.rapida.ai";
 
 export const LOCAL_ASSISTANT_API = "http://assistant.rapida.local";
 export const LOCAL_WEB_API = "http://dev.rapida.local";
 export const LOCAL_ENDPOINT_API = "http://dev.rapida.local";
 //
-export const GRPC_ENDPOINT_URL = "connect.rapida.ai";
+export const GRPC_ENDPOINT_URL = "endpoint-01.rapida.ai";
 export const GRPC_ASSISTANT_URL = "workflow-01.rapida.ai";
 export const GRPC_GATEWAY_URL = "gateway-01.rapida.ai";
