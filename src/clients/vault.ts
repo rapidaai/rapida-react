@@ -36,8 +36,7 @@ import {
 } from "@/rapida/clients/protos/vault-api_pb";
 import { Criteria, Paginate } from "@/rapida/clients/protos/common_pb";
 import { Struct } from "google-protobuf/google/protobuf/struct_pb";
-import { VaultServiceClient } from "@/rapida/clients/protos/vault-api_pb_service";
-import { ServiceError } from "@/rapida/clients/protos/endpoint-api_pb_service";
+import { ServiceError } from "@/rapida/clients/types";
 import {
   UserAuthInfo,
   ClientAuthInfo,

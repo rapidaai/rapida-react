@@ -6,7 +6,7 @@ import {
   CreatePhoneCallRequest,
   CreatePhoneCallResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
-import { ServiceError } from "@/rapida/clients/protos/talk-api_pb_service";
+import { ServiceError } from "@/rapida/clients/types";
 import { ConnectionConfig } from "@/rapida/connections/connection-config";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 

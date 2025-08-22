@@ -47,7 +47,7 @@ import {
 } from "@/rapida/clients/protos/web-api_pb";
 import { Criteria, Paginate } from "@/rapida/clients/protos/common_pb";
 import { AuthenticationServiceClient } from "@/rapida/clients/protos/web-api_pb_service";
-import { ServiceError } from "@/rapida/clients/protos/knowledge-api_pb_service";
+import { ServiceError } from "@/rapida/clients/types";
 import { ConnectionConfig } from "../connections/connection-config";
 import {
   UserAuthInfo,

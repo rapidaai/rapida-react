@@ -11,7 +11,7 @@ import {
   ClientAuthInfo,
   WithAuthContext,
 } from "@/rapida/clients";
-import { ServiceError } from "@/rapida/clients/protos/endpoint-api_pb_service";
+import { ServiceError } from "@/rapida/clients/types";
 import { ConnectionConfig } from "@/rapida/connections/connection-config";
 
 /**

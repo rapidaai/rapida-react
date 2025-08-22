@@ -204,7 +204,6 @@ export {
   CreateConversationMetric,
   GetAllAssistantConversation,
 } from "@/rapida/clients/talk";
-export { ServiceError } from "./clients/protos/audit-logging-api_pb_service";
 export {
   CreateKnowledge,
   GetKnowledgeBase,
@@ -357,6 +356,7 @@ export {
   GetAllAssistantAnalysisRequest,
   GetAllAssistantAnalysisResponse,
 } from "@/rapida/clients/protos/assistant-analysis_pb";
+
 export {
   Contact,
   WelcomeEmailRequest,
@@ -653,3 +653,12 @@ export {
   CreatePhoneCallRequest,
   CreatePhoneCallResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
+
+export {
+  ServiceError,
+  Status,
+  UnaryResponse,
+  ResponseStream,
+  RequestStream,
+  BidirectionalStream,
+} from "@/rapida/clients/types";

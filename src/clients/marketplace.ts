@@ -31,7 +31,7 @@ import {
   GetAllDeploymentResponse,
 } from "./protos/marketplace-api_pb";
 import { UserAuthInfo, ClientAuthInfo, WithAuthContext } from ".";
-import { ServiceError } from "./protos/web-api_pb_service";
+import { ServiceError } from "@/rapida/clients/types";
 import { ConnectionConfig } from "@/rapida/connections/connection-config";
 
 /**
