@@ -36,7 +36,7 @@ import {
   toStreamAudioContent,
   toTextContent,
 } from "@/rapida/utils/rapida_content";
-import { getStringFromProtoStruct } from "@/rapida/utils/rapida_metadata";
+
 import { toDate } from "@/rapida/utils";
 import { MessageRole, MessageStatus } from "@/rapida/agents/message";
 import { Channel } from "@/rapida/channels";

@@ -104,7 +104,7 @@ import {
   GetAllAssistantWebhookResponse,
 } from "@/rapida/clients/protos/assistant-webhook_pb";
 import { AssistantServiceClient } from "@/rapida/clients/protos/assistant-api_pb_service";
-import { ServiceError } from "@/rapida/clients/protos/web-api_pb_service";
+import { ServiceError } from "@/rapida/clients/types";
 import {
   UserAuthInfo,
   ClientAuthInfo,

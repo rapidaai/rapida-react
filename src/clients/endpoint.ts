@@ -59,8 +59,8 @@ import {
   ClientAuthInfo,
   WithAuthContext,
 } from "@/rapida/clients";
+import { ServiceError } from "@/rapida/clients/types";
 import { ConnectionConfig } from "@/rapida/connections/connection-config";
-import { ServiceError } from "@/rapida/clients/protos/talk-api_pb_service";
 
 /**
  * Retrieve all endpoints based on pagination and filtering criteria.

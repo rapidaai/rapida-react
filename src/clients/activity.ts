@@ -31,7 +31,7 @@ import {
   ClientAuthInfo,
   WithAuthContext,
 } from "@/rapida/clients";
-import { ServiceError } from "@/rapida/clients/protos/web-api_pb_service";
+import { ServiceError } from "@/rapida/clients/types";
 import {
   GetAllAuditLogRequest,
   GetAllAuditLogResponse,
