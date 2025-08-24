@@ -105,11 +105,11 @@ export function DeleteProviderKey(
  *
  * @param cb
  */
-export function AllOrganizationCredential(
+export function GetAllOrganizationCredential(
   connectionConfig: ConnectionConfig,
   page: number,
   pageSize: number,
-  criteria: { key: string; value: string }[],
+  criteria: { key: string; value: string; logic: string }[],
   cb: (
     err: ServiceError | null,
     pcs: GetAllOrganizationCredentialResponse | null
@@ -122,6 +122,7 @@ export function AllOrganizationCredential(
     let ctr = new Criteria();
     ctr.setKey(x.key);
     ctr.setValue(x.value);
+    ctr.setLogic(x.logic);
     req.addCriterias(ctr);
   });
   paginate.setPage(page);

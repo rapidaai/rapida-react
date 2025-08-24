@@ -195,7 +195,7 @@ export {
 export {
   CreateProviderKey,
   DeleteProviderKey,
-  AllOrganizationCredential,
+  GetAllOrganizationCredential,
   CreateToolCredential,
 } from "@/rapida/clients/vault";
 export {
