@@ -16,7 +16,7 @@ VaultService.CreateProviderCredential = {
   requestStream: false,
   responseStream: false,
   requestType: vault_api_pb.CreateProviderCredentialRequest,
-  responseType: vault_api_pb.CreateProviderCredentialResponse
+  responseType: vault_api_pb.GetCredentialResponse
 };
 
 VaultService.CreateToolCredential = {
@@ -25,16 +25,7 @@ VaultService.CreateToolCredential = {
   requestStream: false,
   responseStream: false,
   requestType: vault_api_pb.CreateToolCredentialRequest,
-  responseType: vault_api_pb.CreateToolCredentialResponse
-};
-
-VaultService.DeleteProviderCredential = {
-  methodName: "DeleteProviderCredential",
-  service: VaultService,
-  requestStream: false,
-  responseStream: false,
-  requestType: vault_api_pb.DeleteProviderCredentialRequest,
-  responseType: vault_api_pb.DeleteProviderCredentialResponse
+  responseType: vault_api_pb.GetCredentialResponse
 };
 
 VaultService.GetAllOrganizationCredential = {
@@ -46,22 +37,40 @@ VaultService.GetAllOrganizationCredential = {
   responseType: vault_api_pb.GetAllOrganizationCredentialResponse
 };
 
+VaultService.DeleteCredential = {
+  methodName: "DeleteCredential",
+  service: VaultService,
+  requestStream: false,
+  responseStream: false,
+  requestType: vault_api_pb.DeleteCredentialRequest,
+  responseType: vault_api_pb.GetCredentialResponse
+};
+
 VaultService.GetProviderCredential = {
   methodName: "GetProviderCredential",
   service: VaultService,
   requestStream: false,
   responseStream: false,
   requestType: vault_api_pb.GetProviderCredentialRequest,
-  responseType: vault_api_pb.GetProviderCredentialResponse
+  responseType: vault_api_pb.GetCredentialResponse
 };
 
-VaultService.GetOauth2VaultCredential = {
-  methodName: "GetOauth2VaultCredential",
+VaultService.GetCredential = {
+  methodName: "GetCredential",
   service: VaultService,
   requestStream: false,
   responseStream: false,
-  requestType: vault_api_pb.GetOauth2VaultCredentialRequest,
-  responseType: vault_api_pb.GetOauth2VaultCredentialResponse
+  requestType: vault_api_pb.GetCredentialRequest,
+  responseType: vault_api_pb.GetCredentialResponse
+};
+
+VaultService.GetOauth2Credential = {
+  methodName: "GetOauth2Credential",
+  service: VaultService,
+  requestStream: false,
+  responseStream: false,
+  requestType: vault_api_pb.GetCredentialRequest,
+  responseType: vault_api_pb.GetCredentialResponse
 };
 
 exports.VaultService = VaultService;
@@ -133,11 +142,11 @@ VaultServiceClient.prototype.createToolCredential = function createToolCredentia
   };
 };
 
-VaultServiceClient.prototype.deleteProviderCredential = function deleteProviderCredential(requestMessage, metadata, callback) {
+VaultServiceClient.prototype.getAllOrganizationCredential = function getAllOrganizationCredential(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(VaultService.DeleteProviderCredential, {
+  var client = grpc.unary(VaultService.GetAllOrganizationCredential, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -164,11 +173,11 @@ VaultServiceClient.prototype.deleteProviderCredential = function deleteProviderC
   };
 };
 
-VaultServiceClient.prototype.getAllOrganizationCredential = function getAllOrganizationCredential(requestMessage, metadata, callback) {
+VaultServiceClient.prototype.deleteCredential = function deleteCredential(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(VaultService.GetAllOrganizationCredential, {
+  var client = grpc.unary(VaultService.DeleteCredential, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -226,11 +235,42 @@ VaultServiceClient.prototype.getProviderCredential = function getProviderCredent
   };
 };
 
-VaultServiceClient.prototype.getOauth2VaultCredential = function getOauth2VaultCredential(requestMessage, metadata, callback) {
+VaultServiceClient.prototype.getCredential = function getCredential(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(VaultService.GetOauth2VaultCredential, {
+  var client = grpc.unary(VaultService.GetCredential, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+VaultServiceClient.prototype.getOauth2Credential = function getOauth2Credential(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(VaultService.GetOauth2Credential, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

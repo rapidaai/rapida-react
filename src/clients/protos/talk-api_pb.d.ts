@@ -501,17 +501,6 @@ export namespace CreatePhoneCallResponse {
 }
 
 export class CreateBulkPhoneCallRequest extends jspb.Message {
-  hasAssistant(): boolean;
-  clearAssistant(): void;
-  getAssistant(): AssistantDefinition | undefined;
-  setAssistant(value?: AssistantDefinition): void;
-
-  getMetadataMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
-  clearMetadataMap(): void;
-  getArgsMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
-  clearArgsMap(): void;
-  getOptionsMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
-  clearOptionsMap(): void;
   clearPhonecallsList(): void;
   getPhonecallsList(): Array<CreatePhoneCallRequest>;
   setPhonecallsList(value: Array<CreatePhoneCallRequest>): void;
@@ -529,10 +518,6 @@ export class CreateBulkPhoneCallRequest extends jspb.Message {
 
 export namespace CreateBulkPhoneCallRequest {
   export type AsObject = {
-    assistant?: AssistantDefinition.AsObject,
-    metadataMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
-    argsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
-    optionsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
     phonecallsList: Array<CreatePhoneCallRequest.AsObject>,
   }
 }

@@ -89,8 +89,6 @@ export function CreateBulkPhoneCall(
 ): Promise<CreateBulkPhoneCallResponse> {
   return new Promise((resolve, reject) => {
     const _request = new CreateBulkPhoneCallRequest();
-    _request.setAssistant(assistant);
-
     params.map((param) => {
       const request = new CreatePhoneCallRequest();
       request.setAssistant(assistant);
