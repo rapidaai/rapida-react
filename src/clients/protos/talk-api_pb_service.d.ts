@@ -5,15 +5,6 @@ import * as talk_api_pb from "./talk-api_pb";
 import * as common_pb from "./common_pb";
 import {grpc} from "@improbable-eng/grpc-web";
 
-type TalkServiceAssistantMessaging = {
-  readonly methodName: string;
-  readonly service: typeof TalkService;
-  readonly requestStream: false;
-  readonly responseStream: true;
-  readonly requestType: typeof talk_api_pb.AssistantMessagingRequest;
-  readonly responseType: typeof talk_api_pb.AssistantMessagingResponse;
-};
-
 type TalkServiceAssistantTalk = {
   readonly methodName: string;
   readonly service: typeof TalkService;
@@ -79,7 +70,6 @@ type TalkServiceCreateBulkPhoneCall = {
 
 export class TalkService {
   static readonly serviceName: string;
-  static readonly AssistantMessaging: TalkServiceAssistantMessaging;
   static readonly AssistantTalk: TalkServiceAssistantTalk;
   static readonly GetAllAssistantConversation: TalkServiceGetAllAssistantConversation;
   static readonly GetAllConversationMessage: TalkServiceGetAllConversationMessage;
@@ -121,7 +111,6 @@ export class TalkServiceClient {
   readonly serviceHost: string;
 
   constructor(serviceHost: string, options?: grpc.RpcOptions);
-  assistantMessaging(requestMessage: talk_api_pb.AssistantMessagingRequest, metadata?: grpc.Metadata): ResponseStream<talk_api_pb.AssistantMessagingResponse>;
   assistantTalk(metadata?: grpc.Metadata): BidirectionalStream<talk_api_pb.AssistantMessagingRequest, talk_api_pb.AssistantMessagingResponse>;
   getAllAssistantConversation(
     requestMessage: common_pb.GetAllAssistantConversationRequest,

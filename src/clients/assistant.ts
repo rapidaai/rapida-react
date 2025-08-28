@@ -679,36 +679,36 @@ export function CreateAssistantDebuggerDeployment(
   if (inputAudio) {
     const inputAudioProvider = new DeploymentAudioProvider();
     inputAudioProvider.setId(inputAudio.providerId);
-    inputAudioProvider.setProvidername(inputAudio.provider);
-    inputAudioProvider.setOptionsList(inputAudio.parameters);
-    inputAudioProvider.setProviderid(inputAudio.providerId);
+    inputAudioProvider.setAudioprovider(inputAudio.provider);
+    inputAudioProvider.setAudiooptionsList(inputAudio.parameters);
+    inputAudioProvider.setAudioproviderid(inputAudio.providerId);
     deployment.setInputaudio(inputAudioProvider);
   }
 
   if (outputAudio) {
     const outputAudioProvider = new DeploymentAudioProvider();
     outputAudioProvider.setId(outputAudio.providerId);
-    outputAudioProvider.setProvidername(outputAudio.provider);
-    outputAudioProvider.setOptionsList(outputAudio.parameters);
-    outputAudioProvider.setProviderid(outputAudio.providerId);
+    outputAudioProvider.setAudioprovider(outputAudio.provider);
+    outputAudioProvider.setAudiooptionsList(outputAudio.parameters);
+    outputAudioProvider.setAudioproviderid(outputAudio.providerId);
     deployment.setOutputaudio(outputAudioProvider);
   }
 
   if (audioStorageConfig) {
     const audioCapturer = new AssistantDeploymentCapturer();
-    audioCapturer.setProvidername(audioStorageConfig.provider);
-    audioCapturer.setProviderid(audioStorageConfig.providerId);
-    audioCapturer.setOptionsList(audioStorageConfig.parameters);
-    audioCapturer.setType("audio");
+    audioCapturer.setCapturerprovider(audioStorageConfig.provider);
+    audioCapturer.setCapturerproviderid(audioStorageConfig.providerId);
+    audioCapturer.setCaptureroptionsList(audioStorageConfig.parameters);
+    audioCapturer.setCapturertype("audio");
     deployment.addCapturers(audioCapturer);
   }
 
   if (textStorageConfig) {
     const textCapturer = new AssistantDeploymentCapturer();
-    textCapturer.setProvidername(textStorageConfig.provider);
-    textCapturer.setProviderid(textStorageConfig.providerId);
-    textCapturer.setOptionsList(textStorageConfig.parameters);
-    textCapturer.setType("text");
+    textCapturer.setCapturerprovider(textStorageConfig.provider);
+    textCapturer.setCapturerproviderid(textStorageConfig.providerId);
+    textCapturer.setCaptureroptionsList(textStorageConfig.parameters);
+    textCapturer.setCapturertype("text");
     deployment.addCapturers(textCapturer);
   }
 
@@ -807,36 +807,36 @@ export function CreateAssistantApiDeployment(
   if (inputAudio) {
     const inputAudioProvider = new DeploymentAudioProvider();
     inputAudioProvider.setId(inputAudio.providerId);
-    inputAudioProvider.setProvidername(inputAudio.provider);
-    inputAudioProvider.setOptionsList(inputAudio.parameters);
-    inputAudioProvider.setProviderid(inputAudio.providerId);
+    inputAudioProvider.setAudioprovider(inputAudio.provider);
+    inputAudioProvider.setAudiooptionsList(inputAudio.parameters);
+    inputAudioProvider.setAudioproviderid(inputAudio.providerId);
     deployment.setInputaudio(inputAudioProvider);
   }
 
   if (outputAudio) {
     const outputAudioProvider = new DeploymentAudioProvider();
     outputAudioProvider.setId(outputAudio.providerId);
-    outputAudioProvider.setProvidername(outputAudio.provider);
-    outputAudioProvider.setOptionsList(outputAudio.parameters);
-    outputAudioProvider.setProviderid(outputAudio.providerId);
+    outputAudioProvider.setAudioprovider(outputAudio.provider);
+    outputAudioProvider.setAudiooptionsList(outputAudio.parameters);
+    outputAudioProvider.setAudioproviderid(outputAudio.providerId);
     deployment.setOutputaudio(outputAudioProvider);
   }
 
   if (audioStorageConfig) {
     const audioCapturer = new AssistantDeploymentCapturer();
-    audioCapturer.setProvidername(audioStorageConfig.provider);
-    audioCapturer.setProviderid(audioStorageConfig.providerId);
-    audioCapturer.setOptionsList(audioStorageConfig.parameters);
-    audioCapturer.setType("audio");
+    audioCapturer.setCapturerprovider(audioStorageConfig.provider);
+    audioCapturer.setCapturerproviderid(audioStorageConfig.providerId);
+    audioCapturer.setCaptureroptionsList(audioStorageConfig.parameters);
+    audioCapturer.setCapturertype("audio");
     deployment.addCapturers(audioCapturer);
   }
 
   if (textStorageConfig) {
     const textCapturer = new AssistantDeploymentCapturer();
-    textCapturer.setProvidername(textStorageConfig.provider);
-    textCapturer.setProviderid(textStorageConfig.providerId);
-    textCapturer.setOptionsList(textStorageConfig.parameters);
-    textCapturer.setType("text");
+    textCapturer.setCapturerprovider(textStorageConfig.provider);
+    textCapturer.setCapturerproviderid(textStorageConfig.providerId);
+    textCapturer.setCaptureroptionsList(textStorageConfig.parameters);
+    textCapturer.setCapturertype("text");
     deployment.addCapturers(textCapturer);
   }
 
@@ -946,18 +946,18 @@ export function CreateAssistantWebpluginDeployment(
   if (inputAudio) {
     const inputAudioProvider = new DeploymentAudioProvider();
     inputAudioProvider.setId(inputAudio.providerId);
-    inputAudioProvider.setProvidername(inputAudio.provider);
-    inputAudioProvider.setOptionsList(inputAudio.parameters);
-    inputAudioProvider.setProviderid(inputAudio.providerId);
+    inputAudioProvider.setAudioprovider(inputAudio.provider);
+    inputAudioProvider.setAudiooptionsList(inputAudio.parameters);
+    inputAudioProvider.setAudioproviderid(inputAudio.providerId);
     webDeployment.setInputaudio(inputAudioProvider);
   }
 
   if (outputAudio) {
     const outputAudioProvider = new DeploymentAudioProvider();
     outputAudioProvider.setId(outputAudio.providerId);
-    outputAudioProvider.setProvidername(outputAudio.provider);
-    outputAudioProvider.setOptionsList(outputAudio.parameters);
-    outputAudioProvider.setProviderid(outputAudio.providerId);
+    outputAudioProvider.setAudioprovider(outputAudio.provider);
+    outputAudioProvider.setAudiooptionsList(outputAudio.parameters);
+    outputAudioProvider.setAudioproviderid(outputAudio.providerId);
 
     webDeployment.setOutputaudio(outputAudioProvider);
   }
@@ -974,19 +974,19 @@ export function CreateAssistantWebpluginDeployment(
 
   if (audioStorageConfig) {
     const audioCapturer = new AssistantDeploymentCapturer();
-    audioCapturer.setProvidername(audioStorageConfig.provider);
-    audioCapturer.setProviderid(audioStorageConfig.providerId);
-    audioCapturer.setOptionsList(audioStorageConfig.parameters);
-    audioCapturer.setType("audio");
+    audioCapturer.setCapturerprovider(audioStorageConfig.provider);
+    audioCapturer.setCapturerproviderid(audioStorageConfig.providerId);
+    audioCapturer.setCaptureroptionsList(audioStorageConfig.parameters);
+    audioCapturer.setCapturertype("audio");
     webDeployment.addCapturers(audioCapturer);
   }
 
   if (textStorageConfig) {
     const textCapturer = new AssistantDeploymentCapturer();
-    textCapturer.setProvidername(textStorageConfig.provider);
-    textCapturer.setProviderid(textStorageConfig.providerId);
-    textCapturer.setOptionsList(textStorageConfig.parameters);
-    textCapturer.setType("text");
+    textCapturer.setCapturerprovider(textStorageConfig.provider);
+    textCapturer.setCapturerproviderid(textStorageConfig.providerId);
+    textCapturer.setCaptureroptionsList(textStorageConfig.parameters);
+    textCapturer.setCapturertype("text");
     webDeployment.addCapturers(textCapturer);
   }
 
@@ -1088,36 +1088,36 @@ export function CreateAssistantPhoneDeployment(
   if (inputAudio) {
     const inputAudioProvider = new DeploymentAudioProvider();
     inputAudioProvider.setId(inputAudio.providerId);
-    inputAudioProvider.setProvidername(inputAudio.provider);
-    inputAudioProvider.setOptionsList(inputAudio.parameters);
-    inputAudioProvider.setProviderid(inputAudio.providerId);
+    inputAudioProvider.setAudioprovider(inputAudio.provider);
+    inputAudioProvider.setAudiooptionsList(inputAudio.parameters);
+    inputAudioProvider.setAudioproviderid(inputAudio.providerId);
     deployment.setInputaudio(inputAudioProvider);
   }
 
   if (outputAudio) {
     const outputAudioProvider = new DeploymentAudioProvider();
     outputAudioProvider.setId(outputAudio.providerId);
-    outputAudioProvider.setProvidername(outputAudio.provider);
-    outputAudioProvider.setOptionsList(outputAudio.parameters);
-    outputAudioProvider.setProviderid(outputAudio.providerId);
+    outputAudioProvider.setAudioprovider(outputAudio.provider);
+    outputAudioProvider.setAudiooptionsList(outputAudio.parameters);
+    outputAudioProvider.setAudioproviderid(outputAudio.providerId);
     deployment.setOutputaudio(outputAudioProvider);
   }
 
   if (audioStorageConfig) {
     const audioCapturer = new AssistantDeploymentCapturer();
-    audioCapturer.setProvidername(audioStorageConfig.provider);
-    audioCapturer.setProviderid(audioStorageConfig.providerId);
-    audioCapturer.setOptionsList(audioStorageConfig.parameters);
-    audioCapturer.setType("audio");
+    audioCapturer.setCapturerprovider(audioStorageConfig.provider);
+    audioCapturer.setCapturerproviderid(audioStorageConfig.providerId);
+    audioCapturer.setCaptureroptionsList(audioStorageConfig.parameters);
+    audioCapturer.setCapturertype("audio");
     deployment.addCapturers(audioCapturer);
   }
 
   if (textStorageConfig) {
     const textCapturer = new AssistantDeploymentCapturer();
-    textCapturer.setProvidername(textStorageConfig.provider);
-    textCapturer.setProviderid(textStorageConfig.providerId);
-    textCapturer.setOptionsList(textStorageConfig.parameters);
-    textCapturer.setType("text");
+    textCapturer.setCapturerprovider(textStorageConfig.provider);
+    textCapturer.setCapturerproviderid(textStorageConfig.providerId);
+    textCapturer.setCaptureroptionsList(textStorageConfig.parameters);
+    textCapturer.setCapturertype("text");
     deployment.addCapturers(textCapturer);
   }
 

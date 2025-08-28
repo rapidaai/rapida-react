@@ -317,17 +317,12 @@ export {
 export {
   VaultCredential,
   CreateProviderCredentialRequest,
-  CreateProviderCredentialResponse,
   CreateToolCredentialRequest,
-  CreateToolCredentialResponse,
-  DeleteProviderCredentialRequest,
-  DeleteProviderCredentialResponse,
   GetAllOrganizationCredentialResponse,
   GetProviderCredentialRequest,
-  GetProviderCredentialResponse,
   GetAllOrganizationCredentialRequest,
-  GetOauth2VaultCredentialRequest,
-  GetOauth2VaultCredentialResponse,
+  GetCredentialRequest,
+  GetCredentialResponse,
 } from "@/rapida/clients/protos/vault-api_pb";
 export {
   ProviderService,

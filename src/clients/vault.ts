@@ -26,13 +26,11 @@
 
 import {
   CreateProviderCredentialRequest,
-  CreateProviderCredentialResponse,
-  DeleteProviderCredentialRequest,
-  DeleteProviderCredentialResponse,
+  GetCredentialResponse,
+  DeleteCredentialRequest,
   GetAllOrganizationCredentialResponse,
   GetAllOrganizationCredentialRequest,
   CreateToolCredentialRequest,
-  CreateToolCredentialResponse,
 } from "@/rapida/clients/protos/vault-api_pb";
 import { Criteria, Paginate } from "@/rapida/clients/protos/common_pb";
 import { Struct } from "google-protobuf/google/protobuf/struct_pb";
@@ -57,10 +55,7 @@ export function CreateProviderKey(
   providerName: string,
   credential: {},
   name: string,
-  cb: (
-    err: ServiceError | null,
-    cpkr: CreateProviderCredentialResponse | null
-  ) => void,
+  cb: (err: ServiceError | null, cpkr: GetCredentialResponse | null) => void,
   authHeader: ClientAuthInfo | UserAuthInfo
 ) {
   const requestObject = new CreateProviderCredentialRequest();
@@ -86,15 +81,12 @@ export function CreateProviderKey(
 export function DeleteProviderKey(
   connectionConfig: ConnectionConfig,
   providerKeyId: string,
-  cb: (
-    err: ServiceError | null,
-    dpr: DeleteProviderCredentialResponse | null
-  ) => void,
+  cb: (err: ServiceError | null, dpr: GetCredentialResponse | null) => void,
   authHeader: ClientAuthInfo | UserAuthInfo
 ) {
-  const requestObject = new DeleteProviderCredentialRequest();
-  requestObject.setProviderkeyid(providerKeyId);
-  connectionConfig.vaultClient.deleteProviderCredential(
+  const requestObject = new DeleteCredentialRequest();
+  requestObject.setVaultid(providerKeyId);
+  connectionConfig.vaultClient.deleteCredential(
     requestObject,
     WithAuthContext(authHeader),
     cb
@@ -150,10 +142,7 @@ export function CreateToolCredential(
   toolName: string,
   credential: {},
   name: string,
-  cb: (
-    err: ServiceError | null,
-    cpkr: CreateToolCredentialResponse | null
-  ) => void,
+  cb: (err: ServiceError | null, cpkr: GetCredentialResponse | null) => void,
   authHeader: ClientAuthInfo | UserAuthInfo
 ) {
   const requestObject = new CreateToolCredentialRequest();

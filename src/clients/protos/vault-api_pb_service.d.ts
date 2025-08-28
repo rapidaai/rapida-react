@@ -10,7 +10,7 @@ type VaultServiceCreateProviderCredential = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof vault_api_pb.CreateProviderCredentialRequest;
-  readonly responseType: typeof vault_api_pb.CreateProviderCredentialResponse;
+  readonly responseType: typeof vault_api_pb.GetCredentialResponse;
 };
 
 type VaultServiceCreateToolCredential = {
@@ -19,16 +19,7 @@ type VaultServiceCreateToolCredential = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof vault_api_pb.CreateToolCredentialRequest;
-  readonly responseType: typeof vault_api_pb.CreateToolCredentialResponse;
-};
-
-type VaultServiceDeleteProviderCredential = {
-  readonly methodName: string;
-  readonly service: typeof VaultService;
-  readonly requestStream: false;
-  readonly responseStream: false;
-  readonly requestType: typeof vault_api_pb.DeleteProviderCredentialRequest;
-  readonly responseType: typeof vault_api_pb.DeleteProviderCredentialResponse;
+  readonly responseType: typeof vault_api_pb.GetCredentialResponse;
 };
 
 type VaultServiceGetAllOrganizationCredential = {
@@ -40,32 +31,51 @@ type VaultServiceGetAllOrganizationCredential = {
   readonly responseType: typeof vault_api_pb.GetAllOrganizationCredentialResponse;
 };
 
+type VaultServiceDeleteCredential = {
+  readonly methodName: string;
+  readonly service: typeof VaultService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof vault_api_pb.DeleteCredentialRequest;
+  readonly responseType: typeof vault_api_pb.GetCredentialResponse;
+};
+
 type VaultServiceGetProviderCredential = {
   readonly methodName: string;
   readonly service: typeof VaultService;
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof vault_api_pb.GetProviderCredentialRequest;
-  readonly responseType: typeof vault_api_pb.GetProviderCredentialResponse;
+  readonly responseType: typeof vault_api_pb.GetCredentialResponse;
 };
 
-type VaultServiceGetOauth2VaultCredential = {
+type VaultServiceGetCredential = {
   readonly methodName: string;
   readonly service: typeof VaultService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof vault_api_pb.GetOauth2VaultCredentialRequest;
-  readonly responseType: typeof vault_api_pb.GetOauth2VaultCredentialResponse;
+  readonly requestType: typeof vault_api_pb.GetCredentialRequest;
+  readonly responseType: typeof vault_api_pb.GetCredentialResponse;
+};
+
+type VaultServiceGetOauth2Credential = {
+  readonly methodName: string;
+  readonly service: typeof VaultService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof vault_api_pb.GetCredentialRequest;
+  readonly responseType: typeof vault_api_pb.GetCredentialResponse;
 };
 
 export class VaultService {
   static readonly serviceName: string;
   static readonly CreateProviderCredential: VaultServiceCreateProviderCredential;
   static readonly CreateToolCredential: VaultServiceCreateToolCredential;
-  static readonly DeleteProviderCredential: VaultServiceDeleteProviderCredential;
   static readonly GetAllOrganizationCredential: VaultServiceGetAllOrganizationCredential;
+  static readonly DeleteCredential: VaultServiceDeleteCredential;
   static readonly GetProviderCredential: VaultServiceGetProviderCredential;
-  static readonly GetOauth2VaultCredential: VaultServiceGetOauth2VaultCredential;
+  static readonly GetCredential: VaultServiceGetCredential;
+  static readonly GetOauth2Credential: VaultServiceGetOauth2Credential;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -103,29 +113,20 @@ export class VaultServiceClient {
   createProviderCredential(
     requestMessage: vault_api_pb.CreateProviderCredentialRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: vault_api_pb.CreateProviderCredentialResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetCredentialResponse|null) => void
   ): UnaryResponse;
   createProviderCredential(
     requestMessage: vault_api_pb.CreateProviderCredentialRequest,
-    callback: (error: ServiceError|null, responseMessage: vault_api_pb.CreateProviderCredentialResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetCredentialResponse|null) => void
   ): UnaryResponse;
   createToolCredential(
     requestMessage: vault_api_pb.CreateToolCredentialRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: vault_api_pb.CreateToolCredentialResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetCredentialResponse|null) => void
   ): UnaryResponse;
   createToolCredential(
     requestMessage: vault_api_pb.CreateToolCredentialRequest,
-    callback: (error: ServiceError|null, responseMessage: vault_api_pb.CreateToolCredentialResponse|null) => void
-  ): UnaryResponse;
-  deleteProviderCredential(
-    requestMessage: vault_api_pb.DeleteProviderCredentialRequest,
-    metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: vault_api_pb.DeleteProviderCredentialResponse|null) => void
-  ): UnaryResponse;
-  deleteProviderCredential(
-    requestMessage: vault_api_pb.DeleteProviderCredentialRequest,
-    callback: (error: ServiceError|null, responseMessage: vault_api_pb.DeleteProviderCredentialResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetCredentialResponse|null) => void
   ): UnaryResponse;
   getAllOrganizationCredential(
     requestMessage: vault_api_pb.GetAllOrganizationCredentialRequest,
@@ -136,23 +137,41 @@ export class VaultServiceClient {
     requestMessage: vault_api_pb.GetAllOrganizationCredentialRequest,
     callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetAllOrganizationCredentialResponse|null) => void
   ): UnaryResponse;
+  deleteCredential(
+    requestMessage: vault_api_pb.DeleteCredentialRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetCredentialResponse|null) => void
+  ): UnaryResponse;
+  deleteCredential(
+    requestMessage: vault_api_pb.DeleteCredentialRequest,
+    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetCredentialResponse|null) => void
+  ): UnaryResponse;
   getProviderCredential(
     requestMessage: vault_api_pb.GetProviderCredentialRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetProviderCredentialResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetCredentialResponse|null) => void
   ): UnaryResponse;
   getProviderCredential(
     requestMessage: vault_api_pb.GetProviderCredentialRequest,
-    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetProviderCredentialResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetCredentialResponse|null) => void
   ): UnaryResponse;
-  getOauth2VaultCredential(
-    requestMessage: vault_api_pb.GetOauth2VaultCredentialRequest,
+  getCredential(
+    requestMessage: vault_api_pb.GetCredentialRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetOauth2VaultCredentialResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetCredentialResponse|null) => void
   ): UnaryResponse;
-  getOauth2VaultCredential(
-    requestMessage: vault_api_pb.GetOauth2VaultCredentialRequest,
-    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetOauth2VaultCredentialResponse|null) => void
+  getCredential(
+    requestMessage: vault_api_pb.GetCredentialRequest,
+    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetCredentialResponse|null) => void
+  ): UnaryResponse;
+  getOauth2Credential(
+    requestMessage: vault_api_pb.GetCredentialRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetCredentialResponse|null) => void
+  ): UnaryResponse;
+  getOauth2Credential(
+    requestMessage: vault_api_pb.GetCredentialRequest,
+    callback: (error: ServiceError|null, responseMessage: vault_api_pb.GetCredentialResponse|null) => void
   ): UnaryResponse;
 }
 

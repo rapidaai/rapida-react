@@ -3986,10 +3986,6 @@ proto.talk_api.CreateBulkPhoneCallRequest.prototype.toObject = function(opt_incl
  */
 proto.talk_api.CreateBulkPhoneCallRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    assistant: (f = msg.getAssistant()) && proto.talk_api.AssistantDefinition.toObject(includeInstance, f),
-    metadataMap: (f = msg.getMetadataMap()) ? f.toObject(includeInstance, proto.google.protobuf.Any.toObject) : [],
-    argsMap: (f = msg.getArgsMap()) ? f.toObject(includeInstance, proto.google.protobuf.Any.toObject) : [],
-    optionsMap: (f = msg.getOptionsMap()) ? f.toObject(includeInstance, proto.google.protobuf.Any.toObject) : [],
     phonecallsList: jspb.Message.toObjectList(msg.getPhonecallsList(),
     proto.talk_api.CreatePhoneCallRequest.toObject, includeInstance)
   };
@@ -4028,29 +4024,6 @@ proto.talk_api.CreateBulkPhoneCallRequest.deserializeBinaryFromReader = function
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = new proto.talk_api.AssistantDefinition;
-      reader.readMessage(value,proto.talk_api.AssistantDefinition.deserializeBinaryFromReader);
-      msg.setAssistant(value);
-      break;
-    case 3:
-      var value = msg.getMetadataMap();
-      reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readMessage, proto.google.protobuf.Any.deserializeBinaryFromReader, "", new proto.google.protobuf.Any());
-         });
-      break;
-    case 4:
-      var value = msg.getArgsMap();
-      reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readMessage, proto.google.protobuf.Any.deserializeBinaryFromReader, "", new proto.google.protobuf.Any());
-         });
-      break;
-    case 5:
-      var value = msg.getOptionsMap();
-      reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readMessage, proto.google.protobuf.Any.deserializeBinaryFromReader, "", new proto.google.protobuf.Any());
-         });
-      break;
     case 6:
       var value = new proto.talk_api.CreatePhoneCallRequest;
       reader.readMessage(value,proto.talk_api.CreatePhoneCallRequest.deserializeBinaryFromReader);
@@ -4085,26 +4058,6 @@ proto.talk_api.CreateBulkPhoneCallRequest.prototype.serializeBinary = function()
  */
 proto.talk_api.CreateBulkPhoneCallRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getAssistant();
-  if (f != null) {
-    writer.writeMessage(
-      1,
-      f,
-      proto.talk_api.AssistantDefinition.serializeBinaryToWriter
-    );
-  }
-  f = message.getMetadataMap(true);
-  if (f && f.getLength() > 0) {
-    f.serializeBinary(3, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeMessage, proto.google.protobuf.Any.serializeBinaryToWriter);
-  }
-  f = message.getArgsMap(true);
-  if (f && f.getLength() > 0) {
-    f.serializeBinary(4, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeMessage, proto.google.protobuf.Any.serializeBinaryToWriter);
-  }
-  f = message.getOptionsMap(true);
-  if (f && f.getLength() > 0) {
-    f.serializeBinary(5, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeMessage, proto.google.protobuf.Any.serializeBinaryToWriter);
-  }
   f = message.getPhonecallsList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
@@ -4114,109 +4067,6 @@ proto.talk_api.CreateBulkPhoneCallRequest.serializeBinaryToWriter = function(mes
     );
   }
 };
-
-
-/**
- * optional AssistantDefinition assistant = 1;
- * @return {?proto.talk_api.AssistantDefinition}
- */
-proto.talk_api.CreateBulkPhoneCallRequest.prototype.getAssistant = function() {
-  return /** @type{?proto.talk_api.AssistantDefinition} */ (
-    jspb.Message.getWrapperField(this, proto.talk_api.AssistantDefinition, 1));
-};
-
-
-/**
- * @param {?proto.talk_api.AssistantDefinition|undefined} value
- * @return {!proto.talk_api.CreateBulkPhoneCallRequest} returns this
-*/
-proto.talk_api.CreateBulkPhoneCallRequest.prototype.setAssistant = function(value) {
-  return jspb.Message.setWrapperField(this, 1, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.talk_api.CreateBulkPhoneCallRequest} returns this
- */
-proto.talk_api.CreateBulkPhoneCallRequest.prototype.clearAssistant = function() {
-  return this.setAssistant(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.talk_api.CreateBulkPhoneCallRequest.prototype.hasAssistant = function() {
-  return jspb.Message.getField(this, 1) != null;
-};
-
-
-/**
- * map<string, google.protobuf.Any> metadata = 3;
- * @param {boolean=} opt_noLazyCreate Do not create the map if
- * empty, instead returning `undefined`
- * @return {!jspb.Map<string,!proto.google.protobuf.Any>}
- */
-proto.talk_api.CreateBulkPhoneCallRequest.prototype.getMetadataMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<string,!proto.google.protobuf.Any>} */ (
-      jspb.Message.getMapField(this, 3, opt_noLazyCreate,
-      proto.google.protobuf.Any));
-};
-
-
-/**
- * Clears values from the map. The map will be non-null.
- * @return {!proto.talk_api.CreateBulkPhoneCallRequest} returns this
- */
-proto.talk_api.CreateBulkPhoneCallRequest.prototype.clearMetadataMap = function() {
-  this.getMetadataMap().clear();
-  return this;};
-
-
-/**
- * map<string, google.protobuf.Any> args = 4;
- * @param {boolean=} opt_noLazyCreate Do not create the map if
- * empty, instead returning `undefined`
- * @return {!jspb.Map<string,!proto.google.protobuf.Any>}
- */
-proto.talk_api.CreateBulkPhoneCallRequest.prototype.getArgsMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<string,!proto.google.protobuf.Any>} */ (
-      jspb.Message.getMapField(this, 4, opt_noLazyCreate,
-      proto.google.protobuf.Any));
-};
-
-
-/**
- * Clears values from the map. The map will be non-null.
- * @return {!proto.talk_api.CreateBulkPhoneCallRequest} returns this
- */
-proto.talk_api.CreateBulkPhoneCallRequest.prototype.clearArgsMap = function() {
-  this.getArgsMap().clear();
-  return this;};
-
-
-/**
- * map<string, google.protobuf.Any> options = 5;
- * @param {boolean=} opt_noLazyCreate Do not create the map if
- * empty, instead returning `undefined`
- * @return {!jspb.Map<string,!proto.google.protobuf.Any>}
- */
-proto.talk_api.CreateBulkPhoneCallRequest.prototype.getOptionsMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<string,!proto.google.protobuf.Any>} */ (
-      jspb.Message.getMapField(this, 5, opt_noLazyCreate,
-      proto.google.protobuf.Any));
-};
-
-
-/**
- * Clears values from the map. The map will be non-null.
- * @return {!proto.talk_api.CreateBulkPhoneCallRequest} returns this
- */
-proto.talk_api.CreateBulkPhoneCallRequest.prototype.clearOptionsMap = function() {
-  this.getOptionsMap().clear();
-  return this;};
 
 
 /**
