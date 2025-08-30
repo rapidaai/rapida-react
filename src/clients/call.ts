@@ -1,6 +1,5 @@
 import { WithAuthContext } from "@/rapida/clients";
 import {
-  AssistantDefinition,
   CreateBulkPhoneCallRequest,
   CreateBulkPhoneCallResponse,
   CreatePhoneCallRequest,
@@ -8,7 +7,6 @@ import {
 } from "@/rapida/clients/protos/talk-api_pb";
 import { ServiceError } from "@/rapida/clients/types";
 import { ConnectionConfig } from "@/rapida/connections/connection-config";
-import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 
 /**
  *
@@ -23,37 +21,9 @@ import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb"
  */
 export function CreatePhoneCall(
   clientCfg: ConnectionConfig,
-  assistant: AssistantDefinition,
-  toNumber: string,
-  fromNumber?: string,
-  args?: Map<string, google_protobuf_any_pb.Any>,
-  options?: Map<string, google_protobuf_any_pb.Any>,
-  metadata?: Map<string, google_protobuf_any_pb.Any>
+  request: CreatePhoneCallRequest
 ): Promise<CreatePhoneCallResponse> {
   return new Promise((resolve, reject) => {
-    const request = new CreatePhoneCallRequest();
-    request.setAssistant(assistant);
-    request.setTonumber(toNumber);
-    if (fromNumber) {
-      request.setFromnumber(fromNumber);
-    }
-    if (args) {
-      args.forEach((value, key) => {
-        request.getArgsMap().set(key, value);
-      });
-    }
-
-    if (options) {
-      options.forEach((value, key) => {
-        request.getOptionsMap().set(key, value);
-      });
-    }
-
-    if (metadata) {
-      metadata.forEach((value, key) => {
-        request.getMetadataMap().set(key, value);
-      });
-    }
     clientCfg.conversationClient.createPhoneCall(
       request,
       WithAuthContext(clientCfg.auth),
@@ -78,46 +48,11 @@ export function CreatePhoneCall(
  */
 export function CreateBulkPhoneCall(
   clientCfg: ConnectionConfig,
-  assistant: AssistantDefinition,
-  params: {
-    toNumber: string;
-    fromNumber?: string;
-    args?: Map<string, google_protobuf_any_pb.Any>;
-    options?: Map<string, google_protobuf_any_pb.Any>;
-    metadata?: Map<string, google_protobuf_any_pb.Any>;
-  }[]
+  request: CreateBulkPhoneCallRequest
 ): Promise<CreateBulkPhoneCallResponse> {
   return new Promise((resolve, reject) => {
-    const _request = new CreateBulkPhoneCallRequest();
-    params.map((param) => {
-      const request = new CreatePhoneCallRequest();
-      request.setAssistant(assistant);
-      request.setTonumber(param.toNumber);
-      if (param.fromNumber) {
-        request.setFromnumber(param.fromNumber);
-      }
-      if (param.args) {
-        param.args.forEach((value, key) => {
-          request.getArgsMap().set(key, value);
-        });
-      }
-
-      if (param.options) {
-        param.options.forEach((value, key) => {
-          request.getOptionsMap().set(key, value);
-        });
-      }
-
-      if (param.metadata) {
-        param.metadata.forEach((value, key) => {
-          request.getMetadataMap().set(key, value);
-        });
-      }
-      _request.addPhonecalls(request);
-    });
-
     clientCfg.conversationClient.createBulkPhoneCall(
-      _request,
+      request,
       WithAuthContext(clientCfg.auth),
       (
         err: ServiceError | null,
