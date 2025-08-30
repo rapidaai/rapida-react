@@ -202,7 +202,10 @@ export class ConnectionConfig {
   }
 
   get conversationClient(): TalkServiceClient {
-    return new TalkServiceClient(this._endpoint.web, this.getClientOptions());
+    return new TalkServiceClient(
+      this._endpoint.assistant,
+      this.getClientOptions()
+    );
   }
 
   get assistantClient(): AssistantServiceClient {
