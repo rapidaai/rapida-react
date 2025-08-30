@@ -109,6 +109,11 @@ export class ConnectionConfig {
     };
   }
 
+  /**
+   *
+   * @param param0
+   * @returns
+   */
   static WithPersonalToken({
     authorization,
     userId,
@@ -315,6 +320,19 @@ export class ConnectionConfig {
 
   get auth(): ClientAuthInfo | UserAuthInfo | undefined {
     return this._auth;
+  }
+
+  /**
+   * with default connection config
+   * @param auth
+   * @returns
+   */
+  static DefaultConnectionConfig(
+    auth: ClientAuthInfo | UserAuthInfo
+  ): ConnectionConfig {
+    const cc = new ConnectionConfig();
+    cc.withAuth(auth);
+    return cc;
   }
 
   withCustomEndpoint(
