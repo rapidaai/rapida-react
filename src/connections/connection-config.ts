@@ -115,18 +115,18 @@ export class ConnectionConfig {
    * @returns
    */
   static WithPersonalToken({
-    authorization,
-    userId,
-    projectId,
+    Authorization,
+    AuthId,
+    ProjectId,
   }: {
-    authorization: string;
-    userId: string;
-    projectId: string;
+    Authorization: string;
+    AuthId: string;
+    ProjectId: string;
   }): UserAuthInfo {
     return {
-      authorization,
-      [HEADER_AUTH_ID]: userId,
-      [HEADER_PROJECT_ID]: projectId,
+      authorization: Authorization,
+      [HEADER_AUTH_ID]: AuthId,
+      [HEADER_PROJECT_ID]: ProjectId,
       Client: {
         [HEADER_SOURCE_KEY]: DEBUGGER_SOURCE,
       },
@@ -139,15 +139,15 @@ export class ConnectionConfig {
    * @returns
    */
   static WithWebpluginClient({
-    apiKey,
-    userId,
+    ApiKey,
+    UserId,
   }: {
-    apiKey: string;
-    userId?: string;
+    ApiKey: string;
+    UserId?: string;
   }): ClientAuthInfo {
     return {
-      [HEADER_API_KEY]: apiKey,
-      [HEADER_AUTH_ID]: userId,
+      [HEADER_API_KEY]: ApiKey,
+      [HEADER_AUTH_ID]: UserId,
       Client: {
         [HEADER_SOURCE_KEY]: WEB_PLUGIN_SOURCE,
       },
@@ -159,15 +159,15 @@ export class ConnectionConfig {
    * @returns
    */
   static WithSDK({
-    apiKey,
-    userId,
+    ApiKey,
+    UserId,
   }: {
-    apiKey: string;
-    userId?: string;
+    ApiKey: string;
+    UserId?: string;
   }): ClientAuthInfo {
     return {
-      [HEADER_API_KEY]: apiKey,
-      [HEADER_AUTH_ID]: userId,
+      [HEADER_API_KEY]: ApiKey,
+      [HEADER_AUTH_ID]: UserId,
       Client: {
         [HEADER_SOURCE_KEY]: SDK_SOURCE,
       },
@@ -335,6 +335,12 @@ export class ConnectionConfig {
     return cc;
   }
 
+  /**
+   *
+   * @param endpoint
+   * @param debug
+   * @returns
+   */
   withCustomEndpoint(
     endpoint: {
       assistant?: string;
