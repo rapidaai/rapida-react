@@ -174,16 +174,16 @@ export class ConnectionConfig {
     };
   }
 
-  _endpoint: {
+  endpoint: {
     assistant: string;
     web: string;
     endpoint: string;
   };
-  _debug: boolean;
-  _auth?: ClientAuthInfo | UserAuthInfo;
+  debug: boolean;
+  authInfo?: ClientAuthInfo | UserAuthInfo;
 
   getClientOptions() {
-    return { debug: this._debug };
+    return { debug: this.debug };
   }
 
   constructor(
@@ -198,109 +198,103 @@ export class ConnectionConfig {
     },
     debug: boolean = false
   ) {
-    this._endpoint = {
+    this.endpoint = {
       assistant: endpoint.assistant || ASSISTANT_API,
       web: endpoint.web || WEB_API,
       endpoint: endpoint.endpoint || ENDPOINT_API,
     };
-    this._debug = debug;
+    this.debug = debug;
   }
 
   get conversationClient(): TalkServiceClient {
     return new TalkServiceClient(
-      this._endpoint.assistant,
+      this.endpoint.assistant,
       this.getClientOptions()
     );
   }
 
   get assistantClient(): AssistantServiceClient {
     return new AssistantServiceClient(
-      this._endpoint.web,
+      this.endpoint.web,
       this.getClientOptions()
     );
   }
 
   get projectClient(): ProjectServiceClient {
-    return new ProjectServiceClient(
-      this._endpoint.web,
-      this.getClientOptions()
-    );
+    return new ProjectServiceClient(this.endpoint.web, this.getClientOptions());
   }
 
   get knowledgeClient(): KnowledgeServiceClient {
     return new KnowledgeServiceClient(
-      this._endpoint.web,
+      this.endpoint.web,
       this.getClientOptions()
     );
   }
 
   get deploymentClient(): DeploymentClient {
-    return new DeploymentClient(this._endpoint.web, this.getClientOptions());
+    return new DeploymentClient(this.endpoint.web, this.getClientOptions());
   }
 
   get marketplaceClient(): MarketplaceServiceClient {
     return new MarketplaceServiceClient(
-      this._endpoint.web,
+      this.endpoint.web,
       this.getClientOptions()
     );
   }
 
   get documentClient(): DocumentServiceClient {
     return new DocumentServiceClient(
-      this._endpoint.web,
+      this.endpoint.web,
       this.getClientOptions()
     );
   }
 
   get vaultClient(): VaultServiceClient {
-    return new VaultServiceClient(this._endpoint.web, this.getClientOptions());
+    return new VaultServiceClient(this.endpoint.web, this.getClientOptions());
   }
 
   get endpointClient(): EndpointServiceClient {
     return new EndpointServiceClient(
-      this._endpoint.web,
+      this.endpoint.web,
       this.getClientOptions()
     );
   }
 
   get auditLoggingClient(): AuditLoggingServiceClient {
     return new AuditLoggingServiceClient(
-      this._endpoint.web,
+      this.endpoint.web,
       this.getClientOptions()
     );
   }
 
   get assistantDeploymentClient(): AssistantDeploymentServiceClient {
     return new AssistantDeploymentServiceClient(
-      this._endpoint.web,
+      this.endpoint.web,
       this.getClientOptions()
     );
   }
 
   get organizationClient(): OrganizationServiceClient {
     return new OrganizationServiceClient(
-      this._endpoint.web,
+      this.endpoint.web,
       this.getClientOptions()
     );
   }
 
   get connectClient(): ConnectServiceClient {
-    return new ConnectServiceClient(
-      this._endpoint.web,
-      this.getClientOptions()
-    );
+    return new ConnectServiceClient(this.endpoint.web, this.getClientOptions());
   }
 
   get providerClient(): ProviderServiceClient {
     return new ProviderServiceClient(
-      this._endpoint.web,
+      this.endpoint.web,
       this.getClientOptions()
     );
   }
 
   get authenticationClient(): AuthenticationServiceClient {
     return new AuthenticationServiceClient(
-      this._endpoint.web,
+      this.endpoint.web,
       this.getClientOptions()
     );
   }
@@ -314,12 +308,12 @@ export class ConnectionConfig {
   }
 
   withAuth(auth: ClientAuthInfo | UserAuthInfo): this {
-    this._auth = auth;
+    this.authInfo = auth;
     return this;
   }
 
   get auth(): ClientAuthInfo | UserAuthInfo | undefined {
-    return this._auth;
+    return this.authInfo;
   }
 
   /**
@@ -353,12 +347,12 @@ export class ConnectionConfig {
     },
     debug?: boolean
   ): this {
-    this._endpoint = {
+    this.endpoint = {
       assistant: endpoint.assistant || ASSISTANT_API,
       web: endpoint.web || WEB_API,
       endpoint: endpoint.endpoint || ENDPOINT_API,
     };
-    if (debug !== undefined) this._debug = debug;
+    if (debug !== undefined) this.debug = debug;
     return this;
   }
 }
@@ -368,8 +362,7 @@ export class ConnectionConfig {
  * and a streaming client for real-time communication.
  */
 export class AssistantConnectionConfig extends ConnectionConfig {
-  _auth: ClientAuthInfo | UserAuthInfo;
-  private _callbacks?: ConnectionCallback;
+  callback?: ConnectionCallback;
 
   constructor(
     auth: ClientAuthInfo | UserAuthInfo,
@@ -385,53 +378,53 @@ export class AssistantConnectionConfig extends ConnectionConfig {
     debug: boolean = false
   ) {
     super(endpoint, debug);
-    this._auth = auth;
-    this._auth.Client = getClientInfo(this._auth.Client);
+    this.authInfo = auth;
+    this.authInfo.Client = getClientInfo(this.authInfo.Client);
   }
 
   get conversationClient(): TalkServiceClient {
     return new TalkServiceClient(
-      this._endpoint.assistant,
+      this.endpoint.assistant,
       this.getClientOptions()
     );
   }
 
   get assistantClient(): AssistantServiceClient {
     return new AssistantServiceClient(
-      this._endpoint.assistant,
+      this.endpoint.assistant,
       this.getClientOptions()
     );
   }
 
   get streamClient(): TalkServiceClient {
-    return new TalkServiceClient(this._endpoint.assistant, {
+    return new TalkServiceClient(this.endpoint.assistant, {
       ...this.getClientOptions(),
       transport: grpc.WebsocketTransport(),
     });
   }
 
   withConnectionCallback(cl: ConnectionCallback): this {
-    this._callbacks = cl;
+    this.callback = cl;
     return this;
   }
 
   onConnectionChange(connection: ConnectionState) {
     if (connection === ConnectionState.Connected) {
-      this._callbacks?.onConnect?.();
+      this.callbacks?.onConnect?.();
     } else {
-      this._callbacks?.onDisconnect?.();
+      this.callbacks?.onDisconnect?.();
     }
   }
 
-  get auth(): ClientAuthInfo | UserAuthInfo {
-    return this._auth;
+  get auth(): ClientAuthInfo | UserAuthInfo | undefined {
+    return this.authInfo;
   }
 
   get callbacks(): ConnectionCallback | undefined {
-    return this._callbacks;
+    return this.callbacks;
   }
 
   set callbacks(value: ConnectionCallback | undefined) {
-    this._callbacks = value;
+    this.callbacks = value;
   }
 }

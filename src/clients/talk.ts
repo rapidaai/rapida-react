@@ -48,18 +48,24 @@ import {
   CreateMessageMetricResponse,
   CreateMessageMetricRequest,
 } from "./protos/talk-api_pb";
-import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import {
+  AssistantConnectionConfig,
+  ConnectionConfig,
+} from "@/rapida/connections/connection-config";
 
 /**
  *
  * @param authHeader
  * @returns
  */
+
 export function AssistantTalk(
-  conversationStreamClient: TalkServiceClient,
-  authHeader: UserAuthInfo | ClientAuthInfo
+  connectionConfig: AssistantConnectionConfig,
+  authHeader?: UserAuthInfo | ClientAuthInfo
 ): BidirectionalStream<AssistantMessagingRequest, AssistantMessagingResponse> {
-  return conversationStreamClient.assistantTalk(WithAuthContext(authHeader));
+  return connectionConfig.streamClient.assistantTalk(
+    WithAuthContext(connectionConfig.auth || authHeader)
+  );
 }
 
 /**
@@ -73,32 +79,22 @@ export function AssistantTalk(
  */
 export function CreateMessageMetric(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  assistantConversationId: string,
-  messageId: string,
-  metrics: { name: string; value: string; description: string }[],
-  cb: (
-    err: ServiceError | null,
-    uvcr: CreateMessageMetricResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new CreateMessageMetricRequest();
-  req.setAssistantid(assistantId);
-  req.setAssistantconversationid(assistantConversationId);
-  req.setMessageid(messageId);
-  for (var mtr of metrics) {
-    const _m = new Metric();
-    _m.setName(mtr.name);
-    _m.setValue(mtr.value);
-    _m.setDescription(mtr.description);
-    req.addMetrics(_m);
-  }
-  connectionConfig.conversationClient.createMessageMetric(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: CreateMessageMetricRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<CreateMessageMetricResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.conversationClient.createMessageMetric(
+      req,
+      WithAuthContext(authHeader),
+      (
+        err: ServiceError | null,
+        response: CreateMessageMetricResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**
@@ -110,32 +106,25 @@ export function CreateMessageMetric(
  * @param cb
  * @param authHeader
  */
+
 export function CreateConversationMetric(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  assistantConversationId: string,
-  metrics: { name: string; value: string; description: string }[],
-  cb: (
-    err: ServiceError | null,
-    uvcr: CreateConversationMetricResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new CreateConversationMetricRequest();
-  req.setAssistantid(assistantId);
-  req.setAssistantconversationid(assistantConversationId);
-  for (var mtr of metrics) {
-    const _m = new Metric();
-    _m.setName(mtr.name);
-    _m.setValue(mtr.value);
-    _m.setDescription(mtr.description);
-    req.addMetrics(_m);
-  }
-  connectionConfig.conversationClient.createConversationMetric(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: CreateConversationMetricRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<CreateConversationMetricResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.conversationClient.createConversationMetric(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: CreateConversationMetricResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**

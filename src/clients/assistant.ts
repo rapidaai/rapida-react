@@ -262,21 +262,19 @@ export function GetAllAssistantProviderModel(
  */
 export function GetAssistant(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  assistantProviderModelId: string | null,
-  cb: (err: ServiceError | null, response: GetAssistantResponse | null) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAssistantRequest();
-  req.setId(assistantId);
-  if (assistantProviderModelId) {
-    req.setAssistantprovidermodelid(assistantProviderModelId);
-  }
-  return connectionConfig.assistantClient.getAssistant(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: GetAssistantRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.getAssistant(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (err: ServiceError | null, response: GetAssistantResponse | null) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**
