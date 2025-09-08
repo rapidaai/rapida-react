@@ -15,10 +15,7 @@ export class DeploymentAudioProvider extends jspb.Message {
   clearAudiooptionsList(): void;
   getAudiooptionsList(): Array<common_pb.Metadata>;
   setAudiooptionsList(value: Array<common_pb.Metadata>): void;
-  addAudiooptions(
-    value?: common_pb.Metadata,
-    index?: number
-  ): common_pb.Metadata;
+  addAudiooptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
   getAudioproviderid(): string;
   setAudioproviderid(value: string): void;
@@ -31,94 +28,23 @@ export class DeploymentAudioProvider extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): DeploymentAudioProvider.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: DeploymentAudioProvider
-  ): DeploymentAudioProvider.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: DeploymentAudioProvider,
-    writer: jspb.BinaryWriter
-  ): void;
+  static toObject(includeInstance: boolean, msg: DeploymentAudioProvider): DeploymentAudioProvider.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeploymentAudioProvider, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): DeploymentAudioProvider;
-  static deserializeBinaryFromReader(
-    message: DeploymentAudioProvider,
-    reader: jspb.BinaryReader
-  ): DeploymentAudioProvider;
+  static deserializeBinaryFromReader(message: DeploymentAudioProvider, reader: jspb.BinaryReader): DeploymentAudioProvider;
 }
 
 export namespace DeploymentAudioProvider {
   export type AsObject = {
-    id: string;
-    audioprovider: string;
-    audiooptionsList: Array<common_pb.Metadata.AsObject>;
-    audioproviderid: string;
-    status: string;
-    audiotype: string;
-  };
-}
-
-export class AssistantDeploymentCapturer extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  getAssistantdeploymentid(): string;
-  setAssistantdeploymentid(value: string): void;
-
-  getCapturertype(): string;
-  setCapturertype(value: string): void;
-
-  getCapturerproviderid(): string;
-  setCapturerproviderid(value: string): void;
-
-  getCapturerprovider(): string;
-  setCapturerprovider(value: string): void;
-
-  clearCaptureroptionsList(): void;
-  getCaptureroptionsList(): Array<common_pb.Metadata>;
-  setCaptureroptionsList(value: Array<common_pb.Metadata>): void;
-  addCaptureroptions(
-    value?: common_pb.Metadata,
-    index?: number
-  ): common_pb.Metadata;
-
-  getStatus(): string;
-  setStatus(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantDeploymentCapturer.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: AssistantDeploymentCapturer
-  ): AssistantDeploymentCapturer.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: AssistantDeploymentCapturer,
-    writer: jspb.BinaryWriter
-  ): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantDeploymentCapturer;
-  static deserializeBinaryFromReader(
-    message: AssistantDeploymentCapturer,
-    reader: jspb.BinaryReader
-  ): AssistantDeploymentCapturer;
-}
-
-export namespace AssistantDeploymentCapturer {
-  export type AsObject = {
-    id: string;
-    assistantdeploymentid: string;
-    capturertype: string;
-    capturerproviderid: string;
-    capturerprovider: string;
-    captureroptionsList: Array<common_pb.Metadata.AsObject>;
-    status: string;
-  };
+    id: string,
+    audioprovider: string,
+    audiooptionsList: Array<common_pb.Metadata.AsObject>,
+    audioproviderid: string,
+    status: string,
+    audiotype: string,
+  }
 }
 
 export class AssistantWebpluginDeployment extends jspb.Message {
@@ -130,15 +56,6 @@ export class AssistantWebpluginDeployment extends jspb.Message {
 
   getName(): string;
   setName(value: string): void;
-
-  getRole(): string;
-  setRole(value: string): void;
-
-  getTone(): string;
-  setTone(value: string): void;
-
-  getExperties(): string;
-  setExperties(value: string): void;
 
   hasGreeting(): boolean;
   clearGreeting(): void;
@@ -164,14 +81,6 @@ export class AssistantWebpluginDeployment extends jspb.Message {
   clearOutputaudio(): void;
   getOutputaudio(): DeploymentAudioProvider | undefined;
   setOutputaudio(value?: DeploymentAudioProvider): void;
-
-  clearCapturersList(): void;
-  getCapturersList(): Array<AssistantDeploymentCapturer>;
-  setCapturersList(value: Array<AssistantDeploymentCapturer>): void;
-  addCapturers(
-    value?: AssistantDeploymentCapturer,
-    index?: number
-  ): AssistantDeploymentCapturer;
 
   hasUrl(): boolean;
   clearUrl(): void;
@@ -216,50 +125,35 @@ export class AssistantWebpluginDeployment extends jspb.Message {
   getIconCase(): AssistantWebpluginDeployment.IconCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantWebpluginDeployment.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: AssistantWebpluginDeployment
-  ): AssistantWebpluginDeployment.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: AssistantWebpluginDeployment,
-    writer: jspb.BinaryWriter
-  ): void;
+  static toObject(includeInstance: boolean, msg: AssistantWebpluginDeployment): AssistantWebpluginDeployment.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantWebpluginDeployment, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): AssistantWebpluginDeployment;
-  static deserializeBinaryFromReader(
-    message: AssistantWebpluginDeployment,
-    reader: jspb.BinaryReader
-  ): AssistantWebpluginDeployment;
+  static deserializeBinaryFromReader(message: AssistantWebpluginDeployment, reader: jspb.BinaryReader): AssistantWebpluginDeployment;
 }
 
 export namespace AssistantWebpluginDeployment {
   export type AsObject = {
-    id: string;
-    assistantid: string;
-    name: string;
-    role: string;
-    tone: string;
-    experties: string;
-    greeting: string;
-    mistake: string;
-    ending: string;
-    inputaudio?: DeploymentAudioProvider.AsObject;
-    outputaudio?: DeploymentAudioProvider.AsObject;
-    capturersList: Array<AssistantDeploymentCapturer.AsObject>;
-    url: string;
-    raw?: common_pb.Content.AsObject;
-    suggestionList: Array<string>;
-    helpcenterenabled: boolean;
-    productcatalogenabled: boolean;
-    articlecatalogenabled: boolean;
-    uploadfileenabled: boolean;
-    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject;
-    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject;
-    status: string;
-  };
+    id: string,
+    assistantid: string,
+    name: string,
+    greeting: string,
+    mistake: string,
+    ending: string,
+    inputaudio?: DeploymentAudioProvider.AsObject,
+    outputaudio?: DeploymentAudioProvider.AsObject,
+    url: string,
+    raw?: common_pb.Content.AsObject,
+    suggestionList: Array<string>,
+    helpcenterenabled: boolean,
+    productcatalogenabled: boolean,
+    articlecatalogenabled: boolean,
+    uploadfileenabled: boolean,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    status: string,
+  }
 
   export enum IconCase {
     ICON_NOT_SET = 0,
@@ -274,18 +168,6 @@ export class AssistantPhoneDeployment extends jspb.Message {
 
   getAssistantid(): string;
   setAssistantid(value: string): void;
-
-  getName(): string;
-  setName(value: string): void;
-
-  getRole(): string;
-  setRole(value: string): void;
-
-  getTone(): string;
-  setTone(value: string): void;
-
-  getExperties(): string;
-  setExperties(value: string): void;
 
   hasGreeting(): boolean;
   clearGreeting(): void;
@@ -321,18 +203,7 @@ export class AssistantPhoneDeployment extends jspb.Message {
   clearPhoneoptionsList(): void;
   getPhoneoptionsList(): Array<common_pb.Metadata>;
   setPhoneoptionsList(value: Array<common_pb.Metadata>): void;
-  addPhoneoptions(
-    value?: common_pb.Metadata,
-    index?: number
-  ): common_pb.Metadata;
-
-  clearCapturersList(): void;
-  getCapturersList(): Array<AssistantDeploymentCapturer>;
-  setCapturersList(value: Array<AssistantDeploymentCapturer>): void;
-  addCapturers(
-    value?: AssistantDeploymentCapturer,
-    index?: number
-  ): AssistantDeploymentCapturer;
+  addPhoneoptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -349,46 +220,30 @@ export class AssistantPhoneDeployment extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantPhoneDeployment.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: AssistantPhoneDeployment
-  ): AssistantPhoneDeployment.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: AssistantPhoneDeployment,
-    writer: jspb.BinaryWriter
-  ): void;
+  static toObject(includeInstance: boolean, msg: AssistantPhoneDeployment): AssistantPhoneDeployment.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantPhoneDeployment, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): AssistantPhoneDeployment;
-  static deserializeBinaryFromReader(
-    message: AssistantPhoneDeployment,
-    reader: jspb.BinaryReader
-  ): AssistantPhoneDeployment;
+  static deserializeBinaryFromReader(message: AssistantPhoneDeployment, reader: jspb.BinaryReader): AssistantPhoneDeployment;
 }
 
 export namespace AssistantPhoneDeployment {
   export type AsObject = {
-    id: string;
-    assistantid: string;
-    name: string;
-    role: string;
-    tone: string;
-    experties: string;
-    greeting: string;
-    mistake: string;
-    ending: string;
-    inputaudio?: DeploymentAudioProvider.AsObject;
-    outputaudio?: DeploymentAudioProvider.AsObject;
-    phoneprovidername: string;
-    phoneproviderid: string;
-    phoneoptionsList: Array<common_pb.Metadata.AsObject>;
-    capturersList: Array<AssistantDeploymentCapturer.AsObject>;
-    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject;
-    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject;
-    status: string;
-  };
+    id: string,
+    assistantid: string,
+    greeting: string,
+    mistake: string,
+    ending: string,
+    inputaudio?: DeploymentAudioProvider.AsObject,
+    outputaudio?: DeploymentAudioProvider.AsObject,
+    phoneprovidername: string,
+    phoneproviderid: string,
+    phoneoptionsList: Array<common_pb.Metadata.AsObject>,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    status: string,
+  }
 }
 
 export class AssistantWhatsappDeployment extends jspb.Message {
@@ -400,15 +255,6 @@ export class AssistantWhatsappDeployment extends jspb.Message {
 
   getName(): string;
   setName(value: string): void;
-
-  getRole(): string;
-  setRole(value: string): void;
-
-  getTone(): string;
-  setTone(value: string): void;
-
-  getExperties(): string;
-  setExperties(value: string): void;
 
   hasGreeting(): boolean;
   clearGreeting(): void;
@@ -434,10 +280,7 @@ export class AssistantWhatsappDeployment extends jspb.Message {
   clearWhatsappoptionsList(): void;
   getWhatsappoptionsList(): Array<common_pb.Metadata>;
   setWhatsappoptionsList(value: Array<common_pb.Metadata>): void;
-  addWhatsappoptions(
-    value?: common_pb.Metadata,
-    index?: number
-  ): common_pb.Metadata;
+  addWhatsappoptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -454,43 +297,29 @@ export class AssistantWhatsappDeployment extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantWhatsappDeployment.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: AssistantWhatsappDeployment
-  ): AssistantWhatsappDeployment.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: AssistantWhatsappDeployment,
-    writer: jspb.BinaryWriter
-  ): void;
+  static toObject(includeInstance: boolean, msg: AssistantWhatsappDeployment): AssistantWhatsappDeployment.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantWhatsappDeployment, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): AssistantWhatsappDeployment;
-  static deserializeBinaryFromReader(
-    message: AssistantWhatsappDeployment,
-    reader: jspb.BinaryReader
-  ): AssistantWhatsappDeployment;
+  static deserializeBinaryFromReader(message: AssistantWhatsappDeployment, reader: jspb.BinaryReader): AssistantWhatsappDeployment;
 }
 
 export namespace AssistantWhatsappDeployment {
   export type AsObject = {
-    id: string;
-    assistantid: string;
-    name: string;
-    role: string;
-    tone: string;
-    experties: string;
-    greeting: string;
-    mistake: string;
-    ending: string;
-    whatsappprovidername: string;
-    whatsappproviderid: string;
-    whatsappoptionsList: Array<common_pb.Metadata.AsObject>;
-    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject;
-    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject;
-    status: string;
-  };
+    id: string,
+    assistantid: string,
+    name: string,
+    greeting: string,
+    mistake: string,
+    ending: string,
+    whatsappprovidername: string,
+    whatsappproviderid: string,
+    whatsappoptionsList: Array<common_pb.Metadata.AsObject>,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    status: string,
+  }
 }
 
 export class AssistantDebuggerDeployment extends jspb.Message {
@@ -502,15 +331,6 @@ export class AssistantDebuggerDeployment extends jspb.Message {
 
   getName(): string;
   setName(value: string): void;
-
-  getRole(): string;
-  setRole(value: string): void;
-
-  getTone(): string;
-  setTone(value: string): void;
-
-  getExperties(): string;
-  setExperties(value: string): void;
 
   hasGreeting(): boolean;
   clearGreeting(): void;
@@ -536,14 +356,6 @@ export class AssistantDebuggerDeployment extends jspb.Message {
   clearOutputaudio(): void;
   getOutputaudio(): DeploymentAudioProvider | undefined;
   setOutputaudio(value?: DeploymentAudioProvider): void;
-
-  clearCapturersList(): void;
-  getCapturersList(): Array<AssistantDeploymentCapturer>;
-  setCapturersList(value: Array<AssistantDeploymentCapturer>): void;
-  addCapturers(
-    value?: AssistantDeploymentCapturer,
-    index?: number
-  ): AssistantDeploymentCapturer;
 
   hasUrl(): boolean;
   clearUrl(): void;
@@ -576,46 +388,31 @@ export class AssistantDebuggerDeployment extends jspb.Message {
   getIconCase(): AssistantDebuggerDeployment.IconCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantDebuggerDeployment.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: AssistantDebuggerDeployment
-  ): AssistantDebuggerDeployment.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: AssistantDebuggerDeployment,
-    writer: jspb.BinaryWriter
-  ): void;
+  static toObject(includeInstance: boolean, msg: AssistantDebuggerDeployment): AssistantDebuggerDeployment.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantDebuggerDeployment, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): AssistantDebuggerDeployment;
-  static deserializeBinaryFromReader(
-    message: AssistantDebuggerDeployment,
-    reader: jspb.BinaryReader
-  ): AssistantDebuggerDeployment;
+  static deserializeBinaryFromReader(message: AssistantDebuggerDeployment, reader: jspb.BinaryReader): AssistantDebuggerDeployment;
 }
 
 export namespace AssistantDebuggerDeployment {
   export type AsObject = {
-    id: string;
-    assistantid: string;
-    name: string;
-    role: string;
-    tone: string;
-    experties: string;
-    greeting: string;
-    mistake: string;
-    ending: string;
-    inputaudio?: DeploymentAudioProvider.AsObject;
-    outputaudio?: DeploymentAudioProvider.AsObject;
-    capturersList: Array<AssistantDeploymentCapturer.AsObject>;
-    url: string;
-    raw?: common_pb.Content.AsObject;
-    suggestionList: Array<string>;
-    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject;
-    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject;
-    status: string;
-  };
+    id: string,
+    assistantid: string,
+    name: string,
+    greeting: string,
+    mistake: string,
+    ending: string,
+    inputaudio?: DeploymentAudioProvider.AsObject,
+    outputaudio?: DeploymentAudioProvider.AsObject,
+    url: string,
+    raw?: common_pb.Content.AsObject,
+    suggestionList: Array<string>,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    status: string,
+  }
 
   export enum IconCase {
     ICON_NOT_SET = 0,
@@ -630,18 +427,6 @@ export class AssistantApiDeployment extends jspb.Message {
 
   getAssistantid(): string;
   setAssistantid(value: string): void;
-
-  getName(): string;
-  setName(value: string): void;
-
-  getRole(): string;
-  setRole(value: string): void;
-
-  getTone(): string;
-  setTone(value: string): void;
-
-  getExperties(): string;
-  setExperties(value: string): void;
 
   hasGreeting(): boolean;
   clearGreeting(): void;
@@ -668,14 +453,6 @@ export class AssistantApiDeployment extends jspb.Message {
   getOutputaudio(): DeploymentAudioProvider | undefined;
   setOutputaudio(value?: DeploymentAudioProvider): void;
 
-  clearCapturersList(): void;
-  getCapturersList(): Array<AssistantDeploymentCapturer>;
-  setCapturersList(value: Array<AssistantDeploymentCapturer>): void;
-  addCapturers(
-    value?: AssistantDeploymentCapturer,
-    index?: number
-  ): AssistantDeploymentCapturer;
-
   hasCreateddate(): boolean;
   clearCreateddate(): void;
   getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
@@ -691,83 +468,86 @@ export class AssistantApiDeployment extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantApiDeployment.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: AssistantApiDeployment
-  ): AssistantApiDeployment.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: AssistantApiDeployment,
-    writer: jspb.BinaryWriter
-  ): void;
+  static toObject(includeInstance: boolean, msg: AssistantApiDeployment): AssistantApiDeployment.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantApiDeployment, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): AssistantApiDeployment;
-  static deserializeBinaryFromReader(
-    message: AssistantApiDeployment,
-    reader: jspb.BinaryReader
-  ): AssistantApiDeployment;
+  static deserializeBinaryFromReader(message: AssistantApiDeployment, reader: jspb.BinaryReader): AssistantApiDeployment;
 }
 
 export namespace AssistantApiDeployment {
   export type AsObject = {
-    id: string;
-    assistantid: string;
-    name: string;
-    role: string;
-    tone: string;
-    experties: string;
-    greeting: string;
-    mistake: string;
-    ending: string;
-    inputaudio?: DeploymentAudioProvider.AsObject;
-    outputaudio?: DeploymentAudioProvider.AsObject;
-    capturersList: Array<AssistantDeploymentCapturer.AsObject>;
-    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject;
-    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject;
-    status: string;
-  };
+    id: string,
+    assistantid: string,
+    greeting: string,
+    mistake: string,
+    ending: string,
+    inputaudio?: DeploymentAudioProvider.AsObject,
+    outputaudio?: DeploymentAudioProvider.AsObject,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    status: string,
+  }
 }
 
-export class CreateAssistantApiDeploymentRequest extends jspb.Message {
-  hasDeployment(): boolean;
-  clearDeployment(): void;
-  getDeployment(): AssistantApiDeployment | undefined;
-  setDeployment(value?: AssistantApiDeployment): void;
+export class CreateAssistantDeploymentRequest extends jspb.Message {
+  hasApi(): boolean;
+  clearApi(): void;
+  getApi(): AssistantApiDeployment | undefined;
+  setApi(value?: AssistantApiDeployment): void;
 
+  hasDebugger(): boolean;
+  clearDebugger(): void;
+  getDebugger(): AssistantDebuggerDeployment | undefined;
+  setDebugger(value?: AssistantDebuggerDeployment): void;
+
+  hasWhatsapp(): boolean;
+  clearWhatsapp(): void;
+  getWhatsapp(): AssistantWhatsappDeployment | undefined;
+  setWhatsapp(value?: AssistantWhatsappDeployment): void;
+
+  hasPhone(): boolean;
+  clearPhone(): void;
+  getPhone(): AssistantPhoneDeployment | undefined;
+  setPhone(value?: AssistantPhoneDeployment): void;
+
+  hasPlugin(): boolean;
+  clearPlugin(): void;
+  getPlugin(): AssistantWebpluginDeployment | undefined;
+  setPlugin(value?: AssistantWebpluginDeployment): void;
+
+  getDeploymentCase(): CreateAssistantDeploymentRequest.DeploymentCase;
   serializeBinary(): Uint8Array;
-  toObject(
-    includeInstance?: boolean
-  ): CreateAssistantApiDeploymentRequest.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: CreateAssistantApiDeploymentRequest
-  ): CreateAssistantApiDeploymentRequest.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: CreateAssistantApiDeploymentRequest,
-    writer: jspb.BinaryWriter
-  ): void;
-  static deserializeBinary(
-    bytes: Uint8Array
-  ): CreateAssistantApiDeploymentRequest;
-  static deserializeBinaryFromReader(
-    message: CreateAssistantApiDeploymentRequest,
-    reader: jspb.BinaryReader
-  ): CreateAssistantApiDeploymentRequest;
+  toObject(includeInstance?: boolean): CreateAssistantDeploymentRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateAssistantDeploymentRequest): CreateAssistantDeploymentRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CreateAssistantDeploymentRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateAssistantDeploymentRequest;
+  static deserializeBinaryFromReader(message: CreateAssistantDeploymentRequest, reader: jspb.BinaryReader): CreateAssistantDeploymentRequest;
 }
 
-export namespace CreateAssistantApiDeploymentRequest {
+export namespace CreateAssistantDeploymentRequest {
   export type AsObject = {
-    deployment?: AssistantApiDeployment.AsObject;
-  };
+    api?: AssistantApiDeployment.AsObject,
+    pb_debugger?: AssistantDebuggerDeployment.AsObject,
+    whatsapp?: AssistantWhatsappDeployment.AsObject,
+    phone?: AssistantPhoneDeployment.AsObject,
+    plugin?: AssistantWebpluginDeployment.AsObject,
+  }
+
+  export enum DeploymentCase {
+    DEPLOYMENT_NOT_SET = 0,
+    API = 1,
+    DEBUGGER = 2,
+    WHATSAPP = 3,
+    PHONE = 4,
+    PLUGIN = 5,
+  }
 }
 
-export class AssistantApiDeploymentResponse extends jspb.Message {
+export class GetAssistantApiDeploymentResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
@@ -785,73 +565,25 @@ export class AssistantApiDeploymentResponse extends jspb.Message {
   setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantApiDeploymentResponse.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: AssistantApiDeploymentResponse
-  ): AssistantApiDeploymentResponse.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: AssistantApiDeploymentResponse,
-    writer: jspb.BinaryWriter
-  ): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantApiDeploymentResponse;
-  static deserializeBinaryFromReader(
-    message: AssistantApiDeploymentResponse,
-    reader: jspb.BinaryReader
-  ): AssistantApiDeploymentResponse;
+  toObject(includeInstance?: boolean): GetAssistantApiDeploymentResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantApiDeploymentResponse): GetAssistantApiDeploymentResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantApiDeploymentResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantApiDeploymentResponse;
+  static deserializeBinaryFromReader(message: GetAssistantApiDeploymentResponse, reader: jspb.BinaryReader): GetAssistantApiDeploymentResponse;
 }
 
-export namespace AssistantApiDeploymentResponse {
+export namespace GetAssistantApiDeploymentResponse {
   export type AsObject = {
-    code: number;
-    success: boolean;
-    data?: AssistantApiDeployment.AsObject;
-    error?: common_pb.Error.AsObject;
-  };
+    code: number,
+    success: boolean,
+    data?: AssistantApiDeployment.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
 }
 
-export class CreateAssistantPhoneDeploymentRequest extends jspb.Message {
-  hasDeployment(): boolean;
-  clearDeployment(): void;
-  getDeployment(): AssistantPhoneDeployment | undefined;
-  setDeployment(value?: AssistantPhoneDeployment): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(
-    includeInstance?: boolean
-  ): CreateAssistantPhoneDeploymentRequest.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: CreateAssistantPhoneDeploymentRequest
-  ): CreateAssistantPhoneDeploymentRequest.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: CreateAssistantPhoneDeploymentRequest,
-    writer: jspb.BinaryWriter
-  ): void;
-  static deserializeBinary(
-    bytes: Uint8Array
-  ): CreateAssistantPhoneDeploymentRequest;
-  static deserializeBinaryFromReader(
-    message: CreateAssistantPhoneDeploymentRequest,
-    reader: jspb.BinaryReader
-  ): CreateAssistantPhoneDeploymentRequest;
-}
-
-export namespace CreateAssistantPhoneDeploymentRequest {
-  export type AsObject = {
-    deployment?: AssistantPhoneDeployment.AsObject;
-  };
-}
-
-export class AssistantPhoneDeploymentResponse extends jspb.Message {
+export class GetAssistantPhoneDeploymentResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
@@ -869,75 +601,25 @@ export class AssistantPhoneDeploymentResponse extends jspb.Message {
   setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
-  toObject(
-    includeInstance?: boolean
-  ): AssistantPhoneDeploymentResponse.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: AssistantPhoneDeploymentResponse
-  ): AssistantPhoneDeploymentResponse.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: AssistantPhoneDeploymentResponse,
-    writer: jspb.BinaryWriter
-  ): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantPhoneDeploymentResponse;
-  static deserializeBinaryFromReader(
-    message: AssistantPhoneDeploymentResponse,
-    reader: jspb.BinaryReader
-  ): AssistantPhoneDeploymentResponse;
+  toObject(includeInstance?: boolean): GetAssistantPhoneDeploymentResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantPhoneDeploymentResponse): GetAssistantPhoneDeploymentResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantPhoneDeploymentResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantPhoneDeploymentResponse;
+  static deserializeBinaryFromReader(message: GetAssistantPhoneDeploymentResponse, reader: jspb.BinaryReader): GetAssistantPhoneDeploymentResponse;
 }
 
-export namespace AssistantPhoneDeploymentResponse {
+export namespace GetAssistantPhoneDeploymentResponse {
   export type AsObject = {
-    code: number;
-    success: boolean;
-    data?: AssistantPhoneDeployment.AsObject;
-    error?: common_pb.Error.AsObject;
-  };
+    code: number,
+    success: boolean,
+    data?: AssistantPhoneDeployment.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
 }
 
-export class CreateAssistantWhatsappDeploymentRequest extends jspb.Message {
-  hasDeployment(): boolean;
-  clearDeployment(): void;
-  getDeployment(): AssistantWhatsappDeployment | undefined;
-  setDeployment(value?: AssistantWhatsappDeployment): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(
-    includeInstance?: boolean
-  ): CreateAssistantWhatsappDeploymentRequest.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: CreateAssistantWhatsappDeploymentRequest
-  ): CreateAssistantWhatsappDeploymentRequest.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: CreateAssistantWhatsappDeploymentRequest,
-    writer: jspb.BinaryWriter
-  ): void;
-  static deserializeBinary(
-    bytes: Uint8Array
-  ): CreateAssistantWhatsappDeploymentRequest;
-  static deserializeBinaryFromReader(
-    message: CreateAssistantWhatsappDeploymentRequest,
-    reader: jspb.BinaryReader
-  ): CreateAssistantWhatsappDeploymentRequest;
-}
-
-export namespace CreateAssistantWhatsappDeploymentRequest {
-  export type AsObject = {
-    deployment?: AssistantWhatsappDeployment.AsObject;
-  };
-}
-
-export class AssistantWhatsappDeploymentResponse extends jspb.Message {
+export class GetAssistantWhatsappDeploymentResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
@@ -955,77 +637,25 @@ export class AssistantWhatsappDeploymentResponse extends jspb.Message {
   setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
-  toObject(
-    includeInstance?: boolean
-  ): AssistantWhatsappDeploymentResponse.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: AssistantWhatsappDeploymentResponse
-  ): AssistantWhatsappDeploymentResponse.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: AssistantWhatsappDeploymentResponse,
-    writer: jspb.BinaryWriter
-  ): void;
-  static deserializeBinary(
-    bytes: Uint8Array
-  ): AssistantWhatsappDeploymentResponse;
-  static deserializeBinaryFromReader(
-    message: AssistantWhatsappDeploymentResponse,
-    reader: jspb.BinaryReader
-  ): AssistantWhatsappDeploymentResponse;
+  toObject(includeInstance?: boolean): GetAssistantWhatsappDeploymentResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantWhatsappDeploymentResponse): GetAssistantWhatsappDeploymentResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantWhatsappDeploymentResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantWhatsappDeploymentResponse;
+  static deserializeBinaryFromReader(message: GetAssistantWhatsappDeploymentResponse, reader: jspb.BinaryReader): GetAssistantWhatsappDeploymentResponse;
 }
 
-export namespace AssistantWhatsappDeploymentResponse {
+export namespace GetAssistantWhatsappDeploymentResponse {
   export type AsObject = {
-    code: number;
-    success: boolean;
-    data?: AssistantWhatsappDeployment.AsObject;
-    error?: common_pb.Error.AsObject;
-  };
+    code: number,
+    success: boolean,
+    data?: AssistantWhatsappDeployment.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
 }
 
-export class CreateAssistantDebuggerDeploymentRequest extends jspb.Message {
-  hasDeployment(): boolean;
-  clearDeployment(): void;
-  getDeployment(): AssistantDebuggerDeployment | undefined;
-  setDeployment(value?: AssistantDebuggerDeployment): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(
-    includeInstance?: boolean
-  ): CreateAssistantDebuggerDeploymentRequest.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: CreateAssistantDebuggerDeploymentRequest
-  ): CreateAssistantDebuggerDeploymentRequest.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: CreateAssistantDebuggerDeploymentRequest,
-    writer: jspb.BinaryWriter
-  ): void;
-  static deserializeBinary(
-    bytes: Uint8Array
-  ): CreateAssistantDebuggerDeploymentRequest;
-  static deserializeBinaryFromReader(
-    message: CreateAssistantDebuggerDeploymentRequest,
-    reader: jspb.BinaryReader
-  ): CreateAssistantDebuggerDeploymentRequest;
-}
-
-export namespace CreateAssistantDebuggerDeploymentRequest {
-  export type AsObject = {
-    deployment?: AssistantDebuggerDeployment.AsObject;
-  };
-}
-
-export class AssistantDebuggerDeploymentResponse extends jspb.Message {
+export class GetAssistantDebuggerDeploymentResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
@@ -1043,77 +673,25 @@ export class AssistantDebuggerDeploymentResponse extends jspb.Message {
   setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
-  toObject(
-    includeInstance?: boolean
-  ): AssistantDebuggerDeploymentResponse.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: AssistantDebuggerDeploymentResponse
-  ): AssistantDebuggerDeploymentResponse.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: AssistantDebuggerDeploymentResponse,
-    writer: jspb.BinaryWriter
-  ): void;
-  static deserializeBinary(
-    bytes: Uint8Array
-  ): AssistantDebuggerDeploymentResponse;
-  static deserializeBinaryFromReader(
-    message: AssistantDebuggerDeploymentResponse,
-    reader: jspb.BinaryReader
-  ): AssistantDebuggerDeploymentResponse;
+  toObject(includeInstance?: boolean): GetAssistantDebuggerDeploymentResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantDebuggerDeploymentResponse): GetAssistantDebuggerDeploymentResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantDebuggerDeploymentResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantDebuggerDeploymentResponse;
+  static deserializeBinaryFromReader(message: GetAssistantDebuggerDeploymentResponse, reader: jspb.BinaryReader): GetAssistantDebuggerDeploymentResponse;
 }
 
-export namespace AssistantDebuggerDeploymentResponse {
+export namespace GetAssistantDebuggerDeploymentResponse {
   export type AsObject = {
-    code: number;
-    success: boolean;
-    data?: AssistantDebuggerDeployment.AsObject;
-    error?: common_pb.Error.AsObject;
-  };
+    code: number,
+    success: boolean,
+    data?: AssistantDebuggerDeployment.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
 }
 
-export class CreateAssistantWebpluginDeploymentRequest extends jspb.Message {
-  hasDeployment(): boolean;
-  clearDeployment(): void;
-  getDeployment(): AssistantWebpluginDeployment | undefined;
-  setDeployment(value?: AssistantWebpluginDeployment): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(
-    includeInstance?: boolean
-  ): CreateAssistantWebpluginDeploymentRequest.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: CreateAssistantWebpluginDeploymentRequest
-  ): CreateAssistantWebpluginDeploymentRequest.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: CreateAssistantWebpluginDeploymentRequest,
-    writer: jspb.BinaryWriter
-  ): void;
-  static deserializeBinary(
-    bytes: Uint8Array
-  ): CreateAssistantWebpluginDeploymentRequest;
-  static deserializeBinaryFromReader(
-    message: CreateAssistantWebpluginDeploymentRequest,
-    reader: jspb.BinaryReader
-  ): CreateAssistantWebpluginDeploymentRequest;
-}
-
-export namespace CreateAssistantWebpluginDeploymentRequest {
-  export type AsObject = {
-    deployment?: AssistantWebpluginDeployment.AsObject;
-  };
-}
-
-export class AssistantWebpluginDeploymentResponse extends jspb.Message {
+export class GetAssistantWebpluginDeploymentResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
@@ -1131,37 +709,22 @@ export class AssistantWebpluginDeploymentResponse extends jspb.Message {
   setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
-  toObject(
-    includeInstance?: boolean
-  ): AssistantWebpluginDeploymentResponse.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: AssistantWebpluginDeploymentResponse
-  ): AssistantWebpluginDeploymentResponse.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: AssistantWebpluginDeploymentResponse,
-    writer: jspb.BinaryWriter
-  ): void;
-  static deserializeBinary(
-    bytes: Uint8Array
-  ): AssistantWebpluginDeploymentResponse;
-  static deserializeBinaryFromReader(
-    message: AssistantWebpluginDeploymentResponse,
-    reader: jspb.BinaryReader
-  ): AssistantWebpluginDeploymentResponse;
+  toObject(includeInstance?: boolean): GetAssistantWebpluginDeploymentResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantWebpluginDeploymentResponse): GetAssistantWebpluginDeploymentResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantWebpluginDeploymentResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantWebpluginDeploymentResponse;
+  static deserializeBinaryFromReader(message: GetAssistantWebpluginDeploymentResponse, reader: jspb.BinaryReader): GetAssistantWebpluginDeploymentResponse;
 }
 
-export namespace AssistantWebpluginDeploymentResponse {
+export namespace GetAssistantWebpluginDeploymentResponse {
   export type AsObject = {
-    code: number;
-    success: boolean;
-    data?: AssistantWebpluginDeployment.AsObject;
-    error?: common_pb.Error.AsObject;
-  };
+    code: number,
+    success: boolean,
+    data?: AssistantWebpluginDeployment.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
 }
 
 export class GetAssistantDeploymentRequest extends jspb.Message {
@@ -1170,27 +733,17 @@ export class GetAssistantDeploymentRequest extends jspb.Message {
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetAssistantDeploymentRequest.AsObject;
-  static toObject(
-    includeInstance: boolean,
-    msg: GetAssistantDeploymentRequest
-  ): GetAssistantDeploymentRequest.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: {
-    [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>;
-  };
-  static serializeBinaryToWriter(
-    message: GetAssistantDeploymentRequest,
-    writer: jspb.BinaryWriter
-  ): void;
+  static toObject(includeInstance: boolean, msg: GetAssistantDeploymentRequest): GetAssistantDeploymentRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantDeploymentRequest, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): GetAssistantDeploymentRequest;
-  static deserializeBinaryFromReader(
-    message: GetAssistantDeploymentRequest,
-    reader: jspb.BinaryReader
-  ): GetAssistantDeploymentRequest;
+  static deserializeBinaryFromReader(message: GetAssistantDeploymentRequest, reader: jspb.BinaryReader): GetAssistantDeploymentRequest;
 }
 
 export namespace GetAssistantDeploymentRequest {
   export type AsObject = {
-    assistantid: string;
-  };
+    assistantid: string,
+  }
 }
+

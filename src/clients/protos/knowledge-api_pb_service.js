@@ -101,6 +101,24 @@ KnowledgeService.DeleteKnowledgeDocumentSegment = {
   responseType: common_pb.BaseResponse
 };
 
+KnowledgeService.GetAllKnowledgeLog = {
+  methodName: "GetAllKnowledgeLog",
+  service: KnowledgeService,
+  requestStream: false,
+  responseStream: false,
+  requestType: knowledge_api_pb.GetAllKnowledgeLogRequest,
+  responseType: knowledge_api_pb.GetAllKnowledgeLogResponse
+};
+
+KnowledgeService.GetKnowledgeLog = {
+  methodName: "GetKnowledgeLog",
+  service: KnowledgeService,
+  requestStream: false,
+  responseStream: false,
+  requestType: knowledge_api_pb.GetKnowledgeLogRequest,
+  responseType: knowledge_api_pb.GetKnowledgeLogResponse
+};
+
 exports.KnowledgeService = KnowledgeService;
 
 function KnowledgeServiceClient(serviceHost, options) {
@@ -392,6 +410,68 @@ KnowledgeServiceClient.prototype.deleteKnowledgeDocumentSegment = function delet
     callback = arguments[1];
   }
   var client = grpc.unary(KnowledgeService.DeleteKnowledgeDocumentSegment, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+KnowledgeServiceClient.prototype.getAllKnowledgeLog = function getAllKnowledgeLog(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(KnowledgeService.GetAllKnowledgeLog, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+KnowledgeServiceClient.prototype.getKnowledgeLog = function getKnowledgeLog(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(KnowledgeService.GetKnowledgeLog, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

@@ -15,8 +15,8 @@ AssistantDeploymentService.CreateAssistantApiDeployment = {
   service: AssistantDeploymentService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_deployment_pb.CreateAssistantApiDeploymentRequest,
-  responseType: assistant_deployment_pb.AssistantApiDeploymentResponse
+  requestType: assistant_deployment_pb.CreateAssistantDeploymentRequest,
+  responseType: assistant_deployment_pb.GetAssistantApiDeploymentResponse
 };
 
 AssistantDeploymentService.GetAssistantApiDeployment = {
@@ -25,7 +25,7 @@ AssistantDeploymentService.GetAssistantApiDeployment = {
   requestStream: false,
   responseStream: false,
   requestType: assistant_deployment_pb.GetAssistantDeploymentRequest,
-  responseType: assistant_deployment_pb.AssistantApiDeploymentResponse
+  responseType: assistant_deployment_pb.GetAssistantApiDeploymentResponse
 };
 
 AssistantDeploymentService.CreateAssistantWebpluginDeployment = {
@@ -33,8 +33,8 @@ AssistantDeploymentService.CreateAssistantWebpluginDeployment = {
   service: AssistantDeploymentService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_deployment_pb.CreateAssistantWebpluginDeploymentRequest,
-  responseType: assistant_deployment_pb.AssistantWebpluginDeploymentResponse
+  requestType: assistant_deployment_pb.CreateAssistantDeploymentRequest,
+  responseType: assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse
 };
 
 AssistantDeploymentService.GetAssistantWebpluginDeployment = {
@@ -43,7 +43,7 @@ AssistantDeploymentService.GetAssistantWebpluginDeployment = {
   requestStream: false,
   responseStream: false,
   requestType: assistant_deployment_pb.GetAssistantDeploymentRequest,
-  responseType: assistant_deployment_pb.AssistantWebpluginDeploymentResponse
+  responseType: assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse
 };
 
 AssistantDeploymentService.CreateAssistantDebuggerDeployment = {
@@ -51,8 +51,8 @@ AssistantDeploymentService.CreateAssistantDebuggerDeployment = {
   service: AssistantDeploymentService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_deployment_pb.CreateAssistantDebuggerDeploymentRequest,
-  responseType: assistant_deployment_pb.AssistantDebuggerDeploymentResponse
+  requestType: assistant_deployment_pb.CreateAssistantDeploymentRequest,
+  responseType: assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse
 };
 
 AssistantDeploymentService.GetAssistantDebuggerDeployment = {
@@ -61,7 +61,7 @@ AssistantDeploymentService.GetAssistantDebuggerDeployment = {
   requestStream: false,
   responseStream: false,
   requestType: assistant_deployment_pb.GetAssistantDeploymentRequest,
-  responseType: assistant_deployment_pb.AssistantDebuggerDeploymentResponse
+  responseType: assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse
 };
 
 AssistantDeploymentService.CreateAssistantWhatsappDeployment = {
@@ -69,8 +69,8 @@ AssistantDeploymentService.CreateAssistantWhatsappDeployment = {
   service: AssistantDeploymentService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_deployment_pb.CreateAssistantWhatsappDeploymentRequest,
-  responseType: assistant_deployment_pb.AssistantWhatsappDeploymentResponse
+  requestType: assistant_deployment_pb.CreateAssistantDeploymentRequest,
+  responseType: assistant_deployment_pb.GetAssistantWhatsappDeploymentResponse
 };
 
 AssistantDeploymentService.GetAssistantWhatsappDeployment = {
@@ -79,7 +79,7 @@ AssistantDeploymentService.GetAssistantWhatsappDeployment = {
   requestStream: false,
   responseStream: false,
   requestType: assistant_deployment_pb.GetAssistantDeploymentRequest,
-  responseType: assistant_deployment_pb.AssistantWhatsappDeploymentResponse
+  responseType: assistant_deployment_pb.GetAssistantWhatsappDeploymentResponse
 };
 
 AssistantDeploymentService.CreateAssistantPhoneDeployment = {
@@ -87,8 +87,8 @@ AssistantDeploymentService.CreateAssistantPhoneDeployment = {
   service: AssistantDeploymentService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_deployment_pb.CreateAssistantPhoneDeploymentRequest,
-  responseType: assistant_deployment_pb.AssistantPhoneDeploymentResponse
+  requestType: assistant_deployment_pb.CreateAssistantDeploymentRequest,
+  responseType: assistant_deployment_pb.GetAssistantPhoneDeploymentResponse
 };
 
 AssistantDeploymentService.GetAssistantPhoneDeployment = {
@@ -97,7 +97,7 @@ AssistantDeploymentService.GetAssistantPhoneDeployment = {
   requestStream: false,
   responseStream: false,
   requestType: assistant_deployment_pb.GetAssistantDeploymentRequest,
-  responseType: assistant_deployment_pb.AssistantPhoneDeploymentResponse
+  responseType: assistant_deployment_pb.GetAssistantPhoneDeploymentResponse
 };
 
 exports.AssistantDeploymentService = AssistantDeploymentService;

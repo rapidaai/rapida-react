@@ -320,3 +320,243 @@ export namespace GetAllAssistantToolResponse {
   }
 }
 
+export class GetAllAssistantToolLogRequest extends jspb.Message {
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): common_pb.Paginate | undefined;
+  setPaginate(value?: common_pb.Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+
+  hasOrder(): boolean;
+  clearOrder(): void;
+  getOrder(): common_pb.Ordering | undefined;
+  setOrder(value?: common_pb.Ordering): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantToolLogRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantToolLogRequest): GetAllAssistantToolLogRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantToolLogRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantToolLogRequest;
+  static deserializeBinaryFromReader(message: GetAllAssistantToolLogRequest, reader: jspb.BinaryReader): GetAllAssistantToolLogRequest;
+}
+
+export namespace GetAllAssistantToolLogRequest {
+  export type AsObject = {
+    projectid: string,
+    paginate?: common_pb.Paginate.AsObject,
+    criteriasList: Array<common_pb.Criteria.AsObject>,
+    order?: common_pb.Ordering.AsObject,
+  }
+}
+
+export class GetAssistantToolLogRequest extends jspb.Message {
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  getId(): string;
+  setId(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAssistantToolLogRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantToolLogRequest): GetAssistantToolLogRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantToolLogRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantToolLogRequest;
+  static deserializeBinaryFromReader(message: GetAssistantToolLogRequest, reader: jspb.BinaryReader): GetAssistantToolLogRequest;
+}
+
+export namespace GetAssistantToolLogRequest {
+  export type AsObject = {
+    projectid: string,
+    id: string,
+  }
+}
+
+export class GetAssistantToolLogResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasData(): boolean;
+  clearData(): void;
+  getData(): AssistantToolLog | undefined;
+  setData(value?: AssistantToolLog): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAssistantToolLogResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantToolLogResponse): GetAssistantToolLogResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantToolLogResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantToolLogResponse;
+  static deserializeBinaryFromReader(message: GetAssistantToolLogResponse, reader: jspb.BinaryReader): GetAssistantToolLogResponse;
+}
+
+export namespace GetAssistantToolLogResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    data?: AssistantToolLog.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
+}
+
+export class GetAllAssistantToolLogResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<AssistantToolLog>;
+  setDataList(value: Array<AssistantToolLog>): void;
+  addData(value?: AssistantToolLog, index?: number): AssistantToolLog;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantToolLogResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantToolLogResponse): GetAllAssistantToolLogResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantToolLogResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantToolLogResponse;
+  static deserializeBinaryFromReader(message: GetAllAssistantToolLogResponse, reader: jspb.BinaryReader): GetAllAssistantToolLogResponse;
+}
+
+export namespace GetAllAssistantToolLogResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<AssistantToolLog.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class AssistantToolLog extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  hasAction(): boolean;
+  clearAction(): void;
+  getAction(): google_protobuf_struct_pb.Struct | undefined;
+  setAction(value?: google_protobuf_struct_pb.Struct): void;
+
+  hasRequest(): boolean;
+  clearRequest(): void;
+  getRequest(): google_protobuf_struct_pb.Struct | undefined;
+  setRequest(value?: google_protobuf_struct_pb.Struct): void;
+
+  hasResponse(): boolean;
+  clearResponse(): void;
+  getResponse(): google_protobuf_struct_pb.Struct | undefined;
+  setResponse(value?: google_protobuf_struct_pb.Struct): void;
+
+  getStatus(): string;
+  setStatus(value: string): void;
+
+  hasCreateddate(): boolean;
+  clearCreateddate(): void;
+  getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setCreateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasUpdateddate(): boolean;
+  clearUpdateddate(): void;
+  getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  getOrganizationid(): string;
+  setOrganizationid(value: string): void;
+
+  getAssistantconversationid(): string;
+  setAssistantconversationid(value: string): void;
+
+  getAssistantconversationmessageid(): string;
+  setAssistantconversationmessageid(value: string): void;
+
+  getAssetprefix(): string;
+  setAssetprefix(value: string): void;
+
+  getExecutionmethod(): string;
+  setExecutionmethod(value: string): void;
+
+  getTimetaken(): string;
+  setTimetaken(value: string): void;
+
+  getAssistanttoolid(): string;
+  setAssistanttoolid(value: string): void;
+
+  getAssistanttoolname(): string;
+  setAssistanttoolname(value: string): void;
+
+  hasAssistanttool(): boolean;
+  clearAssistanttool(): void;
+  getAssistanttool(): AssistantTool | undefined;
+  setAssistanttool(value?: AssistantTool): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantToolLog.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantToolLog): AssistantToolLog.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantToolLog, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantToolLog;
+  static deserializeBinaryFromReader(message: AssistantToolLog, reader: jspb.BinaryReader): AssistantToolLog;
+}
+
+export namespace AssistantToolLog {
+  export type AsObject = {
+    id: string,
+    action?: google_protobuf_struct_pb.Struct.AsObject,
+    request?: google_protobuf_struct_pb.Struct.AsObject,
+    response?: google_protobuf_struct_pb.Struct.AsObject,
+    status: string,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    assistantid: string,
+    projectid: string,
+    organizationid: string,
+    assistantconversationid: string,
+    assistantconversationmessageid: string,
+    assetprefix: string,
+    executionmethod: string,
+    timetaken: string,
+    assistanttoolid: string,
+    assistanttoolname: string,
+    assistanttool?: AssistantTool.AsObject,
+  }
+}
+

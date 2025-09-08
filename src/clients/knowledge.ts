@@ -48,8 +48,12 @@ import {
   GetAllKnowledgeDocumentResponse,
   GetAllKnowledgeDocumentSegmentRequest,
   GetAllKnowledgeDocumentSegmentResponse,
+  GetAllKnowledgeLogRequest,
+  GetAllKnowledgeLogResponse,
   GetAllKnowledgeRequest,
   GetAllKnowledgeResponse,
+  GetKnowledgeLogRequest,
+  GetKnowledgeLogResponse,
   GetKnowledgeRequest,
   GetKnowledgeResponse,
   UpdateKnowledgeDetailRequest,
@@ -456,4 +460,53 @@ export function UpdateKnowledgeDocumentSegment(
     WithAuthContext(authHeader),
     cb
   );
+}
+
+/**
+ *
+ * @param clientCfg
+ * @param request
+ * @returns
+ */
+export function GetKnowledgeLog(
+  clientCfg: ConnectionConfig,
+  request: GetKnowledgeLogRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetKnowledgeLogResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.knowledgeClient.getKnowledgeLog(
+      request,
+      WithAuthContext(clientCfg.auth || auth),
+      (err: ServiceError | null, response: GetKnowledgeLogResponse | null) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+/**
+ *
+ * @param clientCfg
+ * @param request
+ * @returns
+ */
+export function GetAllKnowledgeLog(
+  clientCfg: ConnectionConfig,
+  request: GetAllKnowledgeLogRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAllKnowledgeLogResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.knowledgeClient.getAllKnowledgeLog(
+      request,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAllKnowledgeLogResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }

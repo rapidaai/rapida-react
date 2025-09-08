@@ -176,6 +176,8 @@ export {
   UpdateAssistantKnowledge,
   GetAssistantKnowledge,
   DeleteAssistantKnowledge,
+  GetAssistantToolLog,
+  GetAllAssistantToolLog,
 } from "@/rapida/clients/assistant";
 export { GetActivities, GetActivity } from "@/rapida/clients/activity";
 export {
@@ -215,6 +217,8 @@ export {
   UpdateKnowledgeDetail,
   DeleteKnowledgeDocumentSegment,
   UpdateKnowledgeDocumentSegment,
+  GetKnowledgeLog,
+  GetAllKnowledgeLog,
 } from "@/rapida/clients/knowledge";
 export {
   AddUsersToProject,
@@ -536,6 +540,7 @@ export {
 } from "@/rapida/clients/protos/endpoint-api_pb";
 export {
   AssistantTool,
+  AssistantToolLog,
   CreateAssistantToolRequest,
   UpdateAssistantToolRequest,
   GetAssistantToolRequest,
@@ -543,6 +548,10 @@ export {
   GetAssistantToolResponse,
   GetAllAssistantToolRequest,
   GetAllAssistantToolResponse,
+  GetAssistantToolLogResponse,
+  GetAllAssistantToolLogRequest,
+  GetAllAssistantToolLogResponse,
+  GetAssistantToolLogRequest,
 } from "@/rapida/clients/protos/assistant-tool_pb";
 export {
   Credential,
@@ -566,22 +575,17 @@ export {
 } from "@/rapida/clients/protos/integration-api_pb";
 export {
   DeploymentAudioProvider,
-  AssistantDeploymentCapturer,
   AssistantWebpluginDeployment,
   AssistantPhoneDeployment,
   AssistantWhatsappDeployment,
   AssistantDebuggerDeployment,
   AssistantApiDeployment,
-  CreateAssistantApiDeploymentRequest,
-  AssistantApiDeploymentResponse,
-  CreateAssistantPhoneDeploymentRequest,
-  AssistantPhoneDeploymentResponse,
-  CreateAssistantWhatsappDeploymentRequest,
-  AssistantWhatsappDeploymentResponse,
-  CreateAssistantDebuggerDeploymentRequest,
-  AssistantDebuggerDeploymentResponse,
-  CreateAssistantWebpluginDeploymentRequest,
-  AssistantWebpluginDeploymentResponse,
+  CreateAssistantDeploymentRequest,
+  GetAssistantApiDeploymentResponse,
+  GetAssistantPhoneDeploymentResponse,
+  GetAssistantWhatsappDeploymentResponse,
+  GetAssistantDebuggerDeploymentResponse,
+  GetAssistantWebpluginDeploymentResponse,
   GetAssistantDeploymentRequest,
 } from "@/rapida/clients/protos/assistant-deployment_pb";
 export {
@@ -607,6 +611,11 @@ export {
   UpdateKnowledgeDetailRequest,
   UpdateKnowledgeDocumentSegmentRequest,
   DeleteKnowledgeDocumentSegmentRequest,
+  KnowledgeLog,
+  GetKnowledgeLogRequest,
+  GetAllKnowledgeLogRequest,
+  GetKnowledgeLogResponse,
+  GetAllKnowledgeLogResponse,
 } from "@/rapida/clients/protos/knowledge-api_pb";
 export {
   Assistant,

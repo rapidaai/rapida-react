@@ -78,6 +78,10 @@ import {
   GetAllAssistantToolResponse,
   GetAllAssistantToolRequest,
   DeleteAssistantToolRequest,
+  GetAssistantToolLogResponse,
+  GetAllAssistantToolLogRequest,
+  GetAllAssistantToolLogResponse,
+  GetAssistantToolLogRequest,
 } from "@/rapida/clients/protos/assistant-tool_pb";
 
 import {
@@ -112,19 +116,13 @@ import {
 } from "@/rapida/clients";
 import { GetAllAssistantConversationRequest } from "@/rapida/clients/protos/common_pb";
 import { AssistantDeploymentServiceClient } from "@/rapida/clients/protos/assistant-deployment_pb_service";
-import {
-  AssistantDeploymentCapturer,
-  AssistantPhoneDeployment,
-} from "@/rapida/clients/protos/assistant-deployment_pb";
+import { AssistantPhoneDeployment } from "@/rapida/clients/protos/assistant-deployment_pb";
 import {
   AssistantDebuggerDeployment,
-  CreateAssistantApiDeploymentRequest,
-  AssistantApiDeploymentResponse,
-  CreateAssistantDebuggerDeploymentRequest,
-  CreateAssistantPhoneDeploymentRequest,
-  AssistantPhoneDeploymentResponse,
-  AssistantWebpluginDeploymentResponse,
-  CreateAssistantWhatsappDeploymentRequest,
+  CreateAssistantDeploymentRequest,
+  GetAssistantApiDeploymentResponse,
+  GetAssistantPhoneDeploymentResponse,
+  GetAssistantWebpluginDeploymentResponse,
   GetAssistantDeploymentRequest,
 } from "@/rapida/clients/protos/assistant-deployment_pb";
 import {
@@ -132,13 +130,10 @@ import {
   AssistantWebpluginDeployment,
 } from "@/rapida/clients/protos/assistant-deployment_pb";
 import {
-  AssistantWhatsappDeploymentResponse,
+  GetAssistantWhatsappDeploymentResponse,
   AssistantWhatsappDeployment,
 } from "./protos/assistant-deployment_pb";
-import {
-  AssistantDebuggerDeploymentResponse,
-  CreateAssistantWebpluginDeploymentRequest,
-} from "@/rapida/clients/protos/assistant-deployment_pb";
+import { GetAssistantDebuggerDeploymentResponse } from "@/rapida/clients/protos/assistant-deployment_pb";
 import { Struct } from "google-protobuf/google/protobuf/struct_pb";
 import { ConnectionConfig } from "@/rapida/connections/connection-config";
 
@@ -624,100 +619,23 @@ export function GetAllAssistantConversationMessage(
  * @returns
  */
 export function CreateAssistantDebuggerDeployment(
-  connectionConfig: ConnectionConfig,
-  assistantId: string,
-  persona: {
-    name?: string;
-    role?: string;
-    tone?: string;
-    expertise?: string;
-  },
-  experience: {
-    greeting: string;
-    messageOnError?: string;
-    messageOnEnd?: string;
-  },
-  cb: (
-    err: ServiceError | null,
-    response: AssistantDebuggerDeploymentResponse | null
-  ) => void,
-  authHeader: UserAuthInfo,
-  inputAudio?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  outputAudio?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  audioStorageConfig?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  textStorageConfig?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null
-) {
-  const req = new CreateAssistantDebuggerDeploymentRequest();
-  const deployment = new AssistantDebuggerDeployment();
-
-  deployment.setAssistantid(assistantId);
-  deployment.setName(persona.name || "");
-  deployment.setRole(persona.role || "");
-  deployment.setTone(persona.tone || "");
-  deployment.setExperties(persona.expertise || "");
-  deployment.setGreeting(experience.greeting);
-  if (experience?.messageOnError)
-    deployment.setMistake(experience?.messageOnError);
-  if (experience?.messageOnEnd) deployment.setEnding(experience?.messageOnEnd);
-
-  if (inputAudio) {
-    const inputAudioProvider = new DeploymentAudioProvider();
-    inputAudioProvider.setId(inputAudio.providerId);
-    inputAudioProvider.setAudioprovider(inputAudio.provider);
-    inputAudioProvider.setAudiooptionsList(inputAudio.parameters);
-    inputAudioProvider.setAudioproviderid(inputAudio.providerId);
-    deployment.setInputaudio(inputAudioProvider);
-  }
-
-  if (outputAudio) {
-    const outputAudioProvider = new DeploymentAudioProvider();
-    outputAudioProvider.setId(outputAudio.providerId);
-    outputAudioProvider.setAudioprovider(outputAudio.provider);
-    outputAudioProvider.setAudiooptionsList(outputAudio.parameters);
-    outputAudioProvider.setAudioproviderid(outputAudio.providerId);
-    deployment.setOutputaudio(outputAudioProvider);
-  }
-
-  if (audioStorageConfig) {
-    const audioCapturer = new AssistantDeploymentCapturer();
-    audioCapturer.setCapturerprovider(audioStorageConfig.provider);
-    audioCapturer.setCapturerproviderid(audioStorageConfig.providerId);
-    audioCapturer.setCaptureroptionsList(audioStorageConfig.parameters);
-    audioCapturer.setCapturertype("audio");
-    deployment.addCapturers(audioCapturer);
-  }
-
-  if (textStorageConfig) {
-    const textCapturer = new AssistantDeploymentCapturer();
-    textCapturer.setCapturerprovider(textStorageConfig.provider);
-    textCapturer.setCapturerproviderid(textStorageConfig.providerId);
-    textCapturer.setCaptureroptionsList(textStorageConfig.parameters);
-    textCapturer.setCapturertype("text");
-    deployment.addCapturers(textCapturer);
-  }
-
-  req.setDeployment(deployment);
-  return connectionConfig.assistantDeploymentClient.createAssistantDebuggerDeployment(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  clientCfg: ConnectionConfig,
+  request: CreateAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantDebuggerDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.createAssistantDebuggerDeployment(
+      request,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantDebuggerDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**
@@ -729,510 +647,184 @@ export function CreateAssistantDebuggerDeployment(
  */
 export function GetAssistantDebuggerDeployment(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  cb: (
-    err: ServiceError | null,
-    response: AssistantDebuggerDeploymentResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAssistantDeploymentRequest();
-  req.setAssistantid(assistantId);
-  return connectionConfig.assistantDeploymentClient.getAssistantDebuggerDeployment(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  request: GetAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantDebuggerDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantDeploymentClient.getAssistantDebuggerDeployment(
+      request,
+      WithAuthContext(connectionConfig.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantDebuggerDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
-/**
- *
- * @param assistantId
- * @param cb
- * @param authHeader
- * @returns
- */
+// ... existing code ...
+
 export function CreateAssistantApiDeployment(
-  connectionConfig: ConnectionConfig,
-  assistantId: string,
-  persona: {
-    name?: string;
-    role?: string;
-    tone?: string;
-    expertise?: string;
-  },
-  experience: {
-    greeting: string;
-    messageOnError?: string;
-    messageOnEnd?: string;
-  },
-  cb: (
-    err: ServiceError | null,
-    response: AssistantApiDeploymentResponse | null
-  ) => void,
-  authHeader: UserAuthInfo,
-  inputAudio?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  outputAudio?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  audioStorageConfig?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  textStorageConfig?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null
-) {
-  const req = new CreateAssistantApiDeploymentRequest();
-  const deployment = new AssistantDebuggerDeployment();
-  deployment.setAssistantid(assistantId);
-  deployment.setName(persona.name || "");
-  deployment.setRole(persona.role || "");
-  deployment.setTone(persona.tone || "");
-  deployment.setExperties(persona.expertise || "");
-  deployment.setGreeting(experience.greeting);
-  if (experience?.messageOnError)
-    deployment.setMistake(experience?.messageOnError);
-  if (experience?.messageOnEnd) deployment.setEnding(experience?.messageOnEnd);
-
-  if (inputAudio) {
-    const inputAudioProvider = new DeploymentAudioProvider();
-    inputAudioProvider.setId(inputAudio.providerId);
-    inputAudioProvider.setAudioprovider(inputAudio.provider);
-    inputAudioProvider.setAudiooptionsList(inputAudio.parameters);
-    inputAudioProvider.setAudioproviderid(inputAudio.providerId);
-    deployment.setInputaudio(inputAudioProvider);
-  }
-
-  if (outputAudio) {
-    const outputAudioProvider = new DeploymentAudioProvider();
-    outputAudioProvider.setId(outputAudio.providerId);
-    outputAudioProvider.setAudioprovider(outputAudio.provider);
-    outputAudioProvider.setAudiooptionsList(outputAudio.parameters);
-    outputAudioProvider.setAudioproviderid(outputAudio.providerId);
-    deployment.setOutputaudio(outputAudioProvider);
-  }
-
-  if (audioStorageConfig) {
-    const audioCapturer = new AssistantDeploymentCapturer();
-    audioCapturer.setCapturerprovider(audioStorageConfig.provider);
-    audioCapturer.setCapturerproviderid(audioStorageConfig.providerId);
-    audioCapturer.setCaptureroptionsList(audioStorageConfig.parameters);
-    audioCapturer.setCapturertype("audio");
-    deployment.addCapturers(audioCapturer);
-  }
-
-  if (textStorageConfig) {
-    const textCapturer = new AssistantDeploymentCapturer();
-    textCapturer.setCapturerprovider(textStorageConfig.provider);
-    textCapturer.setCapturerproviderid(textStorageConfig.providerId);
-    textCapturer.setCaptureroptionsList(textStorageConfig.parameters);
-    textCapturer.setCapturertype("text");
-    deployment.addCapturers(textCapturer);
-  }
-
-  req.setDeployment(deployment);
-  return connectionConfig.assistantDeploymentClient.createAssistantApiDeployment(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  clientCfg: ConnectionConfig,
+  request: CreateAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantApiDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.createAssistantApiDeployment(
+      request,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantApiDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 export function GetAssistantApiDeployment(
-  connectionConfig: ConnectionConfig,
-  assistantId: string,
-  cb: (
-    err: ServiceError | null,
-    response: AssistantApiDeploymentResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAssistantDeploymentRequest();
-  req.setAssistantid(assistantId);
-  return connectionConfig.assistantDeploymentClient.getAssistantApiDeployment(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  clientCfg: ConnectionConfig,
+  req: GetAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantApiDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.getAssistantApiDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantApiDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
-/**
- *
- * @param assistantId
- * @param cb
- * @param authHeader
- * @returns
- */
 export function CreateAssistantWebpluginDeployment(
-  connectionConfig: ConnectionConfig,
-  assistantId: string,
-  persona: {
-    name?: string;
-    role?: string;
-    avatarUrl?: string;
-    avatar?: {
-      file: Uint8Array;
-      type: string;
-      size: number;
-      name: string;
-    };
-    tone?: string;
-    expertise?: string;
-  },
-  experience: {
-    greeting: string;
-    suggestions: string[];
-    messageOnError: string;
-    messageOnEnd: string;
-  },
-  feature: {
-    qAListing: boolean;
-    productCatalog: boolean;
-    blogPost: boolean;
-  },
-  cb: (
-    err: ServiceError | null,
-    response: AssistantWebpluginDeploymentResponse | null
-  ) => void,
-  authHeader: UserAuthInfo,
-  inputAudio?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  outputAudio?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  audioStorageConfig?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  textStorageConfig?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null
-) {
-  const req = new CreateAssistantWebpluginDeploymentRequest();
-  const webDeployment = new AssistantWebpluginDeployment();
-
-  webDeployment.setAssistantid(assistantId);
-  webDeployment.setName(persona.name || "");
-  webDeployment.setRole(persona.role || "");
-  webDeployment.setTone(persona.tone || "");
-  webDeployment.setExperties(persona.expertise || "");
-  webDeployment.setGreeting(experience.greeting);
-  webDeployment.setMistake(experience.messageOnError);
-  webDeployment.setEnding(experience.messageOnEnd);
-  webDeployment.setSuggestionList(experience.suggestions);
-  webDeployment.setHelpcenterenabled(feature.qAListing);
-  webDeployment.setProductcatalogenabled(feature.productCatalog);
-  webDeployment.setArticlecatalogenabled(feature.blogPost);
-  webDeployment.setUploadfileenabled(false); // Not provided in the input, set to false by default
-
-  if (inputAudio) {
-    const inputAudioProvider = new DeploymentAudioProvider();
-    inputAudioProvider.setId(inputAudio.providerId);
-    inputAudioProvider.setAudioprovider(inputAudio.provider);
-    inputAudioProvider.setAudiooptionsList(inputAudio.parameters);
-    inputAudioProvider.setAudioproviderid(inputAudio.providerId);
-    webDeployment.setInputaudio(inputAudioProvider);
-  }
-
-  if (outputAudio) {
-    const outputAudioProvider = new DeploymentAudioProvider();
-    outputAudioProvider.setId(outputAudio.providerId);
-    outputAudioProvider.setAudioprovider(outputAudio.provider);
-    outputAudioProvider.setAudiooptionsList(outputAudio.parameters);
-    outputAudioProvider.setAudioproviderid(outputAudio.providerId);
-
-    webDeployment.setOutputaudio(outputAudioProvider);
-  }
-
-  if (persona.avatar && persona.avatar.file) {
-    const cntn = new Content();
-    cntn.setContent(persona.avatar.file);
-    cntn.setName(persona.avatar.name);
-    cntn.setContenttype(persona.avatar.type);
-    webDeployment.setRaw(cntn);
-  } else if (persona.avatarUrl) {
-    webDeployment.setUrl(persona.avatarUrl);
-  }
-
-  if (audioStorageConfig) {
-    const audioCapturer = new AssistantDeploymentCapturer();
-    audioCapturer.setCapturerprovider(audioStorageConfig.provider);
-    audioCapturer.setCapturerproviderid(audioStorageConfig.providerId);
-    audioCapturer.setCaptureroptionsList(audioStorageConfig.parameters);
-    audioCapturer.setCapturertype("audio");
-    webDeployment.addCapturers(audioCapturer);
-  }
-
-  if (textStorageConfig) {
-    const textCapturer = new AssistantDeploymentCapturer();
-    textCapturer.setCapturerprovider(textStorageConfig.provider);
-    textCapturer.setCapturerproviderid(textStorageConfig.providerId);
-    textCapturer.setCaptureroptionsList(textStorageConfig.parameters);
-    textCapturer.setCapturertype("text");
-    webDeployment.addCapturers(textCapturer);
-  }
-
-  req.setDeployment(webDeployment);
-  return connectionConfig.assistantDeploymentClient.createAssistantWebpluginDeployment(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  clientCfg: ConnectionConfig,
+  request: CreateAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantWebpluginDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.createAssistantWebpluginDeployment(
+      request,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantWebpluginDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 export function GetAssistantWebpluginDeployment(
-  connectionConfig: ConnectionConfig,
-  assistantId: string,
-  cb: (
-    err: ServiceError | null,
-    response: AssistantWebpluginDeploymentResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAssistantDeploymentRequest();
-  req.setAssistantid(assistantId);
-  return connectionConfig.assistantDeploymentClient.getAssistantWebpluginDeployment(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  clientCfg: ConnectionConfig,
+  req: GetAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantWebpluginDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.getAssistantWebpluginDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantWebpluginDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
-/**
- *
- * @param assistantId
- * @param cb
- * @param authHeader
- * @returns
- */
 export function CreateAssistantPhoneDeployment(
-  connectionConfig: ConnectionConfig,
-  assistantId: string,
-  persona: {
-    name?: string;
-    role?: string;
-    tone?: string;
-    expertise?: string;
-  },
-  experience: {
-    greeting: string;
-    messageOnError: string;
-    messageOnEnd: string;
-  },
-  telephonyConfig: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  cb: (
-    err: ServiceError | null,
-    response: AssistantPhoneDeploymentResponse | null
-  ) => void,
-  authHeader: UserAuthInfo,
-  inputAudio?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  outputAudio?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  audioStorageConfig?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  textStorageConfig?: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null
-) {
-  const req = new CreateAssistantPhoneDeploymentRequest();
-  const deployment = new AssistantPhoneDeployment();
-  deployment.setAssistantid(assistantId);
-  deployment.setName(persona.name || "");
-  deployment.setRole(persona.role || "");
-  deployment.setTone(persona.tone || "");
-  deployment.setExperties(persona.expertise || "");
-  deployment.setGreeting(experience.greeting);
-  deployment.setMistake(experience.messageOnError);
-  deployment.setEnding(experience.messageOnEnd);
-
-  if (telephonyConfig) {
-    deployment.setPhoneoptionsList(telephonyConfig.parameters);
-    deployment.setPhoneproviderid(telephonyConfig.providerId);
-    deployment.setPhoneprovidername(telephonyConfig.provider);
-  }
-
-  if (inputAudio) {
-    const inputAudioProvider = new DeploymentAudioProvider();
-    inputAudioProvider.setId(inputAudio.providerId);
-    inputAudioProvider.setAudioprovider(inputAudio.provider);
-    inputAudioProvider.setAudiooptionsList(inputAudio.parameters);
-    inputAudioProvider.setAudioproviderid(inputAudio.providerId);
-    deployment.setInputaudio(inputAudioProvider);
-  }
-
-  if (outputAudio) {
-    const outputAudioProvider = new DeploymentAudioProvider();
-    outputAudioProvider.setId(outputAudio.providerId);
-    outputAudioProvider.setAudioprovider(outputAudio.provider);
-    outputAudioProvider.setAudiooptionsList(outputAudio.parameters);
-    outputAudioProvider.setAudioproviderid(outputAudio.providerId);
-    deployment.setOutputaudio(outputAudioProvider);
-  }
-
-  if (audioStorageConfig) {
-    const audioCapturer = new AssistantDeploymentCapturer();
-    audioCapturer.setCapturerprovider(audioStorageConfig.provider);
-    audioCapturer.setCapturerproviderid(audioStorageConfig.providerId);
-    audioCapturer.setCaptureroptionsList(audioStorageConfig.parameters);
-    audioCapturer.setCapturertype("audio");
-    deployment.addCapturers(audioCapturer);
-  }
-
-  if (textStorageConfig) {
-    const textCapturer = new AssistantDeploymentCapturer();
-    textCapturer.setCapturerprovider(textStorageConfig.provider);
-    textCapturer.setCapturerproviderid(textStorageConfig.providerId);
-    textCapturer.setCaptureroptionsList(textStorageConfig.parameters);
-    textCapturer.setCapturertype("text");
-    deployment.addCapturers(textCapturer);
-  }
-
-  req.setDeployment(deployment);
-  return connectionConfig.assistantDeploymentClient.createAssistantPhoneDeployment(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  clientCfg: ConnectionConfig,
+  request: CreateAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantPhoneDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.createAssistantPhoneDeployment(
+      request,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantPhoneDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
-/**
- *
- * @param assistantId
- * @param cb
- * @param authHeader
- * @returns
- */
+
 export function GetAssistantPhoneDeployment(
-  connectionConfig: ConnectionConfig,
-  assistantId: string,
-  cb: (
-    err: ServiceError | null,
-    response: AssistantPhoneDeploymentResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAssistantDeploymentRequest();
-  req.setAssistantid(assistantId);
-  return connectionConfig.assistantDeploymentClient.getAssistantPhoneDeployment(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  clientCfg: ConnectionConfig,
+  req: GetAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantPhoneDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.getAssistantPhoneDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantPhoneDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
-/**
- *
- * @param assistantId
- * @param cb
- * @param authHeader
- * @returns
- */
 export function CreateAssistantWhatsappDeployment(
-  connectionConfig: ConnectionConfig,
-  assistantId: string,
-  persona: {
-    name?: string;
-    role?: string;
-    tone?: string;
-    expertise?: string;
-  },
-  experience: {
-    greeting: string;
-    messageOnError: string;
-    messageOnEnd: string;
-  },
-  whatsappConfig: {
-    providerId: string;
-    provider: string;
-    parameters: Metadata[];
-  } | null,
-  cb: (
-    err: ServiceError | null,
-    response: AssistantWhatsappDeploymentResponse | null
-  ) => void,
-  authHeader: UserAuthInfo
-) {
-  const req = new CreateAssistantWhatsappDeploymentRequest();
-  const deployment = new AssistantWhatsappDeployment();
-
-  deployment.setAssistantid(assistantId);
-  deployment.setName(persona.name || "");
-  deployment.setRole(persona.role || "");
-  deployment.setTone(persona.tone || "");
-  deployment.setExperties(persona.expertise || "");
-  deployment.setGreeting(experience.greeting);
-  deployment.setMistake(experience.messageOnError);
-  deployment.setEnding(experience.messageOnEnd);
-  if (whatsappConfig) {
-    deployment.setWhatsappproviderid(whatsappConfig.providerId);
-    deployment.setWhatsappprovidername(whatsappConfig.provider);
-    deployment.setWhatsappoptionsList(whatsappConfig.parameters);
-  }
-
-  req.setDeployment(deployment);
-  return connectionConfig.assistantDeploymentClient.createAssistantWhatsappDeployment(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  clientCfg: ConnectionConfig,
+  request: CreateAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantWhatsappDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.createAssistantWhatsappDeployment(
+      request,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantWhatsappDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
-/**
- *
- * @param assistantId
- * @param cb
- * @param authHeader
- * @returns
- */
 export function GetAssistantWhatsappDeployment(
-  connectionConfig: ConnectionConfig,
-  assistantId: string,
-  cb: (
-    err: ServiceError | null,
-    response: AssistantWhatsappDeploymentResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAssistantDeploymentRequest();
-  req.setAssistantid(assistantId);
-  return connectionConfig.assistantDeploymentClient.getAssistantWhatsappDeployment(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  clientCfg: ConnectionConfig,
+  req: GetAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantWhatsappDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.getAssistantWhatsappDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantWhatsappDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 export function GetAllAssistantWebhook(
@@ -2162,4 +1754,55 @@ export function DeleteAssistantKnowledge(
     WithAuthContext(authHeader),
     cb
   );
+}
+/**
+ *
+ * @param clientCfg
+ * @param request
+ * @returns
+ */
+export function GetAssistantToolLog(
+  clientCfg: ConnectionConfig,
+  request: GetAssistantToolLogRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantToolLogResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantClient.getAssistantToolLog(
+      request,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantToolLogResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+/**
+ *
+ * @param clientCfg
+ * @param request
+ * @returns
+ */
+export function GetAllAssistantToolLog(
+  clientCfg: ConnectionConfig,
+  request: GetAllAssistantToolLogRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAllAssistantToolLogResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantClient.getAllAssistantToolLog(
+      request,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAllAssistantToolLogResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }

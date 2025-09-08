@@ -914,3 +914,236 @@ export namespace DeleteKnowledgeDocumentSegmentRequest {
   }
 }
 
+export class GetAllKnowledgeLogRequest extends jspb.Message {
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): common_pb.Paginate | undefined;
+  setPaginate(value?: common_pb.Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+
+  hasOrder(): boolean;
+  clearOrder(): void;
+  getOrder(): common_pb.Ordering | undefined;
+  setOrder(value?: common_pb.Ordering): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllKnowledgeLogRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllKnowledgeLogRequest): GetAllKnowledgeLogRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllKnowledgeLogRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllKnowledgeLogRequest;
+  static deserializeBinaryFromReader(message: GetAllKnowledgeLogRequest, reader: jspb.BinaryReader): GetAllKnowledgeLogRequest;
+}
+
+export namespace GetAllKnowledgeLogRequest {
+  export type AsObject = {
+    projectid: string,
+    paginate?: common_pb.Paginate.AsObject,
+    criteriasList: Array<common_pb.Criteria.AsObject>,
+    order?: common_pb.Ordering.AsObject,
+  }
+}
+
+export class GetKnowledgeLogRequest extends jspb.Message {
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  getId(): string;
+  setId(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetKnowledgeLogRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetKnowledgeLogRequest): GetKnowledgeLogRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetKnowledgeLogRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetKnowledgeLogRequest;
+  static deserializeBinaryFromReader(message: GetKnowledgeLogRequest, reader: jspb.BinaryReader): GetKnowledgeLogRequest;
+}
+
+export namespace GetKnowledgeLogRequest {
+  export type AsObject = {
+    projectid: string,
+    id: string,
+  }
+}
+
+export class GetKnowledgeLogResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasData(): boolean;
+  clearData(): void;
+  getData(): KnowledgeLog | undefined;
+  setData(value?: KnowledgeLog): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetKnowledgeLogResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetKnowledgeLogResponse): GetKnowledgeLogResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetKnowledgeLogResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetKnowledgeLogResponse;
+  static deserializeBinaryFromReader(message: GetKnowledgeLogResponse, reader: jspb.BinaryReader): GetKnowledgeLogResponse;
+}
+
+export namespace GetKnowledgeLogResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    data?: KnowledgeLog.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
+}
+
+export class GetAllKnowledgeLogResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<KnowledgeLog>;
+  setDataList(value: Array<KnowledgeLog>): void;
+  addData(value?: KnowledgeLog, index?: number): KnowledgeLog;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllKnowledgeLogResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllKnowledgeLogResponse): GetAllKnowledgeLogResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllKnowledgeLogResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllKnowledgeLogResponse;
+  static deserializeBinaryFromReader(message: GetAllKnowledgeLogResponse, reader: jspb.BinaryReader): GetAllKnowledgeLogResponse;
+}
+
+export namespace GetAllKnowledgeLogResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<KnowledgeLog.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class KnowledgeLog extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  hasAction(): boolean;
+  clearAction(): void;
+  getAction(): google_protobuf_struct_pb.Struct | undefined;
+  setAction(value?: google_protobuf_struct_pb.Struct): void;
+
+  hasRequest(): boolean;
+  clearRequest(): void;
+  getRequest(): google_protobuf_struct_pb.Struct | undefined;
+  setRequest(value?: google_protobuf_struct_pb.Struct): void;
+
+  hasResponse(): boolean;
+  clearResponse(): void;
+  getResponse(): google_protobuf_struct_pb.Struct | undefined;
+  setResponse(value?: google_protobuf_struct_pb.Struct): void;
+
+  getStatus(): string;
+  setStatus(value: string): void;
+
+  hasCreateddate(): boolean;
+  clearCreateddate(): void;
+  getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setCreateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasUpdateddate(): boolean;
+  clearUpdateddate(): void;
+  getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  getKnowledgeid(): string;
+  setKnowledgeid(value: string): void;
+
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  getOrganizationid(): string;
+  setOrganizationid(value: string): void;
+
+  getTopk(): number;
+  setTopk(value: number): void;
+
+  getScorethreshold(): number;
+  setScorethreshold(value: number): void;
+
+  getDocumentcount(): number;
+  setDocumentcount(value: number): void;
+
+  getAssetprefix(): string;
+  setAssetprefix(value: string): void;
+
+  getRetrievalmethod(): string;
+  setRetrievalmethod(value: string): void;
+
+  getTimetaken(): string;
+  setTimetaken(value: string): void;
+
+  getAdditionaldataMap(): jspb.Map<string, string>;
+  clearAdditionaldataMap(): void;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): KnowledgeLog.AsObject;
+  static toObject(includeInstance: boolean, msg: KnowledgeLog): KnowledgeLog.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: KnowledgeLog, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): KnowledgeLog;
+  static deserializeBinaryFromReader(message: KnowledgeLog, reader: jspb.BinaryReader): KnowledgeLog;
+}
+
+export namespace KnowledgeLog {
+  export type AsObject = {
+    id: string,
+    action?: google_protobuf_struct_pb.Struct.AsObject,
+    request?: google_protobuf_struct_pb.Struct.AsObject,
+    response?: google_protobuf_struct_pb.Struct.AsObject,
+    status: string,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    knowledgeid: string,
+    projectid: string,
+    organizationid: string,
+    topk: number,
+    scorethreshold: number,
+    documentcount: number,
+    assetprefix: string,
+    retrievalmethod: string,
+    timetaken: string,
+    additionaldataMap: Array<[string, string]>,
+  }
+}
+

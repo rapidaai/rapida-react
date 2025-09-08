@@ -204,6 +204,24 @@ AssistantService.DeleteAssistantWebhook = {
   responseType: assistant_webhook_pb.GetAssistantWebhookResponse
 };
 
+AssistantService.GetAssistantToolLog = {
+  methodName: "GetAssistantToolLog",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_tool_pb.GetAssistantToolLogRequest,
+  responseType: assistant_tool_pb.GetAssistantToolLogResponse
+};
+
+AssistantService.GetAllAssistantToolLog = {
+  methodName: "GetAllAssistantToolLog",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_tool_pb.GetAllAssistantToolLogRequest,
+  responseType: assistant_tool_pb.GetAllAssistantToolLogResponse
+};
+
 AssistantService.GetAssistantAnalysis = {
   methodName: "GetAssistantAnalysis",
   service: AssistantService,
@@ -971,6 +989,68 @@ AssistantServiceClient.prototype.deleteAssistantWebhook = function deleteAssista
     callback = arguments[1];
   }
   var client = grpc.unary(AssistantService.DeleteAssistantWebhook, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.getAssistantToolLog = function getAssistantToolLog(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAssistantToolLog, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.getAllAssistantToolLog = function getAllAssistantToolLog(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAllAssistantToolLog, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
