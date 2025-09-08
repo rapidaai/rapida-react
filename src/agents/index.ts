@@ -26,6 +26,8 @@ import { AgentConfig } from "@/rapida/agents/agent-config";
 import {
   AssistantMessagingRequest,
   AssistantMessagingResponse,
+  CreateConversationMetricRequest,
+  CreateMessageMetricRequest,
 } from "@/rapida/clients/protos/talk-api_pb";
 import {
   AssistantConnectionConfig,
@@ -35,7 +37,7 @@ import { ConnectionState } from "@/rapida/connections/connection-state";
 import { AgentEventCallback } from "@/rapida/events/agent-event-callback";
 import { EventEmitter } from "events";
 import type TypedEmitter from "typed-emitter";
-import { Content, Message } from "@/rapida/clients/protos/common_pb";
+import { Content, Message, Metric } from "@/rapida/clients/protos/common_pb";
 import { Message as LocalMessage, MessageRole } from "@/rapida/agents/message";
 import { AgentEvent } from "@/rapida/events/agent-event";
 import {
@@ -46,6 +48,7 @@ import {
 import { getFeedback } from "@/rapida/agents/feedback";
 import {
   Assistant,
+  GetAssistantRequest,
   GetAssistantResponse,
 } from "@/rapida/clients/protos/assistant-api_pb";
 import { GetAssistant } from "@/rapida/clients/assistant";
@@ -127,8 +130,12 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
 
     this.getAssistant()
       .then((data) => {
-        this.rapidaAssistant = data;
-        this.emit(AgentEvent.Initialized, this.rapidaAssistant);
+        if (data.getData() && data.getSuccess()) {
+          this.rapidaAssistant = data.getData()!;
+          this.emit(AgentEvent.Initialized, this.rapidaAssistant);
+          return;
+        }
+        console.error("Failed to initialize assistant:", data.getError());
       })
       .catch((error) => {
         console.error("Failed to initialize assistant:", error);
@@ -141,7 +148,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     }
     return GetDeployment(
       this.assistant!,
-      this.connectionConfig.auth.Client?.[HEADER_SOURCE_KEY] ?? SDK_SOURCE
+      this.connectionConfig.auth?.Client?.[HEADER_SOURCE_KEY] ?? SDK_SOURCE
     );
   }
   /**
@@ -216,28 +223,30 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
       value: string;
     }[]
   ) {
-    CreateMessageMetric(
-      this.connectionConfig,
-      this.agentConfig.definition.getAssistantid(),
-      this.agentMessagingId!,
-      messageId,
-      metrics,
-      () => {
-        //
-        const feedback = getFeedback(metrics[metrics.length - 1]?.value);
-        this.agentMessages = this.agentMessages.map((message) => {
-          if (message.id === messageId && message.role === MessageRole.System) {
-            return {
-              ...message,
-              feedback: feedback,
-            };
-          }
-          return message;
-        });
-        this.emit(AgentEvent.MessageFeedback, getFeedback(feedback));
-      },
-      this.connectionConfig.auth
-    );
+    const req = new CreateMessageMetricRequest();
+    req.setAssistantid(this.agentConfig.definition.getAssistantid());
+    req.setAssistantconversationid(this.agentMessagingId!);
+    req.setMessageid(messageId);
+    for (const mtr of metrics) {
+      const _m = new Metric();
+      _m.setName(mtr.name);
+      _m.setValue(mtr.value);
+      _m.setDescription(mtr.description);
+      req.addMetrics(_m);
+    }
+    CreateMessageMetric(this.connectionConfig, req).then((_) => {
+      const feedback = getFeedback(metrics[metrics.length - 1]?.value);
+      this.agentMessages = this.agentMessages.map((message) => {
+        if (message.id === messageId && message.role === MessageRole.System) {
+          return {
+            ...message,
+            feedback: feedback,
+          };
+        }
+        return message;
+      });
+      this.emit(AgentEvent.MessageFeedback, getFeedback(feedback));
+    });
   }
 
   /**
@@ -251,14 +260,19 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
       value: string;
     }[]
   ) {
+    const req = new CreateConversationMetricRequest();
+    req.setAssistantid(this.agentConfig.definition.getAssistantid());
+    req.setAssistantconversationid(this.agentMessagingId!);
+    for (const mtr of metrics) {
+      const _m = new Metric();
+      _m.setName(mtr.name);
+      _m.setValue(mtr.value);
+      _m.setDescription(mtr.description);
+      req.addMetrics(_m);
+    }
     CreateConversationMetric(
       this.connectionConfig,
-      this.agentConfig.definition.getAssistantid(),
-      this.agentMessagingId!,
-      metrics,
-      () => {
-        console.dir("message metric got created");
-      },
+      req,
       this.connectionConfig.auth
     );
   }
@@ -291,10 +305,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
       return;
     }
     try {
-      this.talkingConnection = AssistantTalk(
-        this.connectionConfig.streamClient,
-        this.connectionConfig.auth
-      );
+      this.talkingConnection = AssistantTalk(this.connectionConfig);
       this.talkingConnection?.on("data", await this.onDataChange);
       this.talkingConnection?.on("end", await this.onEnd);
       this.talkingConnection?.on("status", await this.onStatusChange);
@@ -341,24 +352,13 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    *
    * @returns
    */
-  protected getAssistant = async (): Promise<Assistant> => {
-    return new Promise((resolve, reject) => {
-      GetAssistant(
-        this.connectionConfig,
-        this.agentConfig.id,
-        this.agentConfig.version || null,
-        (err: ServiceError | null, response: GetAssistantResponse | null) => {
-          if (err) {
-            reject(err);
-          } else if (response && response.getData()) {
-            resolve(response.getData()!);
-          } else {
-            reject(new Error("No response received"));
-          }
-        },
-        this.connectionConfig.auth
-      );
-    });
+  protected getAssistant = async (): Promise<GetAssistantResponse> => {
+    const req = new GetAssistantRequest();
+    req.setId(this.agentConfig.id);
+    if (this.agentConfig.version) {
+      req.setAssistantprovidermodelid(this.agentConfig.version);
+    }
+    return GetAssistant(this.connectionConfig, req);
   };
   /**
    *

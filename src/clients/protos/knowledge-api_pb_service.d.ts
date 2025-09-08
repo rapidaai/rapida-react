@@ -95,6 +95,24 @@ type KnowledgeServiceDeleteKnowledgeDocumentSegment = {
   readonly responseType: typeof common_pb.BaseResponse;
 };
 
+type KnowledgeServiceGetAllKnowledgeLog = {
+  readonly methodName: string;
+  readonly service: typeof KnowledgeService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof knowledge_api_pb.GetAllKnowledgeLogRequest;
+  readonly responseType: typeof knowledge_api_pb.GetAllKnowledgeLogResponse;
+};
+
+type KnowledgeServiceGetKnowledgeLog = {
+  readonly methodName: string;
+  readonly service: typeof KnowledgeService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof knowledge_api_pb.GetKnowledgeLogRequest;
+  readonly responseType: typeof knowledge_api_pb.GetKnowledgeLogResponse;
+};
+
 export class KnowledgeService {
   static readonly serviceName: string;
   static readonly GetKnowledge: KnowledgeServiceGetKnowledge;
@@ -107,6 +125,8 @@ export class KnowledgeService {
   static readonly UpdateKnowledgeDetail: KnowledgeServiceUpdateKnowledgeDetail;
   static readonly UpdateKnowledgeDocumentSegment: KnowledgeServiceUpdateKnowledgeDocumentSegment;
   static readonly DeleteKnowledgeDocumentSegment: KnowledgeServiceDeleteKnowledgeDocumentSegment;
+  static readonly GetAllKnowledgeLog: KnowledgeServiceGetAllKnowledgeLog;
+  static readonly GetKnowledgeLog: KnowledgeServiceGetKnowledgeLog;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -230,6 +250,24 @@ export class KnowledgeServiceClient {
   deleteKnowledgeDocumentSegment(
     requestMessage: knowledge_api_pb.DeleteKnowledgeDocumentSegmentRequest,
     callback: (error: ServiceError|null, responseMessage: common_pb.BaseResponse|null) => void
+  ): UnaryResponse;
+  getAllKnowledgeLog(
+    requestMessage: knowledge_api_pb.GetAllKnowledgeLogRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: knowledge_api_pb.GetAllKnowledgeLogResponse|null) => void
+  ): UnaryResponse;
+  getAllKnowledgeLog(
+    requestMessage: knowledge_api_pb.GetAllKnowledgeLogRequest,
+    callback: (error: ServiceError|null, responseMessage: knowledge_api_pb.GetAllKnowledgeLogResponse|null) => void
+  ): UnaryResponse;
+  getKnowledgeLog(
+    requestMessage: knowledge_api_pb.GetKnowledgeLogRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: knowledge_api_pb.GetKnowledgeLogResponse|null) => void
+  ): UnaryResponse;
+  getKnowledgeLog(
+    requestMessage: knowledge_api_pb.GetKnowledgeLogRequest,
+    callback: (error: ServiceError|null, responseMessage: knowledge_api_pb.GetKnowledgeLogResponse|null) => void
   ): UnaryResponse;
 }
 

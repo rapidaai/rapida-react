@@ -147,8 +147,8 @@ export class AssistantWebhookLog extends jspb.Message {
   getOrganizationid(): string;
   setOrganizationid(value: string): void;
 
-  getConversationid(): string;
-  setConversationid(value: string): void;
+  getAssistantconversationid(): string;
+  setAssistantconversationid(value: string): void;
 
   getAssetprefix(): string;
   setAssetprefix(value: string): void;
@@ -193,7 +193,7 @@ export namespace AssistantWebhookLog {
     assistantid: string,
     projectid: string,
     organizationid: string,
-    conversationid: string,
+    assistantconversationid: string,
     assetprefix: string,
     event: string,
     responsestatus: string,

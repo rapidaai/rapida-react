@@ -139,7 +139,7 @@ export class InputOptions {
   /**
    * sample rate for player
    */
-  protected recorderOptions: RecorderOptions = {
+  recorderOptions: RecorderOptions = {
     format: "pcm",
     sampleRate: 24000,
   };
@@ -150,7 +150,7 @@ export class InputOptions {
   /**
    * channel for providing output
    */
-  protected channel: Channel = Channel.Audio;
+  channel: Channel = Channel.Audio;
   get defaultChannel(): Channel {
     return this.channel;
   }

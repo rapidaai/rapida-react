@@ -9,8 +9,8 @@ type AssistantDeploymentServiceCreateAssistantApiDeployment = {
   readonly service: typeof AssistantDeploymentService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof assistant_deployment_pb.CreateAssistantApiDeploymentRequest;
-  readonly responseType: typeof assistant_deployment_pb.AssistantApiDeploymentResponse;
+  readonly requestType: typeof assistant_deployment_pb.CreateAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantApiDeploymentResponse;
 };
 
 type AssistantDeploymentServiceGetAssistantApiDeployment = {
@@ -19,7 +19,7 @@ type AssistantDeploymentServiceGetAssistantApiDeployment = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof assistant_deployment_pb.GetAssistantDeploymentRequest;
-  readonly responseType: typeof assistant_deployment_pb.AssistantApiDeploymentResponse;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantApiDeploymentResponse;
 };
 
 type AssistantDeploymentServiceCreateAssistantWebpluginDeployment = {
@@ -27,8 +27,8 @@ type AssistantDeploymentServiceCreateAssistantWebpluginDeployment = {
   readonly service: typeof AssistantDeploymentService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof assistant_deployment_pb.CreateAssistantWebpluginDeploymentRequest;
-  readonly responseType: typeof assistant_deployment_pb.AssistantWebpluginDeploymentResponse;
+  readonly requestType: typeof assistant_deployment_pb.CreateAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse;
 };
 
 type AssistantDeploymentServiceGetAssistantWebpluginDeployment = {
@@ -37,7 +37,7 @@ type AssistantDeploymentServiceGetAssistantWebpluginDeployment = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof assistant_deployment_pb.GetAssistantDeploymentRequest;
-  readonly responseType: typeof assistant_deployment_pb.AssistantWebpluginDeploymentResponse;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse;
 };
 
 type AssistantDeploymentServiceCreateAssistantDebuggerDeployment = {
@@ -45,8 +45,8 @@ type AssistantDeploymentServiceCreateAssistantDebuggerDeployment = {
   readonly service: typeof AssistantDeploymentService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof assistant_deployment_pb.CreateAssistantDebuggerDeploymentRequest;
-  readonly responseType: typeof assistant_deployment_pb.AssistantDebuggerDeploymentResponse;
+  readonly requestType: typeof assistant_deployment_pb.CreateAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse;
 };
 
 type AssistantDeploymentServiceGetAssistantDebuggerDeployment = {
@@ -55,7 +55,7 @@ type AssistantDeploymentServiceGetAssistantDebuggerDeployment = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof assistant_deployment_pb.GetAssistantDeploymentRequest;
-  readonly responseType: typeof assistant_deployment_pb.AssistantDebuggerDeploymentResponse;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse;
 };
 
 type AssistantDeploymentServiceCreateAssistantWhatsappDeployment = {
@@ -63,8 +63,8 @@ type AssistantDeploymentServiceCreateAssistantWhatsappDeployment = {
   readonly service: typeof AssistantDeploymentService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof assistant_deployment_pb.CreateAssistantWhatsappDeploymentRequest;
-  readonly responseType: typeof assistant_deployment_pb.AssistantWhatsappDeploymentResponse;
+  readonly requestType: typeof assistant_deployment_pb.CreateAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantWhatsappDeploymentResponse;
 };
 
 type AssistantDeploymentServiceGetAssistantWhatsappDeployment = {
@@ -73,7 +73,7 @@ type AssistantDeploymentServiceGetAssistantWhatsappDeployment = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof assistant_deployment_pb.GetAssistantDeploymentRequest;
-  readonly responseType: typeof assistant_deployment_pb.AssistantWhatsappDeploymentResponse;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantWhatsappDeploymentResponse;
 };
 
 type AssistantDeploymentServiceCreateAssistantPhoneDeployment = {
@@ -81,8 +81,8 @@ type AssistantDeploymentServiceCreateAssistantPhoneDeployment = {
   readonly service: typeof AssistantDeploymentService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof assistant_deployment_pb.CreateAssistantPhoneDeploymentRequest;
-  readonly responseType: typeof assistant_deployment_pb.AssistantPhoneDeploymentResponse;
+  readonly requestType: typeof assistant_deployment_pb.CreateAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantPhoneDeploymentResponse;
 };
 
 type AssistantDeploymentServiceGetAssistantPhoneDeployment = {
@@ -91,7 +91,7 @@ type AssistantDeploymentServiceGetAssistantPhoneDeployment = {
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof assistant_deployment_pb.GetAssistantDeploymentRequest;
-  readonly responseType: typeof assistant_deployment_pb.AssistantPhoneDeploymentResponse;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantPhoneDeploymentResponse;
 };
 
 export class AssistantDeploymentService {
@@ -141,94 +141,94 @@ export class AssistantDeploymentServiceClient {
 
   constructor(serviceHost: string, options?: grpc.RpcOptions);
   createAssistantApiDeployment(
-    requestMessage: assistant_deployment_pb.CreateAssistantApiDeploymentRequest,
+    requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantApiDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantApiDeploymentResponse|null) => void
   ): UnaryResponse;
   createAssistantApiDeployment(
-    requestMessage: assistant_deployment_pb.CreateAssistantApiDeploymentRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantApiDeploymentResponse|null) => void
+    requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantApiDeploymentResponse|null) => void
   ): UnaryResponse;
   getAssistantApiDeployment(
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantApiDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantApiDeploymentResponse|null) => void
   ): UnaryResponse;
   getAssistantApiDeployment(
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantApiDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantApiDeploymentResponse|null) => void
   ): UnaryResponse;
   createAssistantWebpluginDeployment(
-    requestMessage: assistant_deployment_pb.CreateAssistantWebpluginDeploymentRequest,
+    requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantWebpluginDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse|null) => void
   ): UnaryResponse;
   createAssistantWebpluginDeployment(
-    requestMessage: assistant_deployment_pb.CreateAssistantWebpluginDeploymentRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantWebpluginDeploymentResponse|null) => void
+    requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse|null) => void
   ): UnaryResponse;
   getAssistantWebpluginDeployment(
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantWebpluginDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse|null) => void
   ): UnaryResponse;
   getAssistantWebpluginDeployment(
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantWebpluginDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse|null) => void
   ): UnaryResponse;
   createAssistantDebuggerDeployment(
-    requestMessage: assistant_deployment_pb.CreateAssistantDebuggerDeploymentRequest,
+    requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantDebuggerDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse|null) => void
   ): UnaryResponse;
   createAssistantDebuggerDeployment(
-    requestMessage: assistant_deployment_pb.CreateAssistantDebuggerDeploymentRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantDebuggerDeploymentResponse|null) => void
+    requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse|null) => void
   ): UnaryResponse;
   getAssistantDebuggerDeployment(
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantDebuggerDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse|null) => void
   ): UnaryResponse;
   getAssistantDebuggerDeployment(
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantDebuggerDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse|null) => void
   ): UnaryResponse;
   createAssistantWhatsappDeployment(
-    requestMessage: assistant_deployment_pb.CreateAssistantWhatsappDeploymentRequest,
+    requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantWhatsappDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWhatsappDeploymentResponse|null) => void
   ): UnaryResponse;
   createAssistantWhatsappDeployment(
-    requestMessage: assistant_deployment_pb.CreateAssistantWhatsappDeploymentRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantWhatsappDeploymentResponse|null) => void
+    requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWhatsappDeploymentResponse|null) => void
   ): UnaryResponse;
   getAssistantWhatsappDeployment(
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantWhatsappDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWhatsappDeploymentResponse|null) => void
   ): UnaryResponse;
   getAssistantWhatsappDeployment(
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantWhatsappDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWhatsappDeploymentResponse|null) => void
   ): UnaryResponse;
   createAssistantPhoneDeployment(
-    requestMessage: assistant_deployment_pb.CreateAssistantPhoneDeploymentRequest,
+    requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantPhoneDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantPhoneDeploymentResponse|null) => void
   ): UnaryResponse;
   createAssistantPhoneDeployment(
-    requestMessage: assistant_deployment_pb.CreateAssistantPhoneDeploymentRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantPhoneDeploymentResponse|null) => void
+    requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantPhoneDeploymentResponse|null) => void
   ): UnaryResponse;
   getAssistantPhoneDeployment(
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantPhoneDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantPhoneDeploymentResponse|null) => void
   ): UnaryResponse;
   getAssistantPhoneDeployment(
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.AssistantPhoneDeploymentResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantPhoneDeploymentResponse|null) => void
   ): UnaryResponse;
 }
 
