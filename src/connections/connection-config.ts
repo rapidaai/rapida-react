@@ -421,10 +421,10 @@ export class AssistantConnectionConfig extends ConnectionConfig {
   }
 
   get callbacks(): ConnectionCallback | undefined {
-    return this.callbacks;
+    return this.callback;
   }
 
   set callbacks(value: ConnectionCallback | undefined) {
-    this.callbacks = value;
+    this.callback = value;
   }
 }
