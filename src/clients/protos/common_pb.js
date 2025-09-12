@@ -7519,7 +7519,8 @@ proto.AssistantConversation.toObject = function(includeInstance, msg) {
     argumentsList: jspb.Message.toObjectList(msg.getArgumentsList(),
     proto.Argument.toObject, includeInstance),
     optionsList: jspb.Message.toObjectList(msg.getOptionsList(),
-    proto.Metadata.toObject, includeInstance)
+    proto.Metadata.toObject, includeInstance),
+    direction: jspb.Message.getFieldWithDefault(msg, 34, "")
   };
 
   if (includeInstance) {
@@ -7648,6 +7649,10 @@ proto.AssistantConversation.deserializeBinaryFromReader = function(msg, reader) 
       var value = new proto.Metadata;
       reader.readMessage(value,proto.Metadata.deserializeBinaryFromReader);
       msg.addOptions(value);
+      break;
+    case 34:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setDirection(value);
       break;
     default:
       reader.skipField();
@@ -7832,6 +7837,13 @@ proto.AssistantConversation.serializeBinaryToWriter = function(message, writer) 
       33,
       f,
       proto.Metadata.serializeBinaryToWriter
+    );
+  }
+  f = message.getDirection();
+  if (f.length > 0) {
+    writer.writeString(
+      34,
+      f
     );
   }
 };
@@ -8389,6 +8401,24 @@ proto.AssistantConversation.prototype.addOptions = function(opt_value, opt_index
  */
 proto.AssistantConversation.prototype.clearOptionsList = function() {
   return this.setOptionsList([]);
+};
+
+
+/**
+ * optional string direction = 34;
+ * @return {string}
+ */
+proto.AssistantConversation.prototype.getDirection = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 34, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.AssistantConversation} returns this
+ */
+proto.AssistantConversation.prototype.setDirection = function(value) {
+  return jspb.Message.setProto3StringField(this, 34, value);
 };
 
 

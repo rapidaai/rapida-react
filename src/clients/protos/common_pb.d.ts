@@ -1021,6 +1021,9 @@ export class AssistantConversation extends jspb.Message {
   setOptionsList(value: Array<Metadata>): void;
   addOptions(value?: Metadata, index?: number): Metadata;
 
+  getDirection(): string;
+  setDirection(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantConversation.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantConversation): AssistantConversation.AsObject;
@@ -1054,6 +1057,7 @@ export namespace AssistantConversation {
     metadataList: Array<Metadata.AsObject>,
     argumentsList: Array<Argument.AsObject>,
     optionsList: Array<Metadata.AsObject>,
+    direction: string,
   }
 }
 
