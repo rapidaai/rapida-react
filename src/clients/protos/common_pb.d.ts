@@ -939,6 +939,26 @@ export namespace AssistantConversationContext {
   }
 }
 
+export class AssistantConversationRecording extends jspb.Message {
+  getRecordingurl(): string;
+  setRecordingurl(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantConversationRecording.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantConversationRecording): AssistantConversationRecording.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantConversationRecording, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantConversationRecording;
+  static deserializeBinaryFromReader(message: AssistantConversationRecording, reader: jspb.BinaryReader): AssistantConversationRecording;
+}
+
+export namespace AssistantConversationRecording {
+  export type AsObject = {
+    recordingurl: string,
+  }
+}
+
 export class AssistantConversation extends jspb.Message {
   getId(): string;
   setId(value: string): void;
@@ -1024,6 +1044,11 @@ export class AssistantConversation extends jspb.Message {
   getDirection(): string;
   setDirection(value: string): void;
 
+  clearRecordingsList(): void;
+  getRecordingsList(): Array<AssistantConversationRecording>;
+  setRecordingsList(value: Array<AssistantConversationRecording>): void;
+  addRecordings(value?: AssistantConversationRecording, index?: number): AssistantConversationRecording;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantConversation.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantConversation): AssistantConversation.AsObject;
@@ -1058,6 +1083,7 @@ export namespace AssistantConversation {
     argumentsList: Array<Argument.AsObject>,
     optionsList: Array<Metadata.AsObject>,
     direction: string,
+    recordingsList: Array<AssistantConversationRecording.AsObject>,
   }
 }
 

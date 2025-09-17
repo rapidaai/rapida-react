@@ -459,6 +459,7 @@ export {
   GetAllAssistantConversationResponse,
   GetAllConversationMessageRequest,
   GetAllConversationMessageResponse,
+  AssistantConversationRecording,
 } from "@/rapida/clients/protos/common_pb";
 export {
   AssistantService,

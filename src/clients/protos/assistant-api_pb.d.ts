@@ -946,18 +946,8 @@ export class GetAssistantConversationRequest extends jspb.Message {
   getAssistantid(): string;
   setAssistantid(value: string): void;
 
-  getConversationid(): string;
-  setConversationid(value: string): void;
-
-  hasPaginate(): boolean;
-  clearPaginate(): void;
-  getPaginate(): common_pb.Paginate | undefined;
-  setPaginate(value?: common_pb.Paginate): void;
-
-  clearCriteriasList(): void;
-  getCriteriasList(): Array<common_pb.Criteria>;
-  setCriteriasList(value: Array<common_pb.Criteria>): void;
-  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+  getAssistantconversationid(): string;
+  setAssistantconversationid(value: string): void;
 
   clearSelectorsList(): void;
   getSelectorsList(): Array<common_pb.FieldSelector>;
@@ -977,9 +967,7 @@ export class GetAssistantConversationRequest extends jspb.Message {
 export namespace GetAssistantConversationRequest {
   export type AsObject = {
     assistantid: string,
-    conversationid: string,
-    paginate?: common_pb.Paginate.AsObject,
-    criteriasList: Array<common_pb.Criteria.AsObject>,
+    assistantconversationid: string,
     selectorsList: Array<common_pb.FieldSelector.AsObject>,
   }
 }
@@ -1001,11 +989,6 @@ export class GetAssistantConversationResponse extends jspb.Message {
   getError(): common_pb.Error | undefined;
   setError(value?: common_pb.Error): void;
 
-  hasPaginated(): boolean;
-  clearPaginated(): void;
-  getPaginated(): common_pb.Paginated | undefined;
-  setPaginated(value?: common_pb.Paginated): void;
-
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetAssistantConversationResponse.AsObject;
   static toObject(includeInstance: boolean, msg: GetAssistantConversationResponse): GetAssistantConversationResponse.AsObject;
@@ -1022,7 +1005,6 @@ export namespace GetAssistantConversationResponse {
     success: boolean,
     data?: common_pb.AssistantConversation.AsObject,
     error?: common_pb.Error.AsObject,
-    paginated?: common_pb.Paginated.AsObject,
   }
 }
 
