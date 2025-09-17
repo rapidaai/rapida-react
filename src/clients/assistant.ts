@@ -1043,22 +1043,22 @@ export function DeleteAssistantWebhook(
  */
 export function GetAssistantConversation(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  conversaiontId: string,
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantConversationResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAssistantConversationRequest();
-  req.setAssistantid(assistantId);
-  req.setConversationid(conversaiontId);
-  return connectionConfig.assistantClient.getAssistantConversation(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: GetAssistantConversationRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantConversationResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.getAssistantConversation(
+      req,
+      WithAuthContext(connectionConfig.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantConversationResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**

@@ -7619,7 +7619,7 @@ proto.assistant_api.GetAllAssistantUserConversationResponse.prototype.hasPaginat
  * @private {!Array<number>}
  * @const
  */
-proto.assistant_api.GetAssistantConversationRequest.repeatedFields_ = [4,5];
+proto.assistant_api.GetAssistantConversationRequest.repeatedFields_ = [5];
 
 
 
@@ -7653,10 +7653,7 @@ proto.assistant_api.GetAssistantConversationRequest.prototype.toObject = functio
 proto.assistant_api.GetAssistantConversationRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     assistantid: jspb.Message.getFieldWithDefault(msg, 1, "0"),
-    conversationid: jspb.Message.getFieldWithDefault(msg, 2, "0"),
-    paginate: (f = msg.getPaginate()) && common_pb.Paginate.toObject(includeInstance, f),
-    criteriasList: jspb.Message.toObjectList(msg.getCriteriasList(),
-    common_pb.Criteria.toObject, includeInstance),
+    assistantconversationid: jspb.Message.getFieldWithDefault(msg, 2, "0"),
     selectorsList: jspb.Message.toObjectList(msg.getSelectorsList(),
     common_pb.FieldSelector.toObject, includeInstance)
   };
@@ -7701,17 +7698,7 @@ proto.assistant_api.GetAssistantConversationRequest.deserializeBinaryFromReader 
       break;
     case 2:
       var value = /** @type {string} */ (reader.readUint64String());
-      msg.setConversationid(value);
-      break;
-    case 3:
-      var value = new common_pb.Paginate;
-      reader.readMessage(value,common_pb.Paginate.deserializeBinaryFromReader);
-      msg.setPaginate(value);
-      break;
-    case 4:
-      var value = new common_pb.Criteria;
-      reader.readMessage(value,common_pb.Criteria.deserializeBinaryFromReader);
-      msg.addCriterias(value);
+      msg.setAssistantconversationid(value);
       break;
     case 5:
       var value = new common_pb.FieldSelector;
@@ -7754,27 +7741,11 @@ proto.assistant_api.GetAssistantConversationRequest.serializeBinaryToWriter = fu
       f
     );
   }
-  f = message.getConversationid();
+  f = message.getAssistantconversationid();
   if (parseInt(f, 10) !== 0) {
     writer.writeUint64String(
       2,
       f
-    );
-  }
-  f = message.getPaginate();
-  if (f != null) {
-    writer.writeMessage(
-      3,
-      f,
-      common_pb.Paginate.serializeBinaryToWriter
-    );
-  }
-  f = message.getCriteriasList();
-  if (f.length > 0) {
-    writer.writeRepeatedMessage(
-      4,
-      f,
-      common_pb.Criteria.serializeBinaryToWriter
     );
   }
   f = message.getSelectorsList();
@@ -7807,10 +7778,10 @@ proto.assistant_api.GetAssistantConversationRequest.prototype.setAssistantid = f
 
 
 /**
- * optional uint64 conversationId = 2;
+ * optional uint64 assistantConversationId = 2;
  * @return {string}
  */
-proto.assistant_api.GetAssistantConversationRequest.prototype.getConversationid = function() {
+proto.assistant_api.GetAssistantConversationRequest.prototype.getAssistantconversationid = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, "0"));
 };
 
@@ -7819,83 +7790,8 @@ proto.assistant_api.GetAssistantConversationRequest.prototype.getConversationid 
  * @param {string} value
  * @return {!proto.assistant_api.GetAssistantConversationRequest} returns this
  */
-proto.assistant_api.GetAssistantConversationRequest.prototype.setConversationid = function(value) {
+proto.assistant_api.GetAssistantConversationRequest.prototype.setAssistantconversationid = function(value) {
   return jspb.Message.setProto3StringIntField(this, 2, value);
-};
-
-
-/**
- * optional Paginate paginate = 3;
- * @return {?proto.Paginate}
- */
-proto.assistant_api.GetAssistantConversationRequest.prototype.getPaginate = function() {
-  return /** @type{?proto.Paginate} */ (
-    jspb.Message.getWrapperField(this, common_pb.Paginate, 3));
-};
-
-
-/**
- * @param {?proto.Paginate|undefined} value
- * @return {!proto.assistant_api.GetAssistantConversationRequest} returns this
-*/
-proto.assistant_api.GetAssistantConversationRequest.prototype.setPaginate = function(value) {
-  return jspb.Message.setWrapperField(this, 3, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.assistant_api.GetAssistantConversationRequest} returns this
- */
-proto.assistant_api.GetAssistantConversationRequest.prototype.clearPaginate = function() {
-  return this.setPaginate(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.assistant_api.GetAssistantConversationRequest.prototype.hasPaginate = function() {
-  return jspb.Message.getField(this, 3) != null;
-};
-
-
-/**
- * repeated Criteria criterias = 4;
- * @return {!Array<!proto.Criteria>}
- */
-proto.assistant_api.GetAssistantConversationRequest.prototype.getCriteriasList = function() {
-  return /** @type{!Array<!proto.Criteria>} */ (
-    jspb.Message.getRepeatedWrapperField(this, common_pb.Criteria, 4));
-};
-
-
-/**
- * @param {!Array<!proto.Criteria>} value
- * @return {!proto.assistant_api.GetAssistantConversationRequest} returns this
-*/
-proto.assistant_api.GetAssistantConversationRequest.prototype.setCriteriasList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 4, value);
-};
-
-
-/**
- * @param {!proto.Criteria=} opt_value
- * @param {number=} opt_index
- * @return {!proto.Criteria}
- */
-proto.assistant_api.GetAssistantConversationRequest.prototype.addCriterias = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 4, opt_value, proto.Criteria, opt_index);
-};
-
-
-/**
- * Clears the list making it empty but non-null.
- * @return {!proto.assistant_api.GetAssistantConversationRequest} returns this
- */
-proto.assistant_api.GetAssistantConversationRequest.prototype.clearCriteriasList = function() {
-  return this.setCriteriasList([]);
 };
 
 
@@ -7972,8 +7868,7 @@ proto.assistant_api.GetAssistantConversationResponse.toObject = function(include
     code: jspb.Message.getFieldWithDefault(msg, 1, 0),
     success: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
     data: (f = msg.getData()) && common_pb.AssistantConversation.toObject(includeInstance, f),
-    error: (f = msg.getError()) && common_pb.Error.toObject(includeInstance, f),
-    paginated: (f = msg.getPaginated()) && common_pb.Paginated.toObject(includeInstance, f)
+    error: (f = msg.getError()) && common_pb.Error.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -8027,11 +7922,6 @@ proto.assistant_api.GetAssistantConversationResponse.deserializeBinaryFromReader
       var value = new common_pb.Error;
       reader.readMessage(value,common_pb.Error.deserializeBinaryFromReader);
       msg.setError(value);
-      break;
-    case 5:
-      var value = new common_pb.Paginated;
-      reader.readMessage(value,common_pb.Paginated.deserializeBinaryFromReader);
-      msg.setPaginated(value);
       break;
     default:
       reader.skipField();
@@ -8090,14 +7980,6 @@ proto.assistant_api.GetAssistantConversationResponse.serializeBinaryToWriter = f
       4,
       f,
       common_pb.Error.serializeBinaryToWriter
-    );
-  }
-  f = message.getPaginated();
-  if (f != null) {
-    writer.writeMessage(
-      5,
-      f,
-      common_pb.Paginated.serializeBinaryToWriter
     );
   }
 };
@@ -8210,43 +8092,6 @@ proto.assistant_api.GetAssistantConversationResponse.prototype.clearError = func
  */
 proto.assistant_api.GetAssistantConversationResponse.prototype.hasError = function() {
   return jspb.Message.getField(this, 4) != null;
-};
-
-
-/**
- * optional Paginated paginated = 5;
- * @return {?proto.Paginated}
- */
-proto.assistant_api.GetAssistantConversationResponse.prototype.getPaginated = function() {
-  return /** @type{?proto.Paginated} */ (
-    jspb.Message.getWrapperField(this, common_pb.Paginated, 5));
-};
-
-
-/**
- * @param {?proto.Paginated|undefined} value
- * @return {!proto.assistant_api.GetAssistantConversationResponse} returns this
-*/
-proto.assistant_api.GetAssistantConversationResponse.prototype.setPaginated = function(value) {
-  return jspb.Message.setWrapperField(this, 5, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.assistant_api.GetAssistantConversationResponse} returns this
- */
-proto.assistant_api.GetAssistantConversationResponse.prototype.clearPaginated = function() {
-  return this.setPaginated(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.assistant_api.GetAssistantConversationResponse.prototype.hasPaginated = function() {
-  return jspb.Message.getField(this, 5) != null;
 };
 
 
