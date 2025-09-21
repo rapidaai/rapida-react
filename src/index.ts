@@ -23,7 +23,6 @@
  *
  */
 export { VoiceAgent } from "@/rapida/agents/voice-agent";
-export { VoiceAgentContext } from "@/rapida/hooks/use-voice-agent";
 
 export {
   toTextContent,
@@ -47,10 +46,6 @@ export {
 export { AgentCallback } from "@/rapida/types/agent-callback";
 export { Message, MessageRole, MessageStatus } from "@/rapida/types/message";
 export { Feedback } from "@/rapida/types/feedback";
-export {
-  useEnsureVoiceAgent,
-  useMaybeVoiceAgent,
-} from "./hooks/use-voice-agent";
 export {
   useMultiband3DSpeakerTrackVolume,
   useMultibandMicrophoneTrackVolume,
@@ -661,10 +656,7 @@ export {
 } from "@/rapida/clients/types";
 
 // component export
-export { ConversationComponent } from "@/rapida/components/conversation";
-export { ConnectionComponent } from "@/rapida/components/connection";
 export { DeviceSelectorComponent } from "@/rapida/components/device-selector";
-export { ErrorComponent } from "@/rapida/components/error";
 export { MultibandAudioVisualizerComponent } from "@/rapida/components/visualization/multiband-audio-visualizer";
 
 // event

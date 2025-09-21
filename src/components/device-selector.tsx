@@ -22,25 +22,26 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
+import { VoiceAgent } from "@/rapida/agents/voice-agent";
 import { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
 import { cn } from "@/rapida/styles";
 import { FC, HTMLAttributes, useEffect, useState } from "react";
 
 interface DeviceSelectorComponentProps extends HTMLAttributes<HTMLDivElement> {
-  deviceName?: string;
+  voiceAgent: VoiceAgent;
 }
 /**
  *
  * @returns
  */
 export const DeviceSelectorComponent: FC<DeviceSelectorComponentProps> = ({
-  deviceName,
+  voiceAgent,
   className,
 }) => {
   const [showMenu, setShowMenu] = useState(false);
-  const deviceSelect = useSelectInputDeviceAgent({});
+  const deviceSelect = useSelectInputDeviceAgent({ voiceAgent });
   const [selectedDeviceName, setSelectedDeviceName] = useState(
-    deviceName || ""
+    voiceAgent.inputMediaDevice || ""
   );
 
   useEffect(() => {
@@ -102,7 +103,7 @@ export const DeviceSelectorComponent: FC<DeviceSelectorComponentProps> = ({
                 setShowMenu(false);
               }}
               className={cn(
-                device.deviceId === deviceSelect.activeDeviceId &&
+                voiceAgent.inputMediaDevice === deviceSelect.activeDeviceId &&
                   "!text-blue-800",
                 "text-gray-900",
                 "text-xl",

@@ -29,7 +29,6 @@ import {
   observeBrowserMediaDevices,
   observeAgentInputMediaDeviceChange,
 } from "@/rapida/hooks/observables/voice-agent";
-import { useMaybeVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { VoiceAgent } from "@/rapida/agents/voice-agent";
 
 /** @public */
@@ -50,6 +49,11 @@ interface UseMediaDeviceSelectProps {
    * Most commonly this will emit a MediaDeviceError
    */
   onError?: (e: Error) => void;
+
+  /**
+   * voice agent
+   */
+  voiceAgent: VoiceAgent;
 }
 
 /**
@@ -64,10 +68,10 @@ interface UseMediaDeviceSelectProps {
  * @public
  */
 export function useSelectInputDeviceAgent({
+  voiceAgent,
   requestPermissions,
   onError,
 }: UseMediaDeviceSelectProps) {
-  const voiceAgentContext = useMaybeVoiceAgent();
   // List of all devices.
   const deviceObserver = React.useMemo(
     () => observeBrowserMediaDevices("audioinput", onError, requestPermissions),
@@ -80,12 +84,12 @@ export function useSelectInputDeviceAgent({
   );
   //
   const [currentDeviceId, setCurrentDeviceId] = React.useState<string>(
-    voiceAgentContext?.inputMediaDevice ?? ""
+    voiceAgent?.inputMediaDevice ?? ""
   );
   const { className, activeDeviceObservable, setActiveMediaDevice } =
     React.useMemo(
-      () => setupDeviceSelector("audioinput", voiceAgentContext),
-      [voiceAgentContext]
+      () => setupDeviceSelector("audioinput", voiceAgent),
+      [voiceAgent.inputMediaDevice]
     );
 
   React.useEffect(() => {
