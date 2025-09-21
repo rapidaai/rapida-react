@@ -38,7 +38,7 @@ import {
   GetAuditLogRequest,
   GetAuditLogResponse,
 } from "@/rapida/clients/protos/audit-logging-api_pb";
-import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import { ConnectionConfig } from "@/rapida/types/connection-config";
 
 /**
  * Retrieve a paginated list of audit logs with filtering criteria.

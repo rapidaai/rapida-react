@@ -26,10 +26,9 @@ import * as React from "react";
 import { useObservableState } from "@/rapida/hooks/use-observable-state";
 import { BehaviorSubject } from "rxjs";
 import {
-  browserMediaDeviceObserver,
-  agentInputMediaDeviceChangeObservable,
+  observeBrowserMediaDevices,
+  observeAgentInputMediaDeviceChange,
 } from "@/rapida/hooks/observables/voice-agent";
-import { useMaybeVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { VoiceAgent } from "@/rapida/agents/voice-agent";
 
 /** @public */
@@ -50,6 +49,11 @@ interface UseMediaDeviceSelectProps {
    * Most commonly this will emit a MediaDeviceError
    */
   onError?: (e: Error) => void;
+
+  /**
+   * voice agent
+   */
+  voiceAgent: VoiceAgent;
 }
 
 /**
@@ -64,13 +68,13 @@ interface UseMediaDeviceSelectProps {
  * @public
  */
 export function useSelectInputDeviceAgent({
+  voiceAgent,
   requestPermissions,
   onError,
 }: UseMediaDeviceSelectProps) {
-  const voiceAgentContext = useMaybeVoiceAgent();
   // List of all devices.
   const deviceObserver = React.useMemo(
-    () => browserMediaDeviceObserver("audioinput", onError, requestPermissions),
+    () => observeBrowserMediaDevices("audioinput", onError, requestPermissions),
     [requestPermissions, onError]
   );
   // @ts-ignore
@@ -80,12 +84,12 @@ export function useSelectInputDeviceAgent({
   );
   //
   const [currentDeviceId, setCurrentDeviceId] = React.useState<string>(
-    voiceAgentContext?.inputMediaDevice ?? ""
+    voiceAgent?.inputMediaDevice ?? ""
   );
   const { className, activeDeviceObservable, setActiveMediaDevice } =
     React.useMemo(
-      () => setupDeviceSelector("audioinput", voiceAgentContext),
-      [voiceAgentContext]
+      () => setupDeviceSelector("audioinput", voiceAgent),
+      [voiceAgent.inputMediaDevice]
     );
 
   React.useEffect(() => {
@@ -113,7 +117,7 @@ function setupDeviceSelector(_: MediaDeviceKind, agent?: VoiceAgent) {
   );
 
   const activeDeviceObservable = agent
-    ? agentInputMediaDeviceChangeObservable(agent)
+    ? observeAgentInputMediaDeviceChange(agent)
     : activeDeviceSubject.asObservable();
 
   const setActiveMediaDevice = async (id: string) => {

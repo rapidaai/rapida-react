@@ -36,7 +36,7 @@ import {
   IndexKnowledgeDocumentRequest,
   IndexKnowledgeDocumentResponse,
 } from "@/rapida/clients/protos/document-api_pb";
-import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import { ConnectionConfig } from "@/rapida/types/connection-config";
 
 /**
  * Index a document for knowledge

@@ -24,63 +24,42 @@
  */
 import * as React from "react";
 import { VoiceAgent } from "@/rapida/agents/voice-agent";
-import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { useObservableState } from "@/rapida/hooks/use-observable-state";
-import { agentConnectionStateObservable } from "@/rapida/hooks/observables/voice-agent";
+import { observeAgentConnectionState } from "@/rapida/hooks/observables/voice-agent";
 
 /**
  * Custom hook for managing agent connection in a voice system.
  * @returns An object containing the connection handler and connection status.
  */
-export function useConnectAgent() {
-  // Get the voice agent instance
-  const agent = useEnsureVoiceAgent();
+export function useConnectAgent(agent: VoiceAgent) {
+  // Ensure the VoiceAgent instance is available
 
-  // Set up the connect agent and memoize the result
-  const {
-    _agentConnectionStateObservable,
-    handleConnectAgent,
-    handleDisconnectAgent,
-  } = React.useMemo(() => setupConnectAgent(), []);
-
-  // Create a memoized observable for the agent's connection state
-  const observable = React.useMemo(
-    () => _agentConnectionStateObservable(agent),
-    [agent, _agentConnectionStateObservable]
+  // Memoize the connection handlers to ensure stable references
+  const { handleConnectAgent, handleDisconnectAgent } = React.useMemo(
+    () => ({
+      handleConnectAgent: async () => {
+        if (!agent) throw new Error("VoiceAgent instance not available");
+        await agent.connect();
+      },
+      handleDisconnectAgent: async () => {
+        if (!agent) throw new Error("VoiceAgent instance not available");
+        await agent.disconnect();
+      },
+    }),
+    [agent] // Re-create handlers only when agent changes
   );
 
-  // Use the observable to track the agent's connection state
+  // Observe the connection state using RxJS
+  const observable = React.useMemo(
+    () => (agent ? observeAgentConnectionState(agent) : undefined),
+    [agent] // Update observable when agent changes
+  );
+
+  // Subscribe to the observable and manage component state
   const { isConnected } = useObservableState(observable, {
-    isConnected: agent.isConnected,
+    isConnected: agent?.isConnected ?? false, // Default connection state
   });
 
-  // Return the connection handler and the current connection status
+  // Return the connection handlers and current connection state
   return { handleConnectAgent, handleDisconnectAgent, isConnected };
-}
-
-/**
- * Sets up the connection for a voice agent.
- *
- * @returns An object containing the agent connection state observable and a function to handle agent connection.
- */
-function setupConnectAgent() {
-  /**
-   * Handles the connection of a voice agent.
-   *
-   * @param agent - The VoiceAgent to be connected.
-   * @returns A promise that resolves when the agent is connected.
-   */
-  const handleConnectAgent = async (agent: VoiceAgent) => {
-    await agent.connect();
-  };
-
-  const handleDisconnectAgent = async (agent: VoiceAgent) => {
-    await agent.disconnect();
-  };
-
-  return {
-    _agentConnectionStateObservable: agentConnectionStateObservable,
-    handleConnectAgent,
-    handleDisconnectAgent,
-  };
 }

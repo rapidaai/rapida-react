@@ -40,7 +40,7 @@ import {
   ClientAuthInfo,
   WithAuthContext,
 } from "@/rapida/clients";
-import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import { ConnectionConfig } from "@/rapida/types/connection-config";
 
 /**
  *

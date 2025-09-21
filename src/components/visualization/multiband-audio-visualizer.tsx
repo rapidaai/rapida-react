@@ -36,7 +36,7 @@ export type AgentState =
   | "thinking"
   | "speaking";
 
-type AgentMultibandAudioVisualizerProps = {
+type MultibandAudioVisualizerComponentProps = {
   classNames?: string;
   state: AgentState;
   barWidth: number;
@@ -46,7 +46,7 @@ type AgentMultibandAudioVisualizerProps = {
   frequencies: Float32Array[] | number[][];
 };
 
-export const AgentMultibandAudioVisualizer = ({
+export const MultibandAudioVisualizerComponent = ({
   classNames,
   state,
   barWidth,
@@ -54,7 +54,7 @@ export const AgentMultibandAudioVisualizer = ({
   maxBarHeight,
   barColor = "bg-white",
   frequencies,
-}: AgentMultibandAudioVisualizerProps) => {
+}: MultibandAudioVisualizerComponentProps) => {
   const summedFrequencies = frequencies.map((bandFrequencies) => {
     const sum = (bandFrequencies as number[]).reduce((a, b) => a + b, 0);
     return Math.sqrt(sum / bandFrequencies.length);

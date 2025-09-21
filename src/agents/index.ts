@@ -22,211 +22,268 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { AgentConfig } from "@/rapida/agents/agent-config";
+
+import { AgentConfig } from "@/rapida/types/agent-config";
+import { AgentCallback } from "@/rapida/types/agent-callback";
 import {
+  AssistantConversationConfiguration,
+  AssistantDefinition,
   AssistantMessagingRequest,
   AssistantMessagingResponse,
   CreateConversationMetricRequest,
   CreateMessageMetricRequest,
 } from "@/rapida/clients/protos/talk-api_pb";
-import {
-  AssistantConnectionConfig,
-  ConnectionConfig,
-} from "@/rapida/connections/connection-config";
-import { ConnectionState } from "@/rapida/connections/connection-state";
-import { AgentEventCallback } from "@/rapida/events/agent-event-callback";
+import { ConnectionConfig } from "@/rapida/types/connection-config";
+import { ConnectionState } from "@/rapida/types/connection-state";
+import { AgentEventCallback } from "@/rapida/types/agent-event-callback";
 import { EventEmitter } from "events";
 import type TypedEmitter from "typed-emitter";
 import { Content, Message, Metric } from "@/rapida/clients/protos/common_pb";
-import { Message as LocalMessage, MessageRole } from "@/rapida/agents/message";
-import { AgentEvent } from "@/rapida/events/agent-event";
+import { Message as LocalMessage, MessageRole } from "@/rapida/types/message";
+import { AgentEvent } from "@/rapida/types/agent-event";
 import {
   AssistantTalk,
   CreateConversationMetric,
   CreateMessageMetric,
 } from "@/rapida/clients/talk";
-import { getFeedback } from "@/rapida/agents/feedback";
+import { getFeedback } from "@/rapida/types/feedback";
 import {
   Assistant,
   GetAssistantRequest,
   GetAssistantResponse,
 } from "@/rapida/clients/protos/assistant-api_pb";
 import { GetAssistant } from "@/rapida/clients/assistant";
-import { ServiceError } from "@/rapida/clients/protos/talk-api_pb_service";
-import { RapidaSource, SDK_SOURCE } from "@/rapida/utils/rapida_source";
+import { SDK_SOURCE } from "@/rapida/utils/rapida_source";
 import {
   AgentDeployment,
   GetDeployment,
-} from "@/rapida/agents/agent-deployment";
+} from "@/rapida/types/agent-deployment";
 import { HEADER_SOURCE_KEY } from "@/rapida/utils/rapida_header";
+import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 
-//
+/**
+ * Rapida Agent SDK
+ *
+ * The Agent class provides a high-level interface for interacting with Rapida AI assistants.
+ * It manages bidirectional communication, handles connection states, and provides utilities
+ * for metrics, feedback, and dynamic agent switching.
+ *
+ * Key Features:
+ * - Bidirectional streaming communication with assistants
+ * - Real-time connection state management
+ * - Message and conversation metrics
+ * - Dynamic agent switching during conversations
+ * - Event-driven architecture with typed events
+ *
+ * @example
+ * ```typescript
+ * const agent = new MyAgent(connectionConfig, agentConfig);
+ *
+ * // Listen for events
+ * agent.on(AgentEvent.Initialized, (assistant) => {
+ *   console.log('Agent initialized:', assistant.getName());
+ * });
+ *
+ * agent.on(AgentEvent.ConnectionChanged, (state) => {
+ *   console.log('Connection state:', state);
+ * });
+ *
+ * // Connect and start conversation
+ * await agent.connect();
+ *
+ * // Switch to a different agent during conversation
+ * await agent.switchAgent({
+ *   agentId: 'new-agent-id',
+ *   version: 'v2.0',
+ *   options: new Map([['temperature', createAnyValue('0.7')]])
+ * });
+ * ```
+ */
 export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCallback>) {
-  /**
-   * connection state default connection is disconnected
-   */
-  state: ConnectionState = ConnectionState.Disconnected;
+  // Connection and State Management
+  protected connectionState: ConnectionState = ConnectionState.Disconnected;
 
-  /**
-   * conversation id
-   */
-  protected agentMessagingId: string | undefined;
-  get conversationId(): string | undefined {
-    return this.agentMessagingId;
-  }
-  /**
-   *
-   * @param assistantConversationId
-   * @returns
-   */
-  protected onChangeConversation = (assistantConversationId: string) => {
-    if (this.agentMessagingId) return;
-    this.agentMessagingId = assistantConversationId;
-  };
+  // conversation id
+  private _conversationId?: string;
 
-  /**
-   * an connection for talking client
-   * when you are conversing with agent then this client will get used
-   * work with bi-driectional request <> response
-   */
-  // @ts-ignore
-  protected talkingConnection: any;
+  // connection
+  protected talkingConnection?: any;
 
-  // as the api takes bytes of array can have text byte ot audio byte
-  private rapidaAssistant: Assistant | null = null;
-  get assistant(): Assistant | null {
-    return this.rapidaAssistant;
-  }
+  // Agent Configuration
+  protected agentConfig: AgentConfig;
+
+  // callbacks can have multiple callback
+  protected agentCallbacks: AgentCallback[];
 
   //
-  protected agentConfig: AgentConfig;
-  protected connectionConfig: AssistantConnectionConfig;
+  private readonly _connectionConfig: ConnectionConfig;
+
+  // all the messages
+  public agentMessages: LocalMessage[] = [];
 
   /**
+   * Creates a new Agent instance
    *
-   */
-  protected agentMessages: LocalMessage[];
-  get messages(): LocalMessage[] {
-    return this.agentMessages;
-  }
-
-  /**
+   * @param connection - Connection configuration for the assistant
+   * @param agentConfig - Initial agent configuration
    *
-   * @param connection
-   * @param agentConfig
-   * @param onRecieve
+   * @example
+   * ```typescript
+   * const connectionConfig = new AssistantConnectionConfig({
+   *   endpoint: 'https://api.rapida.ai',
+   *   auth: { apiKey: 'your-api-key' }
+   * });
+   *
+   * const agentConfig = new AgentConfig({
+   *   id: 'assistant-id',
+   *   definition: assistantDefinition
+   * });
+   *
+   * const agent = new MyAgent(connectionConfig, agentConfig);
+   * ```
    */
   protected constructor(
-    connection: AssistantConnectionConfig,
-    agentConfig: AgentConfig
+    connection: ConnectionConfig,
+    agentConfig: AgentConfig,
+    agentCallback?: AgentCallback
   ) {
     super();
     this.agentConfig = agentConfig;
-    this.connectionConfig = connection;
-    //
-    //
-    this.agentMessagingId = undefined;
-    this.agentMessages = [];
-
-    this.getAssistant()
-      .then((data) => {
-        if (data.getData() && data.getSuccess()) {
-          this.rapidaAssistant = data.getData()!;
-          this.emit(AgentEvent.Initialized, this.rapidaAssistant);
-          return;
-        }
-        console.error("Failed to initialize assistant:", data.getError());
-      })
-      .catch((error) => {
-        console.error("Failed to initialize assistant:", error);
-      });
+    this._connectionConfig = connection;
+    this.agentCallbacks = [];
+    if (agentCallback) this.agentCallbacks.push(agentCallback);
   }
 
-  public getDeployment(): AgentDeployment | undefined {
-    if (this.rapidaAssistant == null) {
-      return undefined;
-    }
-    return GetDeployment(
-      this.assistant!,
-      this.connectionConfig.auth?.Client?.[HEADER_SOURCE_KEY] ?? SDK_SOURCE
-    );
-  }
+  // Public Getters
+
   /**
-   * Message builder
-   * @param role
-   * @param contents
-   * @returns
+   * Current connection state of the agent
    */
-  protected createAssistantRequest = (
-    role: string,
-    contents: Content[]
-  ): AssistantMessagingRequest => {
-    const request = new AssistantMessagingRequest();
-    if (this.agentMessagingId)
-      request.setAssistantconversationid(this.agentMessagingId);
-    const message = new Message();
-    message.setRole(role);
-    message.setContentsList(contents);
-
-    request.setAssistant(this.agentConfig.definition);
-    request.setMessage(message);
-
-    //
-    if (this.agentConfig.options) {
-      this.agentConfig.options?.forEach((v, k) => {
-        request.getOptionsMap().set(k, v);
-      });
-    }
-
-    //
-    if (this.agentConfig.metadata) {
-      this.agentConfig.metadata?.forEach((v, k) => {
-        request.getMetadataMap().set(k, v);
-      });
-    }
-
-    //
-    if (this.agentConfig.arguments) {
-      this.agentConfig.arguments?.forEach((v, k) => {
-        request.getArgsMap().set(k, v);
-      });
-    }
-
-    return request;
-  };
-
-  /**
-   * After changing connection emit the connection change event with curent state of connection
-   * @param state
-   * @returns
-   */
-  protected setAndEmitConnectionState(state: ConnectionState): boolean {
-    if (state === this.state) {
-      return false;
-    }
-    this.state = state;
-    this.emit(AgentEvent.ConnectionChanged, this.state);
-    this.connectionConfig.onConnectionChange(state);
-    return true;
+  get state(): ConnectionState {
+    return this.connectionState;
   }
 
   /**
+   * Current conversation ID, if any
+   */
+  get conversationId(): string | undefined {
+    return this._conversationId;
+  }
+
+  /**
+   * Array of messages in the current conversation
+   */
+  get messages(): LocalMessage[] {
+    return [...this.agentMessages]; // Return copy to prevent external modification
+  }
+
+  /**
+   * Whether the agent is currently connected
+   */
+  get isConnected(): boolean {
+    return this.connectionState === ConnectionState.Connected;
+  }
+
+  /**
+   * this will help user to modify what he wants
+   */
+  get agentConfiguration(): AgentConfig {
+    return this.agentConfig;
+  }
+  /**
+   * Switches to a different agent during an active conversation
    *
-   * @param messageId
-   * @param metrics
+   * This method allows dynamic agent switching without losing conversation context.
+   * The new agent will receive the conversation history and continue from where
+   * the previous agent left off.
+   *
+   * @param config - Configuration for the new agent
+   * @throws {Error} If agent is not connected or switch fails
+   *
+   * @example
+   * ```typescript
+   * // Switch to a specialized agent for technical queries
+   * await agent.switchAgent({
+   *   agentId: 'technical-support-agent',
+   *   version: 'v1.2',
+   *   options: new Map([
+   *     ['specialization', createAnyValue('technical')],
+   *     ['expertise_level', createAnyValue('advanced')]
+   *   ])
+   * });
+   *
+   * // Switch to a different language agent
+   * await agent.switchAgent({
+   *   agentId: 'multilingual-agent',
+   *   metadata: new Map([
+   *     ['language', createAnyValue('spanish')],
+   *     ['region', createAnyValue('es-ES')]
+   *   ])
+   * });
+   * ```
+   */
+  public async switchAgent(config: AgentConfig): Promise<void> {
+    if (!this.isConnected) {
+      throw new Error("Cannot switch agent: not connected");
+    }
+
+    if (!this.talkingConnection) {
+      throw new Error("No active connection available for agent switch");
+    }
+
+    // Update agent config
+    this.agentConfig = config;
+
+    // Send configuration request to switch agent
+    const switchRequest = this._createAssistantConfigureRequest(
+      this.agentConfig.definition,
+      this.agentConfig.arguments,
+      this.agentConfig.metadata,
+      this.agentConfig.options
+    );
+
+    await this.talkingConnection.write(switchRequest);
+  }
+
+  /**
+   * Creates metrics for a specific message
+   *
+   * @param messageId - ID of the message to create metrics for
+   * @param metrics - Array of metric objects
+   *
+   * @example
+   * ```typescript
+   * agent.createMessageMetric('msg-123', [
+   *   {
+   *     name: 'user_satisfaction',
+   *     description: 'User satisfaction rating',
+   *     value: '4.5'
+   *   },
+   *   {
+   *     name: 'response_time',
+   *     description: 'Time taken to respond',
+   *     value: '1.2'
+   *   }
+   * ]);
+   * ```
    */
   public createMessageMetric(
     messageId: string,
-    metrics: {
+    metrics: Array<{
       name: string;
       description: string;
       value: string;
-    }[]
-  ) {
+    }>
+  ): void {
+    if (!this._conversationId) {
+      throw new Error("Cannot create message metric: no active conversation");
+    }
+
     const req = new CreateMessageMetricRequest();
     req.setAssistantid(this.agentConfig.definition.getAssistantid());
-    req.setAssistantconversationid(this.agentMessagingId!);
+    req.setAssistantconversationid(this._conversationId);
     req.setMessageid(messageId);
+
     for (const mtr of metrics) {
       const _m = new Metric();
       _m.setName(mtr.name);
@@ -234,137 +291,290 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
       _m.setDescription(mtr.description);
       req.addMetrics(_m);
     }
-    CreateMessageMetric(this.connectionConfig, req).then((_) => {
-      const feedback = getFeedback(metrics[metrics.length - 1]?.value);
-      this.agentMessages = this.agentMessages.map((message) => {
-        if (message.id === messageId && message.role === MessageRole.System) {
-          return {
-            ...message,
-            feedback: feedback,
-          };
-        }
-        return message;
+
+    CreateMessageMetric(this._connectionConfig, req)
+      .then(() => {
+        const lastMetric = metrics[metrics.length - 1];
+        if (!lastMetric) return;
+        const feedback = getFeedback(lastMetric.value);
+        this._updateMessageFeedback(messageId, feedback);
+        this.emit(AgentEvent.FeedbackEvent, "message", feedback);
+      })
+      .catch((error) => {
+        console.error("Failed to create message metric:", error);
       });
-      this.emit(AgentEvent.MessageFeedback, getFeedback(feedback));
+  }
+
+  /**
+   * Creates metrics for the entire conversation
+   *
+   * @param metrics - Array of metric objects
+   *
+   * @example
+   * ```typescript
+   * agent.createConversationMetric([
+   *   {
+   *     name: 'conversation_length',
+   *     description: 'Total messages in conversation',
+   *     value: '15'
+   *   },
+   *   {
+   *     name: 'resolution_status',
+   *     description: 'Whether the issue was resolved',
+   *     value: 'resolved'
+   *   }
+   * ]);
+   * ```
+   */
+  public createConversationMetric(
+    metrics: Array<{
+      name: string;
+      description: string;
+      value: string;
+    }>
+  ): void {
+    if (!this._conversationId) {
+      throw new Error(
+        "Cannot create conversation metric: no active conversation"
+      );
+    }
+
+    const req = new CreateConversationMetricRequest();
+    req.setAssistantid(this.agentConfig.definition.getAssistantid());
+    req.setAssistantconversationid(this._conversationId);
+
+    for (const mtr of metrics) {
+      const _m = new Metric();
+      _m.setName(mtr.name);
+      _m.setValue(mtr.value);
+      _m.setDescription(mtr.description);
+      req.addMetrics(_m);
+    }
+
+    CreateConversationMetric(this._connectionConfig, req).catch((error) => {
+      console.error("Failed to create conversation metric:", error);
     });
   }
 
   /**
+   * Emits a typed event
    *
-   * @param metrics
+   * @param event - Event name
+   * @param args - Event arguments
+   * @returns Whether the event had listeners
    */
-  public createConversationMetric(
-    metrics: {
-      name: string;
-      description: string;
-      value: string;
-    }[]
-  ) {
-    const req = new CreateConversationMetricRequest();
-    req.setAssistantid(this.agentConfig.definition.getAssistantid());
-    req.setAssistantconversationid(this.agentMessagingId!);
-    for (const mtr of metrics) {
-      const _m = new Metric();
-      _m.setName(mtr.name);
-      _m.setValue(mtr.value);
-      _m.setDescription(mtr.description);
-      req.addMetrics(_m);
-    }
-    CreateConversationMetric(
-      this.connectionConfig,
-      req,
-      this.connectionConfig.auth
-    );
-  }
-
-  /**
-   *
-   * @param event
-   * @param args
-   * @returns
-   */
-  emit<E extends keyof AgentEventCallback>(
+  public emit<E extends keyof AgentEventCallback>(
     event: E,
     ...args: Parameters<AgentEventCallback[E]>
   ): boolean {
     return super.emit(event, ...args);
   }
 
+  // Protected Methods
+
   /**
+   * Creates an assistant messaging request with the given role and contents
    *
+   * @param role - Message role (user, assistant, system)
+   * @param contents - Message contents
+   * @returns Configured messaging request
    */
-  get isConnected(): boolean {
-    return this.state === ConnectionState.Connected;
+  protected createAssistantRequest(
+    role: string,
+    contents: Content[]
+  ): AssistantMessagingRequest {
+    const request = new AssistantMessagingRequest();
+    const message = new Message();
+    message.setRole(role);
+    message.setContentsList(contents);
+    request.setMessage(message);
+    return request;
   }
 
   /**
+   * Override this method to handle incoming messages from the assistant
    *
+   * @param response - Response from the assistant
+   *
+   * @example
+   * ```typescript
+   * protected onReceive(response: AssistantMessagingResponse) {
+   *   if (response.hasMessage()) {
+   *     console.log('Received message:', response.getMessage()?.getContentsList());
+   *   }
+   * }
+   * ```
    */
-  protected connectAgent = async () => {
-    if (this.state === ConnectionState.Connected) {
+  protected onRecieve = async (_: AssistantMessagingResponse) => {
+    console.warn(
+      "No receive method implemented. Override onReceive() in your Agent subclass."
+    );
+  };
+
+  // Private Methods
+
+  /**
+   * Initializes the agent by fetching assistant data
+   */
+  public async getAssistant(): Promise<GetAssistantResponse> {
+    return this._fetchAssistant(this.agentConfig.id, this.agentConfig.version);
+  }
+
+  /**
+   * Creates an assistant configuration request
+   */
+  private _createAssistantConfigureRequest(
+    definition: AssistantDefinition,
+    args?: Map<string, google_protobuf_any_pb.Any>,
+    metadatas?: Map<string, google_protobuf_any_pb.Any>,
+    options?: Map<string, google_protobuf_any_pb.Any>
+  ): AssistantMessagingRequest {
+    const request = new AssistantMessagingRequest();
+    const assistantConfiguration = new AssistantConversationConfiguration();
+
+    if (this._conversationId) {
+      assistantConfiguration.setAssistantconversationid(this._conversationId);
+    }
+
+    assistantConfiguration.setAssistant(definition);
+
+    // Set options
+    options?.forEach((v, k) => {
+      assistantConfiguration.getOptionsMap().set(k, v);
+    });
+
+    // Set metadata
+    metadatas?.forEach((v, k) => {
+      assistantConfiguration.getMetadataMap().set(k, v);
+    });
+
+    // Set arguments
+    args?.forEach((v, k) => {
+      assistantConfiguration.getArgsMap().set(k, v);
+    });
+
+    request.setConfiguration(assistantConfiguration);
+    return request;
+  }
+
+  /**
+   * Updates connection state and emits events
+   */
+  private _setAndEmitConnectionState(state: ConnectionState): boolean {
+    if (state === this.connectionState) {
+      return false;
+    }
+
+    this.connectionState = state;
+    this.emit(AgentEvent.ConnectionStateEvent, this.connectionState);
+    return true;
+  }
+
+  /**
+   * Handles conversation ID changes
+   */
+  protected changeConversation = (assistantConversationId: string): void => {
+    if (this._conversationId) return;
+    this._conversationId = assistantConversationId;
+  };
+
+  /**
+   * Establishes connection to the assistant
+   */
+  protected async connectAgent(): Promise<void> {
+    if (this.connectionState === ConnectionState.Connected) {
       return;
     }
     try {
-      this.talkingConnection = AssistantTalk(this.connectionConfig);
-      this.talkingConnection?.on("data", await this.onDataChange);
-      this.talkingConnection?.on("end", await this.onEnd);
-      this.talkingConnection?.on("status", await this.onStatusChange);
-      //
-      await this.setAndEmitConnectionState(ConnectionState.Connected);
-    } catch (err) {
-      console.error("error while creating a connection with talking server");
-    }
-  };
+      this.talkingConnection = AssistantTalk(this._connectionConfig);
+      this.talkingConnection.on("data", this.onRecieve);
+      this.talkingConnection.on("end", this._onEnd);
+      this.talkingConnection.on("status", this._onStatusChange);
 
-  protected disconnectAgent = async () => {
-    if (this.state !== ConnectionState.Connected) {
+      // Send initial configuration
+      await this.talkingConnection.write(
+        this._createAssistantConfigureRequest(
+          this.agentConfig.definition,
+          this.agentConfig.arguments,
+          this.agentConfig.metadata,
+          this.agentConfig.options
+        )
+      );
+
+      this._setAndEmitConnectionState(ConnectionState.Connected);
+    } catch (err) {
+      const error = new Error(
+        `Failed to connect to talking server: ${
+          err instanceof Error ? err.message : String(err)
+        }`
+      );
+      console.error(error.message);
+      this.emit(AgentEvent.ErrorEvent, "server", error.message);
+
+      // Return the error for calling code to catch
+      return Promise.reject(error);
+    }
+  }
+
+  /**
+   * Disconnects from the assistant
+   */
+  protected async disconnectAgent(): Promise<void> {
+    if (this.connectionState !== ConnectionState.Connected) {
       return;
     }
+
     try {
       await this.talkingConnection?.end();
     } catch (error) {
-      // console.error("Error ending talking connection:", error);
+      console.error("Error ending talking connection:", error);
     }
-  };
-  /**
-   * call it when end of stream
-   */
-  private onEnd = async () => {
-    await this.setAndEmitConnectionState(ConnectionState.Disconnected);
-  };
-
-  // when status change of active connection
-  private onStatusChange = async (s) => {
-    console.log(s);
-  };
-
-  /**
-   *
-   * @param response
-   * @returns
-   */
-  protected onDataChange = async (response: AssistantMessagingResponse) => {
-    if (this.onRecieve) this.onRecieve(response);
-    this.agentConfig.onCallback(response);
-  };
-
-  /**
-   *
-   * @returns
-   */
-  protected getAssistant = async (): Promise<GetAssistantResponse> => {
-    const req = new GetAssistantRequest();
-    req.setId(this.agentConfig.id);
-    if (this.agentConfig.version) {
-      req.setAssistantprovidermodelid(this.agentConfig.version);
-    }
-    return GetAssistant(this.connectionConfig, req);
-  };
-  /**
-   *
-   * @param response
-   */
-  onRecieve(_: AssistantMessagingResponse) {
-    console.warn("no recieve method registered");
   }
+
+  /**
+   * Handles connection end events
+   */
+  private _onEnd = (): void => {
+    this._setAndEmitConnectionState(ConnectionState.Disconnected);
+  };
+
+  /**
+   * Handles connection status changes
+   */
+  private _onStatusChange = (status: any): void => {
+    console.log("Connection status changed:", status);
+  };
+
+  /**
+   * Fetches assistant data for a specific agent ID and version
+   */
+  private async _fetchAssistant(
+    agentId: string,
+    version?: string
+  ): Promise<GetAssistantResponse> {
+    const req = new GetAssistantRequest();
+    req.setId(agentId);
+
+    if (version) {
+      req.setAssistantprovidermodelid(version);
+    }
+    return GetAssistant(this._connectionConfig, req);
+  }
+
+  /**
+   * Updates message feedback in the local message store
+   */
+  private _updateMessageFeedback(messageId: string, feedback: any): void {
+    this.agentMessages = this.agentMessages.map((message) => {
+      if (message.id === messageId && message.role === MessageRole.System) {
+        return { ...message, feedback };
+      }
+      return message;
+    });
+  }
+
+  public registerCallback = (agentCallback: AgentCallback) => {
+    // adding another callack
+    this.agentCallbacks.push(agentCallback);
+  };
 }

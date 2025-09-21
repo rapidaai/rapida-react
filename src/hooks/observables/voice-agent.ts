@@ -24,151 +24,81 @@
  */
 import { Subject, map, Observable, startWith, finalize, concat } from "rxjs";
 import { VoiceAgent } from "@/rapida/agents/voice-agent";
-import { AgentEvent } from "@/rapida/events/agent-event";
-import { AgentEventCallback } from "@/rapida/events/agent-event-callback";
-import { ConnectionState } from "@/rapida/connections/connection-state";
+import { AgentEvent } from "@/rapida/types/agent-event";
+import { ConnectionState } from "@/rapida/types/connection-state";
 import {
-  AssistantConversationAssistantMessage,
   AssistantConversationConfiguration,
   AssistantConversationInterruption,
   AssistantConversationUserMessage,
+  AssistantConversationAssistantMessage,
+  AssistantMessagingResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
-import { AgentServerEvent } from "@/rapida/events/agent-server-event";
 
 /**
- *
- * @param agent
- * @param events
- * @returns
+ * Utility function to observe a specific agent event.
+ * @param agent The voice agent instance.
+ * @param event The agent event to observe.
+ * @returns Observable emitting the event arguments.
  */
-export function observeVoiceAgentEvents(
+export function agentEventSelector(
   agent: VoiceAgent,
-  ...events: AgentEvent[]
-): Observable<VoiceAgent> {
-  const observable = new Observable<VoiceAgent>((subscribe) => {
-    const onVoiceAgentUpdate = () => {
-      subscribe.next(agent);
+  events: AgentEvent | AgentEvent[]
+): Observable<any> {
+  const eventArray = Array.isArray(events) ? events : [events];
+  return new Observable((subscriber) => {
+    const callback = (...args: any[]) => {
+      subscriber.next(args);
     };
 
-    events.forEach((evt) => {
-      agent.on(evt, onVoiceAgentUpdate);
-    });
-
-    const unsubscribe = () => {
-      events.forEach((evt) => {
-        agent.off(evt, onVoiceAgentUpdate);
-      });
+    eventArray.forEach((event) => agent.on(event, callback));
+    return () => {
+      eventArray.forEach((event) => agent.off(event, callback));
     };
-    return unsubscribe;
-  }).pipe(startWith(agent));
-
-  return observable;
+  });
 }
 
 /**
- *
- * @param agent
- * @param event
- * @returns
+ * Observes voice agent input media device changes.
  */
-export function agentEventSelector<T extends AgentEvent>(
-  agent: VoiceAgent,
-  event: T
-) {
-  const observable = new Observable<Parameters<AgentEventCallback[T]>>(
-    (subscribe) => {
-      const update = (...params: Parameters<AgentEventCallback[T]>) => {
-        subscribe.next(params);
-      };
-      agent.on(event as keyof AgentEventCallback, update);
-      const unsubscribe = () => {
-        agent.off(event as keyof AgentEventCallback, update);
-      };
-      return unsubscribe;
-    }
+export function observeAgentInputMediaDeviceChange(
+  agent: VoiceAgent
+): Observable<string> {
+  return agentEventSelector(agent, AgentEvent.InputMediaDeviceChangeEvent).pipe(
+    map(([deviceId]: [string]) => deviceId) // Ensure the device ID is retrieved appropriately.
   );
-  return observable;
 }
 
 /**
- *
- * @param agent
- * @returns
+ * Observes connection state changes for the agent.
  */
-export function agentObserver(agent: VoiceAgent) {
-  const observable = observeVoiceAgentEvents(
-    agent,
-    AgentEvent.ServerEvent,
-    AgentEvent.DataReceived,
-    // swiching channel event
-    AgentEvent.OutputChannelSwitch,
-    AgentEvent.InputChannelSwitch,
-
-    //
-    AgentEvent.ConnectionChanged,
-
-    //
-    AgentEvent.AudioInputMuteToggle,
-    AgentEvent.AudioInputMuteToggle
-  ).pipe(startWith(agent));
-
-  return observable;
+export function observeAgentConnectionState(
+  agent: VoiceAgent
+): Observable<{ isConnected: boolean }> {
+  return agentEventSelector(agent, AgentEvent.ConnectionStateEvent).pipe(
+    map(([state]: [ConnectionState]) => ({
+      isConnected: state === ConnectionState.Connected,
+    }))
+  );
 }
 
 /**
- *
- * @param kind
- * @param onError
- * @param requestPermissions
- * @returns
+ * Observes server events from the agent.
  */
-export function browserMediaDeviceObserver(
-  kind?: MediaDeviceKind,
-  onError?: (e: Error) => void,
-  requestPermissions = true
-) {
-  const onDeviceChange = async () => {
-    try {
-      const newDevices = await VoiceAgent.getLocalDevices(
-        kind,
-        requestPermissions
-      );
-      deviceSubject.next(newDevices);
-    } catch (e: any) {
-      onError?.(e);
-    }
-  };
-  const deviceSubject = new Subject<MediaDeviceInfo[]>();
-
-  const observable = deviceSubject.pipe(
-    finalize(() => {
-      navigator?.mediaDevices?.removeEventListener(
-        "devicechange",
-        onDeviceChange
-      );
-    })
+export function observeAgentServerEvents(agent: VoiceAgent): Observable<{
+  eventType?: AssistantMessagingResponse.DataCase;
+  argument?:
+    | AssistantConversationConfiguration
+    | AssistantConversationInterruption
+    | AssistantConversationUserMessage
+    | AssistantConversationAssistantMessage;
+}> {
+  return agentEventSelector(agent, AgentEvent.ConversationEvent).pipe(
+    map(([eventType, event]) => ({
+      eventType,
+      argument: event,
+    })),
+    startWith({ eventType: undefined, argument: undefined })
   );
-
-  if (typeof window !== "undefined") {
-    if (!window.isSecureContext) {
-      throw new Error(
-        `Accessing media devices is available only in secure contexts (HTTPS and localhost), in some or all supporting browsers. See: https://developer.mozilla.org/en-US/docs/Web/API/Navigator/mediaDevices`
-      );
-    }
-    navigator?.mediaDevices?.addEventListener("devicechange", onDeviceChange);
-  }
-  // because we rely on an async function, concat the promise to retrieve the initial values with the observable
-  return concat(
-    VoiceAgent.getLocalDevices(kind, requestPermissions).catch((e) => {
-      onError?.(e);
-      return [] as MediaDeviceInfo[];
-    }),
-    observable
-  );
-}
-
-export function createDataObserver(agent: VoiceAgent) {
-  return agentEventSelector(agent, AgentEvent.DataReceived);
 }
 
 /**
@@ -176,80 +106,11 @@ export function createDataObserver(agent: VoiceAgent) {
  * @param agent
  * @returns
  */
-
-export function agentInputMediaDeviceChangeObservable(agent: VoiceAgent) {
-  return agentEventSelector(agent, AgentEvent.InputMediaDeviceChanged).pipe(
-    map(([deviceId]: [string]) => {
-      return deviceId;
-    })
-  );
-}
-
-/**
- * when connection of agent get changed
- * @param agent
- * @returns
- */
-export function agentConnectionStateObservable(agent: VoiceAgent) {
-  const observable = observeVoiceAgentEvents(
-    agent,
-    AgentEvent.ConnectionChanged
-  ).pipe(
-    map((_a: VoiceAgent) => {
-      return { isConnected: agent.state === ConnectionState.Connected };
-    })
-  );
-  return observable;
-}
-
-/**
- * overserving the input channel
- * @param agent
- * @returns
- */
-export function agentInputObservable(agent: VoiceAgent) {
-  const observable = observeVoiceAgentEvents(
-    agent,
-    AgentEvent.InputChannelSwitch
-  ).pipe(
-    map((_agent: VoiceAgent) => {
-      return { channel: _agent.inputChannel };
-    })
-  );
-  return observable;
-}
-
-/**
- * overserving the input channel
- * @param agent
- * @returns
- */
-export function agentInitializeObservable(agent: VoiceAgent) {
-  const observable = observeVoiceAgentEvents(
-    agent,
-    AgentEvent.Initialized
-  ).pipe(
-    map((_agent: VoiceAgent) => {
-      return {
-        deployment: _agent.getDeployment(),
-        assistant: _agent.assistant,
-      };
-    })
-  );
-  return observable;
-}
-
-/**
- *
- * @param agent
- * @returns
- */
-export function agentMessageChangeEventObserver(agent: VoiceAgent) {
-  const observable = observeVoiceAgentEvents(
-    agent,
-    AgentEvent.ServerEvent,
-    AgentEvent.MessageFeedback
-  ).pipe(
+export function observeAgentMessageEvents(agent: VoiceAgent) {
+  const observable = agentEventSelector(agent, [
+    AgentEvent.ConversationEvent,
+    AgentEvent.FeedbackEvent,
+  ]).pipe(
     map((v) => {
       return {
         eventType: v,
@@ -265,38 +126,85 @@ export function agentMessageChangeEventObserver(agent: VoiceAgent) {
 }
 
 /**
+ * Observes browser media devices changes.
+ */
+export function observeBrowserMediaDevices(
+  kind?: MediaDeviceKind,
+  onError?: (error: Error) => void,
+  requestPermissions = true
+): Observable<MediaDeviceInfo[]> {
+  const deviceSubject = new Subject<MediaDeviceInfo[]>();
+
+  const handleDeviceChange = async () => {
+    try {
+      const devices = await VoiceAgent.getLocalDevices(
+        kind,
+        requestPermissions
+      );
+      deviceSubject.next(devices);
+    } catch (err) {
+      const error = err instanceof Error ? err : new Error(String(err));
+      onError?.(error);
+    }
+  };
+
+  const observable = deviceSubject.pipe(
+    finalize(() =>
+      navigator?.mediaDevices?.removeEventListener(
+        "devicechange",
+        handleDeviceChange
+      )
+    )
+  );
+
+  if (typeof window !== "undefined") {
+    if (!window.isSecureContext) {
+      throw new Error(
+        "Accessing media devices is available only in secure contexts."
+      );
+    }
+    navigator?.mediaDevices?.addEventListener(
+      "devicechange",
+      handleDeviceChange
+    );
+  }
+
+  return concat(
+    VoiceAgent.getLocalDevices(kind, requestPermissions).catch((err) => {
+      const error = err instanceof Error ? err : new Error(String(err));
+      onError?.(error);
+      return [] as MediaDeviceInfo[];
+    }),
+    observable
+  );
+}
+
+/**
  *
  * @param agent
  * @returns
  */
-export function agentServerEventObserver(agent: VoiceAgent): Observable<{
-  eventType?: AgentServerEvent;
-  argument?:
-    | AssistantConversationConfiguration
-    | AssistantConversationInterruption
-    | AssistantConversationUserMessage
-    | AssistantConversationAssistantMessage;
-}> {
-  const observable = agentEventSelector(agent, AgentEvent.ServerEvent).pipe(
-    map(
-      ([eventType, argument]: [
-        AgentServerEvent,
-        (
-          | AssistantConversationConfiguration
-          | AssistantConversationInterruption
-          | AssistantConversationUserMessage
-          | AssistantConversationAssistantMessage
-        )
-      ]) => {
-        return {
-          eventType: eventType,
-          argument: argument,
-        };
-      }
-    ),
-    startWith({
-      eventType: undefined,
-      argument: undefined,
+export function observeAgentInputChannel(agent: VoiceAgent) {
+  const observable = agentEventSelector(
+    agent,
+    AgentEvent.InputChannelChangeEvent
+  ).pipe(
+    map(([channel]) => {
+      return { channel: channel };
+    })
+  );
+  return observable;
+}
+
+/**
+ *
+ * @param agent
+ * @returns
+ */
+export function observeAgentError(agent: VoiceAgent): Observable<string> {
+  const observable = agentEventSelector(agent, AgentEvent.ErrorEvent).pipe(
+    map(([error]) => {
+      return error;
     })
   );
   return observable;

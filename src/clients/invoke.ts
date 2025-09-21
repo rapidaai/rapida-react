@@ -38,7 +38,7 @@ import {
 } from "@/rapida/clients/protos/invoker-api_pb";
 import p from "google-protobuf/google/protobuf/any_pb";
 import { StringToAny } from "@/rapida/utils/rapida_value";
-import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import { ConnectionConfig } from "@/rapida/types/connection-config";
 
 /**
  * Invoke an endpoint with specified parameters.
@@ -52,36 +52,18 @@ import { ConnectionConfig } from "@/rapida/connections/connection-config";
  * @returns UnaryResponse - The gRPC response object.
  */
 export function Invoke(
-  config: ConnectionConfig,
-  endpointId: string,
-  parameters: Map<string, p.Any>,
-  cb: (err: ServiceError | null, response: InvokeResponse | null) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo,
-  version?: string,
-  metadata?: Map<string, string>
-) {
-  const req = new InvokeRequest();
-  const endpoint = new EndpointDefinition();
-  endpoint.setEndpointid(endpointId);
-  if (version) {
-    endpoint.setVersion(version);
-  } else {
-    endpoint.setVersion("latest");
-  }
-
-  req.setEndpoint(endpoint);
-
-  // Set the parameters for the request
-  parameters.forEach((value, key) => {
-    req.getArgsMap().set(key, value);
+  clientCfg: ConnectionConfig,
+  request: InvokeRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<InvokeResponse> {
+  return new Promise((resolve, reject) => {
+    return clientCfg.deploymentClient.invoke(
+      request,
+      WithAuthContext(authHeader || clientCfg.auth),
+      (err: ServiceError | null, response: InvokeResponse | null) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
   });
-
-  // Set the optional metadata for the request
-  if (metadata) {
-    metadata.forEach((value, key) => {
-      req.getMetadataMap().set(key, StringToAny(value));
-    });
-  }
-
-  return config.deploymentClient.invoke(req, WithAuthContext(authHeader), cb);
 }
