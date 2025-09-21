@@ -49,7 +49,7 @@ import {
   WithAuthContext,
 } from "@/rapida/clients";
 import { ServiceError } from "@/rapida/clients/types";
-import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import { ConnectionConfig } from "@/rapida/types/connection-config";
 
 /**
  * Adds users to a project with specified roles.

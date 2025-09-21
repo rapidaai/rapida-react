@@ -22,8 +22,8 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { agentMessageChangeEventObserver } from "@/rapida/hooks/observables/voice-agent";
-import { Message } from "@/rapida/agents/message";
+import { Message } from "@/rapida/types/message";
+import { observeAgentMessageEvents } from "@/rapida/hooks/observables/voice-agent";
 import { useMaybeVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { cn } from "@/rapida/styles";
 import React, { FC, HTMLAttributes, useEffect, useRef, useState } from "react";
@@ -33,7 +33,7 @@ import React, { FC, HTMLAttributes, useEffect, useRef, useState } from "react";
  * @interface ConversationProps
  * @extends HTMLAttributes<HTMLDivElement>
  */
-interface ConversationProps extends HTMLAttributes<HTMLDivElement> {
+interface ConversationComponentProps extends HTMLAttributes<HTMLDivElement> {
   /**
    * A React component used to wrap individual messages.
    * It should accept props of type HTMLAttributes<HTMLLIElement> and a 'message' prop of type Message.
@@ -48,7 +48,7 @@ interface ConversationProps extends HTMLAttributes<HTMLDivElement> {
   intialConversations?: Message[];
 }
 
-export const Conversation: FC<ConversationProps> = ({
+export const ConversationComponent: FC<ConversationComponentProps> = ({
   className,
   MessageWrapper,
   intialConversations = [],
@@ -59,7 +59,7 @@ export const Conversation: FC<ConversationProps> = ({
   const agentContext = useMaybeVoiceAgent();
   //
   React.useEffect(() => {
-    const serverEventListner = agentMessageChangeEventObserver(
+    const serverEventListner = observeAgentMessageEvents(
       agentContext!
     ).subscribe((agentEvents) => {
       setChats([...intialConversations, ...agentEvents.chats]);
@@ -71,6 +71,10 @@ export const Conversation: FC<ConversationProps> = ({
     };
   }, [agentContext]);
 
+  /**
+   *
+   * @param ref
+   */
   const scrollTo = (ref) => {
     setTimeout(
       () =>

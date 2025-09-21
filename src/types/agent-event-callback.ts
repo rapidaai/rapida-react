@@ -22,17 +22,17 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { Feedback } from "@/rapida/agents/feedback";
-import { Channel } from "@/rapida/channels";
+import { Feedback } from "@/rapida/types/feedback";
+import { Channel } from "@/rapida/types/channel";
 import { Assistant } from "@/rapida/clients/protos/assistant-api_pb";
 import {
   AssistantConversationAssistantMessage,
   AssistantConversationConfiguration,
   AssistantConversationInterruption,
   AssistantConversationUserMessage,
+  AssistantMessagingResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
-import { ConnectionState } from "@/rapida/connections/connection-state";
-import { AgentServerEvent } from "@/rapida/events/agent-server-event";
+import { ConnectionState } from "@/rapida/types/connection-state";
 
 /**
  * Defines the structure for callback functions used in voice agent events.
@@ -52,38 +52,31 @@ import { AgentServerEvent } from "@/rapida/events/agent-server-event";
  * and interactive voice-enabled applications.
  */
 export type AgentEventCallback = {
-  onInitialized: (assistant: Assistant) => void;
+  onAssistantChangeEvent: (assistant: Assistant) => void;
+  onConnectionStateEvent: (state: ConnectionState) => void;
 
-  onConnected: () => void;
-  onDisconnected: () => void;
-  // on change of connection state
-  onConnectionChanged: (state: ConnectionState) => void;
+  onInputMediaDeviceChangeEvent: (deviceId: string) => void;
+  onOutputMediaDeviceChangeEvent: (deviceId: string) => void;
 
-  // on data receive
-  // when data is being recieve
-  onDataReceived: () => void;
-
-  onInputMediaDeviceChanged: (deviceId: string) => void;
-  onOutputMediaDeviceChanged: (deviceId: string) => void;
-
-  // toggling mute
-  onAudioInputMuteToggle: (isMuted: boolean) => void;
-  onAudioOutputMuteToggle: (isMuted: boolean) => void;
-
-  onInputChannelSwitch: (cnl: Channel) => void;
-  onOutputChannelSwitch: (cnl: Channel) => void;
+  onInputChannelChangeEvent: (cnl: Channel) => void;
+  onOutputChannelChangeEvent: (cnl: Channel) => void;
 
   // when server sent an event to client
-  onServerEvent: (
-    eventType: AgentServerEvent,
+  onConversationEvent: (
+    eventType?: AssistantMessagingResponse.DataCase,
     event?:
       | AssistantConversationConfiguration
-      | AssistantConversationInterruption
       | AssistantConversationUserMessage
       | AssistantConversationAssistantMessage
+      | AssistantConversationInterruption
   ) => void;
 
-  //
-  onMessageFeedback: (feedback: Feedback) => void;
-  onConversationFeedback: (feedback: Feedback) => void;
+  // feedback of conversation
+  onFeedbackEvent: (
+    type: "conversation" | "message",
+    feedback: Feedback
+  ) => void;
+
+  // on error event
+  onErrorEvent: (type: "server" | "client", error: string) => void;
 };

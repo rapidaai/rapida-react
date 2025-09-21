@@ -66,7 +66,7 @@ import {
   RapidaDocumentType,
 } from "@/rapida/utils/rapida_document";
 import { ProviderConfig } from "@/rapida/utils";
-import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import { ConnectionConfig } from "@/rapida/types/connection-config";
 
 /**
  * Creates a new knowledge entry.

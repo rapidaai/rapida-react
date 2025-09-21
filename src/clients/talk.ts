@@ -48,10 +48,7 @@ import {
   CreateMessageMetricResponse,
   CreateMessageMetricRequest,
 } from "./protos/talk-api_pb";
-import {
-  AssistantConnectionConfig,
-  ConnectionConfig,
-} from "@/rapida/connections/connection-config";
+import { ConnectionConfig } from "@/rapida/types/connection-config";
 
 /**
  *
@@ -60,7 +57,7 @@ import {
  */
 
 export function AssistantTalk(
-  connectionConfig: AssistantConnectionConfig,
+  connectionConfig: ConnectionConfig,
   authHeader?: UserAuthInfo | ClientAuthInfo
 ): BidirectionalStream<AssistantMessagingRequest, AssistantMessagingResponse> {
   return connectionConfig.streamClient.assistantTalk(
@@ -85,7 +82,7 @@ export function CreateMessageMetric(
   return new Promise((resolve, reject) => {
     connectionConfig.conversationClient.createMessageMetric(
       req,
-      WithAuthContext(authHeader),
+      WithAuthContext(connectionConfig.auth || authHeader),
       (
         err: ServiceError | null,
         response: CreateMessageMetricResponse | null

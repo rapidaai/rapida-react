@@ -22,42 +22,29 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import {
-  agentConnectionStateObservable,
-  agentServerEventObserver,
-} from "@/rapida/hooks/observables/voice-agent";
-import { AgentServerEvent } from "@/rapida/events/agent-server-event";
+import { observeAgentConnectionState } from "@/rapida/hooks/observables/voice-agent";
 import { useMaybeVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 import { cn } from "@/rapida/styles";
 import React, { FC, HTMLAttributes, useState } from "react";
-import {
-  AssistantConversationInterruption,
-  AssistantConversationUserMessage,
-} from "@/rapida/clients/protos/talk-api_pb";
-import { toContentText, toTextContent } from "@/rapida/utils/rapida_content";
 
 /**
- * agent live transcript props
+ *
  */
-interface AgentLiveTranscriptProps extends HTMLAttributes<HTMLDivElement> {
-  placeholder?: string;
-}
+interface ConnectionComponentProps extends HTMLAttributes<HTMLSpanElement> {}
 
 /**
- * Agent live audio transcript
+ *
  * @param param0
  * @returns
  */
-export const AgentLiveTranscript: FC<AgentLiveTranscriptProps> = ({
+export const ConnectionComponent: FC<ConnectionComponentProps> = ({
   className,
-  placeholder,
 }) => {
   const agentContext = useMaybeVoiceAgent();
   const [connected, setConnected] = useState<boolean>(false);
-  const [transcript, setTranscript] = useState("");
 
   React.useEffect(() => {
-    const listener = agentConnectionStateObservable(agentContext!).subscribe(
+    const listener = observeAgentConnectionState(agentContext!).subscribe(
       (x) => {
         setConnected(x.isConnected);
       }
@@ -65,26 +52,11 @@ export const AgentLiveTranscript: FC<AgentLiveTranscriptProps> = ({
     return () => listener.unsubscribe();
   }, [agentContext]);
 
-  //
-  React.useEffect(() => {
-    const serverEventListner = agentServerEventObserver(
-      agentContext!
-    ).subscribe((agentEvents) => {
-      if (agentEvents?.eventType === AgentServerEvent.Transcript) {
-        if (agentEvents.argument) {
-          let arg = agentEvents.argument as AssistantConversationUserMessage;
-          setTranscript(toContentText(arg.getMessage()?.getContentsList()));
-        }
-      }
-    });
-    return () => {
-      serverEventListner.unsubscribe();
-    };
-  }, [agentContext]);
-
   return (
-    <div className={cn(className)}>
-      {!connected ? placeholder : transcript ? transcript : placeholder}
-    </div>
+    <span
+      className={cn(connected && "text-green-600", "font-medium", className)}
+    >
+      {connected ? "Connected" : "Disconnected"}
+    </span>
   );
 };

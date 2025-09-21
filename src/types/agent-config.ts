@@ -22,91 +22,10 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import {
-  AssistantConversationAssistantMessage,
-  AssistantConversationConfiguration,
-  AssistantConversationInterruption,
-  AssistantConversationUserMessage,
-  AssistantDefinition,
-} from "@/rapida/clients/protos/talk-api_pb";
+import { AssistantDefinition } from "@/rapida/clients/protos/talk-api_pb";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
-import { AssistantMessagingResponse } from "../clients/protos/talk-api_pb";
-import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
-import { Channel } from "@/rapida/channels";
-import { toContentText } from "@/rapida/utils/rapida_content";
-
-export interface ConversationUserMessage
-  extends AssistantConversationUserMessage.AsObject {
-  messageText?: string;
-}
-
-export class ConversationUserMessage {
-  constructor(config?: AssistantConversationUserMessage) {
-    if (config) {
-      Object.assign(this, config.toObject());
-      this.messageText = toContentText(config.getMessage()?.getContentsList());
-    }
-  }
-}
-
-export interface ConversationAssistantMessage
-  extends AssistantConversationAssistantMessage.AsObject {
-  messageText?: string;
-}
-
-export class ConversationAssistantMessage {
-  constructor(config?: AssistantConversationAssistantMessage) {
-    if (config) {
-      Object.assign(this, config.toObject());
-      this.messageText = toContentText(config.getMessage()?.getContentsList());
-    }
-  }
-}
-
-export interface ConversationMessage
-  extends AssistantConversationMessage.AsObject {
-  userMessage?: string;
-  systemMessage?: string;
-}
-
-export class ConversationMessage {
-  constructor(config?: AssistantConversationMessage) {
-    if (config) {
-      Object.assign(this, config.toObject());
-      this.userMessage = toContentText(config.getRequest()?.getContentsList());
-      this.systemMessage = toContentText(
-        config.getResponse()?.getContentsList()
-      );
-    }
-  }
-}
-
-/**
- * Callbacks for agent
- */
-interface AgentCallback {
-  onStart?: (
-    args: AssistantConversationConfiguration.AsObject | undefined
-  ) => void;
-
-  // transcripting or user speaking
-  onTranscript?: (args: ConversationUserMessage | undefined) => void;
-
-  // interrupted //
-  // there might be two kind of interruption
-  // vad // word
-  onInterrupt?: (
-    args: AssistantConversationInterruption.AsObject | undefined
-  ) => void;
-
-  // generation
-  onGeneration?: (args: ConversationAssistantMessage | undefined) => void;
-
-  //
-  // on complete message
-  onMessage?: (arg: ConversationMessage | undefined) => void;
-}
+import { Channel } from "@/rapida/types/channel";
 
 /**
  *
@@ -176,6 +95,9 @@ export class InputOptions {
   }
 }
 
+/**
+ *
+ */
 export class OutputOptions {
   /**
    * enable channels
@@ -261,11 +183,6 @@ export class AgentConfig {
   metadata?: Map<string, google_protobuf_any_pb.Any>;
 
   /**
-   * all the agent callback
-   */
-  callbacks?: AgentCallback;
-
-  /**
    *
    */
   inputOptions: InputOptions;
@@ -314,7 +231,6 @@ export class AgentConfig {
   get definition(): AssistantDefinition {
     const def = new AssistantDefinition();
     def.setAssistantid(this.id); // Sets the agent's unique ID.
-
     if (this.version) {
       def.setVersion(this.version); // Sets the agent's version if provided.
     }
@@ -367,70 +283,5 @@ export class AgentConfig {
     if (this.arguments == undefined) this.arguments = new Map();
     this.arguments?.set(k, StringToAny(value));
     return this;
-  }
-
-  /**
-   * Sets up callback functions for various events in the agent's conversation lifecycle.
-   *
-   * @param onStart - Callback function triggered when a conversation starts.
-   * @param onTranscript - Callback function triggered when transcripting or user is speaking.
-   * @param onInterrupt - Callback function triggered when the conversation is interrupted (VAD or word-based).
-   * @param onGeneration - Callback function triggered during the generation of the assistant's response.
-   * @param onMessage - Callback function triggered when a complete message (from user or assistant) is received.
-   * @returns The current instance of the AgentConfig, allowing for method chaining.
-   */
-  withAgentCallback(cl: AgentCallback): this {
-    this.callbacks = cl;
-    return this;
-  }
-
-  /**
-   *
-   * @param response
-   * @returns
-   */
-
-  // Adding a check to filter out audio chunks
-  // Implementing a debounce mechanism
-  // These suggestions can guide the team in finding an appropriate solution to optimize the onMessage callback handling.
-  onCallback(response: AssistantMessagingResponse): void {
-    // check if callback is register then call it off
-    switch (response.getDataCase()) {
-      case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
-        break;
-      case AssistantMessagingResponse.DataCase.INTERRUPTION:
-        if (this.callbacks && this.callbacks?.onInterrupt) {
-          this.callbacks.onInterrupt(response.getInterruption()?.toObject());
-        }
-        break;
-      case AssistantMessagingResponse.DataCase.USER:
-        if (this.callbacks && this.callbacks?.onTranscript) {
-          this.callbacks.onTranscript(
-            new ConversationUserMessage(response.getUser())
-          );
-        }
-        break;
-      case AssistantMessagingResponse.DataCase.ASSISTANT:
-        if (this.callbacks && this.callbacks?.onGeneration) {
-          this.callbacks.onGeneration(
-            new ConversationAssistantMessage(response.getAssistant())
-          );
-        }
-        break;
-      case AssistantMessagingResponse.DataCase.CONFIGURATION:
-        if (this.callbacks && this.callbacks?.onStart) {
-          this.callbacks.onStart(response.getConfiguration()?.toObject());
-        }
-        break;
-      case AssistantMessagingResponse.DataCase.MESSAGE:
-        if (this.callbacks && this.callbacks?.onMessage) {
-          this.callbacks.onMessage(
-            new ConversationMessage(response.getMessage())
-          );
-        }
-        break;
-      default:
-        break;
-    }
   }
 }

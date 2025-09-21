@@ -24,9 +24,6 @@
  */
 export { VoiceAgent } from "@/rapida/agents/voice-agent";
 export { VoiceAgentContext } from "@/rapida/hooks/use-voice-agent";
-export { Conversation } from "@/rapida/components/text/conversations";
-export { AgentMultibandAudioVisualizer } from "./components/visualization/agent-multiband-audio-visualizer";
-export { AgentLiveTranscript } from "./components/live-transcript";
 
 export {
   toTextContent,
@@ -39,17 +36,17 @@ export { useConversationFeedback } from "./hooks/use-conversation-feedback";
 export { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
 export { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
 export { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
-export { useAgentDeployment } from "@/rapida/hooks/use-agent-deployment";
-export { ConnectionState } from "./connections/connection-state";
-export { Channel } from "./channels/index";
-export { MediaDeviceFailure } from "./devices/device-failure";
+export { ConnectionState } from "@/rapida/types/connection-state";
+export { Channel } from "@/rapida/types/channel";
+export { MediaDeviceFailure } from "@/rapida/types/device-failure";
 export {
   InputOptions,
   OutputOptions,
   AgentConfig,
-} from "./agents/agent-config";
-export { Message, MessageRole, MessageStatus } from "./agents/message";
-export { Feedback } from "./agents/feedback";
+} from "@/rapida/types/agent-config";
+export { AgentCallback } from "@/rapida/types/agent-callback";
+export { Message, MessageRole, MessageStatus } from "@/rapida/types/message";
+export { Feedback } from "@/rapida/types/feedback";
 export {
   useEnsureVoiceAgent,
   useMaybeVoiceAgent,
@@ -58,15 +55,11 @@ export {
   useMultiband3DSpeakerTrackVolume,
   useMultibandMicrophoneTrackVolume,
 } from "@/rapida/hooks/use-multiband-track-volume";
-export {
-  ConnectionConfig,
-  AssistantConnectionConfig,
-} from "./connections/connection-config";
+export { ConnectionConfig } from "@/rapida/types/connection-config";
 export * from "@/rapida/utils/rapida_value";
 export * from "@/rapida/utils/rapida_source";
-export * from "@/rapida/agents/agent-deployment";
-export { useAgentMessage } from "@/rapida/hooks/use-agent-message";
-
+export * from "@/rapida/types/agent-deployment";
+export { useAgentMessages } from "@/rapida/hooks/use-agent-message";
 export {
   HEADER_ENVIRONMENT_KEY,
   HEADER_SOURCE_KEY,
@@ -658,7 +651,6 @@ export {
   CreatePhoneCallRequest,
   CreatePhoneCallResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
-
 export {
   ServiceError,
   Status,
@@ -667,3 +659,14 @@ export {
   RequestStream,
   BidirectionalStream,
 } from "@/rapida/clients/types";
+
+// component export
+export { ConversationComponent } from "@/rapida/components/conversation";
+export { ConnectionComponent } from "@/rapida/components/connection";
+export { DeviceSelectorComponent } from "@/rapida/components/device-selector";
+export { ErrorComponent } from "@/rapida/components/error";
+export { MultibandAudioVisualizerComponent } from "@/rapida/components/visualization/multiband-audio-visualizer";
+
+// event
+export { agentEventSelector } from "@/rapida/hooks/observables/voice-agent";
+export { AgentEvent } from "./types/agent-event";

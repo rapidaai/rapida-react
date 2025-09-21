@@ -32,7 +32,7 @@ import {
 } from "./protos/marketplace-api_pb";
 import { UserAuthInfo, ClientAuthInfo, WithAuthContext } from ".";
 import { ServiceError } from "@/rapida/clients/types";
-import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import { ConnectionConfig } from "@/rapida/types/connection-config";
 
 /**
  * Retrieve all deployments based on pagination and filtering criteria.

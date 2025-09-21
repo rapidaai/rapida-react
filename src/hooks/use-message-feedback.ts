@@ -24,17 +24,13 @@
  */
 import * as React from "react";
 import { VoiceAgent } from "@/rapida/agents/voice-agent";
-import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
-import { Feedback } from "@/rapida/agents/feedback";
+import { Feedback } from "@/rapida/types/feedback";
 
 /**
  * Custom hook for managing agent connection in a voice system.
  * @returns An object containing the connection handler and connection status.
  */
-export function useMessageFeedback() {
-  // Get the voice agent instance
-  const agent = useEnsureVoiceAgent();
-
+export function useMessageFeedback(agent: VoiceAgent) {
   // Set up the connect agent and memoize the result
   const { handleMessageFeedback, handleHelpfulnessFeedback } = React.useMemo(
     () => setupMessageFeedback(agent),

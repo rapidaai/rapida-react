@@ -1,4 +1,8 @@
-import { WithAuthContext } from "@/rapida/clients";
+import {
+  ClientAuthInfo,
+  UserAuthInfo,
+  WithAuthContext,
+} from "@/rapida/clients";
 import {
   CreateBulkPhoneCallRequest,
   CreateBulkPhoneCallResponse,
@@ -6,7 +10,7 @@ import {
   CreatePhoneCallResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
 import { ServiceError } from "@/rapida/clients/types";
-import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import { ConnectionConfig } from "@/rapida/types/connection-config";
 
 /**
  *
@@ -21,12 +25,13 @@ import { ConnectionConfig } from "@/rapida/connections/connection-config";
  */
 export function CreatePhoneCall(
   clientCfg: ConnectionConfig,
-  request: CreatePhoneCallRequest
+  request: CreatePhoneCallRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
 ): Promise<CreatePhoneCallResponse> {
   return new Promise((resolve, reject) => {
     clientCfg.conversationClient.createPhoneCall(
       request,
-      WithAuthContext(clientCfg.auth),
+      WithAuthContext(authHeader || clientCfg.auth),
       (err: ServiceError | null, response: CreatePhoneCallResponse | null) => {
         if (err) reject(err);
         else resolve(response!);
@@ -48,12 +53,13 @@ export function CreatePhoneCall(
  */
 export function CreateBulkPhoneCall(
   clientCfg: ConnectionConfig,
-  request: CreateBulkPhoneCallRequest
+  request: CreateBulkPhoneCallRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
 ): Promise<CreateBulkPhoneCallResponse> {
   return new Promise((resolve, reject) => {
     clientCfg.conversationClient.createBulkPhoneCall(
       request,
-      WithAuthContext(clientCfg.auth),
+      WithAuthContext(authHeader || clientCfg.auth),
       (
         err: ServiceError | null,
         response: CreateBulkPhoneCallResponse | null

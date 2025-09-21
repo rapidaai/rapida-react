@@ -22,8 +22,8 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
+import { VoiceAgent } from "@/rapida/agents/voice-agent";
 import { useState, useEffect, useRef } from "react";
-import { useMaybeVoiceAgent } from "@/rapida/hooks/use-voice-agent";
 
 /**
  * The function `useMultibandSpeakerTrackVolume` calculates and updates frequency bands based on audio
@@ -47,6 +47,7 @@ import { useMaybeVoiceAgent } from "@/rapida/hooks/use-voice-agent";
  */
 
 export const useMultibandMicrophoneTrackVolume = (
+  agentContext: VoiceAgent,
   bands: number = 5,
   loPass: number = 0.1,
   hiPass: number = 1.0
@@ -56,7 +57,6 @@ export const useMultibandMicrophoneTrackVolume = (
       .fill([])
       .map(() => Array(32).fill(0))
   );
-  const agentContext = useMaybeVoiceAgent();
 
   useEffect(() => {
     const updateVolume = () => {
@@ -139,6 +139,7 @@ export const useMultibandMicrophoneTrackVolume = (
 };
 
 export const useMultibandSpeakerTrackVolume = (
+  agentContext: VoiceAgent,
   bands: number = 5,
   loPass: number = 0.1,
   hiPass: number = 1.0
@@ -148,7 +149,6 @@ export const useMultibandSpeakerTrackVolume = (
       .fill([])
       .map(() => Array(32).fill(0))
   );
-  const agentContext = useMaybeVoiceAgent();
 
   useEffect(() => {
     const updateVolume = () => {
@@ -230,6 +230,7 @@ export const useMultibandSpeakerTrackVolume = (
 };
 
 export const useMultiband3DSpeakerTrackVolume = (
+  agentContext: VoiceAgent,
   bands: number = 5,
   loPass: number = 0.1,
   hiPass: number = 1.0
@@ -245,7 +246,7 @@ export const useMultiband3DSpeakerTrackVolume = (
     zNorm: number;
     elapsedTimeSec: number;
   }>({ xNorm: 0, yNorm: 0, zNorm: 0, elapsedTimeSec: 0 });
-  const agentContext = useMaybeVoiceAgent();
+
   const startTime = useRef<number>(Date.now());
 
   useEffect(() => {

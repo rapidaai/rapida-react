@@ -39,10 +39,8 @@ export function useObservableState<T>(
     if (resetWhenObservableChanges) {
       setState(startWith);
     }
-    // observable state doesn't run in SSR
     if (typeof window === "undefined" || !observable) return;
     const subscription = observable.subscribe(setState);
-    //
     return () => subscription.unsubscribe();
   }, [observable, resetWhenObservableChanges]);
   return state;

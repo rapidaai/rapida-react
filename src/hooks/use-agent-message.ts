@@ -22,26 +22,29 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { agentMessageChangeEventObserver } from "@/rapida/hooks/observables/voice-agent";
+import { VoiceAgent } from "@/rapida/agents/voice-agent";
+import { observeAgentMessageEvents } from "@/rapida/hooks/observables/voice-agent"; // Updated function name
 import { useObservableState } from "@/rapida/hooks/use-observable-state";
-import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
+
 import React from "react";
 
 /**
- * Custom hook for managing agent connection in a voice system.
- * @returns An object containing the connection handler and connection status.
+ * Custom hook for managing agent messages in a voice system.
+ * @returns An object containing the agent messages.
  */
-export function useAgentMessage() {
-  // Get the voice agent instance
-  const agent = useEnsureVoiceAgent();
+export function useAgentMessages(agent: VoiceAgent) {
+  // Memoize the observable based on the voice agent instance
   const observable = React.useMemo(
-    () => agentMessageChangeEventObserver(agent),
+    () => observeAgentMessageEvents(agent), // Updated function name for consistency
     [agent]
   );
 
+  // Extract observable state with initial default chat messages
   const { chats } = useObservableState(observable, {
     eventType: undefined,
     chats: agent.messages,
   });
+
+  // Return updated agent messages
   return { messages: chats };
 }

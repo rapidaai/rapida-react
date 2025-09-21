@@ -135,7 +135,7 @@ import {
 } from "./protos/assistant-deployment_pb";
 import { GetAssistantDebuggerDeploymentResponse } from "@/rapida/clients/protos/assistant-deployment_pb";
 import { Struct } from "google-protobuf/google/protobuf/struct_pb";
-import { ConnectionConfig } from "@/rapida/connections/connection-config";
+import { ConnectionConfig } from "@/rapida/types/connection-config";
 
 /**
  * Retrieve all assistants with pagination and filtering criteria.

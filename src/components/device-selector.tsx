@@ -24,12 +24,24 @@
  */
 import { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
 import { cn } from "@/rapida/styles";
-import { useEffect, useState } from "react";
+import { FC, HTMLAttributes, useEffect, useState } from "react";
 
-export const DeviceSelector = () => {
+interface DeviceSelectorComponentProps extends HTMLAttributes<HTMLDivElement> {
+  deviceName?: string;
+}
+/**
+ *
+ * @returns
+ */
+export const DeviceSelectorComponent: FC<DeviceSelectorComponentProps> = ({
+  deviceName,
+  className,
+}) => {
   const [showMenu, setShowMenu] = useState(false);
   const deviceSelect = useSelectInputDeviceAgent({});
-  const [selectedDeviceName, setSelectedDeviceName] = useState("");
+  const [selectedDeviceName, setSelectedDeviceName] = useState(
+    deviceName || ""
+  );
 
   useEffect(() => {
     deviceSelect.devices.forEach((device) => {
@@ -52,9 +64,8 @@ export const DeviceSelector = () => {
   }, [showMenu]);
 
   const activeClassName = showMenu ? "rotate-180" : "rotate-0";
-
   return (
-    <div className="relative">
+    <div className={cn(className, "relative")}>
       <button
         className={`flex hover:opacity-50 ${activeClassName} transition-all duration-100`}
         onClick={(e) => {
@@ -62,7 +73,19 @@ export const DeviceSelector = () => {
           e.stopPropagation();
         }}
       >
-        <ChevronSVG />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="16"
+          height="16"
+          viewBox="0 0 16 16"
+          fill="none"
+        >
+          <path
+            d="M13.3334 6L8.00003 11.3333L2.66669 6"
+            stroke="currentColor"
+            strokeWidth="2"
+          />
+        </svg>
       </button>
       <div
         className="absolute left-0 bottom-7 text-left rounded-md border z-10 w-[280px] shadow-lg"
@@ -95,19 +118,3 @@ export const DeviceSelector = () => {
     </div>
   );
 };
-
-const ChevronSVG = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="16"
-    height="16"
-    viewBox="0 0 16 16"
-    fill="none"
-  >
-    <path
-      d="M13.3334 6L8.00003 11.3333L2.66669 6"
-      stroke="currentColor"
-      strokeWidth="2"
-    />
-  </svg>
-);

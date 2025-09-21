@@ -22,68 +22,56 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { VoiceAgent } from "@/rapida/agents/voice-agent";
-import { useEnsureVoiceAgent } from "@/rapida/hooks/use-voice-agent";
+
 import { useObservableState } from "@/rapida/hooks/use-observable-state";
 import * as React from "react";
-import { agentInputObservable } from "@/rapida/hooks/observables/voice-agent";
-import { Channel } from "@/rapida/channels";
-
-export function useInputModeToggleAgent() {
-  // ensure that voice agent is initializesd
-  const agent = useEnsureVoiceAgent();
-
-  /**
-   *
-   */
-  // observe
-  const { _agentInputObservable, handleTextToggle, handleVoiceToggle } =
-    React.useMemo(() => toggleInputMode(), []);
-
-  /**
-   *
-   */
-  const observable = React.useMemo(
-    () => _agentInputObservable(agent),
-    [agent, _agentInputObservable]
-  );
-
-  /**
-   *
-   */
-  const { channel } = useObservableState(observable, {
-    channel: agent.inputChannel,
-  });
-
-  return { handleTextToggle, handleVoiceToggle, channel };
-}
+import { observeAgentInputChannel } from "@/rapida/hooks/observables/voice-agent";
+import { Channel } from "@/rapida/types/channel";
+import { VoiceAgent } from "@/rapida/agents/voice-agent";
 
 /**
- * Toggle input voice agent
- * @returns
+ * Custom hook for toggling input mode (voice/text) for the agent.
+ * @returns An object containing toggle handlers and the current input channel.
  */
-function toggleInputMode() {
-  const handleTextToggle = async (agent: VoiceAgent) => {
-    if (agent.inputChannel == Channel.Text) {
-      return;
-    }
-    await agent.setInputChannel(Channel.Text);
-    return;
-  };
+export function useInputModeToggleAgent(agent: VoiceAgent) {
+  const { handleTextToggle, handleVoiceToggle } = React.useMemo(
+    () => ({
+      handleTextToggle: async () => {
+        if (!agent) throw new Error("VoiceAgent instance not available");
+        if (agent.inputChannel === Channel.Text) return;
+        await agent.setInputChannel(Channel.Text);
+      },
+      handleVoiceToggle: async () => {
+        if (!agent) throw new Error("VoiceAgent instance not available");
+        if (agent.inputChannel === Channel.Audio) {
+          console.warn("Already in voice mode, ignoring toggle...");
+          return;
+        }
+        await agent.setInputChannel(Channel.Audio);
+      },
+    }),
+    [agent]
+  );
 
-  const handleVoiceToggle = async (agent: VoiceAgent) => {
-    // toggelling the input from audio to text
-    if (agent.inputChannel == Channel.Audio) {
-      console.warn("already in voice mode, ignore in toggle");
-      return;
-    }
-    await agent.setInputChannel(Channel.Audio);
-    return;
-  };
+  const observable = React.useMemo(
+    () => (agent ? observeAgentInputChannel(agent) : undefined),
+    [agent]
+  );
 
-  return {
-    _agentInputObservable: agentInputObservable,
-    handleVoiceToggle,
-    handleTextToggle,
-  };
+  // Update initialization of default state and observable subscription
+  const { channel } = useObservableState(observable, {
+    channel: agent?.inputChannel ?? Channel.Text,
+  });
+
+  React.useEffect(() => {
+    if (observable && agent) {
+      const subscription = observable.subscribe((update) => {
+        console.log("Channel updated: ", update.channel); // Debugging log
+      });
+      return () => subscription.unsubscribe();
+    }
+    return undefined;
+  }, [observable, agent]);
+
+  return { handleTextToggle, handleVoiceToggle, channel };
 }

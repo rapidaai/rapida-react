@@ -29,8 +29,7 @@ import {
   AssistantConversationUserMessage,
   AssistantMessagingResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
-import { AgentEvent } from "@/rapida/events/agent-event";
-import { AgentServerEvent } from "@/rapida/events/agent-server-event";
+import { AgentEvent } from "@/rapida/types/agent-event";
 import {
   toContentText,
   toStreamAudioContent,
@@ -38,15 +37,22 @@ import {
 } from "@/rapida/utils/rapida_content";
 
 import { toDate } from "@/rapida/utils";
-import { MessageRole, MessageStatus } from "@/rapida/agents/message";
-import { Channel } from "@/rapida/channels";
-import { AgentConfig } from "@/rapida/agents/agent-config";
-import { AssistantConnectionConfig } from "@/rapida/connections/connection-config";
+import { MessageRole, MessageStatus } from "@/rapida/types/message";
+import { Channel } from "@/rapida/types/channel";
+import { AgentConfig } from "@/rapida/types/agent-config";
+import { ConnectionConfig } from "@/rapida/types/connection-config";
 import { Agent } from "@/rapida/agents/";
 import { Input } from "@/rapida/audio/input";
 import { Output } from "@/rapida/audio/output";
 import { isAndroidDevice, isIosDevice } from "@/rapida/audio/compatibility";
 import { arrayBufferToUint8 } from "@/rapida/audio/audio";
+import {
+  AgentCallback,
+  ConversationAssistantMessage,
+  ConversationMessage,
+  ConversationUserMessage,
+} from "@/rapida/types/agent-callback";
+import { ConnectionState } from "@/rapida/types/connection-state";
 
 export class VoiceAgent extends Agent {
   private input: Input | null = null;
@@ -57,48 +63,24 @@ export class VoiceAgent extends Agent {
   private inputFrequencyData?: Uint8Array;
   private outputFrequencyData?: Uint8Array;
 
-  public getInputByteFrequencyData = (): Uint8Array | undefined => {
-    if (this.input) {
-      this.inputFrequencyData = new Uint8Array(
-        this.input.analyser.frequencyBinCount
-      );
-      // Use type assertion to satisfy TypeScript
-      (this.input.analyser.getByteFrequencyData as (array: Uint8Array) => void)(
-        this.inputFrequencyData
-      );
-    }
-    return this.inputFrequencyData;
-  };
-
-  public getOutputByteFrequencyData = (): Uint8Array | undefined => {
-    if (this.output) {
-      this.outputFrequencyData = new Uint8Array(
-        this.output.analyser.frequencyBinCount
-      );
-      // Use type assertion to satisfy TypeScript
-      (
-        this.output.analyser.getByteFrequencyData as (array: Uint8Array) => void
-      )(this.outputFrequencyData);
-    }
-    return this.outputFrequencyData;
-  };
-
   /**
    * input media device id
    */
   inputChannel: Channel = Channel.Audio;
-  private audioInputPaused: boolean = true;
   outputChannel: Channel = Channel.Audio;
-  private audioOutputPaused: boolean = true;
 
   /**
    * Creates a new Room, the primary construct for a LiveKit session.
    * @param options
    */
-  constructor(connection: AssistantConnectionConfig, agentConfig: AgentConfig) {
-    super(connection, agentConfig);
-    this.outputChannel = this.agentConfig.outputOptions.defaultChannel;
-    this.inputChannel = this.agentConfig.inputOptions.defaultChannel;
+  constructor(
+    connection: ConnectionConfig,
+    agentConfig: AgentConfig,
+    agentCallback?: AgentCallback
+  ) {
+    super(connection, agentConfig, agentCallback);
+    this.outputChannel = agentConfig.outputOptions.defaultChannel;
+    this.inputChannel = agentConfig.inputOptions.defaultChannel;
   }
 
   /**
@@ -190,6 +172,11 @@ export class VoiceAgent extends Agent {
    */
   private onInputWorkletMessage = (event: MessageEvent): void => {
     const rawAudioPcmData = event.data[0];
+    if (this.connectionState !== ConnectionState.Connected) {
+      console.log("Please call connect first, agent is not connected");
+      return;
+    }
+
     const maxVolume = event.data[1];
     if (this.inputChannel == Channel.Audio)
       this.talkingConnection?.write(
@@ -264,12 +251,8 @@ export class VoiceAgent extends Agent {
    */
   public connect = async () => {
     try {
-      if (this.assistant == null) {
-        return;
-      }
       await this.connectAgent();
       if (this.inputChannel == Channel.Audio) {
-        // connecting audio for sending and recieving audio
         await this.connectAudio();
       }
     } catch (err) {
@@ -314,7 +297,7 @@ export class VoiceAgent extends Agent {
     }
     this.agentConfig.outputOptions.playerOption.device = deviceId;
     await this.connectDevice();
-    this.emit(AgentEvent.OutputMediaDeviceChanged, deviceId);
+    this.emit(AgentEvent.OutputMediaDeviceChangeEvent, deviceId);
   };
 
   /**
@@ -329,7 +312,7 @@ export class VoiceAgent extends Agent {
     console.log("changing the input audio with new device id " + deviceId);
     this.agentConfig.inputOptions.recorderOption.device = deviceId;
     await this.connectDevice();
-    this.emit(AgentEvent.InputMediaDeviceChanged, deviceId);
+    this.emit(AgentEvent.InputMediaDeviceChangeEvent, deviceId);
   };
 
   get inputMediaDevice(): string | undefined {
@@ -351,7 +334,7 @@ export class VoiceAgent extends Agent {
       await this.disconnectAudio();
     }
     this.inputChannel = input;
-    this.emit(AgentEvent.InputChannelSwitch, this.inputChannel);
+    this.emit(AgentEvent.InputChannelChangeEvent, this.inputChannel);
   };
 
   /**
@@ -387,8 +370,8 @@ export class VoiceAgent extends Agent {
           console.log("Unknown interruption type");
       }
       this.emit(
-        AgentEvent.ServerEvent,
-        AgentServerEvent.Interruption,
+        AgentEvent.ConversationEvent,
+        AssistantMessagingResponse.DataCase.INTERRUPTION,
         interruptionData
       );
     }
@@ -422,8 +405,8 @@ export class VoiceAgent extends Agent {
         });
       }
       this.emit(
-        AgentEvent.ServerEvent,
-        AgentServerEvent.Transcript,
+        AgentEvent.ConversationEvent,
+        AssistantMessagingResponse.DataCase.USER,
         userContent
       );
     }
@@ -521,8 +504,8 @@ export class VoiceAgent extends Agent {
         }
       }
       this.emit(
-        AgentEvent.ServerEvent,
-        AgentServerEvent.Generation,
+        AgentEvent.ConversationEvent,
+        AssistantMessagingResponse.DataCase.ASSISTANT,
         systemContent
       );
     }
@@ -544,24 +527,103 @@ export class VoiceAgent extends Agent {
         this.onHandleUser(response.getUser());
         break;
       case AssistantMessagingResponse.DataCase.ASSISTANT:
-        // console.dir(response.getAssistant()?.getId());
-        // if (response.getAssistant()?.getMessage()?.getContentsList())
-        //   console.dir(
-        //     toContentText(
-        //       response.getAssistant()?.getMessage()?.getContentsList()
-        //     )
-        //   );
         this.onHandleAssistant(response.getAssistant());
         break;
       case AssistantMessagingResponse.DataCase.CONFIGURATION:
         const conversation = response.getConfiguration();
         if (!conversation?.getAssistantconversationid()) return;
-        this.onChangeConversation(conversation?.getAssistantconversationid());
         break;
       case AssistantMessagingResponse.DataCase.MESSAGE:
         break;
       default:
         break;
     }
+    this.onCallback(response);
+  };
+
+  // Adding a check to filter out audio chunks
+  // Implementing a debounce mechanism
+  // These suggestions can guide the team in finding an appropriate solution to optimize the onMessage callback handling.
+  onCallback(response: AssistantMessagingResponse): void {
+    // check if callback is register then call it off
+    for (const agentCallback of this.agentCallbacks) {
+      switch (response.getDataCase()) {
+        case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
+          break;
+        case AssistantMessagingResponse.DataCase.INTERRUPTION:
+          if (agentCallback && agentCallback?.onInterrupt) {
+            agentCallback.onInterrupt(response.getInterruption()?.toObject());
+          }
+          break;
+        case AssistantMessagingResponse.DataCase.USER:
+          if (agentCallback && agentCallback?.onUserMessage) {
+            agentCallback.onUserMessage(
+              new ConversationUserMessage(response.getUser())
+            );
+          }
+          break;
+        case AssistantMessagingResponse.DataCase.ASSISTANT:
+          if (agentCallback && agentCallback?.onAssistantMessage) {
+            agentCallback.onAssistantMessage(
+              new ConversationAssistantMessage(response.getAssistant())
+            );
+          }
+          break;
+        case AssistantMessagingResponse.DataCase.CONFIGURATION:
+          if (agentCallback && agentCallback?.onConfiguration) {
+            agentCallback.onConfiguration(
+              response.getConfiguration()?.toObject()
+            );
+          }
+          const cnvId = response
+            .getConfiguration()
+            ?.getAssistantconversationid();
+          if (cnvId) this.changeConversation(cnvId);
+          break;
+        case AssistantMessagingResponse.DataCase.MESSAGE:
+          if (agentCallback && agentCallback?.onMessage) {
+            agentCallback.onMessage(
+              new ConversationMessage(response.getMessage())
+            );
+          }
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
+  /**
+   *
+   * @returns
+   */
+  public getInputByteFrequencyData = (): Uint8Array | undefined => {
+    if (this.input) {
+      this.inputFrequencyData = new Uint8Array(
+        this.input.analyser.frequencyBinCount
+      );
+      // Use type assertion to satisfy TypeScript
+      (this.input.analyser.getByteFrequencyData as (array: Uint8Array) => void)(
+        this.inputFrequencyData
+      );
+    }
+    return this.inputFrequencyData;
+  };
+
+  /**
+   *
+   * @returns
+   */
+  public getOutputByteFrequencyData = (): Uint8Array | undefined => {
+    if (this.output) {
+      this.outputFrequencyData = new Uint8Array(
+        this.output.analyser.frequencyBinCount
+      );
+      // Use type assertion to satisfy TypeScript
+      (
+        this.output.analyser.getByteFrequencyData as (array: Uint8Array) => void
+      )(this.outputFrequencyData);
+    }
+    return this.outputFrequencyData;
   };
 }

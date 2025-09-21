@@ -31,7 +31,7 @@ import {
   LOCAL_WEB_API,
   ENDPOINT_API,
   LOCAL_ENDPOINT_API,
-} from "@/rapida/configs";
+} from "@/rapida/constants";
 import { ClientAuthInfo, getClientInfo, UserAuthInfo } from "@/rapida/clients";
 import { ConnectionState } from "./connection-state";
 import { AssistantServiceClient } from "@/rapida/clients/protos/assistant-api_pb_service";
@@ -299,6 +299,13 @@ export class ConnectionConfig {
     );
   }
 
+  get streamClient(): TalkServiceClient {
+    return new TalkServiceClient(this.endpoint.assistant, {
+      ...this.getClientOptions(),
+      transport: grpc.WebsocketTransport(),
+    });
+  }
+
   withLocal(): this {
     return this.withCustomEndpoint({
       assistant: LOCAL_ASSISTANT_API,
@@ -354,77 +361,5 @@ export class ConnectionConfig {
     };
     if (debug !== undefined) this.debug = debug;
     return this;
-  }
-}
-
-/**
- * Represents a connection to the TalkService, providing both a conversation client
- * and a streaming client for real-time communication.
- */
-export class AssistantConnectionConfig extends ConnectionConfig {
-  callback?: ConnectionCallback;
-
-  constructor(
-    auth: ClientAuthInfo | UserAuthInfo,
-    endpoint: {
-      assistant?: string;
-      web?: string;
-      endpoint?: string;
-    } = {
-      assistant: ASSISTANT_API,
-      web: WEB_API,
-      endpoint: ENDPOINT_API,
-    },
-    debug: boolean = false
-  ) {
-    super(endpoint, debug);
-    this.authInfo = auth;
-    this.authInfo.Client = getClientInfo(this.authInfo.Client);
-  }
-
-  get conversationClient(): TalkServiceClient {
-    return new TalkServiceClient(
-      this.endpoint.assistant,
-      this.getClientOptions()
-    );
-  }
-
-  get assistantClient(): AssistantServiceClient {
-    return new AssistantServiceClient(
-      this.endpoint.assistant,
-      this.getClientOptions()
-    );
-  }
-
-  get streamClient(): TalkServiceClient {
-    return new TalkServiceClient(this.endpoint.assistant, {
-      ...this.getClientOptions(),
-      transport: grpc.WebsocketTransport(),
-    });
-  }
-
-  withConnectionCallback(cl: ConnectionCallback): this {
-    this.callback = cl;
-    return this;
-  }
-
-  onConnectionChange(connection: ConnectionState) {
-    if (connection === ConnectionState.Connected) {
-      this.callbacks?.onConnect?.();
-    } else {
-      this.callbacks?.onDisconnect?.();
-    }
-  }
-
-  get auth(): ClientAuthInfo | UserAuthInfo | undefined {
-    return this.authInfo;
-  }
-
-  get callbacks(): ConnectionCallback | undefined {
-    return this.callback;
-  }
-
-  set callbacks(value: ConnectionCallback | undefined) {
-    this.callback = value;
   }
 }
