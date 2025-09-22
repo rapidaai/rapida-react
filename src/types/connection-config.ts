@@ -186,6 +186,11 @@ export class ConnectionConfig {
     return { debug: this.debug };
   }
 
+  /**
+   * holding the callback
+   */
+  callbacks?: ConnectionCallback;
+
   constructor(
     endpoint: {
       assistant?: string;
@@ -361,5 +366,48 @@ export class ConnectionConfig {
     };
     if (debug !== undefined) this.debug = debug;
     return this;
+  }
+
+  /**
+   * Configures connection callbacks for the TalkService clients.
+   *
+   * @param onConnect - A callback function to be executed when a connection is established.
+   * @param onDisconnect - A callback function to be executed when the connection is terminated.
+   * @param onError - A callback function to be executed when the connection is terminated.
+   *
+   * @returns - The current instance of `ConnectionConfig` for method chaining.
+   *
+   * @example
+   * ```typescript
+   * const connection = new ConnectionConfig(auth);
+   * connection.withConnectionCallback(
+   *   () => { console.log("Connected to the TalkService"); },
+   *   () => { console.log("Disconnected from the TalkService"); }
+   * );
+   * ```
+   */
+  withConnectionCallback(cl: ConnectionCallback): this {
+    // Implement connection callback logic here if needed.
+    // For example, you can subscribe to events or set up listeners.
+    this.callbacks = cl;
+    return this;
+  }
+
+  /**
+   *
+   * @param connection
+   * @returns
+   */
+  onConnectionChange(connection: ConnectionState) {
+    if (connection === ConnectionState.Connected) {
+      if (this.callbacks && this.callbacks?.onConnect) {
+        this.callbacks.onConnect();
+      }
+      return;
+    }
+    if (this.callbacks && this.callbacks?.onDisconnect) {
+      this.callbacks.onDisconnect();
+    }
+    return;
   }
 }
