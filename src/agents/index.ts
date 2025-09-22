@@ -470,6 +470,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
 
     this.connectionState = state;
     this.emit(AgentEvent.ConnectionStateEvent, this.connectionState);
+    this._connectionConfig.onConnectionChange(state);
     return true;
   }
 
