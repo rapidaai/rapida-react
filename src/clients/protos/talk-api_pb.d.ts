@@ -189,8 +189,8 @@ export class AssistantMessagingRequest extends jspb.Message {
 
   hasMessage(): boolean;
   clearMessage(): void;
-  getMessage(): common_pb.Message | undefined;
-  setMessage(value?: common_pb.Message): void;
+  getMessage(): AssistantConversationUserMessage | undefined;
+  setMessage(value?: AssistantConversationUserMessage): void;
 
   getRequestCase(): AssistantMessagingRequest.RequestCase;
   serializeBinary(): Uint8Array;
@@ -206,7 +206,7 @@ export class AssistantMessagingRequest extends jspb.Message {
 export namespace AssistantMessagingRequest {
   export type AsObject = {
     configuration?: AssistantConversationConfiguration.AsObject,
-    message?: common_pb.Message.AsObject,
+    message?: AssistantConversationUserMessage.AsObject,
   }
 
   export enum RequestCase {

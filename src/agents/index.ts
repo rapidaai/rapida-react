@@ -27,6 +27,7 @@ import { AgentConfig } from "@/rapida/types/agent-config";
 import { AgentCallback } from "@/rapida/types/agent-callback";
 import {
   AssistantConversationConfiguration,
+  AssistantConversationUserMessage,
   AssistantDefinition,
   AssistantMessagingRequest,
   AssistantMessagingResponse,
@@ -384,10 +385,12 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     contents: Content[]
   ): AssistantMessagingRequest {
     const request = new AssistantMessagingRequest();
+    const userMessage = new AssistantConversationUserMessage();
     const message = new Message();
     message.setRole(role);
     message.setContentsList(contents);
-    request.setMessage(message);
+    userMessage.setMessage(message);
+    request.setMessage(userMessage);
     return request;
   }
 

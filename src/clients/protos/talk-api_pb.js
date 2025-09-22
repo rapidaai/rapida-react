@@ -1648,7 +1648,7 @@ proto.talk_api.AssistantMessagingRequest.prototype.toObject = function(opt_inclu
 proto.talk_api.AssistantMessagingRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     configuration: (f = msg.getConfiguration()) && proto.talk_api.AssistantConversationConfiguration.toObject(includeInstance, f),
-    message: (f = msg.getMessage()) && common_pb.Message.toObject(includeInstance, f)
+    message: (f = msg.getMessage()) && proto.talk_api.AssistantConversationUserMessage.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1691,8 +1691,8 @@ proto.talk_api.AssistantMessagingRequest.deserializeBinaryFromReader = function(
       msg.setConfiguration(value);
       break;
     case 3:
-      var value = new common_pb.Message;
-      reader.readMessage(value,common_pb.Message.deserializeBinaryFromReader);
+      var value = new proto.talk_api.AssistantConversationUserMessage;
+      reader.readMessage(value,proto.talk_api.AssistantConversationUserMessage.deserializeBinaryFromReader);
       msg.setMessage(value);
       break;
     default:
@@ -1737,7 +1737,7 @@ proto.talk_api.AssistantMessagingRequest.serializeBinaryToWriter = function(mess
     writer.writeMessage(
       3,
       f,
-      common_pb.Message.serializeBinaryToWriter
+      proto.talk_api.AssistantConversationUserMessage.serializeBinaryToWriter
     );
   }
 };
@@ -1781,17 +1781,17 @@ proto.talk_api.AssistantMessagingRequest.prototype.hasConfiguration = function()
 
 
 /**
- * optional Message message = 3;
- * @return {?proto.Message}
+ * optional AssistantConversationUserMessage message = 3;
+ * @return {?proto.talk_api.AssistantConversationUserMessage}
  */
 proto.talk_api.AssistantMessagingRequest.prototype.getMessage = function() {
-  return /** @type{?proto.Message} */ (
-    jspb.Message.getWrapperField(this, common_pb.Message, 3));
+  return /** @type{?proto.talk_api.AssistantConversationUserMessage} */ (
+    jspb.Message.getWrapperField(this, proto.talk_api.AssistantConversationUserMessage, 3));
 };
 
 
 /**
- * @param {?proto.Message|undefined} value
+ * @param {?proto.talk_api.AssistantConversationUserMessage|undefined} value
  * @return {!proto.talk_api.AssistantMessagingRequest} returns this
 */
 proto.talk_api.AssistantMessagingRequest.prototype.setMessage = function(value) {
