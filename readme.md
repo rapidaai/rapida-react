@@ -1,5 +1,3 @@
-# VoiceAgent Library
-
 ## Overview
 
 The `VoiceAgent` library provides a set of components, hooks, and utilities for integrating AI-powered voice assistants into applications. It supports real-time messaging, audio device management, and connection handling for seamless interaction.
@@ -9,82 +7,68 @@ The `VoiceAgent` library provides a set of components, hooks, and utilities for 
 To install the package, run:
 
 ```sh
-npm install rapida-react@latest
+npm install @rapidaai/react@latest
 ```
 
 or using Yarn:
 
 ```sh
-yarn add rapida-react@latest
+yarn add @rapidaai/react@latest
 ```
 
-## Usage
+## Usage Example
 
-Import the necessary components and hooks from `rapida-react@latest`:
+Here's a minimal setup for initializing and using a `VoiceAgent`:
 
-```tsx
-import {
-  Channel,
-  ConnectionState,
-  MediaDeviceFailure,
-  ConnectionConfig,
-  AgentConfig,
-} from "rapida-react";
-
-import {
-  BrandIcon,
-  UserIcon,
-  MessagingAction,
-  ConversationMessages,
-  VoiceAgent,
-  VoiceAgentContext,
-  useConnectAgent,
-  useDisconnectAgent,
-  useInputModeToggleAgent,
-  useMicInputToggleAgent,
-  useSpeakerOuputToggleAgent,
-  useMultiband3DSpeakerTrackVolume,
-  useMultibandMicrophoneTrackVolume,
-  useSelectInputDeviceAgent,
-} from "rapida-react";
-```
-
-## Example
-
-Here is an example of how to use `VoiceAgentContext.Provider` to set up a voice agent:
-
-```tsx
-<VoiceAgentContext.Provider
-  value={
-    new VoiceAgent(
-      new ConnectionConfig({
-        authorization: YOUR_TOKEN,
-      }),
-      new AgentConfig(ASSISTANT_ID).addArgument("key", "val")
+```ts 
+import { VoiceAgent, ConnectionConfig, AgentConfig, Channel, InputOptions } from "@rapidaai/react";
+new VoiceAgent(
+    ConnectionConfig.DefaultConnectionConfig(
+    ConnectionConfig.WithSDK({
+        ApiKey: "{API_KEY}",
+        UserId: "random-user / identified-user",
+    })
+    ).withConnectionCallback({
+    onDisconnect: () => {
+        // do what you want when finished
+        console.log("disconnect");
+    },
+    onConnect() {
+        console.log("connected");
+    },
+    onError() {
+        console.log("error");
+    },
+    }),
+    new AgentConfig(
+    // replace this with actual agent id from rapida console
+    "{AGENT_ID}",
+    // you can select only Audio/ Text
+    new InputOptions([Channel.Audio, Channel.Text], Channel.Text)
     )
-  }
->
-  <ConversationMessages
-    userIcon={UserIcon}
-    brandIcon={BrandIcon}
-    className="h-full overflow-auto !pb-40 no-scrollbar"
-    intialConversations={[
-      {
-        role: "system",
-        messages: [
-          "I am Yuuki",
-          "An AI-powered coach to help you master the toughest challenges at your workplace.",
-        ],
-      },
-    ]}
-  />
-  <div className="absolute bottom-0 right-0 left-0">
-    <MessagingAction
-      className="h-[8rem]"
-      placeholder="How can I help you overcome a challenge?"
-    />
-  </div>
-</VoiceAgentContext.Provider>
+    .addKeywords([
+        "dictionary - which you want the model to speak clearly",
+    ])
+    .addArgument("name", "<name>")
+    .addMetadata("utm_1", StringToAny("utm_X")),
+    {
+    onAssistantMessage: (msg) => {
+        console.log("onStart: ()");
+    },
+    onUserMessage: (args) => {
+        console.log("onComplete:");
+    },
+    onConfiguration: (args) => {
+        console.log("onTranscript");
+    },
+    onInterrupt: (args) => {
+        console.log("onInterrupt");
+    },
+    onMessage: (args) => {
+        console.log("onGeneration");
+    },
+    }
+)
 ```
 
 ## Available Exports
@@ -94,33 +78,17 @@ The following components, hooks, and utilities are available for import:
 ### Types & Configurations
 
 - `Channel`: Defines communication channels.
-- `ConnectionState`: Represents the state of a voice agent connection.
-- `MediaDeviceFailure`: Handles media device errors.
 - `ConnectionConfig`: Configures the connection settings for a voice agent.
 - `AgentConfig`: Configures the agent settings, including parameters and keywords.
 
-### Components
-
-- `BrandIcon`: Displays the brand's representative icon.
-- `UserIcon`: Displays the user's representative icon.
-- `MessagingAction`: A messaging input component for user interactions.
-- `ConversationMessages`: Manages and displays the conversation flow.
-
-### Context
+### Core
 
 - `VoiceAgent`: The core AI voice agent instance.
-- `VoiceAgentContext`: Provides the voice agent's context for managing interactions.
 
-### Hooks
+### Hooks 
 
 - `useConnectAgent`: Establishes a connection to the voice agent.
-- `useDisconnectAgent`: Disconnects the agent from the session.
-- `useInputModeToggleAgent`: Toggles between different input modes.
-- `useMicInputToggleAgent`: Enables or disables microphone input.
-- `useSpeakerOuputToggleAgent`: Enables or disables speaker output.
-- `useMultiband3DSpeakerTrackVolume`: Adjusts multiband volume for speaker tracks.
-- `useMultibandMicrophoneTrackVolume`: Adjusts multiband volume for microphone tracks.
-- `useSelectInputDeviceAgent`: Selects and manages input audio devices.
+- `useAgentMessages`: Retrieves messages exchanged with the voice agent.
 
 ## License
 
