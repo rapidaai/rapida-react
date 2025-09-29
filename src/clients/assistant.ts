@@ -534,7 +534,7 @@ export function GetMessages(
  * @param {ServiceError | null} err - The error object if an error occurred, otherwise null.
  * @param {GetAllAssistantConversationResponse | null} uvcr - The response object containing the assistant sessions.
  */
-export function GetAllAssistantSession(
+export function GetAllAssistantConversation(
   connectionConfig: ConnectionConfig,
   assistantId: string,
   page: number,

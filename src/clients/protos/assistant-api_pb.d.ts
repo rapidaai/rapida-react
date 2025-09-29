@@ -864,90 +864,12 @@ export namespace UpdateAssistantDetailRequest {
   }
 }
 
-export class GetAllAssistantUserConversationRequest extends jspb.Message {
-  getAssistantid(): string;
-  setAssistantid(value: string): void;
-
-  hasPaginate(): boolean;
-  clearPaginate(): void;
-  getPaginate(): common_pb.Paginate | undefined;
-  setPaginate(value?: common_pb.Paginate): void;
-
-  clearCriteriasList(): void;
-  getCriteriasList(): Array<common_pb.Criteria>;
-  setCriteriasList(value: Array<common_pb.Criteria>): void;
-  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
-
-  getSource(): common_pb.SourceMap[keyof common_pb.SourceMap];
-  setSource(value: common_pb.SourceMap[keyof common_pb.SourceMap]): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllAssistantUserConversationRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllAssistantUserConversationRequest): GetAllAssistantUserConversationRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAllAssistantUserConversationRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllAssistantUserConversationRequest;
-  static deserializeBinaryFromReader(message: GetAllAssistantUserConversationRequest, reader: jspb.BinaryReader): GetAllAssistantUserConversationRequest;
-}
-
-export namespace GetAllAssistantUserConversationRequest {
-  export type AsObject = {
-    assistantid: string,
-    paginate?: common_pb.Paginate.AsObject,
-    criteriasList: Array<common_pb.Criteria.AsObject>,
-    source: common_pb.SourceMap[keyof common_pb.SourceMap],
-  }
-}
-
-export class GetAllAssistantUserConversationResponse extends jspb.Message {
-  getCode(): number;
-  setCode(value: number): void;
-
-  getSuccess(): boolean;
-  setSuccess(value: boolean): void;
-
-  clearDataList(): void;
-  getDataList(): Array<common_pb.AssistantConversation>;
-  setDataList(value: Array<common_pb.AssistantConversation>): void;
-  addData(value?: common_pb.AssistantConversation, index?: number): common_pb.AssistantConversation;
-
-  hasError(): boolean;
-  clearError(): void;
-  getError(): common_pb.Error | undefined;
-  setError(value?: common_pb.Error): void;
-
-  hasPaginated(): boolean;
-  clearPaginated(): void;
-  getPaginated(): common_pb.Paginated | undefined;
-  setPaginated(value?: common_pb.Paginated): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllAssistantUserConversationResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllAssistantUserConversationResponse): GetAllAssistantUserConversationResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAllAssistantUserConversationResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllAssistantUserConversationResponse;
-  static deserializeBinaryFromReader(message: GetAllAssistantUserConversationResponse, reader: jspb.BinaryReader): GetAllAssistantUserConversationResponse;
-}
-
-export namespace GetAllAssistantUserConversationResponse {
-  export type AsObject = {
-    code: number,
-    success: boolean,
-    dataList: Array<common_pb.AssistantConversation.AsObject>,
-    error?: common_pb.Error.AsObject,
-    paginated?: common_pb.Paginated.AsObject,
-  }
-}
-
 export class GetAssistantConversationRequest extends jspb.Message {
   getAssistantid(): string;
   setAssistantid(value: string): void;
 
-  getAssistantconversationid(): string;
-  setAssistantconversationid(value: string): void;
+  getId(): string;
+  setId(value: string): void;
 
   clearSelectorsList(): void;
   getSelectorsList(): Array<common_pb.FieldSelector>;
@@ -967,7 +889,7 @@ export class GetAssistantConversationRequest extends jspb.Message {
 export namespace GetAssistantConversationRequest {
   export type AsObject = {
     assistantid: string,
-    assistantconversationid: string,
+    id: string,
     selectorsList: Array<common_pb.FieldSelector.AsObject>,
   }
 }
