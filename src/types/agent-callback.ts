@@ -45,7 +45,12 @@ export class ConversationUserMessage {
   constructor(config?: AssistantConversationUserMessage) {
     if (config) {
       Object.assign(this, config.toObject());
-      this.messageText = toContentText(config.getMessage()?.getContentsList());
+      switch (config.getMessageCase()) {
+        case AssistantConversationUserMessage.MessageCase.MESSAGE_NOT_SET:
+        case AssistantConversationUserMessage.MessageCase.AUDIO:
+        case AssistantConversationUserMessage.MessageCase.TEXT:
+          this.messageText = config.getText()?.getContent();
+      }
     }
   }
 }
@@ -59,7 +64,12 @@ export class ConversationAssistantMessage {
   constructor(config?: AssistantConversationAssistantMessage) {
     if (config) {
       Object.assign(this, config.toObject());
-      this.messageText = toContentText(config.getMessage()?.getContentsList());
+      switch (config.getMessageCase()) {
+        case AssistantConversationUserMessage.MessageCase.MESSAGE_NOT_SET:
+        case AssistantConversationUserMessage.MessageCase.AUDIO:
+        case AssistantConversationUserMessage.MessageCase.TEXT:
+          this.messageText = config.getText()?.getContent();
+      }
     }
   }
 }
