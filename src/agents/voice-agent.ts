@@ -180,9 +180,9 @@ export class VoiceAgent extends Agent {
     const maxVolume = event.data[1];
     if (this.inputChannel == Channel.Audio)
       this.talkingConnection?.write(
-        this.createAssistantRequest("user", [
-          toStreamAudioContent(arrayBufferToUint8(rawAudioPcmData.buffer)),
-        ])
+        this.createAssistantAudioMessage(
+          arrayBufferToUint8(rawAudioPcmData.buffer)
+        )
       );
   };
 
@@ -268,9 +268,7 @@ export class VoiceAgent extends Agent {
     if (!this.isConnected) await this.connect();
     if (this.inputChannel == Channel.Text) {
       // only send text when you know the channel is text
-      this.talkingConnection?.write(
-        this.createAssistantRequest("user", [toTextContent(text)])
-      );
+      this.talkingConnection?.write(this.createAssistantTextMessage(text));
     }
   };
 
@@ -381,29 +379,34 @@ export class VoiceAgent extends Agent {
     userContent: AssistantConversationUserMessage | undefined
   ) => {
     if (userContent) {
-      const agentTranscript = toContentText(
-        userContent.getMessage()?.getContentsList()
-      );
-      if (agentTranscript) {
-        if (this.agentMessages.length > 0) {
-          const lastMessage = this.agentMessages[this.agentMessages.length - 1];
-          if (
-            lastMessage.role === MessageRole.User &&
-            lastMessage.id === userContent.getId()
-          ) {
-            this.agentMessages.pop();
+      switch (userContent.getMessageCase()) {
+        case AssistantConversationUserMessage.MessageCase.MESSAGE_NOT_SET:
+        case AssistantConversationUserMessage.MessageCase.AUDIO:
+        case AssistantConversationUserMessage.MessageCase.TEXT:
+          const agentTranscript = userContent.getText()?.getContent();
+          if (agentTranscript) {
+            if (this.agentMessages.length > 0) {
+              const lastMessage =
+                this.agentMessages[this.agentMessages.length - 1];
+              if (
+                lastMessage.role === MessageRole.User &&
+                lastMessage.id === userContent.getId()
+              ) {
+                this.agentMessages.pop();
+              }
+            }
+            this.agentMessages.push({
+              id: userContent.getId(),
+              role: MessageRole.User,
+              messages: [agentTranscript],
+              time: toDate(userContent?.getTime()),
+              status: userContent.getCompleted()
+                ? MessageStatus.Complete
+                : MessageStatus.Pending,
+            });
           }
-        }
-        this.agentMessages.push({
-          id: userContent.getId(),
-          role: MessageRole.User,
-          messages: [agentTranscript],
-          time: toDate(userContent?.getTime()),
-          status: userContent.getCompleted()
-            ? MessageStatus.Complete
-            : MessageStatus.Pending,
-        });
       }
+
       this.emit(
         AgentEvent.ConversationEvent,
         AssistantMessagingResponse.DataCase.USER,
@@ -416,30 +419,42 @@ export class VoiceAgent extends Agent {
     systemContent: AssistantConversationAssistantMessage | undefined
   ) => {
     if (systemContent) {
-      const responseContent =
-        systemContent?.getMessage()?.getContentsList() || [];
-      if (
-        responseContent.filter((x) => x.getContenttype() == "text").length > 0
-      ) {
-        const systemTranscript = toContentText(
-          responseContent.filter((x) => x.getContenttype() == "text")
-        );
-        if (systemTranscript) {
-          if (systemContent.getCompleted()) {
-            // Complete message
-            if (this.agentMessages.length > 0) {
-              const lastMessage =
-                this.agentMessages[this.agentMessages.length - 1];
-              if (
-                lastMessage.role === MessageRole.System &&
-                lastMessage.status === MessageStatus.Pending
-              ) {
-                // Update the existing message to complete
-                lastMessage.messages = [systemTranscript]; // Replace with complete message
-                lastMessage.status = MessageStatus.Complete;
-                lastMessage.time = toDate(systemContent?.getTime());
+      //
+      switch (systemContent.getMessageCase()) {
+        case AssistantConversationAssistantMessage.MessageCase.MESSAGE_NOT_SET:
+        case AssistantConversationAssistantMessage.MessageCase.AUDIO:
+          const content = systemContent.getAudio();
+          if (content) {
+            const audioData = content.getContent_asU8();
+            this.addAudioChunk(new Uint8Array(audioData).buffer);
+          }
+        case AssistantConversationAssistantMessage.MessageCase.TEXT:
+          const systemTranscript = systemContent.getText()?.getContent();
+          if (systemTranscript) {
+            if (systemContent.getCompleted()) {
+              // Complete message
+              if (this.agentMessages.length > 0) {
+                const lastMessage =
+                  this.agentMessages[this.agentMessages.length - 1];
+                if (
+                  lastMessage.role === MessageRole.System &&
+                  lastMessage.status === MessageStatus.Pending
+                ) {
+                  // Update the existing message to complete
+                  lastMessage.messages = [systemTranscript]; // Replace with complete message
+                  lastMessage.status = MessageStatus.Complete;
+                  lastMessage.time = toDate(systemContent?.getTime());
+                } else {
+                  // Unexpected case: complete message without pending, create new
+                  this.agentMessages.push({
+                    id: systemContent.getId(),
+                    role: MessageRole.System,
+                    messages: [systemTranscript],
+                    time: toDate(systemContent?.getTime()),
+                    status: MessageStatus.Complete,
+                  });
+                }
               } else {
-                // Unexpected case: complete message without pending, create new
                 this.agentMessages.push({
                   id: systemContent.getId(),
                   role: MessageRole.System,
@@ -449,28 +464,29 @@ export class VoiceAgent extends Agent {
                 });
               }
             } else {
-              this.agentMessages.push({
-                id: systemContent.getId(),
-                role: MessageRole.System,
-                messages: [systemTranscript],
-                time: toDate(systemContent?.getTime()),
-                status: MessageStatus.Complete,
-              });
-            }
-          } else {
-            // Chunk
-            if (this.agentMessages.length > 0) {
-              const lastMessage =
-                this.agentMessages[this.agentMessages.length - 1];
-              if (
-                lastMessage.role === MessageRole.System &&
-                lastMessage.status === MessageStatus.Pending
-              ) {
-                // Update existing message with new chunk
-                lastMessage.messages[0] += systemTranscript; // Merge strings
-                lastMessage.time = toDate(systemContent?.getTime());
+              // Chunk
+              if (this.agentMessages.length > 0) {
+                const lastMessage =
+                  this.agentMessages[this.agentMessages.length - 1];
+                if (
+                  lastMessage.role === MessageRole.System &&
+                  lastMessage.status === MessageStatus.Pending
+                ) {
+                  // Update existing message with new chunk
+                  lastMessage.messages[0] += systemTranscript; // Merge strings
+                  lastMessage.time = toDate(systemContent?.getTime());
+                } else {
+                  // Create new pending message for chunk
+                  this.agentMessages.push({
+                    id: systemContent.getId(),
+                    role: MessageRole.System,
+                    messages: [systemTranscript],
+                    time: toDate(systemContent?.getTime()),
+                    status: MessageStatus.Pending,
+                  });
+                }
               } else {
-                // Create new pending message for chunk
+                // Create new pending message for chunk if no messages exist
                 this.agentMessages.push({
                   id: systemContent.getId(),
                   role: MessageRole.System,
@@ -479,29 +495,8 @@ export class VoiceAgent extends Agent {
                   status: MessageStatus.Pending,
                 });
               }
-            } else {
-              // Create new pending message for chunk if no messages exist
-              this.agentMessages.push({
-                id: systemContent.getId(),
-                role: MessageRole.System,
-                messages: [systemTranscript],
-                time: toDate(systemContent?.getTime()),
-                status: MessageStatus.Pending,
-              });
             }
           }
-        }
-      }
-
-      if (
-        responseContent.filter((x) => x.getContenttype() == "audio").length > 0
-      ) {
-        for (const content of responseContent) {
-          if (content.getContenttype() === "audio") {
-            const audioData = content.getContent_asU8();
-            this.addAudioChunk(new Uint8Array(audioData).buffer);
-          }
-        }
       }
       this.emit(
         AgentEvent.ConversationEvent,

@@ -109,11 +109,58 @@ export namespace AssistantConversationInterruption {
   export const InterruptionType: InterruptionTypeMap;
 }
 
+export class AssistantConversationMessageTextContent extends jspb.Message {
+  getContent(): string;
+  setContent(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantConversationMessageTextContent.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantConversationMessageTextContent): AssistantConversationMessageTextContent.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantConversationMessageTextContent, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantConversationMessageTextContent;
+  static deserializeBinaryFromReader(message: AssistantConversationMessageTextContent, reader: jspb.BinaryReader): AssistantConversationMessageTextContent;
+}
+
+export namespace AssistantConversationMessageTextContent {
+  export type AsObject = {
+    content: string,
+  }
+}
+
+export class AssistantConversationMessageAudioContent extends jspb.Message {
+  getContent(): Uint8Array | string;
+  getContent_asU8(): Uint8Array;
+  getContent_asB64(): string;
+  setContent(value: Uint8Array | string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantConversationMessageAudioContent.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantConversationMessageAudioContent): AssistantConversationMessageAudioContent.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantConversationMessageAudioContent, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantConversationMessageAudioContent;
+  static deserializeBinaryFromReader(message: AssistantConversationMessageAudioContent, reader: jspb.BinaryReader): AssistantConversationMessageAudioContent;
+}
+
+export namespace AssistantConversationMessageAudioContent {
+  export type AsObject = {
+    content: Uint8Array | string,
+  }
+}
+
 export class AssistantConversationUserMessage extends jspb.Message {
-  hasMessage(): boolean;
-  clearMessage(): void;
-  getMessage(): common_pb.Message | undefined;
-  setMessage(value?: common_pb.Message): void;
+  hasAudio(): boolean;
+  clearAudio(): void;
+  getAudio(): AssistantConversationMessageAudioContent | undefined;
+  setAudio(value?: AssistantConversationMessageAudioContent): void;
+
+  hasText(): boolean;
+  clearText(): void;
+  getText(): AssistantConversationMessageTextContent | undefined;
+  setText(value?: AssistantConversationMessageTextContent): void;
 
   getId(): string;
   setId(value: string): void;
@@ -126,6 +173,7 @@ export class AssistantConversationUserMessage extends jspb.Message {
   getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
+  getMessageCase(): AssistantConversationUserMessage.MessageCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantConversationUserMessage.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantConversationUserMessage): AssistantConversationUserMessage.AsObject;
@@ -138,18 +186,30 @@ export class AssistantConversationUserMessage extends jspb.Message {
 
 export namespace AssistantConversationUserMessage {
   export type AsObject = {
-    message?: common_pb.Message.AsObject,
+    audio?: AssistantConversationMessageAudioContent.AsObject,
+    text?: AssistantConversationMessageTextContent.AsObject,
     id: string,
     completed: boolean,
     time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
+
+  export enum MessageCase {
+    MESSAGE_NOT_SET = 0,
+    AUDIO = 10,
+    TEXT = 11,
+  }
 }
 
 export class AssistantConversationAssistantMessage extends jspb.Message {
-  hasMessage(): boolean;
-  clearMessage(): void;
-  getMessage(): common_pb.Message | undefined;
-  setMessage(value?: common_pb.Message): void;
+  hasAudio(): boolean;
+  clearAudio(): void;
+  getAudio(): AssistantConversationMessageAudioContent | undefined;
+  setAudio(value?: AssistantConversationMessageAudioContent): void;
+
+  hasText(): boolean;
+  clearText(): void;
+  getText(): AssistantConversationMessageTextContent | undefined;
+  setText(value?: AssistantConversationMessageTextContent): void;
 
   getId(): string;
   setId(value: string): void;
@@ -162,6 +222,7 @@ export class AssistantConversationAssistantMessage extends jspb.Message {
   getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
+  getMessageCase(): AssistantConversationAssistantMessage.MessageCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantConversationAssistantMessage.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantConversationAssistantMessage): AssistantConversationAssistantMessage.AsObject;
@@ -174,10 +235,17 @@ export class AssistantConversationAssistantMessage extends jspb.Message {
 
 export namespace AssistantConversationAssistantMessage {
   export type AsObject = {
-    message?: common_pb.Message.AsObject,
+    audio?: AssistantConversationMessageAudioContent.AsObject,
+    text?: AssistantConversationMessageTextContent.AsObject,
     id: string,
     completed: boolean,
     time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+
+  export enum MessageCase {
+    MESSAGE_NOT_SET = 0,
+    AUDIO = 10,
+    TEXT = 11,
   }
 }
 

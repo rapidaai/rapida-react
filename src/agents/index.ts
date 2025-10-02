@@ -27,6 +27,7 @@ import { AgentConfig } from "@/rapida/types/agent-config";
 import { AgentCallback } from "@/rapida/types/agent-callback";
 import {
   AssistantConversationConfiguration,
+  AssistantConversationMessageTextContent,
   AssistantConversationUserMessage,
   AssistantDefinition,
   AssistantMessagingRequest,
@@ -39,7 +40,7 @@ import { ConnectionState } from "@/rapida/types/connection-state";
 import { AgentEventCallback } from "@/rapida/types/agent-event-callback";
 import { EventEmitter } from "events";
 import type TypedEmitter from "typed-emitter";
-import { Content, Message, Metric } from "@/rapida/clients/protos/common_pb";
+import { Metric } from "@/rapida/clients/protos/common_pb";
 import { Message as LocalMessage, MessageRole } from "@/rapida/types/message";
 import { AgentEvent } from "@/rapida/types/agent-event";
 import {
@@ -61,6 +62,7 @@ import {
 } from "@/rapida/types/agent-deployment";
 import { HEADER_SOURCE_KEY } from "@/rapida/utils/rapida_header";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
+import { AssistantConversationMessageAudioContent } from "../clients/protos/talk-api_pb";
 
 /**
  * Rapida Agent SDK
@@ -380,16 +382,31 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    * @param contents - Message contents
    * @returns Configured messaging request
    */
-  protected createAssistantRequest(
-    role: string,
-    contents: Content[]
+  protected createAssistantTextMessage(
+    content: string
   ): AssistantMessagingRequest {
     const request = new AssistantMessagingRequest();
     const userMessage = new AssistantConversationUserMessage();
-    const message = new Message();
-    message.setRole(role);
-    message.setContentsList(contents);
-    userMessage.setMessage(message);
+    const message = new AssistantConversationMessageTextContent();
+    message.setContent(content);
+    userMessage.setText(message);
+    request.setMessage(userMessage);
+    return request;
+  }
+
+  /**
+   *
+   * @param content
+   * @returns
+   */
+  protected createAssistantAudioMessage(
+    content: Uint8Array | string
+  ): AssistantMessagingRequest {
+    const request = new AssistantMessagingRequest();
+    const userMessage = new AssistantConversationUserMessage();
+    const message = new AssistantConversationMessageAudioContent();
+    message.setContent(content);
+    userMessage.setAudio(message);
     request.setMessage(userMessage);
     return request;
   }
