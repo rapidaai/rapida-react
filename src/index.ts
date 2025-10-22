@@ -120,9 +120,7 @@ export {
 export {
   GetAllAssistant,
   UpdateAssistantVersion,
-  GetAllAssistantProviderModel,
   GetAssistant,
-  CreateAssistantProviderModel,
   CreateAssistant,
   CreateAssistantTag,
   UpdateAssistantDetail,
@@ -165,6 +163,8 @@ export {
   DeleteAssistantKnowledge,
   GetAssistantToolLog,
   GetAllAssistantToolLog,
+  CreateAssistantProvider,
+  GetAllAssistantProvider,
 } from "@/rapida/clients/assistant";
 export { GetActivities, GetActivity } from "@/rapida/clients/activity";
 export {
@@ -320,7 +320,6 @@ export {
   ProviderServiceClient,
 } from "@/rapida/clients/protos/provider-api_pb_service";
 export {
-  AssistantDefinition,
   AssistantMessagingRequest,
   AssistantConversationConfiguration,
   AssistantConversationInterruption,
@@ -438,7 +437,6 @@ export {
   Knowledge,
   TextPrompt,
   TextChatCompletePrompt,
-  AssistantMessageStage,
   AssistantConversationMessage,
   AssistantConversationContext,
   AssistantConversation,
@@ -447,6 +445,8 @@ export {
   GetAllConversationMessageRequest,
   GetAllConversationMessageResponse,
   AssistantConversationRecording,
+  AssistantDefinition,
+  Telemetry,
 } from "@/rapida/clients/protos/common_pb";
 export {
   AssistantService,
@@ -607,23 +607,17 @@ export {
 } from "@/rapida/clients/protos/knowledge-api_pb";
 export {
   Assistant,
-  AssistantProviderModel,
   CreateAssistantRequest,
-  CreateAssistantProviderModelRequest,
-  GetAssistantProviderModelResponse,
   CreateAssistantTagRequest,
   GetAssistantRequest,
   DeleteAssistantRequest,
   GetAssistantResponse,
   GetAllAssistantRequest,
   GetAllAssistantResponse,
-  GetAllAssistantProviderModelRequest,
-  GetAllAssistantProviderModelResponse,
   GetAllAssistantMessageRequest,
   GetAllAssistantMessageResponse,
   GetAllMessageRequest,
   GetAllMessageResponse,
-  UpdateAssistantVersionRequest,
   UpdateAssistantDetailRequest,
   GetAssistantConversationRequest,
   GetAssistantConversationResponse,
@@ -659,3 +653,20 @@ export { MultibandAudioVisualizerComponent } from "@/rapida/components/visualiza
 // event
 export { agentEventSelector } from "@/rapida/hooks/observables/voice-agent";
 export { AgentEvent } from "./types/agent-event";
+
+export {
+  GetAllAssistantTelemetryRequest,
+  GetAllAssistantTelemetryResponse,
+} from "@/rapida/clients/protos/assistant-api_pb";
+export { GetAllAssistantTelemetry } from "./clients/telemetry";
+
+export {
+  AssistantProviderModel,
+  AssistantProviderAgentkit,
+  AssistantProviderWebsocket,
+  CreateAssistantProviderRequest,
+  GetAssistantProviderResponse,
+  GetAllAssistantProviderRequest,
+  UpdateAssistantVersionRequest,
+  GetAllAssistantProviderResponse,
+} from "@/rapida/clients/protos/assistant-provider_pb";

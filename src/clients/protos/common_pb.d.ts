@@ -25,6 +25,30 @@ export namespace FieldSelector {
   }
 }
 
+export class AssistantDefinition extends jspb.Message {
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  getVersion(): string;
+  setVersion(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantDefinition.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantDefinition): AssistantDefinition.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantDefinition, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantDefinition;
+  static deserializeBinaryFromReader(message: AssistantDefinition, reader: jspb.BinaryReader): AssistantDefinition;
+}
+
+export namespace AssistantDefinition {
+  export type AsObject = {
+    assistantid: string,
+    version: string,
+  }
+}
+
 export class Criteria extends jspb.Message {
   getKey(): string;
   setKey(value: string): void;
@@ -588,6 +612,53 @@ export namespace FunctionCall {
   }
 }
 
+export class Telemetry extends jspb.Message {
+  getStagename(): string;
+  setStagename(value: string): void;
+
+  hasStarttime(): boolean;
+  clearStarttime(): void;
+  getStarttime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setStarttime(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasEndtime(): boolean;
+  clearEndtime(): void;
+  getEndtime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setEndtime(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  getDuration(): number;
+  setDuration(value: number): void;
+
+  getAttributesMap(): jspb.Map<string, string>;
+  clearAttributesMap(): void;
+  getSpanid(): string;
+  setSpanid(value: string): void;
+
+  getParentid(): string;
+  setParentid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): Telemetry.AsObject;
+  static toObject(includeInstance: boolean, msg: Telemetry): Telemetry.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: Telemetry, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): Telemetry;
+  static deserializeBinaryFromReader(message: Telemetry, reader: jspb.BinaryReader): Telemetry;
+}
+
+export namespace Telemetry {
+  export type AsObject = {
+    stagename: string,
+    starttime?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    endtime?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    duration: number,
+    attributesMap: Array<[string, string]>,
+    spanid: string,
+    parentid: string,
+  }
+}
+
 export class Knowledge extends jspb.Message {
   getId(): string;
   setId(value: string): void;
@@ -758,49 +829,6 @@ export namespace TextChatCompletePrompt {
   }
 }
 
-export class AssistantMessageStage extends jspb.Message {
-  getStage(): string;
-  setStage(value: string): void;
-
-  getAdditionaldataMap(): jspb.Map<string, string>;
-  clearAdditionaldataMap(): void;
-  getTimetaken(): number;
-  setTimetaken(value: number): void;
-
-  getLifecycleid(): string;
-  setLifecycleid(value: string): void;
-
-  hasStarttimestamp(): boolean;
-  clearStarttimestamp(): void;
-  getStarttimestamp(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setStarttimestamp(value?: google_protobuf_timestamp_pb.Timestamp): void;
-
-  hasEndtimestamp(): boolean;
-  clearEndtimestamp(): void;
-  getEndtimestamp(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setEndtimestamp(value?: google_protobuf_timestamp_pb.Timestamp): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantMessageStage.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantMessageStage): AssistantMessageStage.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantMessageStage, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantMessageStage;
-  static deserializeBinaryFromReader(message: AssistantMessageStage, reader: jspb.BinaryReader): AssistantMessageStage;
-}
-
-export namespace AssistantMessageStage {
-  export type AsObject = {
-    stage: string,
-    additionaldataMap: Array<[string, string]>,
-    timetaken: number,
-    lifecycleid: string,
-    starttimestamp?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-    endtimestamp?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-  }
-}
-
 export class AssistantConversationMessage extends jspb.Message {
   getId(): string;
   setId(value: string): void;
@@ -837,16 +865,6 @@ export class AssistantConversationMessage extends jspb.Message {
 
   getUpdatedby(): string;
   setUpdatedby(value: string): void;
-
-  clearSuggestedquestionsList(): void;
-  getSuggestedquestionsList(): Array<string>;
-  setSuggestedquestionsList(value: Array<string>): void;
-  addSuggestedquestions(value: string, index?: number): string;
-
-  clearStagesList(): void;
-  getStagesList(): Array<AssistantMessageStage>;
-  setStagesList(value: Array<AssistantMessageStage>): void;
-  addStages(value?: AssistantMessageStage, index?: number): AssistantMessageStage;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -891,8 +909,6 @@ export namespace AssistantConversationMessage {
     status: string,
     createdby: string,
     updatedby: string,
-    suggestedquestionsList: Array<string>,
-    stagesList: Array<AssistantMessageStage.AsObject>,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     assistantid: string,

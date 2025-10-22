@@ -25,15 +25,16 @@
 import {
   AssistantConversationAssistantMessage,
   AssistantConversationConfiguration,
+  AssistantConversationDisconnectAction,
   AssistantConversationInterruption,
   AssistantConversationUserMessage,
-  AssistantDefinition,
+  AssistantConverstationApiRequestAction,
+  AssistantConverstationEndpointAction,
+  AssistantConverstationHoldAction,
+  AssistantConverstationKnowledgeRetrievalAction,
 } from "@/rapida/clients/protos/talk-api_pb";
-import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
-import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
-import { AssistantMessagingResponse } from "../clients/protos/talk-api_pb";
+
 import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
-import { Channel } from "@/rapida/types/channel";
 import { toContentText } from "@/rapida/utils/rapida_content";
 
 export interface ConversationUserMessage
@@ -101,9 +102,7 @@ export interface AgentCallback {
     args: AssistantConversationConfiguration.AsObject | undefined
   ) => void;
 
-  // interrupted //
-  // there might be two kind of interruption
-  // vad // word
+  // interrupted // // vad // word // there might be two kind of interruption
   onInterrupt?: (
     args: AssistantConversationInterruption.AsObject | undefined
   ) => void;
@@ -117,4 +116,14 @@ export interface AgentCallback {
   //
   // on complete message
   onMessage?: (arg: ConversationMessage | undefined) => void;
+
+  //
+  onAction?: (
+    arg?:
+      | AssistantConverstationApiRequestAction.AsObject
+      | AssistantConverstationKnowledgeRetrievalAction.AsObject
+      | AssistantConverstationEndpointAction.AsObject
+      | AssistantConverstationHoldAction.AsObject
+      | AssistantConversationDisconnectAction.AsObject
+  ) => void;
 }

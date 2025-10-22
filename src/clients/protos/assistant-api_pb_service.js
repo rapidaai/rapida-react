@@ -7,6 +7,7 @@ var assistant_tool_pb = require("./assistant-tool_pb");
 var assistant_analysis_pb = require("./assistant-analysis_pb");
 var assistant_webhook_pb = require("./assistant-webhook_pb");
 var assistant_knowledge_pb = require("./assistant-knowledge_pb");
+var assistant_provider_pb = require("./assistant-provider_pb");
 var grpc = require("@improbable-eng/grpc-web").grpc;
 
 var AssistantService = (function () {
@@ -51,22 +52,22 @@ AssistantService.DeleteAssistant = {
   responseType: assistant_api_pb.GetAssistantResponse
 };
 
-AssistantService.GetAllAssistantProviderModel = {
-  methodName: "GetAllAssistantProviderModel",
+AssistantService.GetAllAssistantProvider = {
+  methodName: "GetAllAssistantProvider",
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.GetAllAssistantProviderModelRequest,
-  responseType: assistant_api_pb.GetAllAssistantProviderModelResponse
+  requestType: assistant_provider_pb.GetAllAssistantProviderRequest,
+  responseType: assistant_provider_pb.GetAllAssistantProviderResponse
 };
 
-AssistantService.CreateAssistantProviderModel = {
-  methodName: "CreateAssistantProviderModel",
+AssistantService.CreateAssistantProvider = {
+  methodName: "CreateAssistantProvider",
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.CreateAssistantProviderModelRequest,
-  responseType: assistant_api_pb.GetAssistantProviderModelResponse
+  requestType: assistant_provider_pb.CreateAssistantProviderRequest,
+  responseType: assistant_provider_pb.GetAssistantProviderResponse
 };
 
 AssistantService.CreateAssistantTag = {
@@ -83,7 +84,7 @@ AssistantService.UpdateAssistantVersion = {
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_api_pb.UpdateAssistantVersionRequest,
+  requestType: assistant_provider_pb.UpdateAssistantVersionRequest,
   responseType: assistant_api_pb.GetAssistantResponse
 };
 
@@ -121,6 +122,15 @@ AssistantService.GetAllMessage = {
   responseStream: false,
   requestType: assistant_api_pb.GetAllMessageRequest,
   responseType: assistant_api_pb.GetAllMessageResponse
+};
+
+AssistantService.GetAllAssistantTelemetry = {
+  methodName: "GetAllAssistantTelemetry",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.GetAllAssistantTelemetryRequest,
+  responseType: assistant_api_pb.GetAllAssistantTelemetryResponse
 };
 
 AssistantService.GetAllAssistantConversation = {
@@ -488,11 +498,11 @@ AssistantServiceClient.prototype.deleteAssistant = function deleteAssistant(requ
   };
 };
 
-AssistantServiceClient.prototype.getAllAssistantProviderModel = function getAllAssistantProviderModel(requestMessage, metadata, callback) {
+AssistantServiceClient.prototype.getAllAssistantProvider = function getAllAssistantProvider(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(AssistantService.GetAllAssistantProviderModel, {
+  var client = grpc.unary(AssistantService.GetAllAssistantProvider, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -519,11 +529,11 @@ AssistantServiceClient.prototype.getAllAssistantProviderModel = function getAllA
   };
 };
 
-AssistantServiceClient.prototype.createAssistantProviderModel = function createAssistantProviderModel(requestMessage, metadata, callback) {
+AssistantServiceClient.prototype.createAssistantProvider = function createAssistantProvider(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(AssistantService.CreateAssistantProviderModel, {
+  var client = grpc.unary(AssistantService.CreateAssistantProvider, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -710,6 +720,37 @@ AssistantServiceClient.prototype.getAllMessage = function getAllMessage(requestM
     callback = arguments[1];
   }
   var client = grpc.unary(AssistantService.GetAllMessage, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.getAllAssistantTelemetry = function getAllAssistantTelemetry(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAllAssistantTelemetry, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

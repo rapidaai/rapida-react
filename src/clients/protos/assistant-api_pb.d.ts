@@ -9,6 +9,7 @@ import * as assistant_tool_pb from "./assistant-tool_pb";
 import * as assistant_analysis_pb from "./assistant-analysis_pb";
 import * as assistant_webhook_pb from "./assistant-webhook_pb";
 import * as assistant_knowledge_pb from "./assistant-knowledge_pb";
+import * as assistant_provider_pb from "./assistant-provider_pb";
 
 export class Assistant extends jspb.Message {
   getId(): string;
@@ -26,24 +27,17 @@ export class Assistant extends jspb.Message {
   getSourceidentifier(): string;
   setSourceidentifier(value: string): void;
 
-  clearAssistanttoolsList(): void;
-  getAssistanttoolsList(): Array<assistant_tool_pb.AssistantTool>;
-  setAssistanttoolsList(value: Array<assistant_tool_pb.AssistantTool>): void;
-  addAssistanttools(value?: assistant_tool_pb.AssistantTool, index?: number): assistant_tool_pb.AssistantTool;
-
   getProjectid(): string;
   setProjectid(value: string): void;
 
   getOrganizationid(): string;
   setOrganizationid(value: string): void;
 
-  getAssistantprovidermodelid(): string;
-  setAssistantprovidermodelid(value: string): void;
+  getAssistantprovider(): string;
+  setAssistantprovider(value: string): void;
 
-  hasAssistantprovidermodel(): boolean;
-  clearAssistantprovidermodel(): void;
-  getAssistantprovidermodel(): AssistantProviderModel | undefined;
-  setAssistantprovidermodel(value?: AssistantProviderModel): void;
+  getAssistantproviderid(): string;
+  setAssistantproviderid(value: string): void;
 
   getName(): string;
   setName(value: string): void;
@@ -51,18 +45,25 @@ export class Assistant extends jspb.Message {
   getDescription(): string;
   setDescription(value: string): void;
 
+  hasAssistantprovidermodel(): boolean;
+  clearAssistantprovidermodel(): void;
+  getAssistantprovidermodel(): assistant_provider_pb.AssistantProviderModel | undefined;
+  setAssistantprovidermodel(value?: assistant_provider_pb.AssistantProviderModel): void;
+
+  hasAssistantprovideragentkit(): boolean;
+  clearAssistantprovideragentkit(): void;
+  getAssistantprovideragentkit(): assistant_provider_pb.AssistantProviderAgentkit | undefined;
+  setAssistantprovideragentkit(value?: assistant_provider_pb.AssistantProviderAgentkit): void;
+
+  hasAssistantproviderwebsocket(): boolean;
+  clearAssistantproviderwebsocket(): void;
+  getAssistantproviderwebsocket(): assistant_provider_pb.AssistantProviderWebsocket | undefined;
+  setAssistantproviderwebsocket(value?: assistant_provider_pb.AssistantProviderWebsocket): void;
+
   hasAssistanttag(): boolean;
   clearAssistanttag(): void;
   getAssistanttag(): common_pb.Tag | undefined;
   setAssistanttag(value?: common_pb.Tag): void;
-
-  getLanguage(): string;
-  setLanguage(value: string): void;
-
-  hasOrganization(): boolean;
-  clearOrganization(): void;
-  getOrganization(): common_pb.Organization | undefined;
-  setOrganization(value?: common_pb.Organization): void;
 
   getCreatedby(): string;
   setCreatedby(value: string): void;
@@ -125,6 +126,11 @@ export class Assistant extends jspb.Message {
   setAssistantwebhooksList(value: Array<assistant_webhook_pb.AssistantWebhook>): void;
   addAssistantwebhooks(value?: assistant_webhook_pb.AssistantWebhook, index?: number): assistant_webhook_pb.AssistantWebhook;
 
+  clearAssistanttoolsList(): void;
+  getAssistanttoolsList(): Array<assistant_tool_pb.AssistantTool>;
+  setAssistanttoolsList(value: Array<assistant_tool_pb.AssistantTool>): void;
+  addAssistanttools(value?: assistant_tool_pb.AssistantTool, index?: number): assistant_tool_pb.AssistantTool;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Assistant.AsObject;
   static toObject(includeInstance: boolean, msg: Assistant): Assistant.AsObject;
@@ -142,16 +148,16 @@ export namespace Assistant {
     visibility: string,
     source: string,
     sourceidentifier: string,
-    assistanttoolsList: Array<assistant_tool_pb.AssistantTool.AsObject>,
     projectid: string,
     organizationid: string,
-    assistantprovidermodelid: string,
-    assistantprovidermodel?: AssistantProviderModel.AsObject,
+    assistantprovider: string,
+    assistantproviderid: string,
     name: string,
     description: string,
+    assistantprovidermodel?: assistant_provider_pb.AssistantProviderModel.AsObject,
+    assistantprovideragentkit?: assistant_provider_pb.AssistantProviderAgentkit.AsObject,
+    assistantproviderwebsocket?: assistant_provider_pb.AssistantProviderWebsocket.AsObject,
     assistanttag?: common_pb.Tag.AsObject,
-    language: string,
-    organization?: common_pb.Organization.AsObject,
     createdby: string,
     createduser?: common_pb.User.AsObject,
     updatedby: string,
@@ -165,94 +171,15 @@ export namespace Assistant {
     apideployment?: assistant_deployment_pb.AssistantApiDeployment.AsObject,
     assistantconversationsList: Array<common_pb.AssistantConversation.AsObject>,
     assistantwebhooksList: Array<assistant_webhook_pb.AssistantWebhook.AsObject>,
-  }
-}
-
-export class AssistantProviderModel extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  hasTemplate(): boolean;
-  clearTemplate(): void;
-  getTemplate(): common_pb.TextChatCompletePrompt | undefined;
-  setTemplate(value?: common_pb.TextChatCompletePrompt): void;
-
-  getDescription(): string;
-  setDescription(value: string): void;
-
-  getModelproviderid(): string;
-  setModelproviderid(value: string): void;
-
-  getModelprovidername(): string;
-  setModelprovidername(value: string): void;
-
-  clearAssistantmodeloptionsList(): void;
-  getAssistantmodeloptionsList(): Array<common_pb.Metadata>;
-  setAssistantmodeloptionsList(value: Array<common_pb.Metadata>): void;
-  addAssistantmodeloptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
-
-  getStatus(): string;
-  setStatus(value: string): void;
-
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
-
-  hasCreateduser(): boolean;
-  clearCreateduser(): void;
-  getCreateduser(): common_pb.User | undefined;
-  setCreateduser(value?: common_pb.User): void;
-
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
-
-  hasUpdateduser(): boolean;
-  clearUpdateduser(): void;
-  getUpdateduser(): common_pb.User | undefined;
-  setUpdateduser(value?: common_pb.User): void;
-
-  hasCreateddate(): boolean;
-  clearCreateddate(): void;
-  getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setCreateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
-
-  hasUpdateddate(): boolean;
-  clearUpdateddate(): void;
-  getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantProviderModel.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantProviderModel): AssistantProviderModel.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantProviderModel, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantProviderModel;
-  static deserializeBinaryFromReader(message: AssistantProviderModel, reader: jspb.BinaryReader): AssistantProviderModel;
-}
-
-export namespace AssistantProviderModel {
-  export type AsObject = {
-    id: string,
-    template?: common_pb.TextChatCompletePrompt.AsObject,
-    description: string,
-    modelproviderid: string,
-    modelprovidername: string,
-    assistantmodeloptionsList: Array<common_pb.Metadata.AsObject>,
-    status: string,
-    createdby: string,
-    createduser?: common_pb.User.AsObject,
-    updatedby: string,
-    updateduser?: common_pb.User.AsObject,
-    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    assistanttoolsList: Array<assistant_tool_pb.AssistantTool.AsObject>,
   }
 }
 
 export class CreateAssistantRequest extends jspb.Message {
-  hasAssistantprovidermodel(): boolean;
-  clearAssistantprovidermodel(): void;
-  getAssistantprovidermodel(): CreateAssistantProviderModelRequest | undefined;
-  setAssistantprovidermodel(value?: CreateAssistantProviderModelRequest): void;
+  hasAssistantprovider(): boolean;
+  clearAssistantprovider(): void;
+  getAssistantprovider(): assistant_provider_pb.CreateAssistantProviderRequest | undefined;
+  setAssistantprovider(value?: assistant_provider_pb.CreateAssistantProviderRequest): void;
 
   clearAssistantknowledgesList(): void;
   getAssistantknowledgesList(): Array<assistant_knowledge_pb.CreateAssistantKnowledgeRequest>;
@@ -299,7 +226,7 @@ export class CreateAssistantRequest extends jspb.Message {
 
 export namespace CreateAssistantRequest {
   export type AsObject = {
-    assistantprovidermodel?: CreateAssistantProviderModelRequest.AsObject,
+    assistantprovider?: assistant_provider_pb.CreateAssistantProviderRequest.AsObject,
     assistantknowledgesList: Array<assistant_knowledge_pb.CreateAssistantKnowledgeRequest.AsObject>,
     assistanttoolsList: Array<assistant_tool_pb.CreateAssistantToolRequest.AsObject>,
     description: string,
@@ -309,86 +236,6 @@ export namespace CreateAssistantRequest {
     sourceidentifier: string,
     tagsList: Array<string>,
     name: string,
-  }
-}
-
-export class CreateAssistantProviderModelRequest extends jspb.Message {
-  getAssistantid(): string;
-  setAssistantid(value: string): void;
-
-  getDescription(): string;
-  setDescription(value: string): void;
-
-  hasTemplate(): boolean;
-  clearTemplate(): void;
-  getTemplate(): common_pb.TextChatCompletePrompt | undefined;
-  setTemplate(value?: common_pb.TextChatCompletePrompt): void;
-
-  getModelproviderid(): string;
-  setModelproviderid(value: string): void;
-
-  getModelprovidername(): string;
-  setModelprovidername(value: string): void;
-
-  clearAssistantmodeloptionsList(): void;
-  getAssistantmodeloptionsList(): Array<common_pb.Metadata>;
-  setAssistantmodeloptionsList(value: Array<common_pb.Metadata>): void;
-  addAssistantmodeloptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): CreateAssistantProviderModelRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: CreateAssistantProviderModelRequest): CreateAssistantProviderModelRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: CreateAssistantProviderModelRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): CreateAssistantProviderModelRequest;
-  static deserializeBinaryFromReader(message: CreateAssistantProviderModelRequest, reader: jspb.BinaryReader): CreateAssistantProviderModelRequest;
-}
-
-export namespace CreateAssistantProviderModelRequest {
-  export type AsObject = {
-    assistantid: string,
-    description: string,
-    template?: common_pb.TextChatCompletePrompt.AsObject,
-    modelproviderid: string,
-    modelprovidername: string,
-    assistantmodeloptionsList: Array<common_pb.Metadata.AsObject>,
-  }
-}
-
-export class GetAssistantProviderModelResponse extends jspb.Message {
-  getCode(): number;
-  setCode(value: number): void;
-
-  getSuccess(): boolean;
-  setSuccess(value: boolean): void;
-
-  hasData(): boolean;
-  clearData(): void;
-  getData(): AssistantProviderModel | undefined;
-  setData(value?: AssistantProviderModel): void;
-
-  hasError(): boolean;
-  clearError(): void;
-  getError(): common_pb.Error | undefined;
-  setError(value?: common_pb.Error): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAssistantProviderModelResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAssistantProviderModelResponse): GetAssistantProviderModelResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAssistantProviderModelResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAssistantProviderModelResponse;
-  static deserializeBinaryFromReader(message: GetAssistantProviderModelResponse, reader: jspb.BinaryReader): GetAssistantProviderModelResponse;
-}
-
-export namespace GetAssistantProviderModelResponse {
-  export type AsObject = {
-    code: number,
-    success: boolean,
-    data?: AssistantProviderModel.AsObject,
-    error?: common_pb.Error.AsObject,
   }
 }
 
@@ -419,13 +266,10 @@ export namespace CreateAssistantTagRequest {
 }
 
 export class GetAssistantRequest extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  hasAssistantprovidermodelid(): boolean;
-  clearAssistantprovidermodelid(): void;
-  getAssistantprovidermodelid(): string;
-  setAssistantprovidermodelid(value: string): void;
+  hasAssistantdefinition(): boolean;
+  clearAssistantdefinition(): void;
+  getAssistantdefinition(): common_pb.AssistantDefinition | undefined;
+  setAssistantdefinition(value?: common_pb.AssistantDefinition): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetAssistantRequest.AsObject;
@@ -439,8 +283,7 @@ export class GetAssistantRequest extends jspb.Message {
 
 export namespace GetAssistantRequest {
   export type AsObject = {
-    id: string,
-    assistantprovidermodelid: string,
+    assistantdefinition?: common_pb.AssistantDefinition.AsObject,
   }
 }
 
@@ -528,6 +371,82 @@ export namespace GetAllAssistantRequest {
   }
 }
 
+export class GetAllAssistantTelemetryRequest extends jspb.Message {
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): common_pb.Paginate | undefined;
+  setPaginate(value?: common_pb.Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+
+  hasAssistant(): boolean;
+  clearAssistant(): void;
+  getAssistant(): common_pb.AssistantDefinition | undefined;
+  setAssistant(value?: common_pb.AssistantDefinition): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantTelemetryRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantTelemetryRequest): GetAllAssistantTelemetryRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantTelemetryRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantTelemetryRequest;
+  static deserializeBinaryFromReader(message: GetAllAssistantTelemetryRequest, reader: jspb.BinaryReader): GetAllAssistantTelemetryRequest;
+}
+
+export namespace GetAllAssistantTelemetryRequest {
+  export type AsObject = {
+    paginate?: common_pb.Paginate.AsObject,
+    criteriasList: Array<common_pb.Criteria.AsObject>,
+    assistant?: common_pb.AssistantDefinition.AsObject,
+  }
+}
+
+export class GetAllAssistantTelemetryResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<common_pb.Telemetry>;
+  setDataList(value: Array<common_pb.Telemetry>): void;
+  addData(value?: common_pb.Telemetry, index?: number): common_pb.Telemetry;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantTelemetryResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantTelemetryResponse): GetAllAssistantTelemetryResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantTelemetryResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantTelemetryResponse;
+  static deserializeBinaryFromReader(message: GetAllAssistantTelemetryResponse, reader: jspb.BinaryReader): GetAllAssistantTelemetryResponse;
+}
+
+export namespace GetAllAssistantTelemetryResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<common_pb.Telemetry.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
 export class GetAllAssistantResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
@@ -565,80 +484,6 @@ export namespace GetAllAssistantResponse {
     code: number,
     success: boolean,
     dataList: Array<Assistant.AsObject>,
-    error?: common_pb.Error.AsObject,
-    paginated?: common_pb.Paginated.AsObject,
-  }
-}
-
-export class GetAllAssistantProviderModelRequest extends jspb.Message {
-  hasPaginate(): boolean;
-  clearPaginate(): void;
-  getPaginate(): common_pb.Paginate | undefined;
-  setPaginate(value?: common_pb.Paginate): void;
-
-  clearCriteriasList(): void;
-  getCriteriasList(): Array<common_pb.Criteria>;
-  setCriteriasList(value: Array<common_pb.Criteria>): void;
-  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
-
-  getAssistantid(): string;
-  setAssistantid(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllAssistantProviderModelRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllAssistantProviderModelRequest): GetAllAssistantProviderModelRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAllAssistantProviderModelRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllAssistantProviderModelRequest;
-  static deserializeBinaryFromReader(message: GetAllAssistantProviderModelRequest, reader: jspb.BinaryReader): GetAllAssistantProviderModelRequest;
-}
-
-export namespace GetAllAssistantProviderModelRequest {
-  export type AsObject = {
-    paginate?: common_pb.Paginate.AsObject,
-    criteriasList: Array<common_pb.Criteria.AsObject>,
-    assistantid: string,
-  }
-}
-
-export class GetAllAssistantProviderModelResponse extends jspb.Message {
-  getCode(): number;
-  setCode(value: number): void;
-
-  getSuccess(): boolean;
-  setSuccess(value: boolean): void;
-
-  clearDataList(): void;
-  getDataList(): Array<AssistantProviderModel>;
-  setDataList(value: Array<AssistantProviderModel>): void;
-  addData(value?: AssistantProviderModel, index?: number): AssistantProviderModel;
-
-  hasError(): boolean;
-  clearError(): void;
-  getError(): common_pb.Error | undefined;
-  setError(value?: common_pb.Error): void;
-
-  hasPaginated(): boolean;
-  clearPaginated(): void;
-  getPaginated(): common_pb.Paginated | undefined;
-  setPaginated(value?: common_pb.Paginated): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetAllAssistantProviderModelResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: GetAllAssistantProviderModelResponse): GetAllAssistantProviderModelResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetAllAssistantProviderModelResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetAllAssistantProviderModelResponse;
-  static deserializeBinaryFromReader(message: GetAllAssistantProviderModelResponse, reader: jspb.BinaryReader): GetAllAssistantProviderModelResponse;
-}
-
-export namespace GetAllAssistantProviderModelResponse {
-  export type AsObject = {
-    code: number,
-    success: boolean,
-    dataList: Array<AssistantProviderModel.AsObject>,
     error?: common_pb.Error.AsObject,
     paginated?: common_pb.Paginated.AsObject,
   }
@@ -809,30 +654,6 @@ export namespace GetAllMessageResponse {
     dataList: Array<common_pb.AssistantConversationMessage.AsObject>,
     error?: common_pb.Error.AsObject,
     paginated?: common_pb.Paginated.AsObject,
-  }
-}
-
-export class UpdateAssistantVersionRequest extends jspb.Message {
-  getAssistantid(): string;
-  setAssistantid(value: string): void;
-
-  getAssistantprovidermodelid(): string;
-  setAssistantprovidermodelid(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): UpdateAssistantVersionRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: UpdateAssistantVersionRequest): UpdateAssistantVersionRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: UpdateAssistantVersionRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): UpdateAssistantVersionRequest;
-  static deserializeBinaryFromReader(message: UpdateAssistantVersionRequest, reader: jspb.BinaryReader): UpdateAssistantVersionRequest;
-}
-
-export namespace UpdateAssistantVersionRequest {
-  export type AsObject = {
-    assistantid: string,
-    assistantprovidermodelid: string,
   }
 }
 

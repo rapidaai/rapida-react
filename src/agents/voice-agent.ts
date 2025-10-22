@@ -533,17 +533,28 @@ export class VoiceAgent extends Agent {
       default:
         break;
     }
-    this.onCallback(response);
+    await this.onCallback(response);
   };
 
   // Adding a check to filter out audio chunks
   // Implementing a debounce mechanism
   // These suggestions can guide the team in finding an appropriate solution to optimize the onMessage callback handling.
-  onCallback(response: AssistantMessagingResponse): void {
+  onCallback = async (response: AssistantMessagingResponse) => {
     // check if callback is register then call it off
     for (const agentCallback of this.agentCallbacks) {
       switch (response.getDataCase()) {
         case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
+          break;
+        case AssistantMessagingResponse.DataCase.APIREQUESTACTION:
+          if (agentCallback && agentCallback?.onAction) {
+            agentCallback.onAction(response.getApirequestaction()?.toObject());
+          }
+          break;
+        case AssistantMessagingResponse.DataCase.DISCONNECTACTION:
+          if (agentCallback && agentCallback?.onAction) {
+            agentCallback.onAction(response.getDisconnectaction()?.toObject());
+          }
+          await this.disconnect();
           break;
         case AssistantMessagingResponse.DataCase.INTERRUPTION:
           if (agentCallback && agentCallback?.onInterrupt) {
@@ -586,7 +597,7 @@ export class VoiceAgent extends Agent {
           break;
       }
     }
-  }
+  };
 
   /**
    *

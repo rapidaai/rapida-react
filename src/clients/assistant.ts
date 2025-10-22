@@ -42,24 +42,26 @@ import {
   GetAllAssistantRequest,
   GetAllAssistantResponse,
   CreateAssistantRequest,
-  GetAllAssistantProviderModelRequest,
-  UpdateAssistantVersionRequest,
   GetAssistantRequest,
   GetAssistantResponse,
   CreateAssistantTagRequest,
-  CreateAssistantProviderModelRequest,
-  GetAllAssistantProviderModelResponse,
   UpdateAssistantDetailRequest,
   GetAllAssistantMessageRequest,
   GetAllAssistantMessageResponse,
   GetAssistantConversationResponse,
   GetAssistantConversationRequest,
   DeleteAssistantRequest,
-  GetAssistantProviderModelResponse,
   GetAllMessageRequest,
   GetAllMessageResponse,
 } from "@/rapida/clients/protos/assistant-api_pb";
 
+import {
+  CreateAssistantProviderRequest,
+  GetAllAssistantProviderResponse,
+  GetAssistantProviderResponse,
+  GetAllAssistantProviderRequest,
+  UpdateAssistantVersionRequest,
+} from "@/rapida/clients/protos/assistant-provider_pb";
 import {
   GetAssistantAnalysisResponse,
   GetAssistantAnalysisRequest,
@@ -197,7 +199,7 @@ export function UpdateAssistantVersion(
 ) {
   const req = new UpdateAssistantVersionRequest();
   req.setAssistantid(assistantId);
-  req.setAssistantprovidermodelid(assistantProviderModelId);
+  req.setAssistantproviderid(assistantProviderModelId);
 
   return connectionConfig.assistantClient.updateAssistantVersion(
     req,
@@ -217,7 +219,7 @@ export function UpdateAssistantVersion(
  * @param authHeader - Authentication headers for the request.
  * @returns UnaryResponse - The gRPC response object.
  */
-export function GetAllAssistantProviderModel(
+export function GetAllAssistantProvider(
   connectionConfig: ConnectionConfig,
   assistantId: string,
   page: number,
@@ -225,11 +227,11 @@ export function GetAllAssistantProviderModel(
   criteria: { key: string; value: string }[],
   cb: (
     err: ServiceError | null,
-    response: GetAllAssistantProviderModelResponse | null
+    response: GetAllAssistantProviderResponse | null
   ) => void,
   authHeader: ClientAuthInfo | UserAuthInfo
 ) {
-  const req = new GetAllAssistantProviderModelRequest();
+  const req = new GetAllAssistantProviderRequest();
   req.setAssistantid(assistantId);
 
   const paginate = new Paginate();
@@ -244,7 +246,7 @@ export function GetAllAssistantProviderModel(
   paginate.setPagesize(pageSize);
   req.setPaginate(paginate);
 
-  return connectionConfig.assistantClient.getAllAssistantProviderModel(
+  return connectionConfig.assistantClient.getAllAssistantProvider(
     req,
     WithAuthContext(authHeader),
     cb
@@ -278,80 +280,54 @@ export function GetAssistant(
 }
 
 /**
- * Create a new assistant provider model.
  *
- * @param assistantId - The ID of the assistant.
- * @param assistantProviderModel - Attributes for the new provider model.
- * @param authHeader - Authentication headers for the request.
- * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
+ * @param connectionConfig
+ * @param req
+ * @param authHeader
+ * @returns
  */
-export function CreateAssistantProviderModel(
+export function CreateAssistantProvider(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  template: TextChatCompletePrompt,
-  modelProviderId: string,
-  modelProviderName: string,
-  modelProviderOptions: Array<Metadata>,
-  description: string,
-  authHeader: UserAuthInfo,
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantProviderModelResponse | null
-  ) => void
-) {
-  const req = new CreateAssistantProviderModelRequest();
-  req.setAssistantid(assistantId);
-  req.setDescription(description);
-  req.setAssistantmodeloptionsList(modelProviderOptions);
-  req.setModelproviderid(modelProviderId);
-  req.setTemplate(template);
-  req.setModelprovidername(modelProviderName);
-  return connectionConfig.assistantClient.createAssistantProviderModel(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: CreateAssistantProviderRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<GetAssistantProviderResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.createAssistantProvider(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantProviderResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**
- * Create a new assistant with the specified attributes.
  *
- * @param assistantProviderModel - Attributes for the assistant provider model.
- * @param assistantAttributes - Attributes for the assistant.
- * @param assistantKnowledgeConfig - Knowledge configuration attributes for the assistant.
- * @param tags - Tags associated with the assistant.
- * @param authHeader - Authentication headers for the request.
- * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
+ * @param connectionConfig
+ * @param req
+ * @param authHeader
+ * @returns
  */
 export function CreateAssistant(
   connectionConfig: ConnectionConfig,
-  name: string,
-  description: string,
-  tagsList: Array<string>,
-  assistantProviderModel: CreateAssistantProviderModelRequest,
-  tags: string[],
-  authHeader: UserAuthInfo,
-  cb: (err: ServiceError | null, response: GetAssistantResponse | null) => void,
-  assistantKnowledgeConfig?: Array<CreateAssistantKnowledgeRequest>,
-  assistantToolConfig?: Array<CreateAssistantToolRequest>
-) {
-  const req = new CreateAssistantRequest();
-  req.setName(name);
-  req.setDescription(description);
-  req.setTagsList(tagsList);
-  req.setAssistantprovidermodel(assistantProviderModel);
-  if (assistantKnowledgeConfig)
-    req.setAssistantknowledgesList(assistantKnowledgeConfig);
-  if (assistantToolConfig) req.setAssistanttoolsList(assistantToolConfig);
-
-  req.setTagsList(tags);
-  return connectionConfig.assistantClient.createAssistant(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: CreateAssistantRequest,
+  authHeader: UserAuthInfo
+): Promise<GetAssistantResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.createAssistant(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (err: ServiceError | null, response: GetAssistantResponse | null) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**

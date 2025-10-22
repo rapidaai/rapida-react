@@ -29,7 +29,6 @@ import {
   AssistantConversationConfiguration,
   AssistantConversationMessageTextContent,
   AssistantConversationUserMessage,
-  AssistantDefinition,
   AssistantMessagingRequest,
   AssistantMessagingResponse,
   CreateConversationMetricRequest,
@@ -40,7 +39,7 @@ import { ConnectionState } from "@/rapida/types/connection-state";
 import { AgentEventCallback } from "@/rapida/types/agent-event-callback";
 import { EventEmitter } from "events";
 import type TypedEmitter from "typed-emitter";
-import { Metric } from "@/rapida/clients/protos/common_pb";
+import { AssistantDefinition, Metric } from "@/rapida/clients/protos/common_pb";
 import { Message as LocalMessage, MessageRole } from "@/rapida/types/message";
 import { AgentEvent } from "@/rapida/types/agent-event";
 import {
@@ -50,17 +49,11 @@ import {
 } from "@/rapida/clients/talk";
 import { getFeedback } from "@/rapida/types/feedback";
 import {
-  Assistant,
   GetAssistantRequest,
   GetAssistantResponse,
 } from "@/rapida/clients/protos/assistant-api_pb";
 import { GetAssistant } from "@/rapida/clients/assistant";
-import { SDK_SOURCE } from "@/rapida/utils/rapida_source";
-import {
-  AgentDeployment,
-  GetDeployment,
-} from "@/rapida/types/agent-deployment";
-import { HEADER_SOURCE_KEY } from "@/rapida/utils/rapida_header";
+
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 import { AssistantConversationMessageAudioContent } from "../clients/protos/talk-api_pb";
 
@@ -574,11 +567,12 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     version?: string
   ): Promise<GetAssistantResponse> {
     const req = new GetAssistantRequest();
-    req.setId(agentId);
-
+    const assistantDef = new AssistantDefinition();
+    assistantDef.setAssistantid(agentId);
     if (version) {
-      req.setAssistantprovidermodelid(version);
+      assistantDef.setVersion(version);
     }
+    req.setAssistantdefinition(assistantDef);
     return GetAssistant(this._connectionConfig, req);
   }
 

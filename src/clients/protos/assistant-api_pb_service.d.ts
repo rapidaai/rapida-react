@@ -7,6 +7,7 @@ import * as assistant_tool_pb from "./assistant-tool_pb";
 import * as assistant_analysis_pb from "./assistant-analysis_pb";
 import * as assistant_webhook_pb from "./assistant-webhook_pb";
 import * as assistant_knowledge_pb from "./assistant-knowledge_pb";
+import * as assistant_provider_pb from "./assistant-provider_pb";
 import {grpc} from "@improbable-eng/grpc-web";
 
 type AssistantServiceGetAssistant = {
@@ -45,22 +46,22 @@ type AssistantServiceDeleteAssistant = {
   readonly responseType: typeof assistant_api_pb.GetAssistantResponse;
 };
 
-type AssistantServiceGetAllAssistantProviderModel = {
+type AssistantServiceGetAllAssistantProvider = {
   readonly methodName: string;
   readonly service: typeof AssistantService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof assistant_api_pb.GetAllAssistantProviderModelRequest;
-  readonly responseType: typeof assistant_api_pb.GetAllAssistantProviderModelResponse;
+  readonly requestType: typeof assistant_provider_pb.GetAllAssistantProviderRequest;
+  readonly responseType: typeof assistant_provider_pb.GetAllAssistantProviderResponse;
 };
 
-type AssistantServiceCreateAssistantProviderModel = {
+type AssistantServiceCreateAssistantProvider = {
   readonly methodName: string;
   readonly service: typeof AssistantService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof assistant_api_pb.CreateAssistantProviderModelRequest;
-  readonly responseType: typeof assistant_api_pb.GetAssistantProviderModelResponse;
+  readonly requestType: typeof assistant_provider_pb.CreateAssistantProviderRequest;
+  readonly responseType: typeof assistant_provider_pb.GetAssistantProviderResponse;
 };
 
 type AssistantServiceCreateAssistantTag = {
@@ -77,7 +78,7 @@ type AssistantServiceUpdateAssistantVersion = {
   readonly service: typeof AssistantService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof assistant_api_pb.UpdateAssistantVersionRequest;
+  readonly requestType: typeof assistant_provider_pb.UpdateAssistantVersionRequest;
   readonly responseType: typeof assistant_api_pb.GetAssistantResponse;
 };
 
@@ -115,6 +116,15 @@ type AssistantServiceGetAllMessage = {
   readonly responseStream: false;
   readonly requestType: typeof assistant_api_pb.GetAllMessageRequest;
   readonly responseType: typeof assistant_api_pb.GetAllMessageResponse;
+};
+
+type AssistantServiceGetAllAssistantTelemetry = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.GetAllAssistantTelemetryRequest;
+  readonly responseType: typeof assistant_api_pb.GetAllAssistantTelemetryResponse;
 };
 
 type AssistantServiceGetAllAssistantConversation = {
@@ -357,14 +367,15 @@ export class AssistantService {
   static readonly GetAllAssistant: AssistantServiceGetAllAssistant;
   static readonly CreateAssistant: AssistantServiceCreateAssistant;
   static readonly DeleteAssistant: AssistantServiceDeleteAssistant;
-  static readonly GetAllAssistantProviderModel: AssistantServiceGetAllAssistantProviderModel;
-  static readonly CreateAssistantProviderModel: AssistantServiceCreateAssistantProviderModel;
+  static readonly GetAllAssistantProvider: AssistantServiceGetAllAssistantProvider;
+  static readonly CreateAssistantProvider: AssistantServiceCreateAssistantProvider;
   static readonly CreateAssistantTag: AssistantServiceCreateAssistantTag;
   static readonly UpdateAssistantVersion: AssistantServiceUpdateAssistantVersion;
   static readonly UpdateAssistantDetail: AssistantServiceUpdateAssistantDetail;
   static readonly GetAllAssistantMessage: AssistantServiceGetAllAssistantMessage;
   static readonly GetAllConversationMessage: AssistantServiceGetAllConversationMessage;
   static readonly GetAllMessage: AssistantServiceGetAllMessage;
+  static readonly GetAllAssistantTelemetry: AssistantServiceGetAllAssistantTelemetry;
   static readonly GetAllAssistantConversation: AssistantServiceGetAllAssistantConversation;
   static readonly GetAssistantConversation: AssistantServiceGetAssistantConversation;
   static readonly GetAssistantWebhookLog: AssistantServiceGetAssistantWebhookLog;
@@ -461,23 +472,23 @@ export class AssistantServiceClient {
     requestMessage: assistant_api_pb.DeleteAssistantRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantResponse|null) => void
   ): UnaryResponse;
-  getAllAssistantProviderModel(
-    requestMessage: assistant_api_pb.GetAllAssistantProviderModelRequest,
+  getAllAssistantProvider(
+    requestMessage: assistant_provider_pb.GetAllAssistantProviderRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAllAssistantProviderModelResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_provider_pb.GetAllAssistantProviderResponse|null) => void
   ): UnaryResponse;
-  getAllAssistantProviderModel(
-    requestMessage: assistant_api_pb.GetAllAssistantProviderModelRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAllAssistantProviderModelResponse|null) => void
+  getAllAssistantProvider(
+    requestMessage: assistant_provider_pb.GetAllAssistantProviderRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_provider_pb.GetAllAssistantProviderResponse|null) => void
   ): UnaryResponse;
-  createAssistantProviderModel(
-    requestMessage: assistant_api_pb.CreateAssistantProviderModelRequest,
+  createAssistantProvider(
+    requestMessage: assistant_provider_pb.CreateAssistantProviderRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantProviderModelResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_provider_pb.GetAssistantProviderResponse|null) => void
   ): UnaryResponse;
-  createAssistantProviderModel(
-    requestMessage: assistant_api_pb.CreateAssistantProviderModelRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantProviderModelResponse|null) => void
+  createAssistantProvider(
+    requestMessage: assistant_provider_pb.CreateAssistantProviderRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_provider_pb.GetAssistantProviderResponse|null) => void
   ): UnaryResponse;
   createAssistantTag(
     requestMessage: assistant_api_pb.CreateAssistantTagRequest,
@@ -489,12 +500,12 @@ export class AssistantServiceClient {
     callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantResponse|null) => void
   ): UnaryResponse;
   updateAssistantVersion(
-    requestMessage: assistant_api_pb.UpdateAssistantVersionRequest,
+    requestMessage: assistant_provider_pb.UpdateAssistantVersionRequest,
     metadata: grpc.Metadata,
     callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantResponse|null) => void
   ): UnaryResponse;
   updateAssistantVersion(
-    requestMessage: assistant_api_pb.UpdateAssistantVersionRequest,
+    requestMessage: assistant_provider_pb.UpdateAssistantVersionRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantResponse|null) => void
   ): UnaryResponse;
   updateAssistantDetail(
@@ -532,6 +543,15 @@ export class AssistantServiceClient {
   getAllMessage(
     requestMessage: assistant_api_pb.GetAllMessageRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAllMessageResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantTelemetry(
+    requestMessage: assistant_api_pb.GetAllAssistantTelemetryRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAllAssistantTelemetryResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantTelemetry(
+    requestMessage: assistant_api_pb.GetAllAssistantTelemetryRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAllAssistantTelemetryResponse|null) => void
   ): UnaryResponse;
   getAllAssistantConversation(
     requestMessage: common_pb.GetAllAssistantConversationRequest,
