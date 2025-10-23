@@ -51,23 +51,19 @@ import { ConnectionConfig } from "@/rapida/types/connection-config";
  */
 export function CreateProviderKey(
   connectionConfig: ConnectionConfig,
-  providerId: string,
-  providerName: string,
-  credential: {},
-  name: string,
-  cb: (err: ServiceError | null, cpkr: GetCredentialResponse | null) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const requestObject = new CreateProviderCredentialRequest();
-  requestObject.setProviderid(providerId);
-  requestObject.setProvidername(providerName);
-  requestObject.setCredential(Struct.fromJavaScript(credential));
-  requestObject.setName(name);
-  connectionConfig.vaultClient.createProviderCredential(
-    requestObject,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: CreateProviderCredentialRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<GetCredentialResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.vaultClient.createProviderCredential(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (err: ServiceError | null, response: GetCredentialResponse | null) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**
