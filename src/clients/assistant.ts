@@ -192,20 +192,19 @@ export function GetAllAssistant(
  */
 export function UpdateAssistantVersion(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  assistantProviderModelId: string,
-  cb: (err: ServiceError | null, response: GetAssistantResponse | null) => void,
-  authHeader: UserAuthInfo
-) {
-  const req = new UpdateAssistantVersionRequest();
-  req.setAssistantid(assistantId);
-  req.setAssistantproviderid(assistantProviderModelId);
-
-  return connectionConfig.assistantClient.updateAssistantVersion(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: UpdateAssistantVersionRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.updateAssistantVersion(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (err: ServiceError | null, response: GetAssistantResponse | null) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**
