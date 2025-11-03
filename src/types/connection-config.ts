@@ -60,6 +60,7 @@ import {
   HEADER_PROJECT_ID,
   HEADER_SOURCE_KEY,
 } from "@/rapida/utils/rapida_header";
+import { LeadGeneratorServiceClient } from "@/rapida/clients/protos/lead-api_pb_service";
 
 /**
  *
@@ -220,6 +221,13 @@ export class ConnectionConfig {
 
   get assistantClient(): AssistantServiceClient {
     return new AssistantServiceClient(
+      this.endpoint.web,
+      this.getClientOptions()
+    );
+  }
+
+  get leadGeneratorClient(): LeadGeneratorServiceClient {
+    return new LeadGeneratorServiceClient(
       this.endpoint.web,
       this.getClientOptions()
     );

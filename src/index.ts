@@ -23,7 +23,8 @@
  *
  */
 export { VoiceAgent } from "@/rapida/agents/voice-agent";
-
+import { CreateLeadRequest } from "@/rapida/clients/protos/lead-api_pb";
+import { CreateLead } from "@/rapida/clients/lead";
 export {
   toTextContent,
   toContentText,
@@ -321,10 +322,6 @@ export {
 } from "@/rapida/clients/protos/provider-api_pb_service";
 export {
   AssistantMessagingRequest,
-  AssistantConversationConfiguration,
-  AssistantConversationInterruption,
-  AssistantConversationUserMessage,
-  AssistantConversationAssistantMessage,
   AssistantMessagingResponse,
   CreateMessageMetricRequest,
   CreateMessageMetricResponse,
@@ -447,6 +444,10 @@ export {
   AssistantConversationRecording,
   AssistantDefinition,
   Telemetry,
+  AssistantConversationConfiguration,
+  AssistantConversationInterruption,
+  AssistantConversationUserMessage,
+  AssistantConversationAssistantMessage,
 } from "@/rapida/clients/protos/common_pb";
 export {
   AssistantService,
@@ -670,3 +671,5 @@ export {
   UpdateAssistantVersionRequest,
   GetAllAssistantProviderResponse,
 } from "@/rapida/clients/protos/assistant-provider_pb";
+
+export { CreateLeadRequest, CreateLead };

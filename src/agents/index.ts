@@ -26,9 +26,6 @@
 import { AgentConfig } from "@/rapida/types/agent-config";
 import { AgentCallback } from "@/rapida/types/agent-callback";
 import {
-  AssistantConversationConfiguration,
-  AssistantConversationMessageTextContent,
-  AssistantConversationUserMessage,
   AssistantMessagingRequest,
   AssistantMessagingResponse,
   CreateConversationMetricRequest,
@@ -55,8 +52,12 @@ import {
 import { GetAssistant } from "@/rapida/clients/assistant";
 
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
-import { AssistantConversationMessageAudioContent } from "../clients/protos/talk-api_pb";
-
+import {
+  AssistantConversationConfiguration,
+  AssistantConversationMessageTextContent,
+  AssistantConversationUserMessage,
+  AssistantConversationMessageAudioContent,
+} from "@/rapida/clients/protos/common_pb";
 /**
  * Rapida Agent SDK
  *

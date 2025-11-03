@@ -32,7 +32,7 @@ import {
   AssistantConverstationEndpointAction,
   AssistantConverstationHoldAction,
   AssistantConverstationKnowledgeRetrievalAction,
-} from "@/rapida/clients/protos/talk-api_pb";
+} from "@/rapida/clients/protos/common_pb";
 
 import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
 import { toContentText } from "@/rapida/utils/rapida_content";

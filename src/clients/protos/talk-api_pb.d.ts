@@ -3,378 +3,18 @@
 
 import * as jspb from "google-protobuf";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
-import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
 import * as common_pb from "./common_pb";
-
-export class AssistantConversationConfiguration extends jspb.Message {
-  getAssistantconversationid(): string;
-  setAssistantconversationid(value: string): void;
-
-  hasAssistant(): boolean;
-  clearAssistant(): void;
-  getAssistant(): common_pb.AssistantDefinition | undefined;
-  setAssistant(value?: common_pb.AssistantDefinition): void;
-
-  hasTime(): boolean;
-  clearTime(): void;
-  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
-
-  getMetadataMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
-  clearMetadataMap(): void;
-  getArgsMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
-  clearArgsMap(): void;
-  getOptionsMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
-  clearOptionsMap(): void;
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConversationConfiguration.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConversationConfiguration): AssistantConversationConfiguration.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConversationConfiguration, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConversationConfiguration;
-  static deserializeBinaryFromReader(message: AssistantConversationConfiguration, reader: jspb.BinaryReader): AssistantConversationConfiguration;
-}
-
-export namespace AssistantConversationConfiguration {
-  export type AsObject = {
-    assistantconversationid: string,
-    assistant?: common_pb.AssistantDefinition.AsObject,
-    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-    metadataMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
-    argsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
-    optionsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
-  }
-}
-
-export class AssistantConversationDisconnectAction extends jspb.Message {
-  getReason(): string;
-  setReason(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConversationDisconnectAction.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConversationDisconnectAction): AssistantConversationDisconnectAction.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConversationDisconnectAction, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConversationDisconnectAction;
-  static deserializeBinaryFromReader(message: AssistantConversationDisconnectAction, reader: jspb.BinaryReader): AssistantConversationDisconnectAction;
-}
-
-export namespace AssistantConversationDisconnectAction {
-  export type AsObject = {
-    reason: string,
-  }
-}
-
-export class AssistantConverstationHoldAction extends jspb.Message {
-  getHoldtime(): number;
-  setHoldtime(value: number): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConverstationHoldAction.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConverstationHoldAction): AssistantConverstationHoldAction.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConverstationHoldAction, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConverstationHoldAction;
-  static deserializeBinaryFromReader(message: AssistantConverstationHoldAction, reader: jspb.BinaryReader): AssistantConverstationHoldAction;
-}
-
-export namespace AssistantConverstationHoldAction {
-  export type AsObject = {
-    holdtime: number,
-  }
-}
-
-export class AssistantConverstationKnowledgeRetrievalAction extends jspb.Message {
-  getQuery(): string;
-  setQuery(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConverstationKnowledgeRetrievalAction.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConverstationKnowledgeRetrievalAction): AssistantConverstationKnowledgeRetrievalAction.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConverstationKnowledgeRetrievalAction, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConverstationKnowledgeRetrievalAction;
-  static deserializeBinaryFromReader(message: AssistantConverstationKnowledgeRetrievalAction, reader: jspb.BinaryReader): AssistantConverstationKnowledgeRetrievalAction;
-}
-
-export namespace AssistantConverstationKnowledgeRetrievalAction {
-  export type AsObject = {
-    query: string,
-  }
-}
-
-export class AssistantConverstationApiRequestAction extends jspb.Message {
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConverstationApiRequestAction.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConverstationApiRequestAction): AssistantConverstationApiRequestAction.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConverstationApiRequestAction, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConverstationApiRequestAction;
-  static deserializeBinaryFromReader(message: AssistantConverstationApiRequestAction, reader: jspb.BinaryReader): AssistantConverstationApiRequestAction;
-}
-
-export namespace AssistantConverstationApiRequestAction {
-  export type AsObject = {
-  }
-}
-
-export class AssistantConverstationEndpointAction extends jspb.Message {
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConverstationEndpointAction.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConverstationEndpointAction): AssistantConverstationEndpointAction.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConverstationEndpointAction, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConverstationEndpointAction;
-  static deserializeBinaryFromReader(message: AssistantConverstationEndpointAction, reader: jspb.BinaryReader): AssistantConverstationEndpointAction;
-}
-
-export namespace AssistantConverstationEndpointAction {
-  export type AsObject = {
-  }
-}
-
-export class AssistantConversationDeviationAction extends jspb.Message {
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConversationDeviationAction.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConversationDeviationAction): AssistantConversationDeviationAction.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConversationDeviationAction, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConversationDeviationAction;
-  static deserializeBinaryFromReader(message: AssistantConversationDeviationAction, reader: jspb.BinaryReader): AssistantConversationDeviationAction;
-}
-
-export namespace AssistantConversationDeviationAction {
-  export type AsObject = {
-  }
-}
-
-export class AssistantConversationAssistantTransferAction extends jspb.Message {
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConversationAssistantTransferAction.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConversationAssistantTransferAction): AssistantConversationAssistantTransferAction.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConversationAssistantTransferAction, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConversationAssistantTransferAction;
-  static deserializeBinaryFromReader(message: AssistantConversationAssistantTransferAction, reader: jspb.BinaryReader): AssistantConversationAssistantTransferAction;
-}
-
-export namespace AssistantConversationAssistantTransferAction {
-  export type AsObject = {
-  }
-}
-
-export class AssistantConversationPhoneCallTransferAction extends jspb.Message {
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConversationPhoneCallTransferAction.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConversationPhoneCallTransferAction): AssistantConversationPhoneCallTransferAction.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConversationPhoneCallTransferAction, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConversationPhoneCallTransferAction;
-  static deserializeBinaryFromReader(message: AssistantConversationPhoneCallTransferAction, reader: jspb.BinaryReader): AssistantConversationPhoneCallTransferAction;
-}
-
-export namespace AssistantConversationPhoneCallTransferAction {
-  export type AsObject = {
-  }
-}
-
-export class AssistantConversationInterruption extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  getType(): AssistantConversationInterruption.InterruptionTypeMap[keyof AssistantConversationInterruption.InterruptionTypeMap];
-  setType(value: AssistantConversationInterruption.InterruptionTypeMap[keyof AssistantConversationInterruption.InterruptionTypeMap]): void;
-
-  hasTime(): boolean;
-  clearTime(): void;
-  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConversationInterruption.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConversationInterruption): AssistantConversationInterruption.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConversationInterruption, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConversationInterruption;
-  static deserializeBinaryFromReader(message: AssistantConversationInterruption, reader: jspb.BinaryReader): AssistantConversationInterruption;
-}
-
-export namespace AssistantConversationInterruption {
-  export type AsObject = {
-    id: string,
-    type: AssistantConversationInterruption.InterruptionTypeMap[keyof AssistantConversationInterruption.InterruptionTypeMap],
-    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-  }
-
-  export interface InterruptionTypeMap {
-    INTERRUPTION_TYPE_UNSPECIFIED: 0;
-    INTERRUPTION_TYPE_VAD: 1;
-    INTERRUPTION_TYPE_WORD: 2;
-  }
-
-  export const InterruptionType: InterruptionTypeMap;
-}
-
-export class AssistantConversationMessageTextContent extends jspb.Message {
-  getContent(): string;
-  setContent(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConversationMessageTextContent.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConversationMessageTextContent): AssistantConversationMessageTextContent.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConversationMessageTextContent, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConversationMessageTextContent;
-  static deserializeBinaryFromReader(message: AssistantConversationMessageTextContent, reader: jspb.BinaryReader): AssistantConversationMessageTextContent;
-}
-
-export namespace AssistantConversationMessageTextContent {
-  export type AsObject = {
-    content: string,
-  }
-}
-
-export class AssistantConversationMessageAudioContent extends jspb.Message {
-  getContent(): Uint8Array | string;
-  getContent_asU8(): Uint8Array;
-  getContent_asB64(): string;
-  setContent(value: Uint8Array | string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConversationMessageAudioContent.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConversationMessageAudioContent): AssistantConversationMessageAudioContent.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConversationMessageAudioContent, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConversationMessageAudioContent;
-  static deserializeBinaryFromReader(message: AssistantConversationMessageAudioContent, reader: jspb.BinaryReader): AssistantConversationMessageAudioContent;
-}
-
-export namespace AssistantConversationMessageAudioContent {
-  export type AsObject = {
-    content: Uint8Array | string,
-  }
-}
-
-export class AssistantConversationUserMessage extends jspb.Message {
-  hasAudio(): boolean;
-  clearAudio(): void;
-  getAudio(): AssistantConversationMessageAudioContent | undefined;
-  setAudio(value?: AssistantConversationMessageAudioContent): void;
-
-  hasText(): boolean;
-  clearText(): void;
-  getText(): AssistantConversationMessageTextContent | undefined;
-  setText(value?: AssistantConversationMessageTextContent): void;
-
-  getId(): string;
-  setId(value: string): void;
-
-  getCompleted(): boolean;
-  setCompleted(value: boolean): void;
-
-  hasTime(): boolean;
-  clearTime(): void;
-  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
-
-  getMessageCase(): AssistantConversationUserMessage.MessageCase;
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConversationUserMessage.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConversationUserMessage): AssistantConversationUserMessage.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConversationUserMessage, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConversationUserMessage;
-  static deserializeBinaryFromReader(message: AssistantConversationUserMessage, reader: jspb.BinaryReader): AssistantConversationUserMessage;
-}
-
-export namespace AssistantConversationUserMessage {
-  export type AsObject = {
-    audio?: AssistantConversationMessageAudioContent.AsObject,
-    text?: AssistantConversationMessageTextContent.AsObject,
-    id: string,
-    completed: boolean,
-    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-  }
-
-  export enum MessageCase {
-    MESSAGE_NOT_SET = 0,
-    AUDIO = 10,
-    TEXT = 11,
-  }
-}
-
-export class AssistantConversationAssistantMessage extends jspb.Message {
-  hasAudio(): boolean;
-  clearAudio(): void;
-  getAudio(): AssistantConversationMessageAudioContent | undefined;
-  setAudio(value?: AssistantConversationMessageAudioContent): void;
-
-  hasText(): boolean;
-  clearText(): void;
-  getText(): AssistantConversationMessageTextContent | undefined;
-  setText(value?: AssistantConversationMessageTextContent): void;
-
-  getId(): string;
-  setId(value: string): void;
-
-  getCompleted(): boolean;
-  setCompleted(value: boolean): void;
-
-  hasTime(): boolean;
-  clearTime(): void;
-  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
-
-  getMessageCase(): AssistantConversationAssistantMessage.MessageCase;
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AssistantConversationAssistantMessage.AsObject;
-  static toObject(includeInstance: boolean, msg: AssistantConversationAssistantMessage): AssistantConversationAssistantMessage.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AssistantConversationAssistantMessage, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AssistantConversationAssistantMessage;
-  static deserializeBinaryFromReader(message: AssistantConversationAssistantMessage, reader: jspb.BinaryReader): AssistantConversationAssistantMessage;
-}
-
-export namespace AssistantConversationAssistantMessage {
-  export type AsObject = {
-    audio?: AssistantConversationMessageAudioContent.AsObject,
-    text?: AssistantConversationMessageTextContent.AsObject,
-    id: string,
-    completed: boolean,
-    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-  }
-
-  export enum MessageCase {
-    MESSAGE_NOT_SET = 0,
-    AUDIO = 10,
-    TEXT = 11,
-  }
-}
 
 export class AssistantMessagingRequest extends jspb.Message {
   hasConfiguration(): boolean;
   clearConfiguration(): void;
-  getConfiguration(): AssistantConversationConfiguration | undefined;
-  setConfiguration(value?: AssistantConversationConfiguration): void;
+  getConfiguration(): common_pb.AssistantConversationConfiguration | undefined;
+  setConfiguration(value?: common_pb.AssistantConversationConfiguration): void;
 
   hasMessage(): boolean;
   clearMessage(): void;
-  getMessage(): AssistantConversationUserMessage | undefined;
-  setMessage(value?: AssistantConversationUserMessage): void;
+  getMessage(): common_pb.AssistantConversationUserMessage | undefined;
+  setMessage(value?: common_pb.AssistantConversationUserMessage): void;
 
   getRequestCase(): AssistantMessagingRequest.RequestCase;
   serializeBinary(): Uint8Array;
@@ -389,8 +29,8 @@ export class AssistantMessagingRequest extends jspb.Message {
 
 export namespace AssistantMessagingRequest {
   export type AsObject = {
-    configuration?: AssistantConversationConfiguration.AsObject,
-    message?: AssistantConversationUserMessage.AsObject,
+    configuration?: common_pb.AssistantConversationConfiguration.AsObject,
+    message?: common_pb.AssistantConversationUserMessage.AsObject,
   }
 
   export enum RequestCase {
@@ -414,23 +54,23 @@ export class AssistantMessagingResponse extends jspb.Message {
 
   hasConfiguration(): boolean;
   clearConfiguration(): void;
-  getConfiguration(): AssistantConversationConfiguration | undefined;
-  setConfiguration(value?: AssistantConversationConfiguration): void;
+  getConfiguration(): common_pb.AssistantConversationConfiguration | undefined;
+  setConfiguration(value?: common_pb.AssistantConversationConfiguration): void;
 
   hasInterruption(): boolean;
   clearInterruption(): void;
-  getInterruption(): AssistantConversationInterruption | undefined;
-  setInterruption(value?: AssistantConversationInterruption): void;
+  getInterruption(): common_pb.AssistantConversationInterruption | undefined;
+  setInterruption(value?: common_pb.AssistantConversationInterruption): void;
 
   hasUser(): boolean;
   clearUser(): void;
-  getUser(): AssistantConversationUserMessage | undefined;
-  setUser(value?: AssistantConversationUserMessage): void;
+  getUser(): common_pb.AssistantConversationUserMessage | undefined;
+  setUser(value?: common_pb.AssistantConversationUserMessage): void;
 
   hasAssistant(): boolean;
   clearAssistant(): void;
-  getAssistant(): AssistantConversationAssistantMessage | undefined;
-  setAssistant(value?: AssistantConversationAssistantMessage): void;
+  getAssistant(): common_pb.AssistantConversationAssistantMessage | undefined;
+  setAssistant(value?: common_pb.AssistantConversationAssistantMessage): void;
 
   hasMessage(): boolean;
   clearMessage(): void;
@@ -439,43 +79,43 @@ export class AssistantMessagingResponse extends jspb.Message {
 
   hasDisconnectaction(): boolean;
   clearDisconnectaction(): void;
-  getDisconnectaction(): AssistantConversationDisconnectAction | undefined;
-  setDisconnectaction(value?: AssistantConversationDisconnectAction): void;
+  getDisconnectaction(): common_pb.AssistantConversationDisconnectAction | undefined;
+  setDisconnectaction(value?: common_pb.AssistantConversationDisconnectAction): void;
 
   hasHoldaction(): boolean;
   clearHoldaction(): void;
-  getHoldaction(): AssistantConverstationHoldAction | undefined;
-  setHoldaction(value?: AssistantConverstationHoldAction): void;
+  getHoldaction(): common_pb.AssistantConverstationHoldAction | undefined;
+  setHoldaction(value?: common_pb.AssistantConverstationHoldAction): void;
 
   hasKnowledgeretrievalaction(): boolean;
   clearKnowledgeretrievalaction(): void;
-  getKnowledgeretrievalaction(): AssistantConverstationKnowledgeRetrievalAction | undefined;
-  setKnowledgeretrievalaction(value?: AssistantConverstationKnowledgeRetrievalAction): void;
+  getKnowledgeretrievalaction(): common_pb.AssistantConverstationKnowledgeRetrievalAction | undefined;
+  setKnowledgeretrievalaction(value?: common_pb.AssistantConverstationKnowledgeRetrievalAction): void;
 
   hasApirequestaction(): boolean;
   clearApirequestaction(): void;
-  getApirequestaction(): AssistantConverstationApiRequestAction | undefined;
-  setApirequestaction(value?: AssistantConverstationApiRequestAction): void;
+  getApirequestaction(): common_pb.AssistantConverstationApiRequestAction | undefined;
+  setApirequestaction(value?: common_pb.AssistantConverstationApiRequestAction): void;
 
   hasEndpointaction(): boolean;
   clearEndpointaction(): void;
-  getEndpointaction(): AssistantConverstationEndpointAction | undefined;
-  setEndpointaction(value?: AssistantConverstationEndpointAction): void;
+  getEndpointaction(): common_pb.AssistantConverstationEndpointAction | undefined;
+  setEndpointaction(value?: common_pb.AssistantConverstationEndpointAction): void;
 
   hasDeviationaction(): boolean;
   clearDeviationaction(): void;
-  getDeviationaction(): AssistantConversationDeviationAction | undefined;
-  setDeviationaction(value?: AssistantConversationDeviationAction): void;
+  getDeviationaction(): common_pb.AssistantConversationDeviationAction | undefined;
+  setDeviationaction(value?: common_pb.AssistantConversationDeviationAction): void;
 
   hasAssistanttransferaction(): boolean;
   clearAssistanttransferaction(): void;
-  getAssistanttransferaction(): AssistantConversationAssistantTransferAction | undefined;
-  setAssistanttransferaction(value?: AssistantConversationAssistantTransferAction): void;
+  getAssistanttransferaction(): common_pb.AssistantConversationAssistantTransferAction | undefined;
+  setAssistanttransferaction(value?: common_pb.AssistantConversationAssistantTransferAction): void;
 
   hasPhonecalltransferaction(): boolean;
   clearPhonecalltransferaction(): void;
-  getPhonecalltransferaction(): AssistantConversationPhoneCallTransferAction | undefined;
-  setPhonecalltransferaction(value?: AssistantConversationPhoneCallTransferAction): void;
+  getPhonecalltransferaction(): common_pb.AssistantConversationPhoneCallTransferAction | undefined;
+  setPhonecalltransferaction(value?: common_pb.AssistantConversationPhoneCallTransferAction): void;
 
   getDataCase(): AssistantMessagingResponse.DataCase;
   serializeBinary(): Uint8Array;
@@ -493,19 +133,19 @@ export namespace AssistantMessagingResponse {
     code: number,
     success: boolean,
     error?: common_pb.Error.AsObject,
-    configuration?: AssistantConversationConfiguration.AsObject,
-    interruption?: AssistantConversationInterruption.AsObject,
-    user?: AssistantConversationUserMessage.AsObject,
-    assistant?: AssistantConversationAssistantMessage.AsObject,
+    configuration?: common_pb.AssistantConversationConfiguration.AsObject,
+    interruption?: common_pb.AssistantConversationInterruption.AsObject,
+    user?: common_pb.AssistantConversationUserMessage.AsObject,
+    assistant?: common_pb.AssistantConversationAssistantMessage.AsObject,
     message?: common_pb.AssistantConversationMessage.AsObject,
-    disconnectaction?: AssistantConversationDisconnectAction.AsObject,
-    holdaction?: AssistantConverstationHoldAction.AsObject,
-    knowledgeretrievalaction?: AssistantConverstationKnowledgeRetrievalAction.AsObject,
-    apirequestaction?: AssistantConverstationApiRequestAction.AsObject,
-    endpointaction?: AssistantConverstationEndpointAction.AsObject,
-    deviationaction?: AssistantConversationDeviationAction.AsObject,
-    assistanttransferaction?: AssistantConversationAssistantTransferAction.AsObject,
-    phonecalltransferaction?: AssistantConversationPhoneCallTransferAction.AsObject,
+    disconnectaction?: common_pb.AssistantConversationDisconnectAction.AsObject,
+    holdaction?: common_pb.AssistantConverstationHoldAction.AsObject,
+    knowledgeretrievalaction?: common_pb.AssistantConverstationKnowledgeRetrievalAction.AsObject,
+    apirequestaction?: common_pb.AssistantConverstationApiRequestAction.AsObject,
+    endpointaction?: common_pb.AssistantConverstationEndpointAction.AsObject,
+    deviationaction?: common_pb.AssistantConversationDeviationAction.AsObject,
+    assistanttransferaction?: common_pb.AssistantConversationAssistantTransferAction.AsObject,
+    phonecalltransferaction?: common_pb.AssistantConversationPhoneCallTransferAction.AsObject,
   }
 
   export enum DataCase {

@@ -23,13 +23,13 @@
  *
  */
 import { DeviceManager } from "@/rapida/devices/device-manager";
+import { AssistantMessagingResponse } from "@/rapida/clients/protos/talk-api_pb";
+import { AgentEvent } from "@/rapida/types/agent-event";
 import {
   AssistantConversationAssistantMessage,
   AssistantConversationInterruption,
   AssistantConversationUserMessage,
-  AssistantMessagingResponse,
-} from "@/rapida/clients/protos/talk-api_pb";
-import { AgentEvent } from "@/rapida/types/agent-event";
+} from "@/rapida/clients/protos/common_pb";
 import {
   toContentText,
   toStreamAudioContent,

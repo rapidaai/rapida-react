@@ -30,8 +30,8 @@ import {
   AssistantConversationConfiguration,
   AssistantConversationInterruption,
   AssistantConversationUserMessage,
-  AssistantMessagingResponse,
-} from "@/rapida/clients/protos/talk-api_pb";
+} from "@/rapida/clients/protos/common_pb";
+import { AssistantMessagingResponse } from "@/rapida/clients/protos/talk-api_pb";
 import { ConnectionState } from "@/rapida/types/connection-state";
 
 /**

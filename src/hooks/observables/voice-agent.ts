@@ -26,14 +26,13 @@ import { Subject, map, Observable, startWith, finalize, concat } from "rxjs";
 import { VoiceAgent } from "@/rapida/agents/voice-agent";
 import { AgentEvent } from "@/rapida/types/agent-event";
 import { ConnectionState } from "@/rapida/types/connection-state";
+import { AssistantMessagingResponse } from "@/rapida/clients/protos/talk-api_pb";
 import {
   AssistantConversationConfiguration,
   AssistantConversationInterruption,
   AssistantConversationUserMessage,
   AssistantConversationAssistantMessage,
-  AssistantMessagingResponse,
-} from "@/rapida/clients/protos/talk-api_pb";
-
+} from "@/rapida/clients/protos/common_pb";
 /**
  * Utility function to observe a specific agent event.
  * @param agent The voice agent instance.
