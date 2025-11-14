@@ -68,6 +68,15 @@ type AuthenticationServiceCreatePassword = {
   readonly responseType: typeof web_api_pb.CreatePasswordResponse;
 };
 
+type AuthenticationServiceChangePassword = {
+  readonly methodName: string;
+  readonly service: typeof AuthenticationService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof web_api_pb.ChangePasswordRequest;
+  readonly responseType: typeof web_api_pb.ChangePasswordResponse;
+};
+
 type AuthenticationServiceGetUser = {
   readonly methodName: string;
   readonly service: typeof AuthenticationService;
@@ -131,6 +140,7 @@ export class AuthenticationService {
   static readonly VerifyToken: AuthenticationServiceVerifyToken;
   static readonly ForgotPassword: AuthenticationServiceForgotPassword;
   static readonly CreatePassword: AuthenticationServiceCreatePassword;
+  static readonly ChangePassword: AuthenticationServiceChangePassword;
   static readonly GetUser: AuthenticationServiceGetUser;
   static readonly UpdateUser: AuthenticationServiceUpdateUser;
   static readonly GetAllUser: AuthenticationServiceGetAllUser;
@@ -361,6 +371,15 @@ export class AuthenticationServiceClient {
   createPassword(
     requestMessage: web_api_pb.CreatePasswordRequest,
     callback: (error: ServiceError|null, responseMessage: web_api_pb.CreatePasswordResponse|null) => void
+  ): UnaryResponse;
+  changePassword(
+    requestMessage: web_api_pb.ChangePasswordRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.ChangePasswordResponse|null) => void
+  ): UnaryResponse;
+  changePassword(
+    requestMessage: web_api_pb.ChangePasswordRequest,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.ChangePasswordResponse|null) => void
   ): UnaryResponse;
   getUser(
     requestMessage: web_api_pb.GetUserRequest,

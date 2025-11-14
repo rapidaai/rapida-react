@@ -21,7 +21,6 @@
  *
  *  Author: Prashant <prashant@rapida.ai>
  *
- *  This module provides a function for creating a lead via the LeadService.
  */
 
 import { ServiceError } from "@/rapida/clients/types";
@@ -31,12 +30,11 @@ import {
   WithAuthContext,
 } from "@/rapida/clients";
 import { ConnectionConfig } from "@/rapida/types/connection-config";
+import { GetNotificationSettingRequest } from "./protos/notification-api_pb";
 import {
-  GetAllAssistantTelemetryRequest,
-  GetAllAssistantTelemetryResponse,
-} from "@/rapida/clients/protos/assistant-api_pb";
-import { CreateLeadRequest } from "@/rapida/clients/protos/lead-api_pb";
-import { BaseResponse } from "@/rapida/clients/protos/common_pb";
+  NotificationSettingResponse,
+  UpdateNotificationSettingRequest,
+} from "@/rapida/clients/protos/notification-api_pb";
 
 /**
  *
@@ -45,16 +43,46 @@ import { BaseResponse } from "@/rapida/clients/protos/common_pb";
  * @param auth
  * @returns
  */
-export function CreateLead(
+export function UpdateNotificationSetting(
   clientCfg: ConnectionConfig,
-  request: CreateLeadRequest,
+  request: UpdateNotificationSettingRequest,
   auth?: ClientAuthInfo | UserAuthInfo
-): Promise<BaseResponse> {
+): Promise<NotificationSettingResponse> {
   return new Promise((resolve, reject) => {
-    clientCfg.leadGeneratorClient.createLead(
+    clientCfg.notificationClient.updateNotificationSetting(
       request,
       WithAuthContext(clientCfg.auth || auth),
-      (err: ServiceError | null, response: BaseResponse | null) => {
+      (
+        err: ServiceError | null,
+        response: NotificationSettingResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+/**
+ *
+ * @param clientCfg
+ * @param request
+ * @param auth
+ * @returns
+ */
+export function GetNotificationSetting(
+  clientCfg: ConnectionConfig,
+  request: GetNotificationSettingRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<NotificationSettingResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.notificationClient.getNotificationSettting(
+      request,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: NotificationSettingResponse | null
+      ) => {
         if (err) reject(err);
         else resolve(response!);
       }

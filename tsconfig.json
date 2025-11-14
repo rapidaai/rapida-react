@@ -35,10 +35,9 @@
         "strictNullChecks": true,
         "noUnusedLocals": false,
         "noUnusedParameters": true,
-        "baseUrl": "./",
         "paths": {
             "@/rapida/*": [
-                "src/*"
+                "./src/*"
             ]
         },
         "skipLibCheck": true

@@ -44,6 +44,8 @@ import {
   CreatePasswordResponse,
   GetAllUserRequest,
   GetAllUserResponse,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
 } from "@/rapida/clients/protos/web-api_pb";
 import { Criteria, Paginate } from "@/rapida/clients/protos/common_pb";
 import { AuthenticationServiceClient } from "@/rapida/clients/protos/web-api_pb_service";
@@ -303,4 +305,28 @@ export function Github(
   if (state) requestObject.setState(state);
   if (code) requestObject.setCode(code);
   return config.authenticationClient.github(requestObject, cb);
+}
+
+/**
+ *
+ * @param clientCfg
+ * @param request
+ * @param auth
+ * @returns
+ */
+export function ChangePassword(
+  clientCfg: ConnectionConfig,
+  request: ChangePasswordRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<ChangePasswordResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.authenticationClient.changePassword(
+      request,
+      WithAuthContext(clientCfg.auth || auth),
+      (err: ServiceError | null, response: ChangePasswordResponse | null) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }

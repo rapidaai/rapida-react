@@ -259,34 +259,6 @@ export namespace ScopedAuthentication {
   }
 }
 
-export class AuthenticationError extends jspb.Message {
-  getErrorcode(): string;
-  setErrorcode(value: string): void;
-
-  getErrormessage(): string;
-  setErrormessage(value: string): void;
-
-  getHumanmessage(): string;
-  setHumanmessage(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AuthenticationError.AsObject;
-  static toObject(includeInstance: boolean, msg: AuthenticationError): AuthenticationError.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AuthenticationError, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AuthenticationError;
-  static deserializeBinaryFromReader(message: AuthenticationError, reader: jspb.BinaryReader): AuthenticationError;
-}
-
-export namespace AuthenticationError {
-  export type AsObject = {
-    errorcode: string,
-    errormessage: string,
-    humanmessage: string,
-  }
-}
-
 export class AuthenticateResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
@@ -301,8 +273,8 @@ export class AuthenticateResponse extends jspb.Message {
 
   hasError(): boolean;
   clearError(): void;
-  getError(): AuthenticationError | undefined;
-  setError(value?: AuthenticationError): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AuthenticateResponse.AsObject;
@@ -319,7 +291,7 @@ export namespace AuthenticateResponse {
     code: number,
     success: boolean,
     data?: Authentication.AsObject,
-    error?: AuthenticationError.AsObject,
+    error?: common_pb.Error.AsObject,
   }
 }
 
@@ -352,8 +324,8 @@ export class ForgotPasswordResponse extends jspb.Message {
 
   hasError(): boolean;
   clearError(): void;
-  getError(): AuthenticationError | undefined;
-  setError(value?: AuthenticationError): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ForgotPasswordResponse.AsObject;
@@ -369,7 +341,61 @@ export namespace ForgotPasswordResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    error?: AuthenticationError.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
+}
+
+export class ChangePasswordRequest extends jspb.Message {
+  getOldpassword(): string;
+  setOldpassword(value: string): void;
+
+  getPassword(): string;
+  setPassword(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ChangePasswordRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: ChangePasswordRequest): ChangePasswordRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ChangePasswordRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ChangePasswordRequest;
+  static deserializeBinaryFromReader(message: ChangePasswordRequest, reader: jspb.BinaryReader): ChangePasswordRequest;
+}
+
+export namespace ChangePasswordRequest {
+  export type AsObject = {
+    oldpassword: string,
+    password: string,
+  }
+}
+
+export class ChangePasswordResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ChangePasswordResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: ChangePasswordResponse): ChangePasswordResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ChangePasswordResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ChangePasswordResponse;
+  static deserializeBinaryFromReader(message: ChangePasswordResponse, reader: jspb.BinaryReader): ChangePasswordResponse;
+}
+
+export namespace ChangePasswordResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    error?: common_pb.Error.AsObject,
   }
 }
 
@@ -406,8 +432,8 @@ export class CreatePasswordResponse extends jspb.Message {
 
   hasError(): boolean;
   clearError(): void;
-  getError(): AuthenticationError | undefined;
-  setError(value?: AuthenticationError): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreatePasswordResponse.AsObject;
@@ -423,7 +449,7 @@ export namespace CreatePasswordResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    error?: AuthenticationError.AsObject,
+    error?: common_pb.Error.AsObject,
   }
 }
 
@@ -531,8 +557,8 @@ export class ScopedAuthenticationResponse extends jspb.Message {
 
   hasError(): boolean;
   clearError(): void;
-  getError(): AuthenticationError | undefined;
-  setError(value?: AuthenticationError): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ScopedAuthenticationResponse.AsObject;
@@ -549,7 +575,7 @@ export namespace ScopedAuthenticationResponse {
     code: number,
     success: boolean,
     data?: ScopedAuthentication.AsObject,
-    error?: AuthenticationError.AsObject,
+    error?: common_pb.Error.AsObject,
   }
 }
 
@@ -751,34 +777,6 @@ export namespace GetAllUserResponse {
   }
 }
 
-export class OrganizationError extends jspb.Message {
-  getErrorcode(): string;
-  setErrorcode(value: string): void;
-
-  getErrormessage(): string;
-  setErrormessage(value: string): void;
-
-  getHumanmessage(): string;
-  setHumanmessage(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): OrganizationError.AsObject;
-  static toObject(includeInstance: boolean, msg: OrganizationError): OrganizationError.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: OrganizationError, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): OrganizationError;
-  static deserializeBinaryFromReader(message: OrganizationError, reader: jspb.BinaryReader): OrganizationError;
-}
-
-export namespace OrganizationError {
-  export type AsObject = {
-    errorcode: string,
-    errormessage: string,
-    humanmessage: string,
-  }
-}
-
 export class CreateOrganizationRequest extends jspb.Message {
   getOrganizationname(): string;
   setOrganizationname(value: string): void;
@@ -886,8 +884,8 @@ export class GetOrganizationResponse extends jspb.Message {
 
   hasError(): boolean;
   clearError(): void;
-  getError(): OrganizationError | undefined;
-  setError(value?: OrganizationError): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): GetOrganizationResponse.AsObject;
@@ -905,7 +903,7 @@ export namespace GetOrganizationResponse {
     success: boolean,
     data?: common_pb.Organization.AsObject,
     role?: OrganizationRole.AsObject,
-    error?: OrganizationError.AsObject,
+    error?: common_pb.Error.AsObject,
   }
 }
 
@@ -928,8 +926,8 @@ export class CreateOrganizationResponse extends jspb.Message {
 
   hasError(): boolean;
   clearError(): void;
-  getError(): OrganizationError | undefined;
-  setError(value?: OrganizationError): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateOrganizationResponse.AsObject;
@@ -947,7 +945,7 @@ export namespace CreateOrganizationResponse {
     success: boolean,
     data?: common_pb.Organization.AsObject,
     role?: OrganizationRole.AsObject,
-    error?: OrganizationError.AsObject,
+    error?: common_pb.Error.AsObject,
   }
 }
 
@@ -960,8 +958,8 @@ export class UpdateOrganizationResponse extends jspb.Message {
 
   hasError(): boolean;
   clearError(): void;
-  getError(): OrganizationError | undefined;
-  setError(value?: OrganizationError): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UpdateOrganizationResponse.AsObject;
@@ -977,7 +975,7 @@ export namespace UpdateOrganizationResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    error?: OrganizationError.AsObject,
+    error?: common_pb.Error.AsObject,
   }
 }
 

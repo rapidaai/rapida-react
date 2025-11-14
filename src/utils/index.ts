@@ -56,14 +56,6 @@ export function isIOS(): boolean {
   return getBrowser()?.os === "iOS";
 }
 
-/**
- *
- * @returns
- */
-export const isElectron = (): boolean => {
-  return window.isElectron != undefined ? window.isElectron : false;
-};
-
 export function toDate(timestamp: Timestamp): Date {
   // Extract seconds and nanos from gRPC Timestamp
   const seconds = timestamp.getSeconds();

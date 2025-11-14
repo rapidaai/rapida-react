@@ -23,16 +23,13 @@
  *
  */
 export { VoiceAgent } from "@/rapida/agents/voice-agent";
-import { CreateLeadRequest } from "@/rapida/clients/protos/lead-api_pb";
-import { CreateLead } from "@/rapida/clients/lead";
 export {
   toTextContent,
   toContentText,
   toStreamAudioContent,
-} from "./utils/rapida_content";
-// all hooks
-export { useMessageFeedback } from "./hooks/use-message-feedback";
-export { useConversationFeedback } from "./hooks/use-conversation-feedback";
+} from "@/rapida/utils/rapida_content";
+export { useMessageFeedback } from "@/rapida/hooks/use-message-feedback";
+export { useConversationFeedback } from "@/rapida/hooks/use-conversation-feedback";
 export { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
 export { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
 export { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
@@ -84,7 +81,6 @@ export {
   HEADER_LONGITUDE,
 } from "@/rapida/utils/rapida_header";
 export { IndexKnowledgeDocument } from "@/rapida/clients/document";
-export { GetAllDeployment } from "@/rapida/clients/marketplace";
 export { Invoke } from "@/rapida/clients/invoke";
 export {
   AuthenticateUser,
@@ -93,6 +89,7 @@ export {
   VerifyToken,
   ForgotPassword,
   CreatePassword,
+  ChangePassword,
   GetUser,
   UpdateUser,
   GetAllUser,
@@ -100,7 +97,6 @@ export {
   Linkedin,
   Github,
 } from "@/rapida/clients/auth";
-export { GetAllProvider, GetAllToolProvider } from "@/rapida/clients/provider";
 export {
   WithPlatform,
   WithAuthContext,
@@ -250,15 +246,6 @@ export {
   GetAllAssistantKnowledgeResponse,
 } from "@/rapida/clients/protos/assistant-knowledge_pb";
 export {
-  GetAllDeploymentRequest,
-  SearchableDeployment,
-  GetAllDeploymentResponse,
-} from "@/rapida/clients/protos/marketplace-api_pb";
-export {
-  SendgridService,
-  SendgridServiceClient,
-} from "@/rapida/clients/protos/sendgrid-api_pb_service";
-export {
   BedrockService,
   OpenAiService,
   AzureService,
@@ -300,13 +287,6 @@ export {
   KnowledgeServiceClient,
 } from "@/rapida/clients/protos/knowledge-api_pb_service";
 export {
-  GetAllModelProviderRequest,
-  GetAllModelProviderResponse,
-  ToolProvider,
-  GetAllToolProviderRequest,
-  GetAllToolProviderResponse,
-} from "@/rapida/clients/protos/provider-api_pb";
-export {
   VaultCredential,
   CreateProviderCredentialRequest,
   CreateToolCredentialRequest,
@@ -316,10 +296,6 @@ export {
   GetCredentialRequest,
   GetCredentialResponse,
 } from "@/rapida/clients/protos/vault-api_pb";
-export {
-  ProviderService,
-  ProviderServiceClient,
-} from "@/rapida/clients/protos/provider-api_pb_service";
 export {
   AssistantMessagingRequest,
   AssistantMessagingResponse,
@@ -340,15 +316,6 @@ export {
 } from "@/rapida/clients/protos/assistant-analysis_pb";
 
 export {
-  Contact,
-  WelcomeEmailRequest,
-  WelcomeEmailResponse,
-  ResetPasswordEmailRequest,
-  ResetPasswordEmailResponse,
-  InviteMemeberEmailRequest,
-  InviteMemeberEmailResponse,
-} from "@/rapida/clients/protos/sendgrid-api_pb";
-export {
   EndpointDefinition,
   InvokeRequest,
   InvokeResponse,
@@ -366,12 +333,13 @@ export {
   FeaturePermission,
   Authentication,
   ScopedAuthentication,
-  AuthenticationError,
   AuthenticateResponse,
   ForgotPasswordRequest,
   ForgotPasswordResponse,
   CreatePasswordRequest,
   CreatePasswordResponse,
+  ChangePasswordRequest,
+  ChangePasswordResponse,
   VerifyTokenRequest,
   VerifyTokenResponse,
   AuthorizeRequest,
@@ -384,7 +352,6 @@ export {
   SocialAuthenticationRequest,
   GetAllUserRequest,
   GetAllUserResponse,
-  OrganizationError,
   CreateOrganizationRequest,
   UpdateOrganizationRequest,
   GetOrganizationRequest,
@@ -423,7 +390,6 @@ export {
   Metadata,
   Argument,
   Variable,
-  Provider,
   Tag,
   Organization,
   Metric,
@@ -486,10 +452,6 @@ export {
   DocumentService,
   DocumentServiceClient,
 } from "@/rapida/clients/protos/document-api_pb_service";
-export {
-  MarketplaceService,
-  MarketplaceServiceClient,
-} from "@/rapida/clients/protos/marketplace-api_pb_service";
 export {
   IndexKnowledgeDocumentRequest,
   IndexKnowledgeDocumentResponse,
@@ -654,13 +616,19 @@ export { MultibandAudioVisualizerComponent } from "@/rapida/components/visualiza
 // event
 export { agentEventSelector } from "@/rapida/hooks/observables/voice-agent";
 export { AgentEvent } from "./types/agent-event";
-
 export {
   GetAllAssistantTelemetryRequest,
   GetAllAssistantTelemetryResponse,
 } from "@/rapida/clients/protos/assistant-api_pb";
-export { GetAllAssistantTelemetry } from "./clients/telemetry";
 
+export {
+  GetNotificationSettingRequest,
+  UpdateNotificationSettingRequest,
+  NotificationSettingResponse,
+  NotificationSetting,
+} from "@/rapida/clients/protos/notification-api_pb";
+
+export { GetAllAssistantTelemetry } from "./clients/telemetry";
 export {
   AssistantProviderModel,
   AssistantProviderAgentkit,
@@ -671,5 +639,7 @@ export {
   UpdateAssistantVersionRequest,
   GetAllAssistantProviderResponse,
 } from "@/rapida/clients/protos/assistant-provider_pb";
-
-export { CreateLeadRequest, CreateLead };
+export {
+  GetNotificationSetting,
+  UpdateNotificationSetting,
+} from "./clients/notification";

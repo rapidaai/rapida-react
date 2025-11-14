@@ -1,45 +1,45 @@
-// package: provider_api
-// file: provider-api.proto
+// package: notification_api
+// file: notification-api.proto
 
-var provider_api_pb = require("./provider-api_pb");
+var notification_api_pb = require("./notification-api_pb");
 var grpc = require("@improbable-eng/grpc-web").grpc;
 
-var ProviderService = (function () {
-  function ProviderService() {}
-  ProviderService.serviceName = "provider_api.ProviderService";
-  return ProviderService;
+var NotificationService = (function () {
+  function NotificationService() {}
+  NotificationService.serviceName = "notification_api.NotificationService";
+  return NotificationService;
 }());
 
-ProviderService.GetAllToolProvider = {
-  methodName: "GetAllToolProvider",
-  service: ProviderService,
+NotificationService.UpdateNotificationSetting = {
+  methodName: "UpdateNotificationSetting",
+  service: NotificationService,
   requestStream: false,
   responseStream: false,
-  requestType: provider_api_pb.GetAllToolProviderRequest,
-  responseType: provider_api_pb.GetAllToolProviderResponse
+  requestType: notification_api_pb.UpdateNotificationSettingRequest,
+  responseType: notification_api_pb.NotificationSettingResponse
 };
 
-ProviderService.GetAllModelProvider = {
-  methodName: "GetAllModelProvider",
-  service: ProviderService,
+NotificationService.GetNotificationSettting = {
+  methodName: "GetNotificationSettting",
+  service: NotificationService,
   requestStream: false,
   responseStream: false,
-  requestType: provider_api_pb.GetAllModelProviderRequest,
-  responseType: provider_api_pb.GetAllModelProviderResponse
+  requestType: notification_api_pb.GetNotificationSettingRequest,
+  responseType: notification_api_pb.NotificationSettingResponse
 };
 
-exports.ProviderService = ProviderService;
+exports.NotificationService = NotificationService;
 
-function ProviderServiceClient(serviceHost, options) {
+function NotificationServiceClient(serviceHost, options) {
   this.serviceHost = serviceHost;
   this.options = options || {};
 }
 
-ProviderServiceClient.prototype.getAllToolProvider = function getAllToolProvider(requestMessage, metadata, callback) {
+NotificationServiceClient.prototype.updateNotificationSetting = function updateNotificationSetting(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(ProviderService.GetAllToolProvider, {
+  var client = grpc.unary(NotificationService.UpdateNotificationSetting, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -66,11 +66,11 @@ ProviderServiceClient.prototype.getAllToolProvider = function getAllToolProvider
   };
 };
 
-ProviderServiceClient.prototype.getAllModelProvider = function getAllModelProvider(requestMessage, metadata, callback) {
+NotificationServiceClient.prototype.getNotificationSettting = function getNotificationSettting(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(ProviderService.GetAllModelProvider, {
+  var client = grpc.unary(NotificationService.GetNotificationSettting, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -97,5 +97,5 @@ ProviderServiceClient.prototype.getAllModelProvider = function getAllModelProvid
   };
 };
 
-exports.ProviderServiceClient = ProviderServiceClient;
+exports.NotificationServiceClient = NotificationServiceClient;
 

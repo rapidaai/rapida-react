@@ -37,7 +37,6 @@ import { ConnectionState } from "./connection-state";
 import { AssistantServiceClient } from "@/rapida/clients/protos/assistant-api_pb_service";
 import { ProjectServiceClient } from "@/rapida/clients/protos/web-api_pb_service";
 import { KnowledgeServiceClient } from "@/rapida/clients/protos/knowledge-api_pb_service";
-import { MarketplaceServiceClient } from "@/rapida/clients/protos/marketplace-api_pb_service";
 import { DocumentServiceClient } from "@/rapida/clients/protos/document-api_pb_service";
 import { VaultServiceClient } from "@/rapida/clients/protos/vault-api_pb_service";
 import { EndpointServiceClient } from "@/rapida/clients/protos/endpoint-api_pb_service";
@@ -45,7 +44,6 @@ import { AuditLoggingServiceClient } from "@/rapida/clients/protos/audit-logging
 import { AssistantDeploymentServiceClient } from "@/rapida/clients/protos/assistant-deployment_pb_service";
 import { OrganizationServiceClient } from "@/rapida/clients/protos/web-api_pb_service";
 import { ConnectServiceClient } from "@/rapida/clients/protos/connect-api_pb_service";
-import { ProviderServiceClient } from "@/rapida/clients/protos/provider-api_pb_service";
 import { AuthenticationServiceClient } from "@/rapida/clients/protos/web-api_pb_service";
 import { DeploymentClient } from "@/rapida/clients/protos/invoker-api_pb_service";
 
@@ -60,7 +58,7 @@ import {
   HEADER_PROJECT_ID,
   HEADER_SOURCE_KEY,
 } from "@/rapida/utils/rapida_header";
-import { LeadGeneratorServiceClient } from "@/rapida/clients/protos/lead-api_pb_service";
+import { NotificationServiceClient } from "@/rapida/clients/protos/notification-api_pb_service";
 
 /**
  *
@@ -226,8 +224,8 @@ export class ConnectionConfig {
     );
   }
 
-  get leadGeneratorClient(): LeadGeneratorServiceClient {
-    return new LeadGeneratorServiceClient(
+  get notificationClient(): NotificationServiceClient {
+    return new NotificationServiceClient(
       this.endpoint.web,
       this.getClientOptions()
     );
@@ -246,13 +244,6 @@ export class ConnectionConfig {
 
   get deploymentClient(): DeploymentClient {
     return new DeploymentClient(this.endpoint.web, this.getClientOptions());
-  }
-
-  get marketplaceClient(): MarketplaceServiceClient {
-    return new MarketplaceServiceClient(
-      this.endpoint.web,
-      this.getClientOptions()
-    );
   }
 
   get documentClient(): DocumentServiceClient {
@@ -296,13 +287,6 @@ export class ConnectionConfig {
 
   get connectClient(): ConnectServiceClient {
     return new ConnectServiceClient(this.endpoint.web, this.getClientOptions());
-  }
-
-  get providerClient(): ProviderServiceClient {
-    return new ProviderServiceClient(
-      this.endpoint.web,
-      this.getClientOptions()
-    );
   }
 
   get authenticationClient(): AuthenticationServiceClient {

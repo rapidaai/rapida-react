@@ -343,56 +343,6 @@ export namespace Variable {
   }
 }
 
-export class Provider extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  getName(): string;
-  setName(value: string): void;
-
-  getDescription(): string;
-  setDescription(value: string): void;
-
-  getHumanname(): string;
-  setHumanname(value: string): void;
-
-  getImage(): string;
-  setImage(value: string): void;
-
-  getWebsite(): string;
-  setWebsite(value: string): void;
-
-  getStatus(): string;
-  setStatus(value: string): void;
-
-  clearConnectconfigurationList(): void;
-  getConnectconfigurationList(): Array<Variable>;
-  setConnectconfigurationList(value: Array<Variable>): void;
-  addConnectconfiguration(value?: Variable, index?: number): Variable;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Provider.AsObject;
-  static toObject(includeInstance: boolean, msg: Provider): Provider.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Provider, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Provider;
-  static deserializeBinaryFromReader(message: Provider, reader: jspb.BinaryReader): Provider;
-}
-
-export namespace Provider {
-  export type AsObject = {
-    id: string,
-    name: string,
-    description: string,
-    humanname: string,
-    image: string,
-    website: string,
-    status: string,
-    connectconfigurationList: Array<Variable.AsObject>,
-  }
-}
-
 export class Tag extends jspb.Message {
   getId(): string;
   setId(value: string): void;
