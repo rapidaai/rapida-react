@@ -21,9 +21,6 @@ export class CreateKnowledgeRequest extends jspb.Message {
   getVisibility(): string;
   setVisibility(value: string): void;
 
-  getEmbeddingmodelproviderid(): string;
-  setEmbeddingmodelproviderid(value: string): void;
-
   getEmbeddingmodelprovidername(): string;
   setEmbeddingmodelprovidername(value: string): void;
 
@@ -48,7 +45,6 @@ export namespace CreateKnowledgeRequest {
     description: string,
     tagsList: Array<string>,
     visibility: string,
-    embeddingmodelproviderid: string,
     embeddingmodelprovidername: string,
     knowledgeembeddingmodeloptionsList: Array<common_pb.Metadata.AsObject>,
   }

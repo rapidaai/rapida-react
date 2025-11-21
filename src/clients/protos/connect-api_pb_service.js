@@ -10,15 +10,6 @@ var ConnectService = (function () {
   return ConnectService;
 }());
 
-ConnectService.KnowledgeConnect = {
-  methodName: "KnowledgeConnect",
-  service: ConnectService,
-  requestStream: false,
-  responseStream: false,
-  requestType: connect_api_pb.KnowledgeConnectRequest,
-  responseType: connect_api_pb.KnowledgeConnectResponse
-};
-
 ConnectService.GeneralConnect = {
   methodName: "GeneralConnect",
   service: ConnectService,
@@ -26,15 +17,6 @@ ConnectService.GeneralConnect = {
   responseStream: false,
   requestType: connect_api_pb.GeneralConnectRequest,
   responseType: connect_api_pb.GeneralConnectResponse
-};
-
-ConnectService.ActionConnect = {
-  methodName: "ActionConnect",
-  service: ConnectService,
-  requestStream: false,
-  responseStream: false,
-  requestType: connect_api_pb.ActionConnectRequest,
-  responseType: connect_api_pb.ActionConnectResponse
 };
 
 ConnectService.GetConnectorFiles = {
@@ -53,73 +35,11 @@ function ConnectServiceClient(serviceHost, options) {
   this.options = options || {};
 }
 
-ConnectServiceClient.prototype.knowledgeConnect = function knowledgeConnect(requestMessage, metadata, callback) {
-  if (arguments.length === 2) {
-    callback = arguments[1];
-  }
-  var client = grpc.unary(ConnectService.KnowledgeConnect, {
-    request: requestMessage,
-    host: this.serviceHost,
-    metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onEnd: function (response) {
-      if (callback) {
-        if (response.status !== grpc.Code.OK) {
-          var err = new Error(response.statusMessage);
-          err.code = response.status;
-          err.metadata = response.trailers;
-          callback(err, null);
-        } else {
-          callback(null, response.message);
-        }
-      }
-    }
-  });
-  return {
-    cancel: function () {
-      callback = null;
-      client.close();
-    }
-  };
-};
-
 ConnectServiceClient.prototype.generalConnect = function generalConnect(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
   var client = grpc.unary(ConnectService.GeneralConnect, {
-    request: requestMessage,
-    host: this.serviceHost,
-    metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onEnd: function (response) {
-      if (callback) {
-        if (response.status !== grpc.Code.OK) {
-          var err = new Error(response.statusMessage);
-          err.code = response.status;
-          err.metadata = response.trailers;
-          callback(err, null);
-        } else {
-          callback(null, response.message);
-        }
-      }
-    }
-  });
-  return {
-    cancel: function () {
-      callback = null;
-      client.close();
-    }
-  };
-};
-
-ConnectServiceClient.prototype.actionConnect = function actionConnect(requestMessage, metadata, callback) {
-  if (arguments.length === 2) {
-    callback = arguments[1];
-  }
-  var client = grpc.unary(ConnectService.ActionConnect, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

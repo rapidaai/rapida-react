@@ -27,16 +27,11 @@
 
 import { Criteria } from "@/rapida/clients/protos/common_pb";
 import {
-  ActionConnectRequest,
-  ActionConnectResponse,
   GeneralConnectRequest,
   GeneralConnectResponse,
   GetConnectorFilesRequest,
   GetConnectorFilesResponse,
-  KnowledgeConnectRequest,
-  KnowledgeConnectResponse,
 } from "@/rapida/clients/protos/connect-api_pb";
-import { ConnectServiceClient } from "@/rapida/clients/protos/connect-api_pb_service";
 import {
   UserAuthInfo,
   ClientAuthInfo,
@@ -81,73 +76,6 @@ export function GeneralConnect(
 }
 
 /**
- * Establish a knowledge connection.
- *
- * @param connect - The connection identifier.
- * @param code - The authorization code.
- * @param state - The state parameter.
- * @param scope - The requested scope.
- * @param authHeader - Authentication headers for the request.
- * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
- */
-export function KnowledgeConnect(
-  config: ConnectionConfig,
-  connect: string,
-  code: string,
-  state: string,
-  scope: string,
-  authHeader: ClientAuthInfo | UserAuthInfo,
-  cb: (
-    err: ServiceError | null,
-    response: KnowledgeConnectResponse | null
-  ) => void
-) {
-  const req = new KnowledgeConnectRequest();
-  req.setConnect(connect);
-  req.setCode(code);
-  req.setState(state);
-  req.setScope(scope);
-  return config.connectClient.knowledgeConnect(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
-}
-
-/**
- * Establish an action connection.
- *
- * @param connect - The connection identifier.
- * @param code - The authorization code.
- * @param state - The state parameter.
- * @param scope - The requested scope.
- * @param authHeader - Authentication headers for the request.
- * @param cb - Callback function to handle the response.
- * @returns UnaryResponse - The gRPC response object.
- */
-export function ActionConnect(
-  config: ConnectionConfig,
-  connect: string,
-  code: string,
-  state: string,
-  scope: string,
-  authHeader: ClientAuthInfo | UserAuthInfo,
-  cb: (err: ServiceError | null, response: ActionConnectResponse | null) => void
-) {
-  const req = new ActionConnectRequest();
-  req.setConnect(connect);
-  req.setCode(code);
-  req.setState(state);
-  req.setScope(scope);
-  return config.connectClient.actionConnect(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
-}
-
-/**
  * Retrieve files associated with a connector based on specified criteria.
  *
  * @param toolId - The ID of the tool (connector) to retrieve files from.
@@ -158,7 +86,7 @@ export function ActionConnect(
  */
 export function GetConnectorFiles(
   config: ConnectionConfig,
-  toolId: string,
+  provider: string,
   criterias: Criteria[],
   authHeader: ClientAuthInfo | UserAuthInfo,
   cb: (
@@ -167,7 +95,7 @@ export function GetConnectorFiles(
   ) => void
 ) {
   const req = new GetConnectorFilesRequest();
-  req.setToolid(toolId);
+  req.setProvider(provider);
   req.setCriteriasList(criterias);
   return config.connectClient.getConnectorFiles(
     req,

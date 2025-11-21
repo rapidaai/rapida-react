@@ -188,9 +188,3 @@ export function isIOSSafari(): boolean {
       (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1))
   );
 }
-
-export interface ProviderConfig {
-  providerId: string;
-  provider: string;
-  parameters: Metadata[];
-}

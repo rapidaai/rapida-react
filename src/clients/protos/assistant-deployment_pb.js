@@ -130,7 +130,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.assistant_api.AssistantDebuggerDeployment = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.assistant_api.AssistantDebuggerDeployment.repeatedFields_, proto.assistant_api.AssistantDebuggerDeployment.oneofGroups_);
+  jspb.Message.initialize(this, opt_data, 0, -1, null, proto.assistant_api.AssistantDebuggerDeployment.oneofGroups_);
 };
 goog.inherits(proto.assistant_api.AssistantDebuggerDeployment, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -351,7 +351,6 @@ proto.assistant_api.DeploymentAudioProvider.toObject = function(includeInstance,
     audioprovider: jspb.Message.getFieldWithDefault(msg, 2, ""),
     audiooptionsList: jspb.Message.toObjectList(msg.getAudiooptionsList(),
     common_pb.Metadata.toObject, includeInstance),
-    audioproviderid: jspb.Message.getFieldWithDefault(msg, 4, "0"),
     status: jspb.Message.getFieldWithDefault(msg, 5, ""),
     audiotype: jspb.Message.getFieldWithDefault(msg, 6, "")
   };
@@ -402,10 +401,6 @@ proto.assistant_api.DeploymentAudioProvider.deserializeBinaryFromReader = functi
       var value = new common_pb.Metadata;
       reader.readMessage(value,common_pb.Metadata.deserializeBinaryFromReader);
       msg.addAudiooptions(value);
-      break;
-    case 4:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setAudioproviderid(value);
       break;
     case 5:
       var value = /** @type {string} */ (reader.readString());
@@ -464,13 +459,6 @@ proto.assistant_api.DeploymentAudioProvider.serializeBinaryToWriter = function(m
       3,
       f,
       common_pb.Metadata.serializeBinaryToWriter
-    );
-  }
-  f = message.getAudioproviderid();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      4,
-      f
     );
   }
   f = message.getStatus();
@@ -561,24 +549,6 @@ proto.assistant_api.DeploymentAudioProvider.prototype.addAudiooptions = function
  */
 proto.assistant_api.DeploymentAudioProvider.prototype.clearAudiooptionsList = function() {
   return this.setAudiooptionsList([]);
-};
-
-
-/**
- * optional uint64 audioProviderId = 4;
- * @return {string}
- */
-proto.assistant_api.DeploymentAudioProvider.prototype.getAudioproviderid = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, "0"));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.DeploymentAudioProvider} returns this
- */
-proto.assistant_api.DeploymentAudioProvider.prototype.setAudioproviderid = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 4, value);
 };
 
 
@@ -688,7 +658,6 @@ proto.assistant_api.AssistantWebpluginDeployment.toObject = function(includeInst
     name: jspb.Message.getFieldWithDefault(msg, 6, ""),
     greeting: jspb.Message.getFieldWithDefault(msg, 10, ""),
     mistake: jspb.Message.getFieldWithDefault(msg, 11, ""),
-    ending: jspb.Message.getFieldWithDefault(msg, 12, ""),
     inputaudio: (f = msg.getInputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
     outputaudio: (f = msg.getOutputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
     url: jspb.Message.getFieldWithDefault(msg, 15, ""),
@@ -700,7 +669,10 @@ proto.assistant_api.AssistantWebpluginDeployment.toObject = function(includeInst
     uploadfileenabled: jspb.Message.getBooleanFieldWithDefault(msg, 24, false),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-    status: jspb.Message.getFieldWithDefault(msg, 28, "")
+    status: jspb.Message.getFieldWithDefault(msg, 28, ""),
+    maxsessionduration: jspb.Message.getFieldWithDefault(msg, 29, "0"),
+    idealtimeout: jspb.Message.getFieldWithDefault(msg, 30, "0"),
+    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, "")
   };
 
   if (includeInstance) {
@@ -757,10 +729,6 @@ proto.assistant_api.AssistantWebpluginDeployment.deserializeBinaryFromReader = f
       var value = /** @type {string} */ (reader.readString());
       msg.setMistake(value);
       break;
-    case 12:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setEnding(value);
-      break;
     case 13:
       var value = new proto.assistant_api.DeploymentAudioProvider;
       reader.readMessage(value,proto.assistant_api.DeploymentAudioProvider.deserializeBinaryFromReader);
@@ -813,6 +781,18 @@ proto.assistant_api.AssistantWebpluginDeployment.deserializeBinaryFromReader = f
     case 28:
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
+      break;
+    case 29:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setMaxsessionduration(value);
+      break;
+    case 30:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setIdealtimeout(value);
+      break;
+    case 31:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setIdealtimeoutmessage(value);
       break;
     default:
       reader.skipField();
@@ -875,13 +855,6 @@ proto.assistant_api.AssistantWebpluginDeployment.serializeBinaryToWriter = funct
   if (f != null) {
     writer.writeString(
       11,
-      f
-    );
-  }
-  f = /** @type {string} */ (jspb.Message.getField(message, 12));
-  if (f != null) {
-    writer.writeString(
-      12,
       f
     );
   }
@@ -971,6 +944,27 @@ proto.assistant_api.AssistantWebpluginDeployment.serializeBinaryToWriter = funct
   if (f.length > 0) {
     writer.writeString(
       28,
+      f
+    );
+  }
+  f = message.getMaxsessionduration();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      29,
+      f
+    );
+  }
+  f = message.getIdealtimeout();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      30,
+      f
+    );
+  }
+  f = message.getIdealtimeoutmessage();
+  if (f.length > 0) {
+    writer.writeString(
+      31,
       f
     );
   }
@@ -1100,42 +1094,6 @@ proto.assistant_api.AssistantWebpluginDeployment.prototype.clearMistake = functi
  */
 proto.assistant_api.AssistantWebpluginDeployment.prototype.hasMistake = function() {
   return jspb.Message.getField(this, 11) != null;
-};
-
-
-/**
- * optional string ending = 12;
- * @return {string}
- */
-proto.assistant_api.AssistantWebpluginDeployment.prototype.getEnding = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantWebpluginDeployment} returns this
- */
-proto.assistant_api.AssistantWebpluginDeployment.prototype.setEnding = function(value) {
-  return jspb.Message.setField(this, 12, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.assistant_api.AssistantWebpluginDeployment} returns this
- */
-proto.assistant_api.AssistantWebpluginDeployment.prototype.clearEnding = function() {
-  return jspb.Message.setField(this, 12, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.assistant_api.AssistantWebpluginDeployment.prototype.hasEnding = function() {
-  return jspb.Message.getField(this, 12) != null;
 };
 
 
@@ -1487,6 +1445,60 @@ proto.assistant_api.AssistantWebpluginDeployment.prototype.setStatus = function(
 };
 
 
+/**
+ * optional uint64 maxSessionDuration = 29;
+ * @return {string}
+ */
+proto.assistant_api.AssistantWebpluginDeployment.prototype.getMaxsessionduration = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 29, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantWebpluginDeployment} returns this
+ */
+proto.assistant_api.AssistantWebpluginDeployment.prototype.setMaxsessionduration = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 29, value);
+};
+
+
+/**
+ * optional uint64 idealTimeout = 30;
+ * @return {string}
+ */
+proto.assistant_api.AssistantWebpluginDeployment.prototype.getIdealtimeout = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 30, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantWebpluginDeployment} returns this
+ */
+proto.assistant_api.AssistantWebpluginDeployment.prototype.setIdealtimeout = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 30, value);
+};
+
+
+/**
+ * optional string idealTimeoutMessage = 31;
+ * @return {string}
+ */
+proto.assistant_api.AssistantWebpluginDeployment.prototype.getIdealtimeoutmessage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 31, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantWebpluginDeployment} returns this
+ */
+proto.assistant_api.AssistantWebpluginDeployment.prototype.setIdealtimeoutmessage = function(value) {
+  return jspb.Message.setProto3StringField(this, 31, value);
+};
+
+
 
 /**
  * List of repeated fields within this message type.
@@ -1530,16 +1542,17 @@ proto.assistant_api.AssistantPhoneDeployment.toObject = function(includeInstance
     assistantid: jspb.Message.getFieldWithDefault(msg, 5, "0"),
     greeting: jspb.Message.getFieldWithDefault(msg, 10, ""),
     mistake: jspb.Message.getFieldWithDefault(msg, 11, ""),
-    ending: jspb.Message.getFieldWithDefault(msg, 12, ""),
     inputaudio: (f = msg.getInputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
     outputaudio: (f = msg.getOutputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
     phoneprovidername: jspb.Message.getFieldWithDefault(msg, 15, ""),
-    phoneproviderid: jspb.Message.getFieldWithDefault(msg, 16, "0"),
     phoneoptionsList: jspb.Message.toObjectList(msg.getPhoneoptionsList(),
     common_pb.Metadata.toObject, includeInstance),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-    status: jspb.Message.getFieldWithDefault(msg, 28, "")
+    status: jspb.Message.getFieldWithDefault(msg, 28, ""),
+    maxsessionduration: jspb.Message.getFieldWithDefault(msg, 29, "0"),
+    idealtimeout: jspb.Message.getFieldWithDefault(msg, 30, "0"),
+    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, "")
   };
 
   if (includeInstance) {
@@ -1592,10 +1605,6 @@ proto.assistant_api.AssistantPhoneDeployment.deserializeBinaryFromReader = funct
       var value = /** @type {string} */ (reader.readString());
       msg.setMistake(value);
       break;
-    case 12:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setEnding(value);
-      break;
     case 13:
       var value = new proto.assistant_api.DeploymentAudioProvider;
       reader.readMessage(value,proto.assistant_api.DeploymentAudioProvider.deserializeBinaryFromReader);
@@ -1609,10 +1618,6 @@ proto.assistant_api.AssistantPhoneDeployment.deserializeBinaryFromReader = funct
     case 15:
       var value = /** @type {string} */ (reader.readString());
       msg.setPhoneprovidername(value);
-      break;
-    case 16:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setPhoneproviderid(value);
       break;
     case 17:
       var value = new common_pb.Metadata;
@@ -1632,6 +1637,18 @@ proto.assistant_api.AssistantPhoneDeployment.deserializeBinaryFromReader = funct
     case 28:
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
+      break;
+    case 29:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setMaxsessionduration(value);
+      break;
+    case 30:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setIdealtimeout(value);
+      break;
+    case 31:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setIdealtimeoutmessage(value);
       break;
     default:
       reader.skipField();
@@ -1690,13 +1707,6 @@ proto.assistant_api.AssistantPhoneDeployment.serializeBinaryToWriter = function(
       f
     );
   }
-  f = /** @type {string} */ (jspb.Message.getField(message, 12));
-  if (f != null) {
-    writer.writeString(
-      12,
-      f
-    );
-  }
   f = message.getInputaudio();
   if (f != null) {
     writer.writeMessage(
@@ -1717,13 +1727,6 @@ proto.assistant_api.AssistantPhoneDeployment.serializeBinaryToWriter = function(
   if (f.length > 0) {
     writer.writeString(
       15,
-      f
-    );
-  }
-  f = message.getPhoneproviderid();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      16,
       f
     );
   }
@@ -1755,6 +1758,27 @@ proto.assistant_api.AssistantPhoneDeployment.serializeBinaryToWriter = function(
   if (f.length > 0) {
     writer.writeString(
       28,
+      f
+    );
+  }
+  f = message.getMaxsessionduration();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      29,
+      f
+    );
+  }
+  f = message.getIdealtimeout();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      30,
+      f
+    );
+  }
+  f = message.getIdealtimeoutmessage();
+  if (f.length > 0) {
+    writer.writeString(
+      31,
       f
     );
   }
@@ -1870,42 +1894,6 @@ proto.assistant_api.AssistantPhoneDeployment.prototype.hasMistake = function() {
 
 
 /**
- * optional string ending = 12;
- * @return {string}
- */
-proto.assistant_api.AssistantPhoneDeployment.prototype.getEnding = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantPhoneDeployment} returns this
- */
-proto.assistant_api.AssistantPhoneDeployment.prototype.setEnding = function(value) {
-  return jspb.Message.setField(this, 12, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.assistant_api.AssistantPhoneDeployment} returns this
- */
-proto.assistant_api.AssistantPhoneDeployment.prototype.clearEnding = function() {
-  return jspb.Message.setField(this, 12, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.assistant_api.AssistantPhoneDeployment.prototype.hasEnding = function() {
-  return jspb.Message.getField(this, 12) != null;
-};
-
-
-/**
  * optional DeploymentAudioProvider inputAudio = 13;
  * @return {?proto.assistant_api.DeploymentAudioProvider}
  */
@@ -1994,24 +1982,6 @@ proto.assistant_api.AssistantPhoneDeployment.prototype.getPhoneprovidername = fu
  */
 proto.assistant_api.AssistantPhoneDeployment.prototype.setPhoneprovidername = function(value) {
   return jspb.Message.setProto3StringField(this, 15, value);
-};
-
-
-/**
- * optional uint64 phoneProviderId = 16;
- * @return {string}
- */
-proto.assistant_api.AssistantPhoneDeployment.prototype.getPhoneproviderid = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 16, "0"));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantPhoneDeployment} returns this
- */
-proto.assistant_api.AssistantPhoneDeployment.prototype.setPhoneproviderid = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 16, value);
 };
 
 
@@ -2145,6 +2115,60 @@ proto.assistant_api.AssistantPhoneDeployment.prototype.setStatus = function(valu
 };
 
 
+/**
+ * optional uint64 maxSessionDuration = 29;
+ * @return {string}
+ */
+proto.assistant_api.AssistantPhoneDeployment.prototype.getMaxsessionduration = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 29, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantPhoneDeployment} returns this
+ */
+proto.assistant_api.AssistantPhoneDeployment.prototype.setMaxsessionduration = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 29, value);
+};
+
+
+/**
+ * optional uint64 idealTimeout = 30;
+ * @return {string}
+ */
+proto.assistant_api.AssistantPhoneDeployment.prototype.getIdealtimeout = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 30, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantPhoneDeployment} returns this
+ */
+proto.assistant_api.AssistantPhoneDeployment.prototype.setIdealtimeout = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 30, value);
+};
+
+
+/**
+ * optional string idealTimeoutMessage = 31;
+ * @return {string}
+ */
+proto.assistant_api.AssistantPhoneDeployment.prototype.getIdealtimeoutmessage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 31, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantPhoneDeployment} returns this
+ */
+proto.assistant_api.AssistantPhoneDeployment.prototype.setIdealtimeoutmessage = function(value) {
+  return jspb.Message.setProto3StringField(this, 31, value);
+};
+
+
 
 /**
  * List of repeated fields within this message type.
@@ -2189,14 +2213,17 @@ proto.assistant_api.AssistantWhatsappDeployment.toObject = function(includeInsta
     name: jspb.Message.getFieldWithDefault(msg, 6, ""),
     greeting: jspb.Message.getFieldWithDefault(msg, 10, ""),
     mistake: jspb.Message.getFieldWithDefault(msg, 11, ""),
-    ending: jspb.Message.getFieldWithDefault(msg, 12, ""),
+    inputaudio: (f = msg.getInputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
+    outputaudio: (f = msg.getOutputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
     whatsappprovidername: jspb.Message.getFieldWithDefault(msg, 15, ""),
-    whatsappproviderid: jspb.Message.getFieldWithDefault(msg, 16, "0"),
     whatsappoptionsList: jspb.Message.toObjectList(msg.getWhatsappoptionsList(),
     common_pb.Metadata.toObject, includeInstance),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-    status: jspb.Message.getFieldWithDefault(msg, 28, "")
+    status: jspb.Message.getFieldWithDefault(msg, 28, ""),
+    maxsessionduration: jspb.Message.getFieldWithDefault(msg, 29, "0"),
+    idealtimeout: jspb.Message.getFieldWithDefault(msg, 30, "0"),
+    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, "")
   };
 
   if (includeInstance) {
@@ -2253,17 +2280,19 @@ proto.assistant_api.AssistantWhatsappDeployment.deserializeBinaryFromReader = fu
       var value = /** @type {string} */ (reader.readString());
       msg.setMistake(value);
       break;
-    case 12:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setEnding(value);
+    case 13:
+      var value = new proto.assistant_api.DeploymentAudioProvider;
+      reader.readMessage(value,proto.assistant_api.DeploymentAudioProvider.deserializeBinaryFromReader);
+      msg.setInputaudio(value);
+      break;
+    case 14:
+      var value = new proto.assistant_api.DeploymentAudioProvider;
+      reader.readMessage(value,proto.assistant_api.DeploymentAudioProvider.deserializeBinaryFromReader);
+      msg.setOutputaudio(value);
       break;
     case 15:
       var value = /** @type {string} */ (reader.readString());
       msg.setWhatsappprovidername(value);
-      break;
-    case 16:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setWhatsappproviderid(value);
       break;
     case 17:
       var value = new common_pb.Metadata;
@@ -2283,6 +2312,18 @@ proto.assistant_api.AssistantWhatsappDeployment.deserializeBinaryFromReader = fu
     case 28:
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
+      break;
+    case 29:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setMaxsessionduration(value);
+      break;
+    case 30:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setIdealtimeout(value);
+      break;
+    case 31:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setIdealtimeoutmessage(value);
       break;
     default:
       reader.skipField();
@@ -2348,24 +2389,26 @@ proto.assistant_api.AssistantWhatsappDeployment.serializeBinaryToWriter = functi
       f
     );
   }
-  f = /** @type {string} */ (jspb.Message.getField(message, 12));
+  f = message.getInputaudio();
   if (f != null) {
-    writer.writeString(
-      12,
-      f
+    writer.writeMessage(
+      13,
+      f,
+      proto.assistant_api.DeploymentAudioProvider.serializeBinaryToWriter
+    );
+  }
+  f = message.getOutputaudio();
+  if (f != null) {
+    writer.writeMessage(
+      14,
+      f,
+      proto.assistant_api.DeploymentAudioProvider.serializeBinaryToWriter
     );
   }
   f = message.getWhatsappprovidername();
   if (f.length > 0) {
     writer.writeString(
       15,
-      f
-    );
-  }
-  f = message.getWhatsappproviderid();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      16,
       f
     );
   }
@@ -2397,6 +2440,27 @@ proto.assistant_api.AssistantWhatsappDeployment.serializeBinaryToWriter = functi
   if (f.length > 0) {
     writer.writeString(
       28,
+      f
+    );
+  }
+  f = message.getMaxsessionduration();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      29,
+      f
+    );
+  }
+  f = message.getIdealtimeout();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      30,
+      f
+    );
+  }
+  f = message.getIdealtimeoutmessage();
+  if (f.length > 0) {
+    writer.writeString(
+      31,
       f
     );
   }
@@ -2530,29 +2594,30 @@ proto.assistant_api.AssistantWhatsappDeployment.prototype.hasMistake = function(
 
 
 /**
- * optional string ending = 12;
- * @return {string}
+ * optional DeploymentAudioProvider inputAudio = 13;
+ * @return {?proto.assistant_api.DeploymentAudioProvider}
  */
-proto.assistant_api.AssistantWhatsappDeployment.prototype.getEnding = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
+proto.assistant_api.AssistantWhatsappDeployment.prototype.getInputaudio = function() {
+  return /** @type{?proto.assistant_api.DeploymentAudioProvider} */ (
+    jspb.Message.getWrapperField(this, proto.assistant_api.DeploymentAudioProvider, 13));
 };
 
 
 /**
- * @param {string} value
+ * @param {?proto.assistant_api.DeploymentAudioProvider|undefined} value
  * @return {!proto.assistant_api.AssistantWhatsappDeployment} returns this
- */
-proto.assistant_api.AssistantWhatsappDeployment.prototype.setEnding = function(value) {
-  return jspb.Message.setField(this, 12, value);
+*/
+proto.assistant_api.AssistantWhatsappDeployment.prototype.setInputaudio = function(value) {
+  return jspb.Message.setWrapperField(this, 13, value);
 };
 
 
 /**
- * Clears the field making it undefined.
+ * Clears the message field making it undefined.
  * @return {!proto.assistant_api.AssistantWhatsappDeployment} returns this
  */
-proto.assistant_api.AssistantWhatsappDeployment.prototype.clearEnding = function() {
-  return jspb.Message.setField(this, 12, undefined);
+proto.assistant_api.AssistantWhatsappDeployment.prototype.clearInputaudio = function() {
+  return this.setInputaudio(undefined);
 };
 
 
@@ -2560,8 +2625,45 @@ proto.assistant_api.AssistantWhatsappDeployment.prototype.clearEnding = function
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.assistant_api.AssistantWhatsappDeployment.prototype.hasEnding = function() {
-  return jspb.Message.getField(this, 12) != null;
+proto.assistant_api.AssistantWhatsappDeployment.prototype.hasInputaudio = function() {
+  return jspb.Message.getField(this, 13) != null;
+};
+
+
+/**
+ * optional DeploymentAudioProvider outputAudio = 14;
+ * @return {?proto.assistant_api.DeploymentAudioProvider}
+ */
+proto.assistant_api.AssistantWhatsappDeployment.prototype.getOutputaudio = function() {
+  return /** @type{?proto.assistant_api.DeploymentAudioProvider} */ (
+    jspb.Message.getWrapperField(this, proto.assistant_api.DeploymentAudioProvider, 14));
+};
+
+
+/**
+ * @param {?proto.assistant_api.DeploymentAudioProvider|undefined} value
+ * @return {!proto.assistant_api.AssistantWhatsappDeployment} returns this
+*/
+proto.assistant_api.AssistantWhatsappDeployment.prototype.setOutputaudio = function(value) {
+  return jspb.Message.setWrapperField(this, 14, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.assistant_api.AssistantWhatsappDeployment} returns this
+ */
+proto.assistant_api.AssistantWhatsappDeployment.prototype.clearOutputaudio = function() {
+  return this.setOutputaudio(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.assistant_api.AssistantWhatsappDeployment.prototype.hasOutputaudio = function() {
+  return jspb.Message.getField(this, 14) != null;
 };
 
 
@@ -2580,24 +2682,6 @@ proto.assistant_api.AssistantWhatsappDeployment.prototype.getWhatsappprovidernam
  */
 proto.assistant_api.AssistantWhatsappDeployment.prototype.setWhatsappprovidername = function(value) {
   return jspb.Message.setProto3StringField(this, 15, value);
-};
-
-
-/**
- * optional uint64 whatsappProviderId = 16;
- * @return {string}
- */
-proto.assistant_api.AssistantWhatsappDeployment.prototype.getWhatsappproviderid = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 16, "0"));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantWhatsappDeployment} returns this
- */
-proto.assistant_api.AssistantWhatsappDeployment.prototype.setWhatsappproviderid = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 16, value);
 };
 
 
@@ -2731,13 +2815,60 @@ proto.assistant_api.AssistantWhatsappDeployment.prototype.setStatus = function(v
 };
 
 
+/**
+ * optional uint64 maxSessionDuration = 29;
+ * @return {string}
+ */
+proto.assistant_api.AssistantWhatsappDeployment.prototype.getMaxsessionduration = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 29, "0"));
+};
+
 
 /**
- * List of repeated fields within this message type.
- * @private {!Array<number>}
- * @const
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantWhatsappDeployment} returns this
  */
-proto.assistant_api.AssistantDebuggerDeployment.repeatedFields_ = [20];
+proto.assistant_api.AssistantWhatsappDeployment.prototype.setMaxsessionduration = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 29, value);
+};
+
+
+/**
+ * optional uint64 idealTimeout = 30;
+ * @return {string}
+ */
+proto.assistant_api.AssistantWhatsappDeployment.prototype.getIdealtimeout = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 30, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantWhatsappDeployment} returns this
+ */
+proto.assistant_api.AssistantWhatsappDeployment.prototype.setIdealtimeout = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 30, value);
+};
+
+
+/**
+ * optional string idealTimeoutMessage = 31;
+ * @return {string}
+ */
+proto.assistant_api.AssistantWhatsappDeployment.prototype.getIdealtimeoutmessage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 31, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantWhatsappDeployment} returns this
+ */
+proto.assistant_api.AssistantWhatsappDeployment.prototype.setIdealtimeoutmessage = function(value) {
+  return jspb.Message.setProto3StringField(this, 31, value);
+};
+
+
 
 /**
  * Oneof group definitions for this message. Each group defines the field
@@ -2801,15 +2932,16 @@ proto.assistant_api.AssistantDebuggerDeployment.toObject = function(includeInsta
     name: jspb.Message.getFieldWithDefault(msg, 6, ""),
     greeting: jspb.Message.getFieldWithDefault(msg, 10, ""),
     mistake: jspb.Message.getFieldWithDefault(msg, 11, ""),
-    ending: jspb.Message.getFieldWithDefault(msg, 12, ""),
     inputaudio: (f = msg.getInputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
     outputaudio: (f = msg.getOutputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
     url: jspb.Message.getFieldWithDefault(msg, 15, ""),
     raw: (f = msg.getRaw()) && common_pb.Content.toObject(includeInstance, f),
-    suggestionList: (f = jspb.Message.getRepeatedField(msg, 20)) == null ? undefined : f,
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-    status: jspb.Message.getFieldWithDefault(msg, 28, "")
+    status: jspb.Message.getFieldWithDefault(msg, 28, ""),
+    maxsessionduration: jspb.Message.getFieldWithDefault(msg, 29, "0"),
+    idealtimeout: jspb.Message.getFieldWithDefault(msg, 30, "0"),
+    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, "")
   };
 
   if (includeInstance) {
@@ -2866,10 +2998,6 @@ proto.assistant_api.AssistantDebuggerDeployment.deserializeBinaryFromReader = fu
       var value = /** @type {string} */ (reader.readString());
       msg.setMistake(value);
       break;
-    case 12:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setEnding(value);
-      break;
     case 13:
       var value = new proto.assistant_api.DeploymentAudioProvider;
       reader.readMessage(value,proto.assistant_api.DeploymentAudioProvider.deserializeBinaryFromReader);
@@ -2889,10 +3017,6 @@ proto.assistant_api.AssistantDebuggerDeployment.deserializeBinaryFromReader = fu
       reader.readMessage(value,common_pb.Content.deserializeBinaryFromReader);
       msg.setRaw(value);
       break;
-    case 20:
-      var value = /** @type {string} */ (reader.readString());
-      msg.addSuggestion(value);
-      break;
     case 26:
       var value = new google_protobuf_timestamp_pb.Timestamp;
       reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
@@ -2906,6 +3030,18 @@ proto.assistant_api.AssistantDebuggerDeployment.deserializeBinaryFromReader = fu
     case 28:
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
+      break;
+    case 29:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setMaxsessionduration(value);
+      break;
+    case 30:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setIdealtimeout(value);
+      break;
+    case 31:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setIdealtimeoutmessage(value);
       break;
     default:
       reader.skipField();
@@ -2971,13 +3107,6 @@ proto.assistant_api.AssistantDebuggerDeployment.serializeBinaryToWriter = functi
       f
     );
   }
-  f = /** @type {string} */ (jspb.Message.getField(message, 12));
-  if (f != null) {
-    writer.writeString(
-      12,
-      f
-    );
-  }
   f = message.getInputaudio();
   if (f != null) {
     writer.writeMessage(
@@ -3009,13 +3138,6 @@ proto.assistant_api.AssistantDebuggerDeployment.serializeBinaryToWriter = functi
       common_pb.Content.serializeBinaryToWriter
     );
   }
-  f = message.getSuggestionList();
-  if (f.length > 0) {
-    writer.writeRepeatedString(
-      20,
-      f
-    );
-  }
   f = message.getCreateddate();
   if (f != null) {
     writer.writeMessage(
@@ -3036,6 +3158,27 @@ proto.assistant_api.AssistantDebuggerDeployment.serializeBinaryToWriter = functi
   if (f.length > 0) {
     writer.writeString(
       28,
+      f
+    );
+  }
+  f = message.getMaxsessionduration();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      29,
+      f
+    );
+  }
+  f = message.getIdealtimeout();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      30,
+      f
+    );
+  }
+  f = message.getIdealtimeoutmessage();
+  if (f.length > 0) {
+    writer.writeString(
+      31,
       f
     );
   }
@@ -3165,42 +3308,6 @@ proto.assistant_api.AssistantDebuggerDeployment.prototype.clearMistake = functio
  */
 proto.assistant_api.AssistantDebuggerDeployment.prototype.hasMistake = function() {
   return jspb.Message.getField(this, 11) != null;
-};
-
-
-/**
- * optional string ending = 12;
- * @return {string}
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.getEnding = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.setEnding = function(value) {
-  return jspb.Message.setField(this, 12, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.clearEnding = function() {
-  return jspb.Message.setField(this, 12, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.hasEnding = function() {
-  return jspb.Message.getField(this, 12) != null;
 };
 
 
@@ -3352,43 +3459,6 @@ proto.assistant_api.AssistantDebuggerDeployment.prototype.hasRaw = function() {
 
 
 /**
- * repeated string suggestion = 20;
- * @return {!Array<string>}
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.getSuggestionList = function() {
-  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 20));
-};
-
-
-/**
- * @param {!Array<string>} value
- * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.setSuggestionList = function(value) {
-  return jspb.Message.setField(this, 20, value || []);
-};
-
-
-/**
- * @param {string} value
- * @param {number=} opt_index
- * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.addSuggestion = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 20, value, opt_index);
-};
-
-
-/**
- * Clears the list making it empty but non-null.
- * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.clearSuggestionList = function() {
-  return this.setSuggestionList([]);
-};
-
-
-/**
  * optional google.protobuf.Timestamp createdDate = 26;
  * @return {?proto.google.protobuf.Timestamp}
  */
@@ -3480,6 +3550,60 @@ proto.assistant_api.AssistantDebuggerDeployment.prototype.setStatus = function(v
 };
 
 
+/**
+ * optional uint64 maxSessionDuration = 29;
+ * @return {string}
+ */
+proto.assistant_api.AssistantDebuggerDeployment.prototype.getMaxsessionduration = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 29, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
+ */
+proto.assistant_api.AssistantDebuggerDeployment.prototype.setMaxsessionduration = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 29, value);
+};
+
+
+/**
+ * optional uint64 idealTimeout = 30;
+ * @return {string}
+ */
+proto.assistant_api.AssistantDebuggerDeployment.prototype.getIdealtimeout = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 30, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
+ */
+proto.assistant_api.AssistantDebuggerDeployment.prototype.setIdealtimeout = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 30, value);
+};
+
+
+/**
+ * optional string idealTimeoutMessage = 31;
+ * @return {string}
+ */
+proto.assistant_api.AssistantDebuggerDeployment.prototype.getIdealtimeoutmessage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 31, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
+ */
+proto.assistant_api.AssistantDebuggerDeployment.prototype.setIdealtimeoutmessage = function(value) {
+  return jspb.Message.setProto3StringField(this, 31, value);
+};
+
+
 
 
 
@@ -3516,12 +3640,14 @@ proto.assistant_api.AssistantApiDeployment.toObject = function(includeInstance, 
     assistantid: jspb.Message.getFieldWithDefault(msg, 5, "0"),
     greeting: jspb.Message.getFieldWithDefault(msg, 10, ""),
     mistake: jspb.Message.getFieldWithDefault(msg, 11, ""),
-    ending: jspb.Message.getFieldWithDefault(msg, 12, ""),
     inputaudio: (f = msg.getInputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
     outputaudio: (f = msg.getOutputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-    status: jspb.Message.getFieldWithDefault(msg, 28, "")
+    status: jspb.Message.getFieldWithDefault(msg, 28, ""),
+    maxsessionduration: jspb.Message.getFieldWithDefault(msg, 29, "0"),
+    idealtimeout: jspb.Message.getFieldWithDefault(msg, 30, "0"),
+    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, "")
   };
 
   if (includeInstance) {
@@ -3574,10 +3700,6 @@ proto.assistant_api.AssistantApiDeployment.deserializeBinaryFromReader = functio
       var value = /** @type {string} */ (reader.readString());
       msg.setMistake(value);
       break;
-    case 12:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setEnding(value);
-      break;
     case 13:
       var value = new proto.assistant_api.DeploymentAudioProvider;
       reader.readMessage(value,proto.assistant_api.DeploymentAudioProvider.deserializeBinaryFromReader);
@@ -3601,6 +3723,18 @@ proto.assistant_api.AssistantApiDeployment.deserializeBinaryFromReader = functio
     case 28:
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
+      break;
+    case 29:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setMaxsessionduration(value);
+      break;
+    case 30:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setIdealtimeout(value);
+      break;
+    case 31:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setIdealtimeoutmessage(value);
       break;
     default:
       reader.skipField();
@@ -3659,13 +3793,6 @@ proto.assistant_api.AssistantApiDeployment.serializeBinaryToWriter = function(me
       f
     );
   }
-  f = /** @type {string} */ (jspb.Message.getField(message, 12));
-  if (f != null) {
-    writer.writeString(
-      12,
-      f
-    );
-  }
   f = message.getInputaudio();
   if (f != null) {
     writer.writeMessage(
@@ -3702,6 +3829,27 @@ proto.assistant_api.AssistantApiDeployment.serializeBinaryToWriter = function(me
   if (f.length > 0) {
     writer.writeString(
       28,
+      f
+    );
+  }
+  f = message.getMaxsessionduration();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      29,
+      f
+    );
+  }
+  f = message.getIdealtimeout();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      30,
+      f
+    );
+  }
+  f = message.getIdealtimeoutmessage();
+  if (f.length > 0) {
+    writer.writeString(
+      31,
       f
     );
   }
@@ -3813,42 +3961,6 @@ proto.assistant_api.AssistantApiDeployment.prototype.clearMistake = function() {
  */
 proto.assistant_api.AssistantApiDeployment.prototype.hasMistake = function() {
   return jspb.Message.getField(this, 11) != null;
-};
-
-
-/**
- * optional string ending = 12;
- * @return {string}
- */
-proto.assistant_api.AssistantApiDeployment.prototype.getEnding = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantApiDeployment} returns this
- */
-proto.assistant_api.AssistantApiDeployment.prototype.setEnding = function(value) {
-  return jspb.Message.setField(this, 12, value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.assistant_api.AssistantApiDeployment} returns this
- */
-proto.assistant_api.AssistantApiDeployment.prototype.clearEnding = function() {
-  return jspb.Message.setField(this, 12, undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.assistant_api.AssistantApiDeployment.prototype.hasEnding = function() {
-  return jspb.Message.getField(this, 12) != null;
 };
 
 
@@ -4015,6 +4127,60 @@ proto.assistant_api.AssistantApiDeployment.prototype.getStatus = function() {
  */
 proto.assistant_api.AssistantApiDeployment.prototype.setStatus = function(value) {
   return jspb.Message.setProto3StringField(this, 28, value);
+};
+
+
+/**
+ * optional uint64 maxSessionDuration = 29;
+ * @return {string}
+ */
+proto.assistant_api.AssistantApiDeployment.prototype.getMaxsessionduration = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 29, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantApiDeployment} returns this
+ */
+proto.assistant_api.AssistantApiDeployment.prototype.setMaxsessionduration = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 29, value);
+};
+
+
+/**
+ * optional uint64 idealTimeout = 30;
+ * @return {string}
+ */
+proto.assistant_api.AssistantApiDeployment.prototype.getIdealtimeout = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 30, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantApiDeployment} returns this
+ */
+proto.assistant_api.AssistantApiDeployment.prototype.setIdealtimeout = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 30, value);
+};
+
+
+/**
+ * optional string idealTimeoutMessage = 31;
+ * @return {string}
+ */
+proto.assistant_api.AssistantApiDeployment.prototype.getIdealtimeoutmessage = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 31, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantApiDeployment} returns this
+ */
+proto.assistant_api.AssistantApiDeployment.prototype.setIdealtimeoutmessage = function(value) {
+  return jspb.Message.setProto3StringField(this, 31, value);
 };
 
 

@@ -27,7 +27,6 @@
  */
 
 import {
-  Content,
   Criteria,
   FieldSelector,
   GetAllAssistantConversationResponse,
@@ -36,7 +35,6 @@ import {
   Metadata,
   Ordering,
   Paginate,
-  TextChatCompletePrompt,
 } from "@/rapida/clients/protos/common_pb";
 import {
   GetAllAssistantRequest,
@@ -117,24 +115,14 @@ import {
   WithAuthContext,
 } from "@/rapida/clients";
 import { GetAllAssistantConversationRequest } from "@/rapida/clients/protos/common_pb";
-import { AssistantDeploymentServiceClient } from "@/rapida/clients/protos/assistant-deployment_pb_service";
-import { AssistantPhoneDeployment } from "@/rapida/clients/protos/assistant-deployment_pb";
 import {
-  AssistantDebuggerDeployment,
   CreateAssistantDeploymentRequest,
   GetAssistantApiDeploymentResponse,
   GetAssistantPhoneDeploymentResponse,
   GetAssistantWebpluginDeploymentResponse,
   GetAssistantDeploymentRequest,
 } from "@/rapida/clients/protos/assistant-deployment_pb";
-import {
-  DeploymentAudioProvider,
-  AssistantWebpluginDeployment,
-} from "@/rapida/clients/protos/assistant-deployment_pb";
-import {
-  GetAssistantWhatsappDeploymentResponse,
-  AssistantWhatsappDeployment,
-} from "./protos/assistant-deployment_pb";
+import { GetAssistantWhatsappDeploymentResponse } from "./protos/assistant-deployment_pb";
 import { GetAssistantDebuggerDeploymentResponse } from "@/rapida/clients/protos/assistant-deployment_pb";
 import { Struct } from "google-protobuf/google/protobuf/struct_pb";
 import { ConnectionConfig } from "@/rapida/types/connection-config";

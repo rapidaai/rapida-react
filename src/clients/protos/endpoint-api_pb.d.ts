@@ -54,9 +54,6 @@ export class EndpointProviderModelAttribute extends jspb.Message {
   getChatcompleteprompt(): common_pb.TextChatCompletePrompt | undefined;
   setChatcompleteprompt(value?: common_pb.TextChatCompletePrompt): void;
 
-  getModelproviderid(): string;
-  setModelproviderid(value: string): void;
-
   getModelprovidername(): string;
   setModelprovidername(value: string): void;
 
@@ -79,7 +76,6 @@ export namespace EndpointProviderModelAttribute {
   export type AsObject = {
     description: string,
     chatcompleteprompt?: common_pb.TextChatCompletePrompt.AsObject,
-    modelproviderid: string,
     modelprovidername: string,
     endpointmodeloptionsList: Array<common_pb.Metadata.AsObject>,
   }
@@ -176,9 +172,6 @@ export class EndpointProviderModel extends jspb.Message {
   getChatcompleteprompt(): common_pb.TextChatCompletePrompt | undefined;
   setChatcompleteprompt(value?: common_pb.TextChatCompletePrompt): void;
 
-  getModelproviderid(): string;
-  setModelproviderid(value: string): void;
-
   getModelprovidername(): string;
   setModelprovidername(value: string): void;
 
@@ -236,7 +229,6 @@ export namespace EndpointProviderModel {
   export type AsObject = {
     id: string,
     chatcompleteprompt?: common_pb.TextChatCompletePrompt.AsObject,
-    modelproviderid: string,
     modelprovidername: string,
     endpointmodeloptionsList: Array<common_pb.Metadata.AsObject>,
     status: string,

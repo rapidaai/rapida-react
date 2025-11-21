@@ -103,12 +103,7 @@ export {
   getClientInfo,
   WithClientContext,
 } from "@/rapida/clients/index";
-export {
-  GeneralConnect,
-  KnowledgeConnect,
-  ActionConnect,
-  GetConnectorFiles,
-} from "@/rapida/clients/connect";
+export { GeneralConnect, GetConnectorFiles } from "@/rapida/clients/connect";
 export {
   CreateOrganization,
   UpdateOrganization,
@@ -182,7 +177,6 @@ export {
   CreateProviderKey,
   DeleteProviderKey,
   GetAllOrganizationCredential,
-  CreateToolCredential,
 } from "@/rapida/clients/vault";
 export {
   AssistantTalk,
@@ -289,9 +283,7 @@ export {
 export {
   VaultCredential,
   CreateProviderCredentialRequest,
-  CreateToolCredentialRequest,
   GetAllOrganizationCredentialResponse,
-  GetProviderCredentialRequest,
   GetAllOrganizationCredentialRequest,
   GetCredentialRequest,
   GetCredentialResponse,
@@ -439,12 +431,8 @@ export {
   GetAllAssistantWebhookLogResponse,
 } from "@/rapida/clients/protos/assistant-webhook_pb";
 export {
-  KnowledgeConnectRequest,
-  KnowledgeConnectResponse,
   GeneralConnectRequest,
   GeneralConnectResponse,
-  ActionConnectRequest,
-  ActionConnectResponse,
   GetConnectorFilesRequest,
   GetConnectorFilesResponse,
 } from "@/rapida/clients/protos/connect-api_pb";

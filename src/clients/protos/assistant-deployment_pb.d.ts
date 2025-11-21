@@ -17,9 +17,6 @@ export class DeploymentAudioProvider extends jspb.Message {
   setAudiooptionsList(value: Array<common_pb.Metadata>): void;
   addAudiooptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
-  getAudioproviderid(): string;
-  setAudioproviderid(value: string): void;
-
   getStatus(): string;
   setStatus(value: string): void;
 
@@ -41,7 +38,6 @@ export namespace DeploymentAudioProvider {
     id: string,
     audioprovider: string,
     audiooptionsList: Array<common_pb.Metadata.AsObject>,
-    audioproviderid: string,
     status: string,
     audiotype: string,
   }
@@ -66,11 +62,6 @@ export class AssistantWebpluginDeployment extends jspb.Message {
   clearMistake(): void;
   getMistake(): string;
   setMistake(value: string): void;
-
-  hasEnding(): boolean;
-  clearEnding(): void;
-  getEnding(): string;
-  setEnding(value: string): void;
 
   hasInputaudio(): boolean;
   clearInputaudio(): void;
@@ -122,6 +113,15 @@ export class AssistantWebpluginDeployment extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
+  getMaxsessionduration(): string;
+  setMaxsessionduration(value: string): void;
+
+  getIdealtimeout(): string;
+  setIdealtimeout(value: string): void;
+
+  getIdealtimeoutmessage(): string;
+  setIdealtimeoutmessage(value: string): void;
+
   getIconCase(): AssistantWebpluginDeployment.IconCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantWebpluginDeployment.AsObject;
@@ -140,7 +140,6 @@ export namespace AssistantWebpluginDeployment {
     name: string,
     greeting: string,
     mistake: string,
-    ending: string,
     inputaudio?: DeploymentAudioProvider.AsObject,
     outputaudio?: DeploymentAudioProvider.AsObject,
     url: string,
@@ -153,6 +152,9 @@ export namespace AssistantWebpluginDeployment {
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     status: string,
+    maxsessionduration: string,
+    idealtimeout: string,
+    idealtimeoutmessage: string,
   }
 
   export enum IconCase {
@@ -179,11 +181,6 @@ export class AssistantPhoneDeployment extends jspb.Message {
   getMistake(): string;
   setMistake(value: string): void;
 
-  hasEnding(): boolean;
-  clearEnding(): void;
-  getEnding(): string;
-  setEnding(value: string): void;
-
   hasInputaudio(): boolean;
   clearInputaudio(): void;
   getInputaudio(): DeploymentAudioProvider | undefined;
@@ -196,9 +193,6 @@ export class AssistantPhoneDeployment extends jspb.Message {
 
   getPhoneprovidername(): string;
   setPhoneprovidername(value: string): void;
-
-  getPhoneproviderid(): string;
-  setPhoneproviderid(value: string): void;
 
   clearPhoneoptionsList(): void;
   getPhoneoptionsList(): Array<common_pb.Metadata>;
@@ -218,6 +212,15 @@ export class AssistantPhoneDeployment extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
+  getMaxsessionduration(): string;
+  setMaxsessionduration(value: string): void;
+
+  getIdealtimeout(): string;
+  setIdealtimeout(value: string): void;
+
+  getIdealtimeoutmessage(): string;
+  setIdealtimeoutmessage(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantPhoneDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantPhoneDeployment): AssistantPhoneDeployment.AsObject;
@@ -234,15 +237,16 @@ export namespace AssistantPhoneDeployment {
     assistantid: string,
     greeting: string,
     mistake: string,
-    ending: string,
     inputaudio?: DeploymentAudioProvider.AsObject,
     outputaudio?: DeploymentAudioProvider.AsObject,
     phoneprovidername: string,
-    phoneproviderid: string,
     phoneoptionsList: Array<common_pb.Metadata.AsObject>,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     status: string,
+    maxsessionduration: string,
+    idealtimeout: string,
+    idealtimeoutmessage: string,
   }
 }
 
@@ -266,16 +270,18 @@ export class AssistantWhatsappDeployment extends jspb.Message {
   getMistake(): string;
   setMistake(value: string): void;
 
-  hasEnding(): boolean;
-  clearEnding(): void;
-  getEnding(): string;
-  setEnding(value: string): void;
+  hasInputaudio(): boolean;
+  clearInputaudio(): void;
+  getInputaudio(): DeploymentAudioProvider | undefined;
+  setInputaudio(value?: DeploymentAudioProvider): void;
+
+  hasOutputaudio(): boolean;
+  clearOutputaudio(): void;
+  getOutputaudio(): DeploymentAudioProvider | undefined;
+  setOutputaudio(value?: DeploymentAudioProvider): void;
 
   getWhatsappprovidername(): string;
   setWhatsappprovidername(value: string): void;
-
-  getWhatsappproviderid(): string;
-  setWhatsappproviderid(value: string): void;
 
   clearWhatsappoptionsList(): void;
   getWhatsappoptionsList(): Array<common_pb.Metadata>;
@@ -295,6 +301,15 @@ export class AssistantWhatsappDeployment extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
+  getMaxsessionduration(): string;
+  setMaxsessionduration(value: string): void;
+
+  getIdealtimeout(): string;
+  setIdealtimeout(value: string): void;
+
+  getIdealtimeoutmessage(): string;
+  setIdealtimeoutmessage(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantWhatsappDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantWhatsappDeployment): AssistantWhatsappDeployment.AsObject;
@@ -312,13 +327,16 @@ export namespace AssistantWhatsappDeployment {
     name: string,
     greeting: string,
     mistake: string,
-    ending: string,
+    inputaudio?: DeploymentAudioProvider.AsObject,
+    outputaudio?: DeploymentAudioProvider.AsObject,
     whatsappprovidername: string,
-    whatsappproviderid: string,
     whatsappoptionsList: Array<common_pb.Metadata.AsObject>,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     status: string,
+    maxsessionduration: string,
+    idealtimeout: string,
+    idealtimeoutmessage: string,
   }
 }
 
@@ -342,11 +360,6 @@ export class AssistantDebuggerDeployment extends jspb.Message {
   getMistake(): string;
   setMistake(value: string): void;
 
-  hasEnding(): boolean;
-  clearEnding(): void;
-  getEnding(): string;
-  setEnding(value: string): void;
-
   hasInputaudio(): boolean;
   clearInputaudio(): void;
   getInputaudio(): DeploymentAudioProvider | undefined;
@@ -367,11 +380,6 @@ export class AssistantDebuggerDeployment extends jspb.Message {
   getRaw(): common_pb.Content | undefined;
   setRaw(value?: common_pb.Content): void;
 
-  clearSuggestionList(): void;
-  getSuggestionList(): Array<string>;
-  setSuggestionList(value: Array<string>): void;
-  addSuggestion(value: string, index?: number): string;
-
   hasCreateddate(): boolean;
   clearCreateddate(): void;
   getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
@@ -384,6 +392,15 @@ export class AssistantDebuggerDeployment extends jspb.Message {
 
   getStatus(): string;
   setStatus(value: string): void;
+
+  getMaxsessionduration(): string;
+  setMaxsessionduration(value: string): void;
+
+  getIdealtimeout(): string;
+  setIdealtimeout(value: string): void;
+
+  getIdealtimeoutmessage(): string;
+  setIdealtimeoutmessage(value: string): void;
 
   getIconCase(): AssistantDebuggerDeployment.IconCase;
   serializeBinary(): Uint8Array;
@@ -403,15 +420,16 @@ export namespace AssistantDebuggerDeployment {
     name: string,
     greeting: string,
     mistake: string,
-    ending: string,
     inputaudio?: DeploymentAudioProvider.AsObject,
     outputaudio?: DeploymentAudioProvider.AsObject,
     url: string,
     raw?: common_pb.Content.AsObject,
-    suggestionList: Array<string>,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     status: string,
+    maxsessionduration: string,
+    idealtimeout: string,
+    idealtimeoutmessage: string,
   }
 
   export enum IconCase {
@@ -438,11 +456,6 @@ export class AssistantApiDeployment extends jspb.Message {
   getMistake(): string;
   setMistake(value: string): void;
 
-  hasEnding(): boolean;
-  clearEnding(): void;
-  getEnding(): string;
-  setEnding(value: string): void;
-
   hasInputaudio(): boolean;
   clearInputaudio(): void;
   getInputaudio(): DeploymentAudioProvider | undefined;
@@ -466,6 +479,15 @@ export class AssistantApiDeployment extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
+  getMaxsessionduration(): string;
+  setMaxsessionduration(value: string): void;
+
+  getIdealtimeout(): string;
+  setIdealtimeout(value: string): void;
+
+  getIdealtimeoutmessage(): string;
+  setIdealtimeoutmessage(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantApiDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantApiDeployment): AssistantApiDeployment.AsObject;
@@ -482,12 +504,14 @@ export namespace AssistantApiDeployment {
     assistantid: string,
     greeting: string,
     mistake: string,
-    ending: string,
     inputaudio?: DeploymentAudioProvider.AsObject,
     outputaudio?: DeploymentAudioProvider.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     status: string,
+    maxsessionduration: string,
+    idealtimeout: string,
+    idealtimeoutmessage: string,
   }
 }
 

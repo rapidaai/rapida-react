@@ -709,7 +709,6 @@ proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderModel.
 proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderModel.toObject = function(includeInstance, msg) {
   var f, obj = {
     template: (f = msg.getTemplate()) && common_pb.TextChatCompletePrompt.toObject(includeInstance, f),
-    modelproviderid: jspb.Message.getFieldWithDefault(msg, 21, "0"),
     modelprovidername: jspb.Message.getFieldWithDefault(msg, 22, ""),
     assistantmodeloptionsList: jspb.Message.toObjectList(msg.getAssistantmodeloptionsList(),
     common_pb.Metadata.toObject, includeInstance)
@@ -753,10 +752,6 @@ proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderModel.
       var value = new common_pb.TextChatCompletePrompt;
       reader.readMessage(value,common_pb.TextChatCompletePrompt.deserializeBinaryFromReader);
       msg.setTemplate(value);
-      break;
-    case 21:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setModelproviderid(value);
       break;
     case 22:
       var value = /** @type {string} */ (reader.readString());
@@ -802,13 +797,6 @@ proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderModel.
       20,
       f,
       common_pb.TextChatCompletePrompt.serializeBinaryToWriter
-    );
-  }
-  f = message.getModelproviderid();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      21,
-      f
     );
   }
   f = message.getModelprovidername();
@@ -863,24 +851,6 @@ proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderModel.
  */
 proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderModel.prototype.hasTemplate = function() {
   return jspb.Message.getField(this, 20) != null;
-};
-
-
-/**
- * optional uint64 modelProviderId = 21;
- * @return {string}
- */
-proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderModel.prototype.getModelproviderid = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 21, "0"));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderModel} returns this
- */
-proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderModel.prototype.setModelproviderid = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 21, value);
 };
 
 
@@ -2676,7 +2646,6 @@ proto.assistant_api.AssistantProviderModel.toObject = function(includeInstance, 
     template: (f = msg.getTemplate()) && common_pb.TextChatCompletePrompt.toObject(includeInstance, f),
     description: jspb.Message.getFieldWithDefault(msg, 3, ""),
     assistantid: jspb.Message.getFieldWithDefault(msg, 4, 0),
-    modelproviderid: jspb.Message.getFieldWithDefault(msg, 6, "0"),
     modelprovidername: jspb.Message.getFieldWithDefault(msg, 7, ""),
     assistantmodeloptionsList: jspb.Message.toObjectList(msg.getAssistantmodeloptionsList(),
     common_pb.Metadata.toObject, includeInstance),
@@ -2739,10 +2708,6 @@ proto.assistant_api.AssistantProviderModel.deserializeBinaryFromReader = functio
     case 4:
       var value = /** @type {number} */ (reader.readUint64());
       msg.setAssistantid(value);
-      break;
-    case 6:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setModelproviderid(value);
       break;
     case 7:
       var value = /** @type {string} */ (reader.readString());
@@ -2840,13 +2805,6 @@ proto.assistant_api.AssistantProviderModel.serializeBinaryToWriter = function(me
   if (f !== 0) {
     writer.writeUint64(
       4,
-      f
-    );
-  }
-  f = message.getModelproviderid();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      6,
       f
     );
   }
@@ -3009,24 +2967,6 @@ proto.assistant_api.AssistantProviderModel.prototype.getAssistantid = function()
  */
 proto.assistant_api.AssistantProviderModel.prototype.setAssistantid = function(value) {
   return jspb.Message.setProto3IntField(this, 4, value);
-};
-
-
-/**
- * optional uint64 modelProviderId = 6;
- * @return {string}
- */
-proto.assistant_api.AssistantProviderModel.prototype.getModelproviderid = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, "0"));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantProviderModel} returns this
- */
-proto.assistant_api.AssistantProviderModel.prototype.setModelproviderid = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 6, value);
 };
 
 

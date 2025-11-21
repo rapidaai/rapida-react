@@ -30,10 +30,8 @@ import {
   DeleteCredentialRequest,
   GetAllOrganizationCredentialResponse,
   GetAllOrganizationCredentialRequest,
-  CreateToolCredentialRequest,
 } from "@/rapida/clients/protos/vault-api_pb";
 import { Criteria, Paginate } from "@/rapida/clients/protos/common_pb";
-import { Struct } from "google-protobuf/google/protobuf/struct_pb";
 import { ServiceError } from "@/rapida/clients/types";
 import {
   UserAuthInfo,
@@ -118,36 +116,6 @@ export function GetAllOrganizationCredential(
   req.setPaginate(paginate);
   connectionConfig.vaultClient.getAllOrganizationCredential(
     req,
-    WithAuthContext(authHeader),
-    cb
-  );
-}
-
-/**
- *
- * @param toolId
- * @param toolName
- * @param credential
- * @param name
- * @param cb
- * @param authHeader
- */
-export function CreateToolCredential(
-  connectionConfig: ConnectionConfig,
-  toolId: string,
-  toolName: string,
-  credential: {},
-  name: string,
-  cb: (err: ServiceError | null, cpkr: GetCredentialResponse | null) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const requestObject = new CreateToolCredentialRequest();
-  requestObject.setToolid(toolId);
-  requestObject.setToolname(toolName);
-  requestObject.setCredential(Struct.fromJavaScript(credential));
-  requestObject.setName(name);
-  connectionConfig.vaultClient.createToolCredential(
-    requestObject,
     WithAuthContext(authHeader),
     cb
   );

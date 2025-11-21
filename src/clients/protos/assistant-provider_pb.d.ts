@@ -81,9 +81,6 @@ export namespace CreateAssistantProviderRequest {
     getTemplate(): common_pb.TextChatCompletePrompt | undefined;
     setTemplate(value?: common_pb.TextChatCompletePrompt): void;
 
-    getModelproviderid(): string;
-    setModelproviderid(value: string): void;
-
     getModelprovidername(): string;
     setModelprovidername(value: string): void;
 
@@ -105,7 +102,6 @@ export namespace CreateAssistantProviderRequest {
   export namespace CreateAssistantProviderModel {
     export type AsObject = {
       template?: common_pb.TextChatCompletePrompt.AsObject,
-      modelproviderid: string,
       modelprovidername: string,
       assistantmodeloptionsList: Array<common_pb.Metadata.AsObject>,
     }
@@ -336,9 +332,6 @@ export class AssistantProviderModel extends jspb.Message {
   getAssistantid(): number;
   setAssistantid(value: number): void;
 
-  getModelproviderid(): string;
-  setModelproviderid(value: string): void;
-
   getModelprovidername(): string;
   setModelprovidername(value: string): void;
 
@@ -392,7 +385,6 @@ export namespace AssistantProviderModel {
     template?: common_pb.TextChatCompletePrompt.AsObject,
     description: string,
     assistantid: number,
-    modelproviderid: string,
     modelprovidername: string,
     assistantmodeloptionsList: Array<common_pb.Metadata.AsObject>,
     status: string,

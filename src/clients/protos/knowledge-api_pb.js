@@ -616,7 +616,6 @@ proto.knowledge_api.CreateKnowledgeRequest.toObject = function(includeInstance, 
     description: jspb.Message.getFieldWithDefault(msg, 2, ""),
     tagsList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f,
     visibility: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    embeddingmodelproviderid: jspb.Message.getFieldWithDefault(msg, 6, "0"),
     embeddingmodelprovidername: jspb.Message.getFieldWithDefault(msg, 7, ""),
     knowledgeembeddingmodeloptionsList: jspb.Message.toObjectList(msg.getKnowledgeembeddingmodeloptionsList(),
     common_pb.Metadata.toObject, includeInstance)
@@ -671,10 +670,6 @@ proto.knowledge_api.CreateKnowledgeRequest.deserializeBinaryFromReader = functio
     case 5:
       var value = /** @type {string} */ (reader.readString());
       msg.setVisibility(value);
-      break;
-    case 6:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setEmbeddingmodelproviderid(value);
       break;
     case 7:
       var value = /** @type {string} */ (reader.readString());
@@ -739,13 +734,6 @@ proto.knowledge_api.CreateKnowledgeRequest.serializeBinaryToWriter = function(me
   if (f.length > 0) {
     writer.writeString(
       5,
-      f
-    );
-  }
-  f = message.getEmbeddingmodelproviderid();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      6,
       f
     );
   }
@@ -855,24 +843,6 @@ proto.knowledge_api.CreateKnowledgeRequest.prototype.getVisibility = function() 
  */
 proto.knowledge_api.CreateKnowledgeRequest.prototype.setVisibility = function(value) {
   return jspb.Message.setProto3StringField(this, 5, value);
-};
-
-
-/**
- * optional uint64 embeddingModelProviderId = 6;
- * @return {string}
- */
-proto.knowledge_api.CreateKnowledgeRequest.prototype.getEmbeddingmodelproviderid = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, "0"));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.knowledge_api.CreateKnowledgeRequest} returns this
- */
-proto.knowledge_api.CreateKnowledgeRequest.prototype.setEmbeddingmodelproviderid = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 6, value);
 };
 
 

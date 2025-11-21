@@ -65,7 +65,6 @@ import {
   RapidaDocumentSource,
   RapidaDocumentType,
 } from "@/rapida/utils/rapida_document";
-import { ProviderConfig } from "@/rapida/utils";
 import { ConnectionConfig } from "@/rapida/types/connection-config";
 
 /**
@@ -80,30 +79,22 @@ import { ConnectionConfig } from "@/rapida/types/connection-config";
  * @param cb - Callback function to handle the response.
  * @returns UnaryResponse - The gRPC response object.
  */
+
 export function CreateKnowledge(
-  config: ConnectionConfig,
-  provider: ProviderConfig,
-  name: string,
-  description: string,
-  tags: string[],
-  authHeader: ClientAuthInfo | UserAuthInfo,
-  cb: (
-    err: ServiceError | null,
-    response: CreateKnowledgeResponse | null
-  ) => void
-) {
-  const req = new CreateKnowledgeRequest();
-  req.setEmbeddingmodelproviderid(provider.providerId);
-  req.setEmbeddingmodelprovidername(provider.provider);
-  req.setKnowledgeembeddingmodeloptionsList(provider.parameters);
-  req.setName(name);
-  req.setDescription(description);
-  req.setTagsList(tags);
-  return config.knowledgeClient.createKnowledge(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  connectionConfig: ConnectionConfig,
+  req: CreateKnowledgeRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<CreateKnowledgeResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.knowledgeClient.createKnowledge(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (err: ServiceError | null, response: CreateKnowledgeResponse | null) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**

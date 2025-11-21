@@ -21,17 +21,11 @@ export class VaultCredential extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
-  getVaultlevel(): string;
-  setVaultlevel(value: string): void;
+  getProvider(): string;
+  setProvider(value: string): void;
 
-  getVaultlevelid(): string;
-  setVaultlevelid(value: string): void;
-
-  getVaulttype(): string;
-  setVaulttype(value: string): void;
-
-  getVaulttypeid(): string;
-  setVaulttypeid(value: string): void;
+  getOrganizationid(): string;
+  setOrganizationid(value: string): void;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -64,10 +58,8 @@ export namespace VaultCredential {
     name: string,
     value?: google_protobuf_struct_pb.Struct.AsObject,
     status: string,
-    vaultlevel: string,
-    vaultlevelid: string,
-    vaulttype: string,
-    vaulttypeid: string,
+    provider: string,
+    organizationid: string,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     lastuseddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
@@ -75,9 +67,6 @@ export namespace VaultCredential {
 }
 
 export class CreateProviderCredentialRequest extends jspb.Message {
-  getProviderid(): string;
-  setProviderid(value: string): void;
-
   hasCredential(): boolean;
   clearCredential(): void;
   getCredential(): google_protobuf_struct_pb.Struct | undefined;
@@ -86,8 +75,8 @@ export class CreateProviderCredentialRequest extends jspb.Message {
   getName(): string;
   setName(value: string): void;
 
-  getProvidername(): string;
-  setProvidername(value: string): void;
+  getProvider(): string;
+  setProvider(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateProviderCredentialRequest.AsObject;
@@ -101,44 +90,9 @@ export class CreateProviderCredentialRequest extends jspb.Message {
 
 export namespace CreateProviderCredentialRequest {
   export type AsObject = {
-    providerid: string,
     credential?: google_protobuf_struct_pb.Struct.AsObject,
     name: string,
-    providername: string,
-  }
-}
-
-export class CreateToolCredentialRequest extends jspb.Message {
-  getToolid(): string;
-  setToolid(value: string): void;
-
-  hasCredential(): boolean;
-  clearCredential(): void;
-  getCredential(): google_protobuf_struct_pb.Struct | undefined;
-  setCredential(value?: google_protobuf_struct_pb.Struct): void;
-
-  getName(): string;
-  setName(value: string): void;
-
-  getToolname(): string;
-  setToolname(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): CreateToolCredentialRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: CreateToolCredentialRequest): CreateToolCredentialRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: CreateToolCredentialRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): CreateToolCredentialRequest;
-  static deserializeBinaryFromReader(message: CreateToolCredentialRequest, reader: jspb.BinaryReader): CreateToolCredentialRequest;
-}
-
-export namespace CreateToolCredentialRequest {
-  export type AsObject = {
-    toolid: string,
-    credential?: google_protobuf_struct_pb.Struct.AsObject,
-    name: string,
-    toolname: string,
+    provider: string,
   }
 }
 
@@ -229,30 +183,6 @@ export namespace GetAllOrganizationCredentialResponse {
     dataList: Array<VaultCredential.AsObject>,
     error?: common_pb.Error.AsObject,
     paginated?: common_pb.Paginated.AsObject,
-  }
-}
-
-export class GetProviderCredentialRequest extends jspb.Message {
-  getProviderid(): string;
-  setProviderid(value: string): void;
-
-  getOrganizationid(): string;
-  setOrganizationid(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): GetProviderCredentialRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: GetProviderCredentialRequest): GetProviderCredentialRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: GetProviderCredentialRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): GetProviderCredentialRequest;
-  static deserializeBinaryFromReader(message: GetProviderCredentialRequest, reader: jspb.BinaryReader): GetProviderCredentialRequest;
-}
-
-export namespace GetProviderCredentialRequest {
-  export type AsObject = {
-    providerid: string,
-    organizationid: string,
   }
 }
 
