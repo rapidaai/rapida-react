@@ -926,6 +926,56 @@ export namespace AssistantConversationRecording {
   }
 }
 
+export class AssistantConversationTelephonyEvent extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getAssistantconversationid(): string;
+  setAssistantconversationid(value: string): void;
+
+  getProvider(): string;
+  setProvider(value: string): void;
+
+  getEventtype(): string;
+  setEventtype(value: string): void;
+
+  hasPayload(): boolean;
+  clearPayload(): void;
+  getPayload(): google_protobuf_struct_pb.Struct | undefined;
+  setPayload(value?: google_protobuf_struct_pb.Struct): void;
+
+  hasCreateddate(): boolean;
+  clearCreateddate(): void;
+  getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setCreateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasUpdateddate(): boolean;
+  clearUpdateddate(): void;
+  getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantConversationTelephonyEvent.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantConversationTelephonyEvent): AssistantConversationTelephonyEvent.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantConversationTelephonyEvent, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantConversationTelephonyEvent;
+  static deserializeBinaryFromReader(message: AssistantConversationTelephonyEvent, reader: jspb.BinaryReader): AssistantConversationTelephonyEvent;
+}
+
+export namespace AssistantConversationTelephonyEvent {
+  export type AsObject = {
+    id: string,
+    assistantconversationid: string,
+    provider: string,
+    eventtype: string,
+    payload?: google_protobuf_struct_pb.Struct.AsObject,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
 export class AssistantConversation extends jspb.Message {
   getId(): string;
   setId(value: string): void;
@@ -1016,6 +1066,11 @@ export class AssistantConversation extends jspb.Message {
   setRecordingsList(value: Array<AssistantConversationRecording>): void;
   addRecordings(value?: AssistantConversationRecording, index?: number): AssistantConversationRecording;
 
+  clearTelephonyeventsList(): void;
+  getTelephonyeventsList(): Array<AssistantConversationTelephonyEvent>;
+  setTelephonyeventsList(value: Array<AssistantConversationTelephonyEvent>): void;
+  addTelephonyevents(value?: AssistantConversationTelephonyEvent, index?: number): AssistantConversationTelephonyEvent;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantConversation.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantConversation): AssistantConversation.AsObject;
@@ -1051,6 +1106,7 @@ export namespace AssistantConversation {
     optionsList: Array<Metadata.AsObject>,
     direction: string,
     recordingsList: Array<AssistantConversationRecording.AsObject>,
+    telephonyeventsList: Array<AssistantConversationTelephonyEvent.AsObject>,
   }
 }
 

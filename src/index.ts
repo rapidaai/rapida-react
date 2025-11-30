@@ -406,6 +406,7 @@ export {
   AssistantConversationInterruption,
   AssistantConversationUserMessage,
   AssistantConversationAssistantMessage,
+  AssistantConversationTelephonyEvent,
 } from "@/rapida/clients/protos/common_pb";
 export {
   AssistantService,

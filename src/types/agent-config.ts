@@ -60,7 +60,7 @@ export class InputOptions {
    */
   recorderOptions: RecorderOptions = {
     format: "pcm",
-    sampleRate: 24000,
+    sampleRate: 16000,
   };
   get recorderOption(): RecorderOptions {
     return this.recorderOptions;
@@ -110,7 +110,7 @@ export class OutputOptions {
    */
   protected playerOptions: PlayerOptions = {
     format: "pcm",
-    sampleRate: 24000,
+    sampleRate: 16000,
   };
   get playerOption(): PlayerOptions {
     return this.playerOptions;

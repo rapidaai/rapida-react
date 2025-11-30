@@ -70,7 +70,6 @@ export class VoiceAgent extends Agent {
   outputChannel: Channel = Channel.Audio;
 
   /**
-   * Creates a new Room, the primary construct for a LiveKit session.
    * @param options
    */
   constructor(

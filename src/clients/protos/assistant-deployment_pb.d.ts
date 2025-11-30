@@ -73,16 +73,6 @@ export class AssistantWebpluginDeployment extends jspb.Message {
   getOutputaudio(): DeploymentAudioProvider | undefined;
   setOutputaudio(value?: DeploymentAudioProvider): void;
 
-  hasUrl(): boolean;
-  clearUrl(): void;
-  getUrl(): string;
-  setUrl(value: string): void;
-
-  hasRaw(): boolean;
-  clearRaw(): void;
-  getRaw(): common_pb.Content | undefined;
-  setRaw(value?: common_pb.Content): void;
-
   clearSuggestionList(): void;
   getSuggestionList(): Array<string>;
   setSuggestionList(value: Array<string>): void;
@@ -122,7 +112,6 @@ export class AssistantWebpluginDeployment extends jspb.Message {
   getIdealtimeoutmessage(): string;
   setIdealtimeoutmessage(value: string): void;
 
-  getIconCase(): AssistantWebpluginDeployment.IconCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantWebpluginDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantWebpluginDeployment): AssistantWebpluginDeployment.AsObject;
@@ -142,8 +131,6 @@ export namespace AssistantWebpluginDeployment {
     mistake: string,
     inputaudio?: DeploymentAudioProvider.AsObject,
     outputaudio?: DeploymentAudioProvider.AsObject,
-    url: string,
-    raw?: common_pb.Content.AsObject,
     suggestionList: Array<string>,
     helpcenterenabled: boolean,
     productcatalogenabled: boolean,
@@ -155,12 +142,6 @@ export namespace AssistantWebpluginDeployment {
     maxsessionduration: string,
     idealtimeout: string,
     idealtimeoutmessage: string,
-  }
-
-  export enum IconCase {
-    ICON_NOT_SET = 0,
-    URL = 15,
-    RAW = 16,
   }
 }
 
@@ -370,16 +351,6 @@ export class AssistantDebuggerDeployment extends jspb.Message {
   getOutputaudio(): DeploymentAudioProvider | undefined;
   setOutputaudio(value?: DeploymentAudioProvider): void;
 
-  hasUrl(): boolean;
-  clearUrl(): void;
-  getUrl(): string;
-  setUrl(value: string): void;
-
-  hasRaw(): boolean;
-  clearRaw(): void;
-  getRaw(): common_pb.Content | undefined;
-  setRaw(value?: common_pb.Content): void;
-
   hasCreateddate(): boolean;
   clearCreateddate(): void;
   getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
@@ -402,7 +373,6 @@ export class AssistantDebuggerDeployment extends jspb.Message {
   getIdealtimeoutmessage(): string;
   setIdealtimeoutmessage(value: string): void;
 
-  getIconCase(): AssistantDebuggerDeployment.IconCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantDebuggerDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantDebuggerDeployment): AssistantDebuggerDeployment.AsObject;
@@ -422,20 +392,12 @@ export namespace AssistantDebuggerDeployment {
     mistake: string,
     inputaudio?: DeploymentAudioProvider.AsObject,
     outputaudio?: DeploymentAudioProvider.AsObject,
-    url: string,
-    raw?: common_pb.Content.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     status: string,
     maxsessionduration: string,
     idealtimeout: string,
     idealtimeoutmessage: string,
-  }
-
-  export enum IconCase {
-    ICON_NOT_SET = 0,
-    URL = 15,
-    RAW = 16,
   }
 }
 

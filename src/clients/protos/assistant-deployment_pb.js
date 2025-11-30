@@ -21,10 +21,8 @@ var common_pb = require('./common_pb.js');
 goog.object.extend(proto, common_pb);
 goog.exportSymbol('proto.assistant_api.AssistantApiDeployment', null, global);
 goog.exportSymbol('proto.assistant_api.AssistantDebuggerDeployment', null, global);
-goog.exportSymbol('proto.assistant_api.AssistantDebuggerDeployment.IconCase', null, global);
 goog.exportSymbol('proto.assistant_api.AssistantPhoneDeployment', null, global);
 goog.exportSymbol('proto.assistant_api.AssistantWebpluginDeployment', null, global);
-goog.exportSymbol('proto.assistant_api.AssistantWebpluginDeployment.IconCase', null, global);
 goog.exportSymbol('proto.assistant_api.AssistantWhatsappDeployment', null, global);
 goog.exportSymbol('proto.assistant_api.CreateAssistantDeploymentRequest', null, global);
 goog.exportSymbol('proto.assistant_api.CreateAssistantDeploymentRequest.DeploymentCase', null, global);
@@ -67,7 +65,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.assistant_api.AssistantWebpluginDeployment = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.assistant_api.AssistantWebpluginDeployment.repeatedFields_, proto.assistant_api.AssistantWebpluginDeployment.oneofGroups_);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.assistant_api.AssistantWebpluginDeployment.repeatedFields_, null);
 };
 goog.inherits(proto.assistant_api.AssistantWebpluginDeployment, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -130,7 +128,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.assistant_api.AssistantDebuggerDeployment = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, proto.assistant_api.AssistantDebuggerDeployment.oneofGroups_);
+  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
 };
 goog.inherits(proto.assistant_api.AssistantDebuggerDeployment, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -596,32 +594,6 @@ proto.assistant_api.DeploymentAudioProvider.prototype.setAudiotype = function(va
  */
 proto.assistant_api.AssistantWebpluginDeployment.repeatedFields_ = [20];
 
-/**
- * Oneof group definitions for this message. Each group defines the field
- * numbers belonging to that group. When of these fields' value is set, all
- * other fields in the group are cleared. During deserialization, if multiple
- * fields are encountered for a group, only the last value seen will be kept.
- * @private {!Array<!Array<number>>}
- * @const
- */
-proto.assistant_api.AssistantWebpluginDeployment.oneofGroups_ = [[15,16]];
-
-/**
- * @enum {number}
- */
-proto.assistant_api.AssistantWebpluginDeployment.IconCase = {
-  ICON_NOT_SET: 0,
-  URL: 15,
-  RAW: 16
-};
-
-/**
- * @return {proto.assistant_api.AssistantWebpluginDeployment.IconCase}
- */
-proto.assistant_api.AssistantWebpluginDeployment.prototype.getIconCase = function() {
-  return /** @type {proto.assistant_api.AssistantWebpluginDeployment.IconCase} */(jspb.Message.computeOneofCase(this, proto.assistant_api.AssistantWebpluginDeployment.oneofGroups_[0]));
-};
-
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -660,8 +632,6 @@ proto.assistant_api.AssistantWebpluginDeployment.toObject = function(includeInst
     mistake: jspb.Message.getFieldWithDefault(msg, 11, ""),
     inputaudio: (f = msg.getInputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
     outputaudio: (f = msg.getOutputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
-    url: jspb.Message.getFieldWithDefault(msg, 15, ""),
-    raw: (f = msg.getRaw()) && common_pb.Content.toObject(includeInstance, f),
     suggestionList: (f = jspb.Message.getRepeatedField(msg, 20)) == null ? undefined : f,
     helpcenterenabled: jspb.Message.getBooleanFieldWithDefault(msg, 21, false),
     productcatalogenabled: jspb.Message.getBooleanFieldWithDefault(msg, 22, false),
@@ -738,15 +708,6 @@ proto.assistant_api.AssistantWebpluginDeployment.deserializeBinaryFromReader = f
       var value = new proto.assistant_api.DeploymentAudioProvider;
       reader.readMessage(value,proto.assistant_api.DeploymentAudioProvider.deserializeBinaryFromReader);
       msg.setOutputaudio(value);
-      break;
-    case 15:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setUrl(value);
-      break;
-    case 16:
-      var value = new common_pb.Content;
-      reader.readMessage(value,common_pb.Content.deserializeBinaryFromReader);
-      msg.setRaw(value);
       break;
     case 20:
       var value = /** @type {string} */ (reader.readString());
@@ -872,21 +833,6 @@ proto.assistant_api.AssistantWebpluginDeployment.serializeBinaryToWriter = funct
       14,
       f,
       proto.assistant_api.DeploymentAudioProvider.serializeBinaryToWriter
-    );
-  }
-  f = /** @type {string} */ (jspb.Message.getField(message, 15));
-  if (f != null) {
-    writer.writeString(
-      15,
-      f
-    );
-  }
-  f = message.getRaw();
-  if (f != null) {
-    writer.writeMessage(
-      16,
-      f,
-      common_pb.Content.serializeBinaryToWriter
     );
   }
   f = message.getSuggestionList();
@@ -1168,79 +1114,6 @@ proto.assistant_api.AssistantWebpluginDeployment.prototype.clearOutputaudio = fu
  */
 proto.assistant_api.AssistantWebpluginDeployment.prototype.hasOutputaudio = function() {
   return jspb.Message.getField(this, 14) != null;
-};
-
-
-/**
- * optional string url = 15;
- * @return {string}
- */
-proto.assistant_api.AssistantWebpluginDeployment.prototype.getUrl = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantWebpluginDeployment} returns this
- */
-proto.assistant_api.AssistantWebpluginDeployment.prototype.setUrl = function(value) {
-  return jspb.Message.setOneofField(this, 15, proto.assistant_api.AssistantWebpluginDeployment.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.assistant_api.AssistantWebpluginDeployment} returns this
- */
-proto.assistant_api.AssistantWebpluginDeployment.prototype.clearUrl = function() {
-  return jspb.Message.setOneofField(this, 15, proto.assistant_api.AssistantWebpluginDeployment.oneofGroups_[0], undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.assistant_api.AssistantWebpluginDeployment.prototype.hasUrl = function() {
-  return jspb.Message.getField(this, 15) != null;
-};
-
-
-/**
- * optional Content raw = 16;
- * @return {?proto.Content}
- */
-proto.assistant_api.AssistantWebpluginDeployment.prototype.getRaw = function() {
-  return /** @type{?proto.Content} */ (
-    jspb.Message.getWrapperField(this, common_pb.Content, 16));
-};
-
-
-/**
- * @param {?proto.Content|undefined} value
- * @return {!proto.assistant_api.AssistantWebpluginDeployment} returns this
-*/
-proto.assistant_api.AssistantWebpluginDeployment.prototype.setRaw = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 16, proto.assistant_api.AssistantWebpluginDeployment.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.assistant_api.AssistantWebpluginDeployment} returns this
- */
-proto.assistant_api.AssistantWebpluginDeployment.prototype.clearRaw = function() {
-  return this.setRaw(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.assistant_api.AssistantWebpluginDeployment.prototype.hasRaw = function() {
-  return jspb.Message.getField(this, 16) != null;
 };
 
 
@@ -2870,32 +2743,6 @@ proto.assistant_api.AssistantWhatsappDeployment.prototype.setIdealtimeoutmessage
 
 
 
-/**
- * Oneof group definitions for this message. Each group defines the field
- * numbers belonging to that group. When of these fields' value is set, all
- * other fields in the group are cleared. During deserialization, if multiple
- * fields are encountered for a group, only the last value seen will be kept.
- * @private {!Array<!Array<number>>}
- * @const
- */
-proto.assistant_api.AssistantDebuggerDeployment.oneofGroups_ = [[15,16]];
-
-/**
- * @enum {number}
- */
-proto.assistant_api.AssistantDebuggerDeployment.IconCase = {
-  ICON_NOT_SET: 0,
-  URL: 15,
-  RAW: 16
-};
-
-/**
- * @return {proto.assistant_api.AssistantDebuggerDeployment.IconCase}
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.getIconCase = function() {
-  return /** @type {proto.assistant_api.AssistantDebuggerDeployment.IconCase} */(jspb.Message.computeOneofCase(this, proto.assistant_api.AssistantDebuggerDeployment.oneofGroups_[0]));
-};
-
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -2934,8 +2781,6 @@ proto.assistant_api.AssistantDebuggerDeployment.toObject = function(includeInsta
     mistake: jspb.Message.getFieldWithDefault(msg, 11, ""),
     inputaudio: (f = msg.getInputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
     outputaudio: (f = msg.getOutputaudio()) && proto.assistant_api.DeploymentAudioProvider.toObject(includeInstance, f),
-    url: jspb.Message.getFieldWithDefault(msg, 15, ""),
-    raw: (f = msg.getRaw()) && common_pb.Content.toObject(includeInstance, f),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     status: jspb.Message.getFieldWithDefault(msg, 28, ""),
@@ -3007,15 +2852,6 @@ proto.assistant_api.AssistantDebuggerDeployment.deserializeBinaryFromReader = fu
       var value = new proto.assistant_api.DeploymentAudioProvider;
       reader.readMessage(value,proto.assistant_api.DeploymentAudioProvider.deserializeBinaryFromReader);
       msg.setOutputaudio(value);
-      break;
-    case 15:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setUrl(value);
-      break;
-    case 16:
-      var value = new common_pb.Content;
-      reader.readMessage(value,common_pb.Content.deserializeBinaryFromReader);
-      msg.setRaw(value);
       break;
     case 26:
       var value = new google_protobuf_timestamp_pb.Timestamp;
@@ -3121,21 +2957,6 @@ proto.assistant_api.AssistantDebuggerDeployment.serializeBinaryToWriter = functi
       14,
       f,
       proto.assistant_api.DeploymentAudioProvider.serializeBinaryToWriter
-    );
-  }
-  f = /** @type {string} */ (jspb.Message.getField(message, 15));
-  if (f != null) {
-    writer.writeString(
-      15,
-      f
-    );
-  }
-  f = message.getRaw();
-  if (f != null) {
-    writer.writeMessage(
-      16,
-      f,
-      common_pb.Content.serializeBinaryToWriter
     );
   }
   f = message.getCreateddate();
@@ -3382,79 +3203,6 @@ proto.assistant_api.AssistantDebuggerDeployment.prototype.clearOutputaudio = fun
  */
 proto.assistant_api.AssistantDebuggerDeployment.prototype.hasOutputaudio = function() {
   return jspb.Message.getField(this, 14) != null;
-};
-
-
-/**
- * optional string url = 15;
- * @return {string}
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.getUrl = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.setUrl = function(value) {
-  return jspb.Message.setOneofField(this, 15, proto.assistant_api.AssistantDebuggerDeployment.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the field making it undefined.
- * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.clearUrl = function() {
-  return jspb.Message.setOneofField(this, 15, proto.assistant_api.AssistantDebuggerDeployment.oneofGroups_[0], undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.hasUrl = function() {
-  return jspb.Message.getField(this, 15) != null;
-};
-
-
-/**
- * optional Content raw = 16;
- * @return {?proto.Content}
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.getRaw = function() {
-  return /** @type{?proto.Content} */ (
-    jspb.Message.getWrapperField(this, common_pb.Content, 16));
-};
-
-
-/**
- * @param {?proto.Content|undefined} value
- * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
-*/
-proto.assistant_api.AssistantDebuggerDeployment.prototype.setRaw = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 16, proto.assistant_api.AssistantDebuggerDeployment.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.clearRaw = function() {
-  return this.setRaw(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.assistant_api.AssistantDebuggerDeployment.prototype.hasRaw = function() {
-  return jspb.Message.getField(this, 16) != null;
 };
 
 
