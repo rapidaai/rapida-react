@@ -106,14 +106,11 @@ export class VoiceAgent extends Agent {
 
   private connectDevice = async () => {
     try {
-      this.preliminaryInputStream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-      });
+      this.preliminaryInputStream = await this.waitForUserMediaPermission();
       [this.input, this.output] = await Promise.all([
         Input.create(this.agentConfig.inputOptions.recorderOption),
         Output.create(this.agentConfig.outputOptions.playerOption),
       ]);
-
       this.input.worklet.port.onmessage = this.onInputWorkletMessage;
       this.output.worklet.port.onmessage = this.onOutputWorkletMessage;
 
@@ -121,8 +118,21 @@ export class VoiceAgent extends Agent {
       this.preliminaryInputStream = null;
     } catch (error) {
       await this.disconnectAudio();
-      console.log(error);
-      // throw error;
+      console.error("Microphone permission error:", error);
+    }
+  };
+
+  // Helper method to handle media permissions:
+  private waitForUserMediaPermission = async (): Promise<MediaStream> => {
+    try {
+      return await navigator.mediaDevices.getUserMedia({ audio: true });
+    } catch (error) {
+      // Handle permission denied or other errors.
+      console.error(
+        "Permission denied or error while requesting microphone access:",
+        error
+      );
+      throw error; // Propagate the error for further handling by `connectDevice`.
     }
   };
 
@@ -176,7 +186,6 @@ export class VoiceAgent extends Agent {
       return;
     }
 
-    const maxVolume = event.data[1];
     if (this.inputChannel == Channel.Audio)
       this.talkingConnection?.write(
         this.createAssistantAudioMessage(
@@ -250,10 +259,10 @@ export class VoiceAgent extends Agent {
    */
   public connect = async () => {
     try {
-      await this.connectAgent();
       if (this.inputChannel == Channel.Audio) {
         await this.connectAudio();
       }
+      await this.connectAgent();
     } catch (err) {
       console.error("error while connect " + err);
     }
