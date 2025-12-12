@@ -13,13 +13,12 @@ jobs:
 
     permissions:
       contents: read
-      id-token: write # Required for npm Trusted Publishing (OIDC)
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Node.js with npm Trusted Publisher
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 18
@@ -29,15 +28,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install PostCSS CLI (if required by build)
-        run: npm install -g postcss postcss-cli
-
       - name: Build package
         run: npm run build
 
-      - name: Publish to npm (Trusted Publisher, provenance disabled)
+      - name: Publish to npm
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           NPM_CONFIG_PROVENANCE: false
         run: npm publish --access public
 
