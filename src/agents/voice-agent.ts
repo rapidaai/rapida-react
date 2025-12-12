@@ -330,16 +330,43 @@ export class VoiceAgent extends Agent {
    * @param input
    * @returns
    */
+  // public setInputChannel = async (input: Channel) => {
+  //   if (this.inputChannel == input) {
+  //     return;
+  //   }
+  //   if (input == Channel.Audio) {
+  //     await this.connectAudio();
+  //   } else {
+  //     await this.disconnectAudio();
+  //   }
+  //   this.inputChannel = input;
+  //   this.emit(AgentEvent.InputChannelChangeEvent, this.inputChannel);
+  // };
+
   public setInputChannel = async (input: Channel) => {
-    if (this.inputChannel == input) {
+    // If the input channel doesn't change, do nothing
+    if (this.inputChannel === input) {
       return;
     }
-    if (input == Channel.Audio) {
-      await this.connectAudio();
-    } else {
-      await this.disconnectAudio();
-    }
+
+    // Disconnect current audio if any
+    await this.disconnectAudio();
+
+    // Update the input channel state
     this.inputChannel = input;
+
+    // Handle deferred audio setup
+    if (input === Channel.Audio) {
+      if (this.isConnected) {
+        // If already connected, initialize audio immediately
+        await this.connectAudio();
+      } else {
+        // If not connected, defer audio initialization to the `connect()` method
+        console.log("Audio initialization deferred until connect()");
+      }
+    }
+
+    // Emit input channel change event
     this.emit(AgentEvent.InputChannelChangeEvent, this.inputChannel);
   };
 
