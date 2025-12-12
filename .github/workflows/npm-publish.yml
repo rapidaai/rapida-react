@@ -23,6 +23,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: "16"
+          registry-url: https://registry.npmjs.org # Use OIDC trusted publisher
 
       - name: Install dependencies
         run: |
@@ -35,10 +36,8 @@ jobs:
       - name: Publish to npm
         if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: |
-          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > ~/.npmrc
-          npm publish
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # OIDC for publishing through npm
+        run: npm publish
 
   tag:
     runs-on: ubuntu-latest
@@ -60,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      id-token: write # Added OIDC Permission
+      id-token: write # Enable OIDC permissions for trusted publishers
     if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
 
     steps:
