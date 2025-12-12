@@ -5,62 +5,48 @@ on:
     branches:
       - main
       - master
-  pull_request:
-    branches:
-      - main
-      - master
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read # read repository contents
+      id-token: write # required for npm trusted publishing (OIDC)
+
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Node.js for npm Trusted Publisher
+        uses: actions/setup-node@v4
         with:
-          node-version: "16"
-          registry-url: https://registry.npmjs.org # Use OIDC trusted publisher
+          node-version: 18
+          registry-url: https://registry.npmjs.org/
+          always-auth: true
 
       - name: Install dependencies
-        run: |
-          npm ci
-          npm install -g postcss-cli
+        run: npm ci
 
-      - name: Build the package
+      - name: Build package
         run: npm run build
 
-      - name: Publish to npm
-        if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+      - name: Publish to npm (Trusted Publisher, provenance disabled)
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }} # OIDC for publishing through npm
-        run: npm publish
-
-  tag:
-    runs-on: ubuntu-latest
-    needs: build
-    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Set Git committer identity
-        run: |
-          git config --global user.email "p_srivastav@outlook.com"
-          git config --global user.name "Prashant Srivastav"
+          NPM_CONFIG_PROVENANCE: false # disables provenance attestation
+        run: npm publish --access public
 
   create_release:
-    name: Create Release
+    name: Create GitHub Release
     needs: build
     runs-on: ubuntu-latest
+
     permissions:
       contents: write
-      id-token: write # Enable OIDC permissions for trusted publishers
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
 
     steps:
       - name: Checkout code
@@ -71,7 +57,7 @@ jobs:
       - name: Get version and create tag
         id: version
         run: |
-          VERSION=$(jq -r '.version' package.json) # Fetch version from package.json
+          VERSION=$(jq -r '.version' package.json)
           echo "VERSION=${VERSION}" >> $GITHUB_OUTPUT
           echo "TAG_NAME=v${VERSION}" >> $GITHUB_OUTPUT
           if git tag -l "v${VERSION}" | grep -q "v${VERSION}"; then

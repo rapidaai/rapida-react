@@ -18,6 +18,10 @@
         "rapiadai",
         "voiceai"
     ],
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
     "author": "Prashant Srivastav <prashant@rapida.ai>",
     "license": "MIT",
     "bugs": {
