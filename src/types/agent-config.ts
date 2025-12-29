@@ -22,7 +22,7 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { AssistantDefinition } from "@/rapida/clients/protos/common_pb";
+import { AssistantDefinition, AudioConfig, StreamConfig } from "@/rapida/clients/protos/common_pb";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
 import { Channel } from "@/rapida/types/channel";
@@ -74,6 +74,24 @@ export class InputOptions {
     return this.channel;
   }
 
+
+  /**
+   * stream config
+   * define audio codacs and sample rate. these will be directly translated to stt 
+   */
+  get defaultInputStreamOption(): StreamConfig {
+    const inputStreamConfig = new StreamConfig()
+    if (this.channel == Channel.Audio) {
+      // only send when audio is enabled
+      const inputAudioConfig = new AudioConfig()
+      inputAudioConfig.setChannels(1)
+      inputAudioConfig.setAudioformat(AudioConfig.AudioFormat.LINEAR16)
+      inputAudioConfig.setSamplerate(this.recorderOptions.sampleRate)
+      inputStreamConfig.setAudio(inputAudioConfig)
+    }
+    return inputStreamConfig
+  }
+
   /**
    *
    * @param channels
@@ -86,13 +104,7 @@ export class InputOptions {
     if (deviceId) this.recorderOptions.device = deviceId;
   }
 
-  /**
-   *
-   * @param device
-   */
-  changeDevice(device: string) {
-    this.recorderOption.device = device;
-  }
+
 }
 
 /**
@@ -112,6 +124,7 @@ export class OutputOptions {
     format: "pcm",
     sampleRate: 16000,
   };
+
   get playerOption(): PlayerOptions {
     return this.playerOptions;
   }
@@ -119,10 +132,7 @@ export class OutputOptions {
   /**
    * channel for providing output
    */
-  protected channel: Channel = Channel.Audio;
-  get defaultChannel(): Channel {
-    return this.channel;
-  }
+  channel: Channel = Channel.Audio;
 
   /**
    *
@@ -137,20 +147,22 @@ export class OutputOptions {
   }
 
   /**
-   *
-   * @param channel
+   * stream config
+   * define audio codacs and sample rate. these will be directly translated to tts 
    */
-  changeChannel(channel: Channel) {
-    this.channel = channel;
+  get defaultOutputStreamOption(): StreamConfig {
+    const inputStreamConfig = new StreamConfig()
+    if (this.channel == Channel.Audio) {
+      const inputAudioConfig = new AudioConfig()
+      inputAudioConfig.setChannels(1)
+      inputAudioConfig.setAudioformat(AudioConfig.AudioFormat.LINEAR16)
+      inputAudioConfig.setSamplerate(this.playerOption.sampleRate)
+      inputStreamConfig.setAudio(inputAudioConfig)
+    }
+    return inputStreamConfig
   }
 
-  /**
-   *
-   * @param device
-   */
-  changeDevice(device: string) {
-    this.playerOption.device = device;
-  }
+
 }
 /**
  * Represents the configuration settings for an agent.
@@ -204,11 +216,8 @@ export class AgentConfig {
     inputOptions: InputOptions = new InputOptions([
       Channel.Audio,
       Channel.Text,
-    ]),
-    outputOptions: OutputOptions = new OutputOptions([
-      Channel.Audio,
-      Channel.Text,
-    ]),
+    ], Channel.Text),
+    outputOptions: OutputOptions = new OutputOptions([Channel.Audio, Channel.Text], Channel.Text),
     version?: string,
     argument?: Map<string, google_protobuf_any_pb.Any>,
     options?: Map<string, google_protobuf_any_pb.Any>,

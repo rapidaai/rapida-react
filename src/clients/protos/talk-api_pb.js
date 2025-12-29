@@ -478,7 +478,7 @@ proto.talk_api.AssistantMessagingRequest.prototype.hasMessage = function() {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.talk_api.AssistantMessagingResponse.oneofGroups_ = [[9,10,11,12,13,14,15,16,17,18,19,20,21]];
+proto.talk_api.AssistantMessagingResponse.oneofGroups_ = [[9,10,11,12,13,14,15]];
 
 /**
  * @enum {number}
@@ -490,14 +490,8 @@ proto.talk_api.AssistantMessagingResponse.DataCase = {
   USER: 11,
   ASSISTANT: 12,
   MESSAGE: 13,
-  DISCONNECTACTION: 14,
-  HOLDACTION: 15,
-  KNOWLEDGERETRIEVALACTION: 16,
-  APIREQUESTACTION: 17,
-  ENDPOINTACTION: 18,
-  DEVIATIONACTION: 19,
-  ASSISTANTTRANSFERACTION: 20,
-  PHONECALLTRANSFERACTION: 21
+  ACTION: 14,
+  ERROR: 15
 };
 
 /**
@@ -540,20 +534,13 @@ proto.talk_api.AssistantMessagingResponse.toObject = function(includeInstance, m
   var f, obj = {
     code: jspb.Message.getFieldWithDefault(msg, 1, 0),
     success: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
-    error: (f = msg.getError()) && common_pb.Error.toObject(includeInstance, f),
     configuration: (f = msg.getConfiguration()) && common_pb.AssistantConversationConfiguration.toObject(includeInstance, f),
     interruption: (f = msg.getInterruption()) && common_pb.AssistantConversationInterruption.toObject(includeInstance, f),
     user: (f = msg.getUser()) && common_pb.AssistantConversationUserMessage.toObject(includeInstance, f),
     assistant: (f = msg.getAssistant()) && common_pb.AssistantConversationAssistantMessage.toObject(includeInstance, f),
     message: (f = msg.getMessage()) && common_pb.AssistantConversationMessage.toObject(includeInstance, f),
-    disconnectaction: (f = msg.getDisconnectaction()) && common_pb.AssistantConversationDisconnectAction.toObject(includeInstance, f),
-    holdaction: (f = msg.getHoldaction()) && common_pb.AssistantConverstationHoldAction.toObject(includeInstance, f),
-    knowledgeretrievalaction: (f = msg.getKnowledgeretrievalaction()) && common_pb.AssistantConverstationKnowledgeRetrievalAction.toObject(includeInstance, f),
-    apirequestaction: (f = msg.getApirequestaction()) && common_pb.AssistantConverstationApiRequestAction.toObject(includeInstance, f),
-    endpointaction: (f = msg.getEndpointaction()) && common_pb.AssistantConverstationEndpointAction.toObject(includeInstance, f),
-    deviationaction: (f = msg.getDeviationaction()) && common_pb.AssistantConversationDeviationAction.toObject(includeInstance, f),
-    assistanttransferaction: (f = msg.getAssistanttransferaction()) && common_pb.AssistantConversationAssistantTransferAction.toObject(includeInstance, f),
-    phonecalltransferaction: (f = msg.getPhonecalltransferaction()) && common_pb.AssistantConversationPhoneCallTransferAction.toObject(includeInstance, f)
+    action: (f = msg.getAction()) && common_pb.AssistantConversationAction.toObject(includeInstance, f),
+    error: (f = msg.getError()) && common_pb.Error.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -598,11 +585,6 @@ proto.talk_api.AssistantMessagingResponse.deserializeBinaryFromReader = function
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setSuccess(value);
       break;
-    case 4:
-      var value = new common_pb.Error;
-      reader.readMessage(value,common_pb.Error.deserializeBinaryFromReader);
-      msg.setError(value);
-      break;
     case 9:
       var value = new common_pb.AssistantConversationConfiguration;
       reader.readMessage(value,common_pb.AssistantConversationConfiguration.deserializeBinaryFromReader);
@@ -629,44 +611,14 @@ proto.talk_api.AssistantMessagingResponse.deserializeBinaryFromReader = function
       msg.setMessage(value);
       break;
     case 14:
-      var value = new common_pb.AssistantConversationDisconnectAction;
-      reader.readMessage(value,common_pb.AssistantConversationDisconnectAction.deserializeBinaryFromReader);
-      msg.setDisconnectaction(value);
+      var value = new common_pb.AssistantConversationAction;
+      reader.readMessage(value,common_pb.AssistantConversationAction.deserializeBinaryFromReader);
+      msg.setAction(value);
       break;
     case 15:
-      var value = new common_pb.AssistantConverstationHoldAction;
-      reader.readMessage(value,common_pb.AssistantConverstationHoldAction.deserializeBinaryFromReader);
-      msg.setHoldaction(value);
-      break;
-    case 16:
-      var value = new common_pb.AssistantConverstationKnowledgeRetrievalAction;
-      reader.readMessage(value,common_pb.AssistantConverstationKnowledgeRetrievalAction.deserializeBinaryFromReader);
-      msg.setKnowledgeretrievalaction(value);
-      break;
-    case 17:
-      var value = new common_pb.AssistantConverstationApiRequestAction;
-      reader.readMessage(value,common_pb.AssistantConverstationApiRequestAction.deserializeBinaryFromReader);
-      msg.setApirequestaction(value);
-      break;
-    case 18:
-      var value = new common_pb.AssistantConverstationEndpointAction;
-      reader.readMessage(value,common_pb.AssistantConverstationEndpointAction.deserializeBinaryFromReader);
-      msg.setEndpointaction(value);
-      break;
-    case 19:
-      var value = new common_pb.AssistantConversationDeviationAction;
-      reader.readMessage(value,common_pb.AssistantConversationDeviationAction.deserializeBinaryFromReader);
-      msg.setDeviationaction(value);
-      break;
-    case 20:
-      var value = new common_pb.AssistantConversationAssistantTransferAction;
-      reader.readMessage(value,common_pb.AssistantConversationAssistantTransferAction.deserializeBinaryFromReader);
-      msg.setAssistanttransferaction(value);
-      break;
-    case 21:
-      var value = new common_pb.AssistantConversationPhoneCallTransferAction;
-      reader.readMessage(value,common_pb.AssistantConversationPhoneCallTransferAction.deserializeBinaryFromReader);
-      msg.setPhonecalltransferaction(value);
+      var value = new common_pb.Error;
+      reader.readMessage(value,common_pb.Error.deserializeBinaryFromReader);
+      msg.setError(value);
       break;
     default:
       reader.skipField();
@@ -711,14 +663,6 @@ proto.talk_api.AssistantMessagingResponse.serializeBinaryToWriter = function(mes
       f
     );
   }
-  f = message.getError();
-  if (f != null) {
-    writer.writeMessage(
-      4,
-      f,
-      common_pb.Error.serializeBinaryToWriter
-    );
-  }
   f = message.getConfiguration();
   if (f != null) {
     writer.writeMessage(
@@ -759,68 +703,20 @@ proto.talk_api.AssistantMessagingResponse.serializeBinaryToWriter = function(mes
       common_pb.AssistantConversationMessage.serializeBinaryToWriter
     );
   }
-  f = message.getDisconnectaction();
+  f = message.getAction();
   if (f != null) {
     writer.writeMessage(
       14,
       f,
-      common_pb.AssistantConversationDisconnectAction.serializeBinaryToWriter
+      common_pb.AssistantConversationAction.serializeBinaryToWriter
     );
   }
-  f = message.getHoldaction();
+  f = message.getError();
   if (f != null) {
     writer.writeMessage(
       15,
       f,
-      common_pb.AssistantConverstationHoldAction.serializeBinaryToWriter
-    );
-  }
-  f = message.getKnowledgeretrievalaction();
-  if (f != null) {
-    writer.writeMessage(
-      16,
-      f,
-      common_pb.AssistantConverstationKnowledgeRetrievalAction.serializeBinaryToWriter
-    );
-  }
-  f = message.getApirequestaction();
-  if (f != null) {
-    writer.writeMessage(
-      17,
-      f,
-      common_pb.AssistantConverstationApiRequestAction.serializeBinaryToWriter
-    );
-  }
-  f = message.getEndpointaction();
-  if (f != null) {
-    writer.writeMessage(
-      18,
-      f,
-      common_pb.AssistantConverstationEndpointAction.serializeBinaryToWriter
-    );
-  }
-  f = message.getDeviationaction();
-  if (f != null) {
-    writer.writeMessage(
-      19,
-      f,
-      common_pb.AssistantConversationDeviationAction.serializeBinaryToWriter
-    );
-  }
-  f = message.getAssistanttransferaction();
-  if (f != null) {
-    writer.writeMessage(
-      20,
-      f,
-      common_pb.AssistantConversationAssistantTransferAction.serializeBinaryToWriter
-    );
-  }
-  f = message.getPhonecalltransferaction();
-  if (f != null) {
-    writer.writeMessage(
-      21,
-      f,
-      common_pb.AssistantConversationPhoneCallTransferAction.serializeBinaryToWriter
+      common_pb.Error.serializeBinaryToWriter
     );
   }
 };
@@ -859,43 +755,6 @@ proto.talk_api.AssistantMessagingResponse.prototype.getSuccess = function() {
  */
 proto.talk_api.AssistantMessagingResponse.prototype.setSuccess = function(value) {
   return jspb.Message.setProto3BooleanField(this, 2, value);
-};
-
-
-/**
- * optional Error error = 4;
- * @return {?proto.Error}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.getError = function() {
-  return /** @type{?proto.Error} */ (
-    jspb.Message.getWrapperField(this, common_pb.Error, 4));
-};
-
-
-/**
- * @param {?proto.Error|undefined} value
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
-*/
-proto.talk_api.AssistantMessagingResponse.prototype.setError = function(value) {
-  return jspb.Message.setWrapperField(this, 4, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
- */
-proto.talk_api.AssistantMessagingResponse.prototype.clearError = function() {
-  return this.setError(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.hasError = function() {
-  return jspb.Message.getField(this, 4) != null;
 };
 
 
@@ -1085,20 +944,20 @@ proto.talk_api.AssistantMessagingResponse.prototype.hasMessage = function() {
 
 
 /**
- * optional AssistantConversationDisconnectAction disconnectAction = 14;
- * @return {?proto.AssistantConversationDisconnectAction}
+ * optional AssistantConversationAction action = 14;
+ * @return {?proto.AssistantConversationAction}
  */
-proto.talk_api.AssistantMessagingResponse.prototype.getDisconnectaction = function() {
-  return /** @type{?proto.AssistantConversationDisconnectAction} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConversationDisconnectAction, 14));
+proto.talk_api.AssistantMessagingResponse.prototype.getAction = function() {
+  return /** @type{?proto.AssistantConversationAction} */ (
+    jspb.Message.getWrapperField(this, common_pb.AssistantConversationAction, 14));
 };
 
 
 /**
- * @param {?proto.AssistantConversationDisconnectAction|undefined} value
+ * @param {?proto.AssistantConversationAction|undefined} value
  * @return {!proto.talk_api.AssistantMessagingResponse} returns this
 */
-proto.talk_api.AssistantMessagingResponse.prototype.setDisconnectaction = function(value) {
+proto.talk_api.AssistantMessagingResponse.prototype.setAction = function(value) {
   return jspb.Message.setOneofWrapperField(this, 14, proto.talk_api.AssistantMessagingResponse.oneofGroups_[0], value);
 };
 
@@ -1107,8 +966,8 @@ proto.talk_api.AssistantMessagingResponse.prototype.setDisconnectaction = functi
  * Clears the message field making it undefined.
  * @return {!proto.talk_api.AssistantMessagingResponse} returns this
  */
-proto.talk_api.AssistantMessagingResponse.prototype.clearDisconnectaction = function() {
-  return this.setDisconnectaction(undefined);
+proto.talk_api.AssistantMessagingResponse.prototype.clearAction = function() {
+  return this.setAction(undefined);
 };
 
 
@@ -1116,26 +975,26 @@ proto.talk_api.AssistantMessagingResponse.prototype.clearDisconnectaction = func
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.talk_api.AssistantMessagingResponse.prototype.hasDisconnectaction = function() {
+proto.talk_api.AssistantMessagingResponse.prototype.hasAction = function() {
   return jspb.Message.getField(this, 14) != null;
 };
 
 
 /**
- * optional AssistantConverstationHoldAction holdAction = 15;
- * @return {?proto.AssistantConverstationHoldAction}
+ * optional Error error = 15;
+ * @return {?proto.Error}
  */
-proto.talk_api.AssistantMessagingResponse.prototype.getHoldaction = function() {
-  return /** @type{?proto.AssistantConverstationHoldAction} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConverstationHoldAction, 15));
+proto.talk_api.AssistantMessagingResponse.prototype.getError = function() {
+  return /** @type{?proto.Error} */ (
+    jspb.Message.getWrapperField(this, common_pb.Error, 15));
 };
 
 
 /**
- * @param {?proto.AssistantConverstationHoldAction|undefined} value
+ * @param {?proto.Error|undefined} value
  * @return {!proto.talk_api.AssistantMessagingResponse} returns this
 */
-proto.talk_api.AssistantMessagingResponse.prototype.setHoldaction = function(value) {
+proto.talk_api.AssistantMessagingResponse.prototype.setError = function(value) {
   return jspb.Message.setOneofWrapperField(this, 15, proto.talk_api.AssistantMessagingResponse.oneofGroups_[0], value);
 };
 
@@ -1144,8 +1003,8 @@ proto.talk_api.AssistantMessagingResponse.prototype.setHoldaction = function(val
  * Clears the message field making it undefined.
  * @return {!proto.talk_api.AssistantMessagingResponse} returns this
  */
-proto.talk_api.AssistantMessagingResponse.prototype.clearHoldaction = function() {
-  return this.setHoldaction(undefined);
+proto.talk_api.AssistantMessagingResponse.prototype.clearError = function() {
+  return this.setError(undefined);
 };
 
 
@@ -1153,230 +1012,8 @@ proto.talk_api.AssistantMessagingResponse.prototype.clearHoldaction = function()
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.talk_api.AssistantMessagingResponse.prototype.hasHoldaction = function() {
+proto.talk_api.AssistantMessagingResponse.prototype.hasError = function() {
   return jspb.Message.getField(this, 15) != null;
-};
-
-
-/**
- * optional AssistantConverstationKnowledgeRetrievalAction knowledgeRetrievalAction = 16;
- * @return {?proto.AssistantConverstationKnowledgeRetrievalAction}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.getKnowledgeretrievalaction = function() {
-  return /** @type{?proto.AssistantConverstationKnowledgeRetrievalAction} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConverstationKnowledgeRetrievalAction, 16));
-};
-
-
-/**
- * @param {?proto.AssistantConverstationKnowledgeRetrievalAction|undefined} value
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
-*/
-proto.talk_api.AssistantMessagingResponse.prototype.setKnowledgeretrievalaction = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 16, proto.talk_api.AssistantMessagingResponse.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
- */
-proto.talk_api.AssistantMessagingResponse.prototype.clearKnowledgeretrievalaction = function() {
-  return this.setKnowledgeretrievalaction(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.hasKnowledgeretrievalaction = function() {
-  return jspb.Message.getField(this, 16) != null;
-};
-
-
-/**
- * optional AssistantConverstationApiRequestAction apiRequestAction = 17;
- * @return {?proto.AssistantConverstationApiRequestAction}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.getApirequestaction = function() {
-  return /** @type{?proto.AssistantConverstationApiRequestAction} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConverstationApiRequestAction, 17));
-};
-
-
-/**
- * @param {?proto.AssistantConverstationApiRequestAction|undefined} value
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
-*/
-proto.talk_api.AssistantMessagingResponse.prototype.setApirequestaction = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 17, proto.talk_api.AssistantMessagingResponse.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
- */
-proto.talk_api.AssistantMessagingResponse.prototype.clearApirequestaction = function() {
-  return this.setApirequestaction(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.hasApirequestaction = function() {
-  return jspb.Message.getField(this, 17) != null;
-};
-
-
-/**
- * optional AssistantConverstationEndpointAction endpointAction = 18;
- * @return {?proto.AssistantConverstationEndpointAction}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.getEndpointaction = function() {
-  return /** @type{?proto.AssistantConverstationEndpointAction} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConverstationEndpointAction, 18));
-};
-
-
-/**
- * @param {?proto.AssistantConverstationEndpointAction|undefined} value
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
-*/
-proto.talk_api.AssistantMessagingResponse.prototype.setEndpointaction = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 18, proto.talk_api.AssistantMessagingResponse.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
- */
-proto.talk_api.AssistantMessagingResponse.prototype.clearEndpointaction = function() {
-  return this.setEndpointaction(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.hasEndpointaction = function() {
-  return jspb.Message.getField(this, 18) != null;
-};
-
-
-/**
- * optional AssistantConversationDeviationAction deviationAction = 19;
- * @return {?proto.AssistantConversationDeviationAction}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.getDeviationaction = function() {
-  return /** @type{?proto.AssistantConversationDeviationAction} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConversationDeviationAction, 19));
-};
-
-
-/**
- * @param {?proto.AssistantConversationDeviationAction|undefined} value
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
-*/
-proto.talk_api.AssistantMessagingResponse.prototype.setDeviationaction = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 19, proto.talk_api.AssistantMessagingResponse.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
- */
-proto.talk_api.AssistantMessagingResponse.prototype.clearDeviationaction = function() {
-  return this.setDeviationaction(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.hasDeviationaction = function() {
-  return jspb.Message.getField(this, 19) != null;
-};
-
-
-/**
- * optional AssistantConversationAssistantTransferAction assistantTransferAction = 20;
- * @return {?proto.AssistantConversationAssistantTransferAction}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.getAssistanttransferaction = function() {
-  return /** @type{?proto.AssistantConversationAssistantTransferAction} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConversationAssistantTransferAction, 20));
-};
-
-
-/**
- * @param {?proto.AssistantConversationAssistantTransferAction|undefined} value
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
-*/
-proto.talk_api.AssistantMessagingResponse.prototype.setAssistanttransferaction = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 20, proto.talk_api.AssistantMessagingResponse.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
- */
-proto.talk_api.AssistantMessagingResponse.prototype.clearAssistanttransferaction = function() {
-  return this.setAssistanttransferaction(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.hasAssistanttransferaction = function() {
-  return jspb.Message.getField(this, 20) != null;
-};
-
-
-/**
- * optional AssistantConversationPhoneCallTransferAction phoneCallTransferAction = 21;
- * @return {?proto.AssistantConversationPhoneCallTransferAction}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.getPhonecalltransferaction = function() {
-  return /** @type{?proto.AssistantConversationPhoneCallTransferAction} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConversationPhoneCallTransferAction, 21));
-};
-
-
-/**
- * @param {?proto.AssistantConversationPhoneCallTransferAction|undefined} value
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
-*/
-proto.talk_api.AssistantMessagingResponse.prototype.setPhonecalltransferaction = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 21, proto.talk_api.AssistantMessagingResponse.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
- */
-proto.talk_api.AssistantMessagingResponse.prototype.clearPhonecalltransferaction = function() {
-  return this.setPhonecalltransferaction(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.hasPhonecalltransferaction = function() {
-  return jspb.Message.getField(this, 21) != null;
 };
 
 

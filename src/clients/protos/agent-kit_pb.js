@@ -1464,7 +1464,7 @@ proto.agent_kit.AgentTalkRequest.prototype.hasMessage = function() {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.agent_kit.AgentTalkResponse.oneofGroups_ = [[10,12,14,15,20,21]];
+proto.agent_kit.AgentTalkResponse.oneofGroups_ = [[10,12]];
 
 /**
  * @enum {number}
@@ -1472,11 +1472,7 @@ proto.agent_kit.AgentTalkResponse.oneofGroups_ = [[10,12,14,15,20,21]];
 proto.agent_kit.AgentTalkResponse.DataCase = {
   DATA_NOT_SET: 0,
   INTERRUPTION: 10,
-  ASSISTANT: 12,
-  DISCONNECTACTION: 14,
-  HOLDACTION: 15,
-  ASSISTANTTRANSFERACTION: 20,
-  PHONECALLTRANSFERACTION: 21
+  ASSISTANT: 12
 };
 
 /**
@@ -1521,11 +1517,7 @@ proto.agent_kit.AgentTalkResponse.toObject = function(includeInstance, msg) {
     success: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
     error: (f = msg.getError()) && common_pb.Error.toObject(includeInstance, f),
     interruption: (f = msg.getInterruption()) && common_pb.AssistantConversationInterruption.toObject(includeInstance, f),
-    assistant: (f = msg.getAssistant()) && common_pb.AssistantConversationAssistantMessage.toObject(includeInstance, f),
-    disconnectaction: (f = msg.getDisconnectaction()) && common_pb.AssistantConversationDisconnectAction.toObject(includeInstance, f),
-    holdaction: (f = msg.getHoldaction()) && common_pb.AssistantConverstationHoldAction.toObject(includeInstance, f),
-    assistanttransferaction: (f = msg.getAssistanttransferaction()) && common_pb.AssistantConversationAssistantTransferAction.toObject(includeInstance, f),
-    phonecalltransferaction: (f = msg.getPhonecalltransferaction()) && common_pb.AssistantConversationPhoneCallTransferAction.toObject(includeInstance, f)
+    assistant: (f = msg.getAssistant()) && common_pb.AssistantConversationAssistantMessage.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1584,26 +1576,6 @@ proto.agent_kit.AgentTalkResponse.deserializeBinaryFromReader = function(msg, re
       var value = new common_pb.AssistantConversationAssistantMessage;
       reader.readMessage(value,common_pb.AssistantConversationAssistantMessage.deserializeBinaryFromReader);
       msg.setAssistant(value);
-      break;
-    case 14:
-      var value = new common_pb.AssistantConversationDisconnectAction;
-      reader.readMessage(value,common_pb.AssistantConversationDisconnectAction.deserializeBinaryFromReader);
-      msg.setDisconnectaction(value);
-      break;
-    case 15:
-      var value = new common_pb.AssistantConverstationHoldAction;
-      reader.readMessage(value,common_pb.AssistantConverstationHoldAction.deserializeBinaryFromReader);
-      msg.setHoldaction(value);
-      break;
-    case 20:
-      var value = new common_pb.AssistantConversationAssistantTransferAction;
-      reader.readMessage(value,common_pb.AssistantConversationAssistantTransferAction.deserializeBinaryFromReader);
-      msg.setAssistanttransferaction(value);
-      break;
-    case 21:
-      var value = new common_pb.AssistantConversationPhoneCallTransferAction;
-      reader.readMessage(value,common_pb.AssistantConversationPhoneCallTransferAction.deserializeBinaryFromReader);
-      msg.setPhonecalltransferaction(value);
       break;
     default:
       reader.skipField();
@@ -1670,38 +1642,6 @@ proto.agent_kit.AgentTalkResponse.serializeBinaryToWriter = function(message, wr
       12,
       f,
       common_pb.AssistantConversationAssistantMessage.serializeBinaryToWriter
-    );
-  }
-  f = message.getDisconnectaction();
-  if (f != null) {
-    writer.writeMessage(
-      14,
-      f,
-      common_pb.AssistantConversationDisconnectAction.serializeBinaryToWriter
-    );
-  }
-  f = message.getHoldaction();
-  if (f != null) {
-    writer.writeMessage(
-      15,
-      f,
-      common_pb.AssistantConverstationHoldAction.serializeBinaryToWriter
-    );
-  }
-  f = message.getAssistanttransferaction();
-  if (f != null) {
-    writer.writeMessage(
-      20,
-      f,
-      common_pb.AssistantConversationAssistantTransferAction.serializeBinaryToWriter
-    );
-  }
-  f = message.getPhonecalltransferaction();
-  if (f != null) {
-    writer.writeMessage(
-      21,
-      f,
-      common_pb.AssistantConversationPhoneCallTransferAction.serializeBinaryToWriter
     );
   }
 };
@@ -1851,154 +1791,6 @@ proto.agent_kit.AgentTalkResponse.prototype.clearAssistant = function() {
  */
 proto.agent_kit.AgentTalkResponse.prototype.hasAssistant = function() {
   return jspb.Message.getField(this, 12) != null;
-};
-
-
-/**
- * optional AssistantConversationDisconnectAction disconnectAction = 14;
- * @return {?proto.AssistantConversationDisconnectAction}
- */
-proto.agent_kit.AgentTalkResponse.prototype.getDisconnectaction = function() {
-  return /** @type{?proto.AssistantConversationDisconnectAction} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConversationDisconnectAction, 14));
-};
-
-
-/**
- * @param {?proto.AssistantConversationDisconnectAction|undefined} value
- * @return {!proto.agent_kit.AgentTalkResponse} returns this
-*/
-proto.agent_kit.AgentTalkResponse.prototype.setDisconnectaction = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 14, proto.agent_kit.AgentTalkResponse.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.agent_kit.AgentTalkResponse} returns this
- */
-proto.agent_kit.AgentTalkResponse.prototype.clearDisconnectaction = function() {
-  return this.setDisconnectaction(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.agent_kit.AgentTalkResponse.prototype.hasDisconnectaction = function() {
-  return jspb.Message.getField(this, 14) != null;
-};
-
-
-/**
- * optional AssistantConverstationHoldAction holdAction = 15;
- * @return {?proto.AssistantConverstationHoldAction}
- */
-proto.agent_kit.AgentTalkResponse.prototype.getHoldaction = function() {
-  return /** @type{?proto.AssistantConverstationHoldAction} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConverstationHoldAction, 15));
-};
-
-
-/**
- * @param {?proto.AssistantConverstationHoldAction|undefined} value
- * @return {!proto.agent_kit.AgentTalkResponse} returns this
-*/
-proto.agent_kit.AgentTalkResponse.prototype.setHoldaction = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 15, proto.agent_kit.AgentTalkResponse.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.agent_kit.AgentTalkResponse} returns this
- */
-proto.agent_kit.AgentTalkResponse.prototype.clearHoldaction = function() {
-  return this.setHoldaction(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.agent_kit.AgentTalkResponse.prototype.hasHoldaction = function() {
-  return jspb.Message.getField(this, 15) != null;
-};
-
-
-/**
- * optional AssistantConversationAssistantTransferAction assistantTransferAction = 20;
- * @return {?proto.AssistantConversationAssistantTransferAction}
- */
-proto.agent_kit.AgentTalkResponse.prototype.getAssistanttransferaction = function() {
-  return /** @type{?proto.AssistantConversationAssistantTransferAction} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConversationAssistantTransferAction, 20));
-};
-
-
-/**
- * @param {?proto.AssistantConversationAssistantTransferAction|undefined} value
- * @return {!proto.agent_kit.AgentTalkResponse} returns this
-*/
-proto.agent_kit.AgentTalkResponse.prototype.setAssistanttransferaction = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 20, proto.agent_kit.AgentTalkResponse.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.agent_kit.AgentTalkResponse} returns this
- */
-proto.agent_kit.AgentTalkResponse.prototype.clearAssistanttransferaction = function() {
-  return this.setAssistanttransferaction(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.agent_kit.AgentTalkResponse.prototype.hasAssistanttransferaction = function() {
-  return jspb.Message.getField(this, 20) != null;
-};
-
-
-/**
- * optional AssistantConversationPhoneCallTransferAction phoneCallTransferAction = 21;
- * @return {?proto.AssistantConversationPhoneCallTransferAction}
- */
-proto.agent_kit.AgentTalkResponse.prototype.getPhonecalltransferaction = function() {
-  return /** @type{?proto.AssistantConversationPhoneCallTransferAction} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConversationPhoneCallTransferAction, 21));
-};
-
-
-/**
- * @param {?proto.AssistantConversationPhoneCallTransferAction|undefined} value
- * @return {!proto.agent_kit.AgentTalkResponse} returns this
-*/
-proto.agent_kit.AgentTalkResponse.prototype.setPhonecalltransferaction = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 21, proto.agent_kit.AgentTalkResponse.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.agent_kit.AgentTalkResponse} returns this
- */
-proto.agent_kit.AgentTalkResponse.prototype.clearPhonecalltransferaction = function() {
-  return this.setPhonecalltransferaction(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.agent_kit.AgentTalkResponse.prototype.hasPhonecalltransferaction = function() {
-  return jspb.Message.getField(this, 21) != null;
 };
 
 

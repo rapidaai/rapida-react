@@ -38,12 +38,12 @@ export function useInputModeToggleAgent(agent: VoiceAgent) {
     () => ({
       handleTextToggle: async () => {
         if (!agent) throw new Error("VoiceAgent instance not available");
-        if (agent.inputChannel === Channel.Text) return;
+        if (agent.agentConfiguration.inputOptions.channel === Channel.Text) return;
         await agent.setInputChannel(Channel.Text);
       },
       handleVoiceToggle: async () => {
         if (!agent) throw new Error("VoiceAgent instance not available");
-        if (agent.inputChannel === Channel.Audio) {
+        if (agent.agentConfiguration.inputOptions.channel === Channel.Audio) {
           console.warn("Already in voice mode, ignoring toggle...");
           return;
         }
@@ -60,7 +60,7 @@ export function useInputModeToggleAgent(agent: VoiceAgent) {
 
   // Update initialization of default state and observable subscription
   const { channel } = useObservableState(observable, {
-    channel: agent?.inputChannel ?? Channel.Text,
+    channel: agent.agentConfiguration.inputOptions.channel ?? Channel.Text,
   });
 
   React.useEffect(() => {

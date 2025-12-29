@@ -26,16 +26,11 @@ import { DeviceManager } from "@/rapida/devices/device-manager";
 import { AssistantMessagingResponse } from "@/rapida/clients/protos/talk-api_pb";
 import { AgentEvent } from "@/rapida/types/agent-event";
 import {
+  AssistantConversationAction,
   AssistantConversationAssistantMessage,
   AssistantConversationInterruption,
   AssistantConversationUserMessage,
 } from "@/rapida/clients/protos/common_pb";
-import {
-  toContentText,
-  toStreamAudioContent,
-  toTextContent,
-} from "@/rapida/utils/rapida_content";
-
 import { toDate } from "@/rapida/utils";
 import { MessageRole, MessageStatus } from "@/rapida/types/message";
 import { Channel } from "@/rapida/types/channel";
@@ -63,11 +58,6 @@ export class VoiceAgent extends Agent {
   private inputFrequencyData?: Uint8Array;
   private outputFrequencyData?: Uint8Array;
 
-  /**
-   * input media device id
-   */
-  inputChannel: Channel = Channel.Audio;
-  outputChannel: Channel = Channel.Audio;
 
   /**
    * @param options
@@ -78,8 +68,6 @@ export class VoiceAgent extends Agent {
     agentCallback?: AgentCallback
   ) {
     super(connection, agentConfig, agentCallback);
-    this.outputChannel = agentConfig.outputOptions.defaultChannel;
-    this.inputChannel = agentConfig.inputOptions.defaultChannel;
   }
 
   /**
@@ -186,7 +174,7 @@ export class VoiceAgent extends Agent {
       return;
     }
 
-    if (this.inputChannel == Channel.Audio)
+    if (this.agentConfig.inputOptions.channel == Channel.Audio)
       this.talkingConnection?.write(
         this.createAssistantAudioMessage(
           arrayBufferToUint8(rawAudioPcmData.buffer)
@@ -259,7 +247,7 @@ export class VoiceAgent extends Agent {
    */
   public connect = async () => {
     try {
-      if (this.inputChannel == Channel.Audio) {
+      if (this.agentConfig.inputOptions.channel == Channel.Audio) {
         await this.connectAudio();
       }
       await this.connectAgent();
@@ -274,7 +262,7 @@ export class VoiceAgent extends Agent {
    */
   public onSendText = async (text: string) => {
     if (!this.isConnected) await this.connect();
-    if (this.inputChannel == Channel.Text) {
+    if (this.agentConfig.inputOptions.channel == Channel.Text) {
       // only send text when you know the channel is text
       this.talkingConnection?.write(this.createAssistantTextMessage(text));
     }
@@ -325,27 +313,10 @@ export class VoiceAgent extends Agent {
     return this.agentConfig.inputOptions.recorderOption.device;
   }
 
-  /**
-   *
-   * @param input
-   * @returns
-   */
-  // public setInputChannel = async (input: Channel) => {
-  //   if (this.inputChannel == input) {
-  //     return;
-  //   }
-  //   if (input == Channel.Audio) {
-  //     await this.connectAudio();
-  //   } else {
-  //     await this.disconnectAudio();
-  //   }
-  //   this.inputChannel = input;
-  //   this.emit(AgentEvent.InputChannelChangeEvent, this.inputChannel);
-  // };
 
   public setInputChannel = async (input: Channel) => {
     // If the input channel doesn't change, do nothing
-    if (this.inputChannel === input) {
+    if (this.agentConfig.inputOptions.channel === input) {
       return;
     }
 
@@ -353,13 +324,16 @@ export class VoiceAgent extends Agent {
     await this.disconnectAudio();
 
     // Update the input channel state
-    this.inputChannel = input;
+    this.agentConfig.inputOptions.channel = input;
+    // currently in and out both are sync
+    this.agentConfig.outputOptions.channel = input;
 
     // Handle deferred audio setup
     if (input === Channel.Audio) {
       if (this.isConnected) {
         // If already connected, initialize audio immediately
         await this.connectAudio();
+        await this.switchAgent(this.agentConfig)
       } else {
         // If not connected, defer audio initialization to the `connect()` method
         console.log("Audio initialization deferred until connect()");
@@ -367,7 +341,7 @@ export class VoiceAgent extends Agent {
     }
 
     // Emit input channel change event
-    this.emit(AgentEvent.InputChannelChangeEvent, this.inputChannel);
+    this.emit(AgentEvent.InputChannelChangeEvent, this.agentConfig.inputOptions.channel);
   };
 
   /**
@@ -410,6 +384,11 @@ export class VoiceAgent extends Agent {
     }
   };
 
+
+  /**
+   * on handle user content
+   * @param userContent 
+   */
   private onHandleUser = (
     userContent: AssistantConversationUserMessage | undefined
   ) => {
@@ -450,6 +429,11 @@ export class VoiceAgent extends Agent {
     }
   };
 
+
+  /**
+   * on handle assistant content
+   * @param systemContent 
+   */
   private onHandleAssistant = (
     systemContent: AssistantConversationAssistantMessage | undefined
   ) => {
@@ -542,7 +526,7 @@ export class VoiceAgent extends Agent {
   };
 
   /**
-   *
+   *  streaming response from the server
    * @param response
    * @returns
    */
@@ -580,16 +564,13 @@ export class VoiceAgent extends Agent {
       switch (response.getDataCase()) {
         case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
           break;
-        case AssistantMessagingResponse.DataCase.APIREQUESTACTION:
-          if (agentCallback && agentCallback?.onAction) {
-            agentCallback.onAction(response.getApirequestaction()?.toObject());
+        case AssistantMessagingResponse.DataCase.ACTION:
+          if (response.getAction()?.getAction() === AssistantConversationAction.ActionType.END_CONVERSATION) {
+            await this.disconnect();
           }
-          break;
-        case AssistantMessagingResponse.DataCase.DISCONNECTACTION:
           if (agentCallback && agentCallback?.onAction) {
-            agentCallback.onAction(response.getDisconnectaction()?.toObject());
+            agentCallback.onAction(response.getAction()?.toObject());
           }
-          await this.disconnect();
           break;
         case AssistantMessagingResponse.DataCase.INTERRUPTION:
           if (agentCallback && agentCallback?.onInterrupt) {
@@ -635,7 +616,7 @@ export class VoiceAgent extends Agent {
   };
 
   /**
-   *
+   * to get byte frequency data from input
    * @returns
    */
   public getInputByteFrequencyData = (): Uint8Array | undefined => {
@@ -652,7 +633,7 @@ export class VoiceAgent extends Agent {
   };
 
   /**
-   *
+   * output byte frequency data
    * @returns
    */
   public getOutputByteFrequencyData = (): Uint8Array | undefined => {

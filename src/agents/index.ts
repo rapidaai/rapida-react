@@ -36,7 +36,7 @@ import { ConnectionState } from "@/rapida/types/connection-state";
 import { AgentEventCallback } from "@/rapida/types/agent-event-callback";
 import { EventEmitter } from "events";
 import type TypedEmitter from "typed-emitter";
-import { AssistantDefinition, Metric } from "@/rapida/clients/protos/common_pb";
+import { AssistantDefinition, AudioConfig, Metric, StreamConfig } from "@/rapida/clients/protos/common_pb";
 import { Message as LocalMessage, MessageRole } from "@/rapida/types/message";
 import { AgentEvent } from "@/rapida/types/agent-event";
 import {
@@ -106,7 +106,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
   // connection
   protected talkingConnection?: any;
 
-  // Agent Configuration
+  // // Agent Configuration
   protected agentConfig: AgentConfig;
 
   // callbacks can have multiple callback
@@ -231,9 +231,11 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     // Update agent config
     this.agentConfig = config;
 
-    // Send configuration request to switch agent
+
     const switchRequest = this._createAssistantConfigureRequest(
       this.agentConfig.definition,
+      this.agentConfig.inputOptions.defaultInputStreamOption,
+      this.agentConfig.outputOptions.defaultOutputStreamOption,
       this.agentConfig.arguments,
       this.agentConfig.metadata,
       this.agentConfig.options
@@ -439,9 +441,11 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    */
   private _createAssistantConfigureRequest(
     definition: AssistantDefinition,
+    inputStreamConfig: StreamConfig,
+    outputStreamConfig: StreamConfig,
     args?: Map<string, google_protobuf_any_pb.Any>,
     metadatas?: Map<string, google_protobuf_any_pb.Any>,
-    options?: Map<string, google_protobuf_any_pb.Any>
+    options?: Map<string, google_protobuf_any_pb.Any>,
   ): AssistantMessagingRequest {
     const request = new AssistantMessagingRequest();
     const assistantConfiguration = new AssistantConversationConfiguration();
@@ -467,6 +471,8 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
       assistantConfiguration.getArgsMap().set(k, v);
     });
 
+    assistantConfiguration.setOutputconfig(outputStreamConfig)
+    assistantConfiguration.setInputconfig(inputStreamConfig)
     request.setConfiguration(assistantConfiguration);
     return request;
   }
@@ -510,6 +516,8 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
       await this.talkingConnection.write(
         this._createAssistantConfigureRequest(
           this.agentConfig.definition,
+          this.agentConfig.inputOptions.defaultInputStreamOption,
+          this.agentConfig.outputOptions.defaultOutputStreamOption,
           this.agentConfig.arguments,
           this.agentConfig.metadata,
           this.agentConfig.options
@@ -519,8 +527,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
       this._setAndEmitConnectionState(ConnectionState.Connected);
     } catch (err) {
       const error = new Error(
-        `Failed to connect to talking server: ${
-          err instanceof Error ? err.message : String(err)
+        `Failed to connect to talking server: ${err instanceof Error ? err.message : String(err)
         }`
       );
       console.error(error.message);

@@ -47,11 +47,6 @@ export class AssistantMessagingResponse extends jspb.Message {
   getSuccess(): boolean;
   setSuccess(value: boolean): void;
 
-  hasError(): boolean;
-  clearError(): void;
-  getError(): common_pb.Error | undefined;
-  setError(value?: common_pb.Error): void;
-
   hasConfiguration(): boolean;
   clearConfiguration(): void;
   getConfiguration(): common_pb.AssistantConversationConfiguration | undefined;
@@ -77,45 +72,15 @@ export class AssistantMessagingResponse extends jspb.Message {
   getMessage(): common_pb.AssistantConversationMessage | undefined;
   setMessage(value?: common_pb.AssistantConversationMessage): void;
 
-  hasDisconnectaction(): boolean;
-  clearDisconnectaction(): void;
-  getDisconnectaction(): common_pb.AssistantConversationDisconnectAction | undefined;
-  setDisconnectaction(value?: common_pb.AssistantConversationDisconnectAction): void;
+  hasAction(): boolean;
+  clearAction(): void;
+  getAction(): common_pb.AssistantConversationAction | undefined;
+  setAction(value?: common_pb.AssistantConversationAction): void;
 
-  hasHoldaction(): boolean;
-  clearHoldaction(): void;
-  getHoldaction(): common_pb.AssistantConverstationHoldAction | undefined;
-  setHoldaction(value?: common_pb.AssistantConverstationHoldAction): void;
-
-  hasKnowledgeretrievalaction(): boolean;
-  clearKnowledgeretrievalaction(): void;
-  getKnowledgeretrievalaction(): common_pb.AssistantConverstationKnowledgeRetrievalAction | undefined;
-  setKnowledgeretrievalaction(value?: common_pb.AssistantConverstationKnowledgeRetrievalAction): void;
-
-  hasApirequestaction(): boolean;
-  clearApirequestaction(): void;
-  getApirequestaction(): common_pb.AssistantConverstationApiRequestAction | undefined;
-  setApirequestaction(value?: common_pb.AssistantConverstationApiRequestAction): void;
-
-  hasEndpointaction(): boolean;
-  clearEndpointaction(): void;
-  getEndpointaction(): common_pb.AssistantConverstationEndpointAction | undefined;
-  setEndpointaction(value?: common_pb.AssistantConverstationEndpointAction): void;
-
-  hasDeviationaction(): boolean;
-  clearDeviationaction(): void;
-  getDeviationaction(): common_pb.AssistantConversationDeviationAction | undefined;
-  setDeviationaction(value?: common_pb.AssistantConversationDeviationAction): void;
-
-  hasAssistanttransferaction(): boolean;
-  clearAssistanttransferaction(): void;
-  getAssistanttransferaction(): common_pb.AssistantConversationAssistantTransferAction | undefined;
-  setAssistanttransferaction(value?: common_pb.AssistantConversationAssistantTransferAction): void;
-
-  hasPhonecalltransferaction(): boolean;
-  clearPhonecalltransferaction(): void;
-  getPhonecalltransferaction(): common_pb.AssistantConversationPhoneCallTransferAction | undefined;
-  setPhonecalltransferaction(value?: common_pb.AssistantConversationPhoneCallTransferAction): void;
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
 
   getDataCase(): AssistantMessagingResponse.DataCase;
   serializeBinary(): Uint8Array;
@@ -132,20 +97,13 @@ export namespace AssistantMessagingResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    error?: common_pb.Error.AsObject,
     configuration?: common_pb.AssistantConversationConfiguration.AsObject,
     interruption?: common_pb.AssistantConversationInterruption.AsObject,
     user?: common_pb.AssistantConversationUserMessage.AsObject,
     assistant?: common_pb.AssistantConversationAssistantMessage.AsObject,
     message?: common_pb.AssistantConversationMessage.AsObject,
-    disconnectaction?: common_pb.AssistantConversationDisconnectAction.AsObject,
-    holdaction?: common_pb.AssistantConverstationHoldAction.AsObject,
-    knowledgeretrievalaction?: common_pb.AssistantConverstationKnowledgeRetrievalAction.AsObject,
-    apirequestaction?: common_pb.AssistantConverstationApiRequestAction.AsObject,
-    endpointaction?: common_pb.AssistantConverstationEndpointAction.AsObject,
-    deviationaction?: common_pb.AssistantConversationDeviationAction.AsObject,
-    assistanttransferaction?: common_pb.AssistantConversationAssistantTransferAction.AsObject,
-    phonecalltransferaction?: common_pb.AssistantConversationPhoneCallTransferAction.AsObject,
+    action?: common_pb.AssistantConversationAction.AsObject,
+    error?: common_pb.Error.AsObject,
   }
 
   export enum DataCase {
@@ -155,14 +113,8 @@ export namespace AssistantMessagingResponse {
     USER = 11,
     ASSISTANT = 12,
     MESSAGE = 13,
-    DISCONNECTACTION = 14,
-    HOLDACTION = 15,
-    KNOWLEDGERETRIEVALACTION = 16,
-    APIREQUESTACTION = 17,
-    ENDPOINTACTION = 18,
-    DEVIATIONACTION = 19,
-    ASSISTANTTRANSFERACTION = 20,
-    PHONECALLTRANSFERACTION = 21,
+    ACTION = 14,
+    ERROR = 15,
   }
 }
 

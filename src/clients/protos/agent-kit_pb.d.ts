@@ -217,26 +217,6 @@ export class AgentTalkResponse extends jspb.Message {
   getAssistant(): common_pb.AssistantConversationAssistantMessage | undefined;
   setAssistant(value?: common_pb.AssistantConversationAssistantMessage): void;
 
-  hasDisconnectaction(): boolean;
-  clearDisconnectaction(): void;
-  getDisconnectaction(): common_pb.AssistantConversationDisconnectAction | undefined;
-  setDisconnectaction(value?: common_pb.AssistantConversationDisconnectAction): void;
-
-  hasHoldaction(): boolean;
-  clearHoldaction(): void;
-  getHoldaction(): common_pb.AssistantConverstationHoldAction | undefined;
-  setHoldaction(value?: common_pb.AssistantConverstationHoldAction): void;
-
-  hasAssistanttransferaction(): boolean;
-  clearAssistanttransferaction(): void;
-  getAssistanttransferaction(): common_pb.AssistantConversationAssistantTransferAction | undefined;
-  setAssistanttransferaction(value?: common_pb.AssistantConversationAssistantTransferAction): void;
-
-  hasPhonecalltransferaction(): boolean;
-  clearPhonecalltransferaction(): void;
-  getPhonecalltransferaction(): common_pb.AssistantConversationPhoneCallTransferAction | undefined;
-  setPhonecalltransferaction(value?: common_pb.AssistantConversationPhoneCallTransferAction): void;
-
   getDataCase(): AgentTalkResponse.DataCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AgentTalkResponse.AsObject;
@@ -255,20 +235,12 @@ export namespace AgentTalkResponse {
     error?: common_pb.Error.AsObject,
     interruption?: common_pb.AssistantConversationInterruption.AsObject,
     assistant?: common_pb.AssistantConversationAssistantMessage.AsObject,
-    disconnectaction?: common_pb.AssistantConversationDisconnectAction.AsObject,
-    holdaction?: common_pb.AssistantConverstationHoldAction.AsObject,
-    assistanttransferaction?: common_pb.AssistantConversationAssistantTransferAction.AsObject,
-    phonecalltransferaction?: common_pb.AssistantConversationPhoneCallTransferAction.AsObject,
   }
 
   export enum DataCase {
     DATA_NOT_SET = 0,
     INTERRUPTION = 10,
     ASSISTANT = 12,
-    DISCONNECTACTION = 14,
-    HOLDACTION = 15,
-    ASSISTANTTRANSFERACTION = 20,
-    PHONECALLTRANSFERACTION = 21,
   }
 }
 

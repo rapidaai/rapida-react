@@ -25,17 +25,13 @@
 import {
   AssistantConversationAssistantMessage,
   AssistantConversationConfiguration,
-  AssistantConversationDisconnectAction,
   AssistantConversationInterruption,
   AssistantConversationUserMessage,
-  AssistantConverstationApiRequestAction,
-  AssistantConverstationEndpointAction,
-  AssistantConverstationHoldAction,
-  AssistantConverstationKnowledgeRetrievalAction,
 } from "@/rapida/clients/protos/common_pb";
 
 import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
 import { toContentText } from "@/rapida/utils/rapida_content";
+import { AssistantConversationAction } from '../clients/protos/common_pb';
 
 export interface ConversationUserMessage
   extends AssistantConversationUserMessage.AsObject {
@@ -75,12 +71,19 @@ export class ConversationAssistantMessage {
   }
 }
 
+/**
+ *  user friendly interface for message
+ */
 export interface ConversationMessage
   extends AssistantConversationMessage.AsObject {
   userMessage?: string;
   systemMessage?: string;
 }
 
+
+/**
+ * 
+ */
 export class ConversationMessage {
   constructor(config?: AssistantConversationMessage) {
     if (config) {
@@ -120,10 +123,6 @@ export interface AgentCallback {
   //
   onAction?: (
     arg?:
-      | AssistantConverstationApiRequestAction.AsObject
-      | AssistantConverstationKnowledgeRetrievalAction.AsObject
-      | AssistantConverstationEndpointAction.AsObject
-      | AssistantConverstationHoldAction.AsObject
-      | AssistantConversationDisconnectAction.AsObject
+      | AssistantConversationAction.AsObject
   ) => void;
 }
