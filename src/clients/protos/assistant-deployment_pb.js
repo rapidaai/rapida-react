@@ -642,7 +642,8 @@ proto.assistant_api.AssistantWebpluginDeployment.toObject = function(includeInst
     status: jspb.Message.getFieldWithDefault(msg, 28, ""),
     maxsessionduration: jspb.Message.getFieldWithDefault(msg, 29, "0"),
     idealtimeout: jspb.Message.getFieldWithDefault(msg, 30, "0"),
-    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, "")
+    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, ""),
+    idealtimeoutbackoff: jspb.Message.getFieldWithDefault(msg, 32, "0")
   };
 
   if (includeInstance) {
@@ -754,6 +755,10 @@ proto.assistant_api.AssistantWebpluginDeployment.deserializeBinaryFromReader = f
     case 31:
       var value = /** @type {string} */ (reader.readString());
       msg.setIdealtimeoutmessage(value);
+      break;
+    case 32:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setIdealtimeoutbackoff(value);
       break;
     default:
       reader.skipField();
@@ -911,6 +916,13 @@ proto.assistant_api.AssistantWebpluginDeployment.serializeBinaryToWriter = funct
   if (f.length > 0) {
     writer.writeString(
       31,
+      f
+    );
+  }
+  f = message.getIdealtimeoutbackoff();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      32,
       f
     );
   }
@@ -1372,6 +1384,24 @@ proto.assistant_api.AssistantWebpluginDeployment.prototype.setIdealtimeoutmessag
 };
 
 
+/**
+ * optional uint64 idealTimeoutBackoff = 32;
+ * @return {string}
+ */
+proto.assistant_api.AssistantWebpluginDeployment.prototype.getIdealtimeoutbackoff = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 32, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantWebpluginDeployment} returns this
+ */
+proto.assistant_api.AssistantWebpluginDeployment.prototype.setIdealtimeoutbackoff = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 32, value);
+};
+
+
 
 /**
  * List of repeated fields within this message type.
@@ -1425,7 +1455,8 @@ proto.assistant_api.AssistantPhoneDeployment.toObject = function(includeInstance
     status: jspb.Message.getFieldWithDefault(msg, 28, ""),
     maxsessionduration: jspb.Message.getFieldWithDefault(msg, 29, "0"),
     idealtimeout: jspb.Message.getFieldWithDefault(msg, 30, "0"),
-    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, "")
+    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, ""),
+    idealtimeoutbackoff: jspb.Message.getFieldWithDefault(msg, 32, "0")
   };
 
   if (includeInstance) {
@@ -1522,6 +1553,10 @@ proto.assistant_api.AssistantPhoneDeployment.deserializeBinaryFromReader = funct
     case 31:
       var value = /** @type {string} */ (reader.readString());
       msg.setIdealtimeoutmessage(value);
+      break;
+    case 32:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setIdealtimeoutbackoff(value);
       break;
     default:
       reader.skipField();
@@ -1652,6 +1687,13 @@ proto.assistant_api.AssistantPhoneDeployment.serializeBinaryToWriter = function(
   if (f.length > 0) {
     writer.writeString(
       31,
+      f
+    );
+  }
+  f = message.getIdealtimeoutbackoff();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      32,
       f
     );
   }
@@ -2042,6 +2084,24 @@ proto.assistant_api.AssistantPhoneDeployment.prototype.setIdealtimeoutmessage = 
 };
 
 
+/**
+ * optional uint64 idealTimeoutBackoff = 32;
+ * @return {string}
+ */
+proto.assistant_api.AssistantPhoneDeployment.prototype.getIdealtimeoutbackoff = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 32, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantPhoneDeployment} returns this
+ */
+proto.assistant_api.AssistantPhoneDeployment.prototype.setIdealtimeoutbackoff = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 32, value);
+};
+
+
 
 /**
  * List of repeated fields within this message type.
@@ -2096,7 +2156,8 @@ proto.assistant_api.AssistantWhatsappDeployment.toObject = function(includeInsta
     status: jspb.Message.getFieldWithDefault(msg, 28, ""),
     maxsessionduration: jspb.Message.getFieldWithDefault(msg, 29, "0"),
     idealtimeout: jspb.Message.getFieldWithDefault(msg, 30, "0"),
-    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, "")
+    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, ""),
+    idealtimeoutbackoff: jspb.Message.getFieldWithDefault(msg, 32, "0")
   };
 
   if (includeInstance) {
@@ -2197,6 +2258,10 @@ proto.assistant_api.AssistantWhatsappDeployment.deserializeBinaryFromReader = fu
     case 31:
       var value = /** @type {string} */ (reader.readString());
       msg.setIdealtimeoutmessage(value);
+      break;
+    case 32:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setIdealtimeoutbackoff(value);
       break;
     default:
       reader.skipField();
@@ -2334,6 +2399,13 @@ proto.assistant_api.AssistantWhatsappDeployment.serializeBinaryToWriter = functi
   if (f.length > 0) {
     writer.writeString(
       31,
+      f
+    );
+  }
+  f = message.getIdealtimeoutbackoff();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      32,
       f
     );
   }
@@ -2742,6 +2814,24 @@ proto.assistant_api.AssistantWhatsappDeployment.prototype.setIdealtimeoutmessage
 };
 
 
+/**
+ * optional uint64 idealTimeoutBackoff = 32;
+ * @return {string}
+ */
+proto.assistant_api.AssistantWhatsappDeployment.prototype.getIdealtimeoutbackoff = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 32, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantWhatsappDeployment} returns this
+ */
+proto.assistant_api.AssistantWhatsappDeployment.prototype.setIdealtimeoutbackoff = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 32, value);
+};
+
+
 
 
 
@@ -2786,7 +2876,8 @@ proto.assistant_api.AssistantDebuggerDeployment.toObject = function(includeInsta
     status: jspb.Message.getFieldWithDefault(msg, 28, ""),
     maxsessionduration: jspb.Message.getFieldWithDefault(msg, 29, "0"),
     idealtimeout: jspb.Message.getFieldWithDefault(msg, 30, "0"),
-    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, "")
+    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, ""),
+    idealtimeoutbackoff: jspb.Message.getFieldWithDefault(msg, 32, "0")
   };
 
   if (includeInstance) {
@@ -2878,6 +2969,10 @@ proto.assistant_api.AssistantDebuggerDeployment.deserializeBinaryFromReader = fu
     case 31:
       var value = /** @type {string} */ (reader.readString());
       msg.setIdealtimeoutmessage(value);
+      break;
+    case 32:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setIdealtimeoutbackoff(value);
       break;
     default:
       reader.skipField();
@@ -3000,6 +3095,13 @@ proto.assistant_api.AssistantDebuggerDeployment.serializeBinaryToWriter = functi
   if (f.length > 0) {
     writer.writeString(
       31,
+      f
+    );
+  }
+  f = message.getIdealtimeoutbackoff();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      32,
       f
     );
   }
@@ -3352,6 +3454,24 @@ proto.assistant_api.AssistantDebuggerDeployment.prototype.setIdealtimeoutmessage
 };
 
 
+/**
+ * optional uint64 idealTimeoutBackoff = 32;
+ * @return {string}
+ */
+proto.assistant_api.AssistantDebuggerDeployment.prototype.getIdealtimeoutbackoff = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 32, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantDebuggerDeployment} returns this
+ */
+proto.assistant_api.AssistantDebuggerDeployment.prototype.setIdealtimeoutbackoff = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 32, value);
+};
+
+
 
 
 
@@ -3395,7 +3515,8 @@ proto.assistant_api.AssistantApiDeployment.toObject = function(includeInstance, 
     status: jspb.Message.getFieldWithDefault(msg, 28, ""),
     maxsessionduration: jspb.Message.getFieldWithDefault(msg, 29, "0"),
     idealtimeout: jspb.Message.getFieldWithDefault(msg, 30, "0"),
-    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, "")
+    idealtimeoutmessage: jspb.Message.getFieldWithDefault(msg, 31, ""),
+    idealtimeoutbackoff: jspb.Message.getFieldWithDefault(msg, 32, "0")
   };
 
   if (includeInstance) {
@@ -3483,6 +3604,10 @@ proto.assistant_api.AssistantApiDeployment.deserializeBinaryFromReader = functio
     case 31:
       var value = /** @type {string} */ (reader.readString());
       msg.setIdealtimeoutmessage(value);
+      break;
+    case 32:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setIdealtimeoutbackoff(value);
       break;
     default:
       reader.skipField();
@@ -3598,6 +3723,13 @@ proto.assistant_api.AssistantApiDeployment.serializeBinaryToWriter = function(me
   if (f.length > 0) {
     writer.writeString(
       31,
+      f
+    );
+  }
+  f = message.getIdealtimeoutbackoff();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      32,
       f
     );
   }
@@ -3929,6 +4061,24 @@ proto.assistant_api.AssistantApiDeployment.prototype.getIdealtimeoutmessage = fu
  */
 proto.assistant_api.AssistantApiDeployment.prototype.setIdealtimeoutmessage = function(value) {
   return jspb.Message.setProto3StringField(this, 31, value);
+};
+
+
+/**
+ * optional uint64 idealTimeoutBackoff = 32;
+ * @return {string}
+ */
+proto.assistant_api.AssistantApiDeployment.prototype.getIdealtimeoutbackoff = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 32, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantApiDeployment} returns this
+ */
+proto.assistant_api.AssistantApiDeployment.prototype.setIdealtimeoutbackoff = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 32, value);
 };
 
 

@@ -112,6 +112,9 @@ export class AssistantWebpluginDeployment extends jspb.Message {
   getIdealtimeoutmessage(): string;
   setIdealtimeoutmessage(value: string): void;
 
+  getIdealtimeoutbackoff(): string;
+  setIdealtimeoutbackoff(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantWebpluginDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantWebpluginDeployment): AssistantWebpluginDeployment.AsObject;
@@ -142,6 +145,7 @@ export namespace AssistantWebpluginDeployment {
     maxsessionduration: string,
     idealtimeout: string,
     idealtimeoutmessage: string,
+    idealtimeoutbackoff: string,
   }
 }
 
@@ -202,6 +206,9 @@ export class AssistantPhoneDeployment extends jspb.Message {
   getIdealtimeoutmessage(): string;
   setIdealtimeoutmessage(value: string): void;
 
+  getIdealtimeoutbackoff(): string;
+  setIdealtimeoutbackoff(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantPhoneDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantPhoneDeployment): AssistantPhoneDeployment.AsObject;
@@ -228,6 +235,7 @@ export namespace AssistantPhoneDeployment {
     maxsessionduration: string,
     idealtimeout: string,
     idealtimeoutmessage: string,
+    idealtimeoutbackoff: string,
   }
 }
 
@@ -291,6 +299,9 @@ export class AssistantWhatsappDeployment extends jspb.Message {
   getIdealtimeoutmessage(): string;
   setIdealtimeoutmessage(value: string): void;
 
+  getIdealtimeoutbackoff(): string;
+  setIdealtimeoutbackoff(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantWhatsappDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantWhatsappDeployment): AssistantWhatsappDeployment.AsObject;
@@ -318,6 +329,7 @@ export namespace AssistantWhatsappDeployment {
     maxsessionduration: string,
     idealtimeout: string,
     idealtimeoutmessage: string,
+    idealtimeoutbackoff: string,
   }
 }
 
@@ -373,6 +385,9 @@ export class AssistantDebuggerDeployment extends jspb.Message {
   getIdealtimeoutmessage(): string;
   setIdealtimeoutmessage(value: string): void;
 
+  getIdealtimeoutbackoff(): string;
+  setIdealtimeoutbackoff(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantDebuggerDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantDebuggerDeployment): AssistantDebuggerDeployment.AsObject;
@@ -398,6 +413,7 @@ export namespace AssistantDebuggerDeployment {
     maxsessionduration: string,
     idealtimeout: string,
     idealtimeoutmessage: string,
+    idealtimeoutbackoff: string,
   }
 }
 
@@ -450,6 +466,9 @@ export class AssistantApiDeployment extends jspb.Message {
   getIdealtimeoutmessage(): string;
   setIdealtimeoutmessage(value: string): void;
 
+  getIdealtimeoutbackoff(): string;
+  setIdealtimeoutbackoff(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantApiDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantApiDeployment): AssistantApiDeployment.AsObject;
@@ -474,6 +493,7 @@ export namespace AssistantApiDeployment {
     maxsessionduration: string,
     idealtimeout: string,
     idealtimeoutmessage: string,
+    idealtimeoutbackoff: string,
   }
 }
 

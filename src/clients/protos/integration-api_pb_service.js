@@ -585,60 +585,60 @@ AzureServiceClient.prototype.getModeration = function getModeration(requestMessa
 
 exports.AzureServiceClient = AzureServiceClient;
 
-var GoogleService = (function () {
-  function GoogleService() {}
-  GoogleService.serviceName = "integration_api.GoogleService";
-  return GoogleService;
+var GeminiService = (function () {
+  function GeminiService() {}
+  GeminiService.serviceName = "integration_api.GeminiService";
+  return GeminiService;
 }());
 
-GoogleService.Embedding = {
+GeminiService.Embedding = {
   methodName: "Embedding",
-  service: GoogleService,
+  service: GeminiService,
   requestStream: false,
   responseStream: false,
   requestType: integration_api_pb.EmbeddingRequest,
   responseType: integration_api_pb.EmbeddingResponse
 };
 
-GoogleService.Chat = {
+GeminiService.Chat = {
   methodName: "Chat",
-  service: GoogleService,
+  service: GeminiService,
   requestStream: false,
   responseStream: false,
   requestType: integration_api_pb.ChatRequest,
   responseType: integration_api_pb.ChatResponse
 };
 
-GoogleService.StreamChat = {
+GeminiService.StreamChat = {
   methodName: "StreamChat",
-  service: GoogleService,
+  service: GeminiService,
   requestStream: false,
   responseStream: true,
   requestType: integration_api_pb.ChatRequest,
   responseType: integration_api_pb.ChatResponse
 };
 
-GoogleService.VerifyCredential = {
+GeminiService.VerifyCredential = {
   methodName: "VerifyCredential",
-  service: GoogleService,
+  service: GeminiService,
   requestStream: false,
   responseStream: false,
   requestType: integration_api_pb.VerifyCredentialRequest,
   responseType: integration_api_pb.VerifyCredentialResponse
 };
 
-exports.GoogleService = GoogleService;
+exports.GeminiService = GeminiService;
 
-function GoogleServiceClient(serviceHost, options) {
+function GeminiServiceClient(serviceHost, options) {
   this.serviceHost = serviceHost;
   this.options = options || {};
 }
 
-GoogleServiceClient.prototype.embedding = function embedding(requestMessage, metadata, callback) {
+GeminiServiceClient.prototype.embedding = function embedding(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(GoogleService.Embedding, {
+  var client = grpc.unary(GeminiService.Embedding, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -665,11 +665,11 @@ GoogleServiceClient.prototype.embedding = function embedding(requestMessage, met
   };
 };
 
-GoogleServiceClient.prototype.chat = function chat(requestMessage, metadata, callback) {
+GeminiServiceClient.prototype.chat = function chat(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(GoogleService.Chat, {
+  var client = grpc.unary(GeminiService.Chat, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -696,13 +696,13 @@ GoogleServiceClient.prototype.chat = function chat(requestMessage, metadata, cal
   };
 };
 
-GoogleServiceClient.prototype.streamChat = function streamChat(requestMessage, metadata) {
+GeminiServiceClient.prototype.streamChat = function streamChat(requestMessage, metadata) {
   var listeners = {
     data: [],
     end: [],
     status: []
   };
-  var client = grpc.invoke(GoogleService.StreamChat, {
+  var client = grpc.invoke(GeminiService.StreamChat, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -735,11 +735,11 @@ GoogleServiceClient.prototype.streamChat = function streamChat(requestMessage, m
   };
 };
 
-GoogleServiceClient.prototype.verifyCredential = function verifyCredential(requestMessage, metadata, callback) {
+GeminiServiceClient.prototype.verifyCredential = function verifyCredential(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(GoogleService.VerifyCredential, {
+  var client = grpc.unary(GeminiService.VerifyCredential, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -766,7 +766,190 @@ GoogleServiceClient.prototype.verifyCredential = function verifyCredential(reque
   };
 };
 
-exports.GoogleServiceClient = GoogleServiceClient;
+exports.GeminiServiceClient = GeminiServiceClient;
+
+var VertexAiService = (function () {
+  function VertexAiService() {}
+  VertexAiService.serviceName = "integration_api.VertexAiService";
+  return VertexAiService;
+}());
+
+VertexAiService.Embedding = {
+  methodName: "Embedding",
+  service: VertexAiService,
+  requestStream: false,
+  responseStream: false,
+  requestType: integration_api_pb.EmbeddingRequest,
+  responseType: integration_api_pb.EmbeddingResponse
+};
+
+VertexAiService.Chat = {
+  methodName: "Chat",
+  service: VertexAiService,
+  requestStream: false,
+  responseStream: false,
+  requestType: integration_api_pb.ChatRequest,
+  responseType: integration_api_pb.ChatResponse
+};
+
+VertexAiService.StreamChat = {
+  methodName: "StreamChat",
+  service: VertexAiService,
+  requestStream: false,
+  responseStream: true,
+  requestType: integration_api_pb.ChatRequest,
+  responseType: integration_api_pb.ChatResponse
+};
+
+VertexAiService.VerifyCredential = {
+  methodName: "VerifyCredential",
+  service: VertexAiService,
+  requestStream: false,
+  responseStream: false,
+  requestType: integration_api_pb.VerifyCredentialRequest,
+  responseType: integration_api_pb.VerifyCredentialResponse
+};
+
+exports.VertexAiService = VertexAiService;
+
+function VertexAiServiceClient(serviceHost, options) {
+  this.serviceHost = serviceHost;
+  this.options = options || {};
+}
+
+VertexAiServiceClient.prototype.embedding = function embedding(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(VertexAiService.Embedding, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+VertexAiServiceClient.prototype.chat = function chat(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(VertexAiService.Chat, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+VertexAiServiceClient.prototype.streamChat = function streamChat(requestMessage, metadata) {
+  var listeners = {
+    data: [],
+    end: [],
+    status: []
+  };
+  var client = grpc.invoke(VertexAiService.StreamChat, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onMessage: function (responseMessage) {
+      listeners.data.forEach(function (handler) {
+        handler(responseMessage);
+      });
+    },
+    onEnd: function (status, statusMessage, trailers) {
+      listeners.status.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners.end.forEach(function (handler) {
+        handler({ code: status, details: statusMessage, metadata: trailers });
+      });
+      listeners = null;
+    }
+  });
+  return {
+    on: function (type, handler) {
+      listeners[type].push(handler);
+      return this;
+    },
+    cancel: function () {
+      listeners = null;
+      client.close();
+    }
+  };
+};
+
+VertexAiServiceClient.prototype.verifyCredential = function verifyCredential(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(VertexAiService.VerifyCredential, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+exports.VertexAiServiceClient = VertexAiServiceClient;
 
 var ReplicateService = (function () {
   function ReplicateService() {}

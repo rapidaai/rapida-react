@@ -146,48 +146,92 @@ export class AzureService {
   static readonly GetModeration: AzureServiceGetModeration;
 }
 
-type GoogleServiceEmbedding = {
+type GeminiServiceEmbedding = {
   readonly methodName: string;
-  readonly service: typeof GoogleService;
+  readonly service: typeof GeminiService;
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof integration_api_pb.EmbeddingRequest;
   readonly responseType: typeof integration_api_pb.EmbeddingResponse;
 };
 
-type GoogleServiceChat = {
+type GeminiServiceChat = {
   readonly methodName: string;
-  readonly service: typeof GoogleService;
+  readonly service: typeof GeminiService;
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof integration_api_pb.ChatRequest;
   readonly responseType: typeof integration_api_pb.ChatResponse;
 };
 
-type GoogleServiceStreamChat = {
+type GeminiServiceStreamChat = {
   readonly methodName: string;
-  readonly service: typeof GoogleService;
+  readonly service: typeof GeminiService;
   readonly requestStream: false;
   readonly responseStream: true;
   readonly requestType: typeof integration_api_pb.ChatRequest;
   readonly responseType: typeof integration_api_pb.ChatResponse;
 };
 
-type GoogleServiceVerifyCredential = {
+type GeminiServiceVerifyCredential = {
   readonly methodName: string;
-  readonly service: typeof GoogleService;
+  readonly service: typeof GeminiService;
   readonly requestStream: false;
   readonly responseStream: false;
   readonly requestType: typeof integration_api_pb.VerifyCredentialRequest;
   readonly responseType: typeof integration_api_pb.VerifyCredentialResponse;
 };
 
-export class GoogleService {
+export class GeminiService {
   static readonly serviceName: string;
-  static readonly Embedding: GoogleServiceEmbedding;
-  static readonly Chat: GoogleServiceChat;
-  static readonly StreamChat: GoogleServiceStreamChat;
-  static readonly VerifyCredential: GoogleServiceVerifyCredential;
+  static readonly Embedding: GeminiServiceEmbedding;
+  static readonly Chat: GeminiServiceChat;
+  static readonly StreamChat: GeminiServiceStreamChat;
+  static readonly VerifyCredential: GeminiServiceVerifyCredential;
+}
+
+type VertexAiServiceEmbedding = {
+  readonly methodName: string;
+  readonly service: typeof VertexAiService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof integration_api_pb.EmbeddingRequest;
+  readonly responseType: typeof integration_api_pb.EmbeddingResponse;
+};
+
+type VertexAiServiceChat = {
+  readonly methodName: string;
+  readonly service: typeof VertexAiService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof integration_api_pb.ChatRequest;
+  readonly responseType: typeof integration_api_pb.ChatResponse;
+};
+
+type VertexAiServiceStreamChat = {
+  readonly methodName: string;
+  readonly service: typeof VertexAiService;
+  readonly requestStream: false;
+  readonly responseStream: true;
+  readonly requestType: typeof integration_api_pb.ChatRequest;
+  readonly responseType: typeof integration_api_pb.ChatResponse;
+};
+
+type VertexAiServiceVerifyCredential = {
+  readonly methodName: string;
+  readonly service: typeof VertexAiService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof integration_api_pb.VerifyCredentialRequest;
+  readonly responseType: typeof integration_api_pb.VerifyCredentialResponse;
+};
+
+export class VertexAiService {
+  static readonly serviceName: string;
+  static readonly Embedding: VertexAiServiceEmbedding;
+  static readonly Chat: VertexAiServiceChat;
+  static readonly StreamChat: VertexAiServiceStreamChat;
+  static readonly VerifyCredential: VertexAiServiceVerifyCredential;
 }
 
 type ReplicateServiceChat = {
@@ -603,7 +647,41 @@ export class AzureServiceClient {
   ): UnaryResponse;
 }
 
-export class GoogleServiceClient {
+export class GeminiServiceClient {
+  readonly serviceHost: string;
+
+  constructor(serviceHost: string, options?: grpc.RpcOptions);
+  embedding(
+    requestMessage: integration_api_pb.EmbeddingRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: integration_api_pb.EmbeddingResponse|null) => void
+  ): UnaryResponse;
+  embedding(
+    requestMessage: integration_api_pb.EmbeddingRequest,
+    callback: (error: ServiceError|null, responseMessage: integration_api_pb.EmbeddingResponse|null) => void
+  ): UnaryResponse;
+  chat(
+    requestMessage: integration_api_pb.ChatRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: integration_api_pb.ChatResponse|null) => void
+  ): UnaryResponse;
+  chat(
+    requestMessage: integration_api_pb.ChatRequest,
+    callback: (error: ServiceError|null, responseMessage: integration_api_pb.ChatResponse|null) => void
+  ): UnaryResponse;
+  streamChat(requestMessage: integration_api_pb.ChatRequest, metadata?: grpc.Metadata): ResponseStream<integration_api_pb.ChatResponse>;
+  verifyCredential(
+    requestMessage: integration_api_pb.VerifyCredentialRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: integration_api_pb.VerifyCredentialResponse|null) => void
+  ): UnaryResponse;
+  verifyCredential(
+    requestMessage: integration_api_pb.VerifyCredentialRequest,
+    callback: (error: ServiceError|null, responseMessage: integration_api_pb.VerifyCredentialResponse|null) => void
+  ): UnaryResponse;
+}
+
+export class VertexAiServiceClient {
   readonly serviceHost: string;
 
   constructor(serviceHost: string, options?: grpc.RpcOptions);
