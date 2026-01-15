@@ -81,20 +81,7 @@ export interface ConversationMessage
 }
 
 
-/**
- * 
- */
-export class ConversationMessage {
-  constructor(config?: AssistantConversationMessage) {
-    if (config) {
-      Object.assign(this, config.toObject());
-      this.userMessage = toContentText(config.getRequest()?.getContentsList());
-      this.systemMessage = toContentText(
-        config.getResponse()?.getContentsList()
-      );
-    }
-  }
-}
+
 
 /**
  * Callbacks for agent
@@ -116,9 +103,6 @@ export interface AgentCallback {
   // user
   onUserMessage?: (args: ConversationUserMessage | undefined) => void;
 
-  //
-  // on complete message
-  onMessage?: (arg: ConversationMessage | undefined) => void;
 
   //
   onAction?: (

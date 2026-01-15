@@ -790,15 +790,11 @@ export class AssistantConversationMessage extends jspb.Message {
   getAssistantconversationid(): string;
   setAssistantconversationid(value: string): void;
 
-  hasRequest(): boolean;
-  clearRequest(): void;
-  getRequest(): Message | undefined;
-  setRequest(value?: Message): void;
+  getRole(): string;
+  setRole(value: string): void;
 
-  hasResponse(): boolean;
-  clearResponse(): void;
-  getResponse(): Message | undefined;
-  setResponse(value?: Message): void;
+  getBody(): string;
+  setBody(value: string): void;
 
   getSource(): string;
   setSource(value: string): void;
@@ -853,8 +849,8 @@ export namespace AssistantConversationMessage {
     id: string,
     messageid: string,
     assistantconversationid: string,
-    request?: Message.AsObject,
-    response?: Message.AsObject,
+    role: string,
+    body: string,
     source: string,
     metricsList: Array<Metric.AsObject>,
     status: string,

@@ -6537,8 +6537,8 @@ proto.AssistantConversationMessage.toObject = function(includeInstance, msg) {
     id: jspb.Message.getFieldWithDefault(msg, 1, "0"),
     messageid: jspb.Message.getFieldWithDefault(msg, 3, ""),
     assistantconversationid: jspb.Message.getFieldWithDefault(msg, 2, "0"),
-    request: (f = msg.getRequest()) && proto.Message.toObject(includeInstance, f),
-    response: (f = msg.getResponse()) && proto.Message.toObject(includeInstance, f),
+    role: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    body: jspb.Message.getFieldWithDefault(msg, 5, ""),
     source: jspb.Message.getFieldWithDefault(msg, 9, ""),
     metricsList: jspb.Message.toObjectList(msg.getMetricsList(),
     proto.Metric.toObject, includeInstance),
@@ -6599,15 +6599,13 @@ proto.AssistantConversationMessage.deserializeBinaryFromReader = function(msg, r
       var value = /** @type {string} */ (reader.readUint64String());
       msg.setAssistantconversationid(value);
       break;
-    case 5:
-      var value = new proto.Message;
-      reader.readMessage(value,proto.Message.deserializeBinaryFromReader);
-      msg.setRequest(value);
+    case 4:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setRole(value);
       break;
-    case 7:
-      var value = new proto.Message;
-      reader.readMessage(value,proto.Message.deserializeBinaryFromReader);
-      msg.setResponse(value);
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setBody(value);
       break;
     case 9:
       var value = /** @type {string} */ (reader.readString());
@@ -6703,20 +6701,18 @@ proto.AssistantConversationMessage.serializeBinaryToWriter = function(message, w
       f
     );
   }
-  f = message.getRequest();
-  if (f != null) {
-    writer.writeMessage(
-      5,
-      f,
-      proto.Message.serializeBinaryToWriter
+  f = message.getRole();
+  if (f.length > 0) {
+    writer.writeString(
+      4,
+      f
     );
   }
-  f = message.getResponse();
-  if (f != null) {
-    writer.writeMessage(
-      7,
-      f,
-      proto.Message.serializeBinaryToWriter
+  f = message.getBody();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
+      f
     );
   }
   f = message.getSource();
@@ -6851,76 +6847,38 @@ proto.AssistantConversationMessage.prototype.setAssistantconversationid = functi
 
 
 /**
- * optional Message request = 5;
- * @return {?proto.Message}
+ * optional string role = 4;
+ * @return {string}
  */
-proto.AssistantConversationMessage.prototype.getRequest = function() {
-  return /** @type{?proto.Message} */ (
-    jspb.Message.getWrapperField(this, proto.Message, 5));
+proto.AssistantConversationMessage.prototype.getRole = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
 /**
- * @param {?proto.Message|undefined} value
- * @return {!proto.AssistantConversationMessage} returns this
-*/
-proto.AssistantConversationMessage.prototype.setRequest = function(value) {
-  return jspb.Message.setWrapperField(this, 5, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
+ * @param {string} value
  * @return {!proto.AssistantConversationMessage} returns this
  */
-proto.AssistantConversationMessage.prototype.clearRequest = function() {
-  return this.setRequest(undefined);
+proto.AssistantConversationMessage.prototype.setRole = function(value) {
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 
 /**
- * Returns whether this field is set.
- * @return {boolean}
+ * optional string body = 5;
+ * @return {string}
  */
-proto.AssistantConversationMessage.prototype.hasRequest = function() {
-  return jspb.Message.getField(this, 5) != null;
+proto.AssistantConversationMessage.prototype.getBody = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
 };
 
 
 /**
- * optional Message response = 7;
- * @return {?proto.Message}
- */
-proto.AssistantConversationMessage.prototype.getResponse = function() {
-  return /** @type{?proto.Message} */ (
-    jspb.Message.getWrapperField(this, proto.Message, 7));
-};
-
-
-/**
- * @param {?proto.Message|undefined} value
- * @return {!proto.AssistantConversationMessage} returns this
-*/
-proto.AssistantConversationMessage.prototype.setResponse = function(value) {
-  return jspb.Message.setWrapperField(this, 7, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
+ * @param {string} value
  * @return {!proto.AssistantConversationMessage} returns this
  */
-proto.AssistantConversationMessage.prototype.clearResponse = function() {
-  return this.setResponse(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.AssistantConversationMessage.prototype.hasResponse = function() {
-  return jspb.Message.getField(this, 7) != null;
+proto.AssistantConversationMessage.prototype.setBody = function(value) {
+  return jspb.Message.setProto3StringField(this, 5, value);
 };
 
 

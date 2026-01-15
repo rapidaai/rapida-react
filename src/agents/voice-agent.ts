@@ -547,8 +547,6 @@ export class VoiceAgent extends Agent {
         const conversation = response.getConfiguration();
         if (!conversation?.getAssistantconversationid()) return;
         break;
-      case AssistantMessagingResponse.DataCase.MESSAGE:
-        break;
       default:
         break;
     }
@@ -602,13 +600,7 @@ export class VoiceAgent extends Agent {
             ?.getAssistantconversationid();
           if (cnvId) this.changeConversation(cnvId);
           break;
-        case AssistantMessagingResponse.DataCase.MESSAGE:
-          if (agentCallback && agentCallback?.onMessage) {
-            agentCallback.onMessage(
-              new ConversationMessage(response.getMessage())
-            );
-          }
-          break;
+
         default:
           break;
       }

@@ -478,7 +478,7 @@ proto.talk_api.AssistantMessagingRequest.prototype.hasMessage = function() {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.talk_api.AssistantMessagingResponse.oneofGroups_ = [[9,10,11,12,13,14,15]];
+proto.talk_api.AssistantMessagingResponse.oneofGroups_ = [[9,10,11,12,14,15]];
 
 /**
  * @enum {number}
@@ -489,7 +489,6 @@ proto.talk_api.AssistantMessagingResponse.DataCase = {
   INTERRUPTION: 10,
   USER: 11,
   ASSISTANT: 12,
-  MESSAGE: 13,
   ACTION: 14,
   ERROR: 15
 };
@@ -538,7 +537,6 @@ proto.talk_api.AssistantMessagingResponse.toObject = function(includeInstance, m
     interruption: (f = msg.getInterruption()) && common_pb.AssistantConversationInterruption.toObject(includeInstance, f),
     user: (f = msg.getUser()) && common_pb.AssistantConversationUserMessage.toObject(includeInstance, f),
     assistant: (f = msg.getAssistant()) && common_pb.AssistantConversationAssistantMessage.toObject(includeInstance, f),
-    message: (f = msg.getMessage()) && common_pb.AssistantConversationMessage.toObject(includeInstance, f),
     action: (f = msg.getAction()) && common_pb.AssistantConversationAction.toObject(includeInstance, f),
     error: (f = msg.getError()) && common_pb.Error.toObject(includeInstance, f)
   };
@@ -604,11 +602,6 @@ proto.talk_api.AssistantMessagingResponse.deserializeBinaryFromReader = function
       var value = new common_pb.AssistantConversationAssistantMessage;
       reader.readMessage(value,common_pb.AssistantConversationAssistantMessage.deserializeBinaryFromReader);
       msg.setAssistant(value);
-      break;
-    case 13:
-      var value = new common_pb.AssistantConversationMessage;
-      reader.readMessage(value,common_pb.AssistantConversationMessage.deserializeBinaryFromReader);
-      msg.setMessage(value);
       break;
     case 14:
       var value = new common_pb.AssistantConversationAction;
@@ -693,14 +686,6 @@ proto.talk_api.AssistantMessagingResponse.serializeBinaryToWriter = function(mes
       12,
       f,
       common_pb.AssistantConversationAssistantMessage.serializeBinaryToWriter
-    );
-  }
-  f = message.getMessage();
-  if (f != null) {
-    writer.writeMessage(
-      13,
-      f,
-      common_pb.AssistantConversationMessage.serializeBinaryToWriter
     );
   }
   f = message.getAction();
@@ -903,43 +888,6 @@ proto.talk_api.AssistantMessagingResponse.prototype.clearAssistant = function() 
  */
 proto.talk_api.AssistantMessagingResponse.prototype.hasAssistant = function() {
   return jspb.Message.getField(this, 12) != null;
-};
-
-
-/**
- * optional AssistantConversationMessage message = 13;
- * @return {?proto.AssistantConversationMessage}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.getMessage = function() {
-  return /** @type{?proto.AssistantConversationMessage} */ (
-    jspb.Message.getWrapperField(this, common_pb.AssistantConversationMessage, 13));
-};
-
-
-/**
- * @param {?proto.AssistantConversationMessage|undefined} value
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
-*/
-proto.talk_api.AssistantMessagingResponse.prototype.setMessage = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 13, proto.talk_api.AssistantMessagingResponse.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.talk_api.AssistantMessagingResponse} returns this
- */
-proto.talk_api.AssistantMessagingResponse.prototype.clearMessage = function() {
-  return this.setMessage(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.talk_api.AssistantMessagingResponse.prototype.hasMessage = function() {
-  return jspb.Message.getField(this, 13) != null;
 };
 
 

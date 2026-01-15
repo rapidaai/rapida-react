@@ -67,11 +67,6 @@ export class AssistantMessagingResponse extends jspb.Message {
   getAssistant(): common_pb.AssistantConversationAssistantMessage | undefined;
   setAssistant(value?: common_pb.AssistantConversationAssistantMessage): void;
 
-  hasMessage(): boolean;
-  clearMessage(): void;
-  getMessage(): common_pb.AssistantConversationMessage | undefined;
-  setMessage(value?: common_pb.AssistantConversationMessage): void;
-
   hasAction(): boolean;
   clearAction(): void;
   getAction(): common_pb.AssistantConversationAction | undefined;
@@ -101,7 +96,6 @@ export namespace AssistantMessagingResponse {
     interruption?: common_pb.AssistantConversationInterruption.AsObject,
     user?: common_pb.AssistantConversationUserMessage.AsObject,
     assistant?: common_pb.AssistantConversationAssistantMessage.AsObject,
-    message?: common_pb.AssistantConversationMessage.AsObject,
     action?: common_pb.AssistantConversationAction.AsObject,
     error?: common_pb.Error.AsObject,
   }
@@ -112,7 +106,6 @@ export namespace AssistantMessagingResponse {
     INTERRUPTION = 10,
     USER = 11,
     ASSISTANT = 12,
-    MESSAGE = 13,
     ACTION = 14,
     ERROR = 15,
   }
