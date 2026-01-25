@@ -24,25 +24,48 @@
  */
 import { loadRawAudioProcessor } from "./raw-audio-processor";
 import { RecorderOptions } from "@/rapida/types/agent-config";
+import { isChrome } from "@/rapida/utils";
 
 const LIBSAMPLERATE_JS =
   "https://cdn.jsdelivr.net/npm/@alexanderolsen/libsamplerate-js@2.1.2/dist/libsamplerate.worklet.js";
 
+/**
+ * Get optimized audio constraints based on browser.
+ * Chrome requires more explicit constraints to properly enable audio processing.
+ * Brave (Chromium-based) has different defaults and works with ideal constraints.
+ */
+function getAudioConstraints(sampleRate: number): MediaTrackConstraints {
+  // Chrome needs explicit true values, not just { ideal: true }
+  // to properly enable audio processing and reduce noise
+  if (isChrome()) {
+    return {
+      sampleRate: { ideal: sampleRate },
+      echoCancellation: true,
+      noiseSuppression: true,
+      autoGainControl: true,
+      // Chrome-specific: helps with consistent audio quality
+      channelCount: { ideal: 1 },
+    };
+  }
+
+  // Default constraints for other browsers (Brave, Firefox, Safari, etc.)
+  return {
+    sampleRate: { ideal: sampleRate },
+    echoCancellation: { ideal: true },
+    noiseSuppression: { ideal: true },
+    autoGainControl: { ideal: true },
+  };
+}
+
 export class Input {
-  public static async create({
-    sampleRate,
-    format,
-  }: RecorderOptions): Promise<Input> {
+  public static async create(
+    { sampleRate, format }: RecorderOptions,
+    existingStream?: MediaStream
+  ): Promise<Input> {
     let context: AudioContext | null = null;
     let inputStream: MediaStream | null = null;
 
     try {
-      const options: MediaTrackConstraints = {
-        sampleRate: { ideal: sampleRate },
-        echoCancellation: { ideal: true },
-        noiseSuppression: { ideal: true },
-      };
-
       const supportsSampleRateConstraint =
         navigator.mediaDevices.getSupportedConstraints().sampleRate;
 
@@ -54,9 +77,17 @@ export class Input {
         await context.audioWorklet.addModule(LIBSAMPLERATE_JS);
       }
       await loadRawAudioProcessor(context.audioWorklet);
-      inputStream = await navigator.mediaDevices.getUserMedia({
-        audio: options,
-      });
+
+      // Reuse existing stream if provided, otherwise create new one
+      // Reusing the stream preserves the browser's AEC state
+      if (existingStream) {
+        inputStream = existingStream;
+      } else {
+        const options = getAudioConstraints(sampleRate);
+        inputStream = await navigator.mediaDevices.getUserMedia({
+          audio: options,
+        });
+      }
 
       const source = context.createMediaStreamSource(inputStream);
       const worklet = new AudioWorkletNode(context, "raw-audio-processor");
@@ -80,7 +111,7 @@ export class Input {
     public readonly analyser: AnalyserNode,
     public readonly worklet: AudioWorkletNode,
     public readonly inputStream: MediaStream
-  ) {}
+  ) { }
 
   public async close() {
     this.inputStream.getTracks().forEach((track) => track.stop());

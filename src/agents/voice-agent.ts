@@ -31,7 +31,7 @@ import {
   AssistantConversationInterruption,
   AssistantConversationUserMessage,
 } from "@/rapida/clients/protos/common_pb";
-import { toDate } from "@/rapida/utils";
+import { toDate, isChrome } from "@/rapida/utils";
 import { MessageRole, MessageStatus } from "@/rapida/types/message";
 import { Channel } from "@/rapida/types/channel";
 import { AgentConfig } from "@/rapida/types/agent-config";
@@ -94,15 +94,22 @@ export class VoiceAgent extends Agent {
 
   private connectDevice = async () => {
     try {
+      // Get the MediaStream with AEC enabled - we'll reuse this same stream
+      // to preserve the browser's echo cancellation state
       this.preliminaryInputStream = await this.waitForUserMediaPermission();
-      [this.input, this.output] = await Promise.all([
-        Input.create(this.agentConfig.inputOptions.recorderOption),
-        Output.create(this.agentConfig.outputOptions.playerOption),
-      ]);
+
+      // Create Output first, then Input with the existing stream
+      // This ensures AEC can correlate output audio with mic input
+      this.output = await Output.create(this.agentConfig.outputOptions.playerOption);
+      this.input = await Input.create(
+        this.agentConfig.inputOptions.recorderOption,
+        this.preliminaryInputStream // Reuse the same MediaStream
+      );
+
       this.input.worklet.port.onmessage = this.onInputWorkletMessage;
       this.output.worklet.port.onmessage = this.onOutputWorkletMessage;
 
-      this.preliminaryInputStream?.getTracks().forEach((track) => track.stop());
+      // Don't stop the stream - it's now being used by Input
       this.preliminaryInputStream = null;
     } catch (error) {
       await this.disconnectAudio();
@@ -113,7 +120,26 @@ export class VoiceAgent extends Agent {
   // Helper method to handle media permissions:
   private waitForUserMediaPermission = async (): Promise<MediaStream> => {
     try {
-      return await navigator.mediaDevices.getUserMedia({ audio: true });
+      const sampleRate = this.agentConfig.inputOptions.recorderOption.sampleRate;
+
+      // Chrome needs explicit true values, not just { ideal: true }
+      // to properly enable audio processing and reduce noise
+      const options: MediaTrackConstraints = isChrome()
+        ? {
+          sampleRate: { ideal: sampleRate },
+          echoCancellation: true,
+          noiseSuppression: true,
+          autoGainControl: true,
+          channelCount: { ideal: 1 },
+        }
+        : {
+          sampleRate: { ideal: sampleRate },
+          echoCancellation: { ideal: true },
+          noiseSuppression: { ideal: true },
+          autoGainControl: { ideal: true },
+        };
+
+      return await navigator.mediaDevices.getUserMedia({ audio: options });
     } catch (error) {
       // Handle permission denied or other errors.
       console.error(
@@ -447,6 +473,7 @@ export class VoiceAgent extends Agent {
             const audioData = content.getContent_asU8();
             this.addAudioChunk(new Uint8Array(audioData).buffer);
           }
+          break;
         case AssistantConversationAssistantMessage.MessageCase.TEXT:
           const systemTranscript = systemContent.getText()?.getContent();
           if (systemTranscript) {
