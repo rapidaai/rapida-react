@@ -11413,9 +11413,11 @@ proto.AssistantConversationAction.prototype.toObject = function(opt_includeInsta
  */
 proto.AssistantConversationAction.toObject = function(includeInstance, msg) {
   var f, obj = {
-    name: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    action: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    argsMap: (f = msg.getArgsMap()) ? f.toObject(includeInstance, proto.google.protobuf.Any.toObject) : []
+    id: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    name: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    action: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    argsMap: (f = msg.getArgsMap()) ? f.toObject(includeInstance, proto.google.protobuf.Any.toObject) : [],
+    time: (f = msg.getTime()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -11454,17 +11456,26 @@ proto.AssistantConversationAction.deserializeBinaryFromReader = function(msg, re
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.setName(value);
+      msg.setId(value);
       break;
     case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setName(value);
+      break;
+    case 3:
       var value = /** @type {!proto.AssistantConversationAction.ActionType} */ (reader.readEnum());
       msg.setAction(value);
       break;
-    case 3:
+    case 4:
       var value = msg.getArgsMap();
       reader.readMessage(value, function(message, reader) {
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readMessage, proto.google.protobuf.Any.deserializeBinaryFromReader, "", new proto.google.protobuf.Any());
          });
+      break;
+    case 5:
+      var value = new google_protobuf_timestamp_pb.Timestamp;
+      reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
+      msg.setTime(value);
       break;
     default:
       reader.skipField();
@@ -11495,23 +11506,38 @@ proto.AssistantConversationAction.prototype.serializeBinary = function() {
  */
 proto.AssistantConversationAction.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getName();
+  f = message.getId();
   if (f.length > 0) {
     writer.writeString(
       1,
       f
     );
   }
+  f = message.getName();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
+    );
+  }
   f = message.getAction();
   if (f !== 0.0) {
     writer.writeEnum(
-      2,
+      3,
       f
     );
   }
   f = message.getArgsMap(true);
   if (f && f.getLength() > 0) {
-    f.serializeBinary(3, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeMessage, proto.google.protobuf.Any.serializeBinaryToWriter);
+    f.serializeBinary(4, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeMessage, proto.google.protobuf.Any.serializeBinaryToWriter);
+  }
+  f = message.getTime();
+  if (f != null) {
+    writer.writeMessage(
+      5,
+      f,
+      google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
+    );
   }
 };
 
@@ -11523,16 +11549,16 @@ proto.AssistantConversationAction.ActionType = {
   ACTION_UNSPECIFIED: 0,
   KNOWLEDGE_RETRIEVAL: 1,
   API_REQUEST: 2,
-  ENDPOINT_CALL: 3,
-  PUT_ON_HOLD: 4,
-  END_CONVERSATION: 5
+  ENDPOINT_REQUEST: 3,
+  END_CONVERSATION: 5,
+  TRANSFER_CONVERSATION: 6
 };
 
 /**
- * optional string name = 1;
+ * optional string id = 1;
  * @return {string}
  */
-proto.AssistantConversationAction.prototype.getName = function() {
+proto.AssistantConversationAction.prototype.getId = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
@@ -11541,17 +11567,35 @@ proto.AssistantConversationAction.prototype.getName = function() {
  * @param {string} value
  * @return {!proto.AssistantConversationAction} returns this
  */
-proto.AssistantConversationAction.prototype.setName = function(value) {
+proto.AssistantConversationAction.prototype.setId = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
 /**
- * optional ActionType action = 2;
+ * optional string name = 2;
+ * @return {string}
+ */
+proto.AssistantConversationAction.prototype.getName = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.AssistantConversationAction} returns this
+ */
+proto.AssistantConversationAction.prototype.setName = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional ActionType action = 3;
  * @return {!proto.AssistantConversationAction.ActionType}
  */
 proto.AssistantConversationAction.prototype.getAction = function() {
-  return /** @type {!proto.AssistantConversationAction.ActionType} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+  return /** @type {!proto.AssistantConversationAction.ActionType} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
 };
 
 
@@ -11560,19 +11604,19 @@ proto.AssistantConversationAction.prototype.getAction = function() {
  * @return {!proto.AssistantConversationAction} returns this
  */
 proto.AssistantConversationAction.prototype.setAction = function(value) {
-  return jspb.Message.setProto3EnumField(this, 2, value);
+  return jspb.Message.setProto3EnumField(this, 3, value);
 };
 
 
 /**
- * map<string, google.protobuf.Any> args = 3;
+ * map<string, google.protobuf.Any> args = 4;
  * @param {boolean=} opt_noLazyCreate Do not create the map if
  * empty, instead returning `undefined`
  * @return {!jspb.Map<string,!proto.google.protobuf.Any>}
  */
 proto.AssistantConversationAction.prototype.getArgsMap = function(opt_noLazyCreate) {
   return /** @type {!jspb.Map<string,!proto.google.protobuf.Any>} */ (
-      jspb.Message.getMapField(this, 3, opt_noLazyCreate,
+      jspb.Message.getMapField(this, 4, opt_noLazyCreate,
       proto.google.protobuf.Any));
 };
 
@@ -11584,6 +11628,43 @@ proto.AssistantConversationAction.prototype.getArgsMap = function(opt_noLazyCrea
 proto.AssistantConversationAction.prototype.clearArgsMap = function() {
   this.getArgsMap().clear();
   return this;};
+
+
+/**
+ * optional google.protobuf.Timestamp time = 5;
+ * @return {?proto.google.protobuf.Timestamp}
+ */
+proto.AssistantConversationAction.prototype.getTime = function() {
+  return /** @type{?proto.google.protobuf.Timestamp} */ (
+    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 5));
+};
+
+
+/**
+ * @param {?proto.google.protobuf.Timestamp|undefined} value
+ * @return {!proto.AssistantConversationAction} returns this
+*/
+proto.AssistantConversationAction.prototype.setTime = function(value) {
+  return jspb.Message.setWrapperField(this, 5, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.AssistantConversationAction} returns this
+ */
+proto.AssistantConversationAction.prototype.clearTime = function() {
+  return this.setTime(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.AssistantConversationAction.prototype.hasTime = function() {
+  return jspb.Message.getField(this, 5) != null;
+};
 
 
 

@@ -1431,6 +1431,9 @@ export namespace TextConfig {
 }
 
 export class AssistantConversationAction extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
   getName(): string;
   setName(value: string): void;
 
@@ -1439,6 +1442,11 @@ export class AssistantConversationAction extends jspb.Message {
 
   getArgsMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
   clearArgsMap(): void;
+  hasTime(): boolean;
+  clearTime(): void;
+  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantConversationAction.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantConversationAction): AssistantConversationAction.AsObject;
@@ -1451,18 +1459,20 @@ export class AssistantConversationAction extends jspb.Message {
 
 export namespace AssistantConversationAction {
   export type AsObject = {
+    id: string,
     name: string,
     action: AssistantConversationAction.ActionTypeMap[keyof AssistantConversationAction.ActionTypeMap],
     argsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
+    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
 
   export interface ActionTypeMap {
     ACTION_UNSPECIFIED: 0;
     KNOWLEDGE_RETRIEVAL: 1;
     API_REQUEST: 2;
-    ENDPOINT_CALL: 3;
-    PUT_ON_HOLD: 4;
+    ENDPOINT_REQUEST: 3;
     END_CONVERSATION: 5;
+    TRANSFER_CONVERSATION: 6;
   }
 
   export const ActionType: ActionTypeMap;
