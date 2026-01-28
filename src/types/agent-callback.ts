@@ -23,49 +23,48 @@
  *
  */
 import {
-  AssistantConversationAssistantMessage,
-  AssistantConversationConfiguration,
-  AssistantConversationInterruption,
-  AssistantConversationUserMessage,
-} from "@/rapida/clients/protos/common_pb";
+  ConversationUserMessage as CUMessage,
+  ConversationAssistantMessage as CAMessage,
+  ConversationConfiguration,
+  ConversationInterruption,
+  ConversationDirective
+} from "@/rapida/clients/protos/talk-api_pb";
 
 import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
-import { toContentText } from "@/rapida/utils/rapida_content";
-import { AssistantConversationAction } from '../clients/protos/common_pb';
 
 export interface ConversationUserMessage
-  extends AssistantConversationUserMessage.AsObject {
+  extends CUMessage.AsObject {
   messageText?: string;
 }
 
 export class ConversationUserMessage {
-  constructor(config?: AssistantConversationUserMessage) {
+  constructor(config?: CUMessage) {
     if (config) {
       Object.assign(this, config.toObject());
       switch (config.getMessageCase()) {
-        case AssistantConversationUserMessage.MessageCase.MESSAGE_NOT_SET:
-        case AssistantConversationUserMessage.MessageCase.AUDIO:
-        case AssistantConversationUserMessage.MessageCase.TEXT:
-          this.messageText = config.getText()?.getContent();
+        case CUMessage.MessageCase.MESSAGE_NOT_SET:
+        case CUMessage.MessageCase.AUDIO:
+        case CUMessage.MessageCase.TEXT:
+          this.messageText = config.getText();
       }
     }
   }
 }
 
 export interface ConversationAssistantMessage
-  extends AssistantConversationAssistantMessage.AsObject {
+  extends CAMessage.AsObject {
   messageText?: string;
 }
 
 export class ConversationAssistantMessage {
-  constructor(config?: AssistantConversationAssistantMessage) {
+  constructor(config?: CAMessage) {
     if (config) {
       Object.assign(this, config.toObject());
       switch (config.getMessageCase()) {
-        case AssistantConversationUserMessage.MessageCase.MESSAGE_NOT_SET:
-        case AssistantConversationUserMessage.MessageCase.AUDIO:
-        case AssistantConversationUserMessage.MessageCase.TEXT:
-          this.messageText = config.getText()?.getContent();
+        case CAMessage.MessageCase.MESSAGE_NOT_SET:
+        case CAMessage.MessageCase.AUDIO:
+        case CAMessage.MessageCase.TEXT:
+          this.messageText = config.getText();
       }
     }
   }
@@ -89,12 +88,12 @@ export interface ConversationMessage
 export interface AgentCallback {
   // this will be called when assistant get changed // also this will be the first call when assistant connection established
   onConfiguration?: (
-    args: AssistantConversationConfiguration.AsObject | undefined
+    args: ConversationConfiguration.AsObject | undefined
   ) => void;
 
   // interrupted // // vad // word // there might be two kind of interruption
   onInterrupt?: (
-    args: AssistantConversationInterruption.AsObject | undefined
+    args: ConversationInterruption.AsObject | undefined
   ) => void;
 
   // generation
@@ -103,10 +102,12 @@ export interface AgentCallback {
   // user
   onUserMessage?: (args: ConversationUserMessage | undefined) => void;
 
-
   //
   onAction?: (
     arg?:
-      | AssistantConversationAction.AsObject
+      | ConversationDirective.AsObject
   ) => void;
+
+
+
 }

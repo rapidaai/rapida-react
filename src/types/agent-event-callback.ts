@@ -26,14 +26,13 @@ import { Feedback } from "@/rapida/types/feedback";
 import { Channel } from "@/rapida/types/channel";
 import { Assistant } from "@/rapida/clients/protos/assistant-api_pb";
 import {
-  AssistantConversationAssistantMessage,
-  AssistantConversationConfiguration,
-  AssistantConversationInterruption,
-  AssistantConversationUserMessage,
-} from "@/rapida/clients/protos/common_pb";
-import { AssistantMessagingResponse } from "@/rapida/clients/protos/talk-api_pb";
+  ConversationAssistantMessage,
+  ConversationConfiguration,
+  ConversationInterruption,
+  ConversationUserMessage,
+  AssistantTalkOutput,
+} from "@/rapida/clients/protos/talk-api_pb";
 import { ConnectionState } from "@/rapida/types/connection-state";
-
 /**
  * Defines the structure for callback functions used in voice agent events.
  *
@@ -63,12 +62,12 @@ export type AgentEventCallback = {
 
   // when server sent an event to client
   onConversationEvent: (
-    eventType?: AssistantMessagingResponse.DataCase,
+    eventType?: AssistantTalkOutput.DataCase,
     event?:
-      | AssistantConversationConfiguration
-      | AssistantConversationUserMessage
-      | AssistantConversationAssistantMessage
-      | AssistantConversationInterruption
+      | ConversationConfiguration
+      | ConversationUserMessage
+      | ConversationAssistantMessage
+      | ConversationInterruption
   ) => void;
 
   // feedback of conversation

@@ -22,91 +22,91 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { Content } from "@/rapida/clients/protos/common_pb";
+// import { Content } from "@/rapida/clients/protos/common_pb";
 
-export enum ResponseContentType {
-  TEXT_CONTENT = "text",
-  AUDIO_CONTENT = "audio",
-  IMAGE_CONTENT = "image",
-  MULTI_MEDIA_CONTENT = "multi",
-}
+// export enum ResponseContentType {
+//   TEXT_CONTENT = "text",
+//   AUDIO_CONTENT = "audio",
+//   IMAGE_CONTENT = "image",
+//   MULTI_MEDIA_CONTENT = "multi",
+// }
 
-// Get returns the string value of the RapidaEnvironment
-export function getResponseContentType(env: ResponseContentType): string {
-  return env;
-}
+// // Get returns the string value of the RapidaEnvironment
+// export function getResponseContentType(env: ResponseContentType): string {
+//   return env;
+// }
 
-// FromStr returns the corresponding RapidaEnvironment for a given string,
-// or DEVELOPMENT if the string does not match any environment.
-export function fromStr(label: string): ResponseContentType {
-  switch (label.toLowerCase()) {
-    case ResponseContentType.TEXT_CONTENT:
-      return ResponseContentType.TEXT_CONTENT;
-    case ResponseContentType.AUDIO_CONTENT:
-      return ResponseContentType.AUDIO_CONTENT;
-    case ResponseContentType.IMAGE_CONTENT:
-      return ResponseContentType.IMAGE_CONTENT;
-    case ResponseContentType.MULTI_MEDIA_CONTENT:
-      return ResponseContentType.MULTI_MEDIA_CONTENT;
-    default:
-      console.warn(
-        "The content type is not supported. Only text, audio, image, multi"
-      );
-      return ResponseContentType.TEXT_CONTENT;
-  }
-}
+// // FromStr returns the corresponding RapidaEnvironment for a given string,
+// // or DEVELOPMENT if the string does not match any environment.
+// export function fromStr(label: string): ResponseContentType {
+//   switch (label.toLowerCase()) {
+//     case ResponseContentType.TEXT_CONTENT:
+//       return ResponseContentType.TEXT_CONTENT;
+//     case ResponseContentType.AUDIO_CONTENT:
+//       return ResponseContentType.AUDIO_CONTENT;
+//     case ResponseContentType.IMAGE_CONTENT:
+//       return ResponseContentType.IMAGE_CONTENT;
+//     case ResponseContentType.MULTI_MEDIA_CONTENT:
+//       return ResponseContentType.MULTI_MEDIA_CONTENT;
+//     default:
+//       console.warn(
+//         "The content type is not supported. Only text, audio, image, multi"
+//       );
+//       return ResponseContentType.TEXT_CONTENT;
+//   }
+// }
 
-type ResponseContentFormat = "raw" | "word" | "url" | "chunk";
+// type ResponseContentFormat = "raw" | "word" | "url" | "chunk";
 
-export const TEXT_CONTENT_FORMAT_RAW: ResponseContentFormat = "raw";
-export const TEXT_CONTENT_FORMAT_WORD: ResponseContentFormat = "word";
+// export const TEXT_CONTENT_FORMAT_RAW: ResponseContentFormat = "raw";
+// export const TEXT_CONTENT_FORMAT_WORD: ResponseContentFormat = "word";
 
-export const AUDIO_CONTENT_FORMAT_RAW: ResponseContentFormat = "raw";
-export const AUDIO_CONTENT_FORMAT_CHUNK: ResponseContentFormat = "chunk";
-export const AUDIO_CONTENT_FORMAT_URL: ResponseContentFormat = "url";
+// export const AUDIO_CONTENT_FORMAT_RAW: ResponseContentFormat = "raw";
+// export const AUDIO_CONTENT_FORMAT_CHUNK: ResponseContentFormat = "chunk";
+// export const AUDIO_CONTENT_FORMAT_URL: ResponseContentFormat = "url";
 
-export const IMAGE_CONTENT_FORMAT_RAW: ResponseContentFormat = "raw";
-export const IMAGE_CONTENT_FORMAT_URL: ResponseContentFormat = "url";
+// export const IMAGE_CONTENT_FORMAT_RAW: ResponseContentFormat = "raw";
+// export const IMAGE_CONTENT_FORMAT_URL: ResponseContentFormat = "url";
 
-export const MULTI_MEDIA_CONTENT_FORMAT_RAW: ResponseContentFormat = "raw";
-export const MULTI_MEDIA_CONTENT_FORMAT_URL: ResponseContentFormat = "url";
+// export const MULTI_MEDIA_CONTENT_FORMAT_RAW: ResponseContentFormat = "raw";
+// export const MULTI_MEDIA_CONTENT_FORMAT_URL: ResponseContentFormat = "url";
 
-/**
- *
- * @param str
- * @returns
- */
-export const toTextContent = (
-  str: string,
-  format?: ResponseContentFormat
-): Content => {
-  const cnt = new Content();
-  if (format) cnt.setContentformat(format);
-  else cnt.setContentformat(TEXT_CONTENT_FORMAT_RAW);
-  cnt.setContenttype(ResponseContentType.TEXT_CONTENT);
-  cnt.setContent(new TextEncoder().encode(str));
-  return cnt;
-};
+// /**
+//  *
+//  * @param str
+//  * @returns
+//  */
+// export const toTextContent = (
+//   str: string,
+//   format?: ResponseContentFormat
+// ): Content => {
+//   const cnt = new Content();
+//   if (format) cnt.setContentformat(format);
+//   else cnt.setContentformat(TEXT_CONTENT_FORMAT_RAW);
+//   cnt.setContenttype(ResponseContentType.TEXT_CONTENT);
+//   cnt.setContent(new TextEncoder().encode(str));
+//   return cnt;
+// };
 
-export const toStreamAudioContent = (raw: Uint8Array | string): Content => {
-  const cnt = new Content();
-  cnt.setContentformat(AUDIO_CONTENT_FORMAT_CHUNK);
-  cnt.setContenttype(ResponseContentType.AUDIO_CONTENT);
-  cnt.setContent(raw);
-  return cnt;
-};
+// export const toStreamAudioContent = (raw: Uint8Array | string): Content => {
+//   const cnt = new Content();
+//   cnt.setContentformat(AUDIO_CONTENT_FORMAT_CHUNK);
+//   cnt.setContenttype(ResponseContentType.AUDIO_CONTENT);
+//   cnt.setContent(raw);
+//   return cnt;
+// };
 
-export const toContentText = (cnt?: Content[]): string => {
-  if (!cnt) return "";
+// export const toContentText = (cnt?: Content[]): string => {
+//   if (!cnt) return "";
 
-  return cnt
-    .filter((x) => x.getContenttype() === "text")
-    .map((x) => {
-      try {
-        return new TextDecoder().decode(x.getContent() as Uint8Array);
-      } catch (error) {
-        return "";
-      }
-    })
-    .join(" ");
-};
+//   return cnt
+//     .filter((x) => x.getContenttype() === "text")
+//     .map((x) => {
+//       try {
+//         return new TextDecoder().decode(x.getContent() as Uint8Array);
+//       } catch (error) {
+//         return "";
+//       }
+//     })
+//     .join(" ");
+// };

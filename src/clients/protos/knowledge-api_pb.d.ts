@@ -422,6 +422,46 @@ export namespace GetAllKnowledgeDocumentResponse {
   }
 }
 
+export class DocumentContent extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  getContenttype(): string;
+  setContenttype(value: string): void;
+
+  getContentformat(): string;
+  setContentformat(value: string): void;
+
+  getContent(): Uint8Array | string;
+  getContent_asU8(): Uint8Array;
+  getContent_asB64(): string;
+  setContent(value: Uint8Array | string): void;
+
+  hasMeta(): boolean;
+  clearMeta(): void;
+  getMeta(): google_protobuf_struct_pb.Struct | undefined;
+  setMeta(value?: google_protobuf_struct_pb.Struct): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DocumentContent.AsObject;
+  static toObject(includeInstance: boolean, msg: DocumentContent): DocumentContent.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DocumentContent, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DocumentContent;
+  static deserializeBinaryFromReader(message: DocumentContent, reader: jspb.BinaryReader): DocumentContent;
+}
+
+export namespace DocumentContent {
+  export type AsObject = {
+    name: string,
+    contenttype: string,
+    contentformat: string,
+    content: Uint8Array | string,
+    meta?: google_protobuf_struct_pb.Struct.AsObject,
+  }
+}
+
 export class CreateKnowledgeDocumentRequest extends jspb.Message {
   getKnowledgeid(): string;
   setKnowledgeid(value: string): void;
@@ -433,9 +473,9 @@ export class CreateKnowledgeDocumentRequest extends jspb.Message {
   setDatasource(value: string): void;
 
   clearContentsList(): void;
-  getContentsList(): Array<common_pb.Content>;
-  setContentsList(value: Array<common_pb.Content>): void;
-  addContents(value?: common_pb.Content, index?: number): common_pb.Content;
+  getContentsList(): Array<DocumentContent>;
+  setContentsList(value: Array<DocumentContent>): void;
+  addContents(value?: DocumentContent, index?: number): DocumentContent;
 
   getPreprocess(): CreateKnowledgeDocumentRequest.PRE_PROCESSMap[keyof CreateKnowledgeDocumentRequest.PRE_PROCESSMap];
   setPreprocess(value: CreateKnowledgeDocumentRequest.PRE_PROCESSMap[keyof CreateKnowledgeDocumentRequest.PRE_PROCESSMap]): void;
@@ -473,7 +513,7 @@ export namespace CreateKnowledgeDocumentRequest {
     knowledgeid: string,
     documentsource: CreateKnowledgeDocumentRequest.DOCUMENT_SOURCEMap[keyof CreateKnowledgeDocumentRequest.DOCUMENT_SOURCEMap],
     datasource: string,
-    contentsList: Array<common_pb.Content.AsObject>,
+    contentsList: Array<DocumentContent.AsObject>,
     preprocess: CreateKnowledgeDocumentRequest.PRE_PROCESSMap[keyof CreateKnowledgeDocumentRequest.PRE_PROCESSMap],
     separator: string,
     maxchunksize: number,

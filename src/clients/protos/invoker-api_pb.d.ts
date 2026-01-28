@@ -69,9 +69,9 @@ export class InvokeResponse extends jspb.Message {
   setSuccess(value: boolean): void;
 
   clearDataList(): void;
-  getDataList(): Array<common_pb.Content>;
-  setDataList(value: Array<common_pb.Content>): void;
-  addData(value?: common_pb.Content, index?: number): common_pb.Content;
+  getDataList(): Array<string>;
+  setDataList(value: Array<string>): void;
+  addData(value: string, index?: number): string;
 
   hasError(): boolean;
   clearError(): void;
@@ -108,7 +108,7 @@ export namespace InvokeResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    dataList: Array<common_pb.Content.AsObject>,
+    dataList: Array<string>,
     error?: common_pb.Error.AsObject,
     requestid: number,
     timetaken: number,

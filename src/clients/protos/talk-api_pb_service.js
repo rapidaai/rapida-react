@@ -16,8 +16,8 @@ TalkService.AssistantTalk = {
   service: TalkService,
   requestStream: true,
   responseStream: true,
-  requestType: talk_api_pb.AssistantMessagingRequest,
-  responseType: talk_api_pb.AssistantMessagingResponse
+  requestType: talk_api_pb.AssistantTalkInput,
+  responseType: talk_api_pb.AssistantTalkOutput
 };
 
 TalkService.GetAllAssistantConversation = {
@@ -325,8 +325,8 @@ AgentKit.Talk = {
   service: AgentKit,
   requestStream: true,
   responseStream: true,
-  requestType: talk_api_pb.AssistantMessagingRequest,
-  responseType: talk_api_pb.AssistantMessagingResponse
+  requestType: talk_api_pb.TalkInput,
+  responseType: talk_api_pb.TalkOutput
 };
 
 exports.AgentKit = AgentKit;

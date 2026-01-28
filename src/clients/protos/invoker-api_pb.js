@@ -626,8 +626,7 @@ proto.endpoint_api.InvokeResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
     code: jspb.Message.getFieldWithDefault(msg, 1, 0),
     success: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
-    dataList: jspb.Message.toObjectList(msg.getDataList(),
-    common_pb.Content.toObject, includeInstance),
+    dataList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f,
     error: (f = msg.getError()) && common_pb.Error.toObject(includeInstance, f),
     requestid: jspb.Message.getFieldWithDefault(msg, 5, 0),
     timetaken: jspb.Message.getFieldWithDefault(msg, 6, 0),
@@ -679,8 +678,7 @@ proto.endpoint_api.InvokeResponse.deserializeBinaryFromReader = function(msg, re
       msg.setSuccess(value);
       break;
     case 3:
-      var value = new common_pb.Content;
-      reader.readMessage(value,common_pb.Content.deserializeBinaryFromReader);
+      var value = /** @type {string} */ (reader.readString());
       msg.addData(value);
       break;
     case 4:
@@ -751,10 +749,9 @@ proto.endpoint_api.InvokeResponse.serializeBinaryToWriter = function(message, wr
   }
   f = message.getDataList();
   if (f.length > 0) {
-    writer.writeRepeatedMessage(
+    writer.writeRepeatedString(
       3,
-      f,
-      common_pb.Content.serializeBinaryToWriter
+      f
     );
   }
   f = message.getError();
@@ -835,31 +832,30 @@ proto.endpoint_api.InvokeResponse.prototype.setSuccess = function(value) {
 
 
 /**
- * repeated Content data = 3;
- * @return {!Array<!proto.Content>}
+ * repeated string data = 3;
+ * @return {!Array<string>}
  */
 proto.endpoint_api.InvokeResponse.prototype.getDataList = function() {
-  return /** @type{!Array<!proto.Content>} */ (
-    jspb.Message.getRepeatedWrapperField(this, common_pb.Content, 3));
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 3));
 };
 
 
 /**
- * @param {!Array<!proto.Content>} value
+ * @param {!Array<string>} value
  * @return {!proto.endpoint_api.InvokeResponse} returns this
-*/
+ */
 proto.endpoint_api.InvokeResponse.prototype.setDataList = function(value) {
-  return jspb.Message.setRepeatedWrapperField(this, 3, value);
+  return jspb.Message.setField(this, 3, value || []);
 };
 
 
 /**
- * @param {!proto.Content=} opt_value
+ * @param {string} value
  * @param {number=} opt_index
- * @return {!proto.Content}
+ * @return {!proto.endpoint_api.InvokeResponse} returns this
  */
-proto.endpoint_api.InvokeResponse.prototype.addData = function(opt_value, opt_index) {
-  return jspb.Message.addToRepeatedWrapperField(this, 3, opt_value, proto.Content, opt_index);
+proto.endpoint_api.InvokeResponse.prototype.addData = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 3, value, opt_index);
 };
 
 
