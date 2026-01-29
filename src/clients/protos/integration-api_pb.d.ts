@@ -264,10 +264,8 @@ export class Reranking extends jspb.Message {
   getIndex(): number;
   setIndex(value: number): void;
 
-  hasContent(): boolean;
-  clearContent(): void;
-  getContent(): common_pb.Content | undefined;
-  setContent(value?: common_pb.Content): void;
+  getContent(): string;
+  setContent(value: string): void;
 
   getRelevancescore(): number;
   setRelevancescore(value: number): void;
@@ -285,7 +283,7 @@ export class Reranking extends jspb.Message {
 export namespace Reranking {
   export type AsObject = {
     index: number,
-    content?: common_pb.Content.AsObject,
+    content: string,
     relevancescore: number,
   }
 }
@@ -299,7 +297,7 @@ export class RerankingRequest extends jspb.Message {
   getQuery(): string;
   setQuery(value: string): void;
 
-  getContentMap(): jspb.Map<number, common_pb.Content>;
+  getContentMap(): jspb.Map<number, string>;
   clearContentMap(): void;
   getModelparametersMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
   clearModelparametersMap(): void;
@@ -319,7 +317,7 @@ export namespace RerankingRequest {
   export type AsObject = {
     credential?: Credential.AsObject,
     query: string,
-    contentMap: Array<[number, common_pb.Content.AsObject]>,
+    contentMap: Array<[number, string]>,
     modelparametersMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
     additionaldataMap: Array<[string, string]>,
   }
@@ -557,10 +555,8 @@ export class GetModerationRequest extends jspb.Message {
   getVersion(): string;
   setVersion(value: string): void;
 
-  hasContent(): boolean;
-  clearContent(): void;
-  getContent(): common_pb.Content | undefined;
-  setContent(value?: common_pb.Content): void;
+  getContent(): string;
+  setContent(value: string): void;
 
   getAdditionaldataMap(): jspb.Map<string, string>;
   clearAdditionaldataMap(): void;
@@ -581,7 +577,7 @@ export namespace GetModerationRequest {
     credential?: Credential.AsObject,
     model: string,
     version: string,
-    content?: common_pb.Content.AsObject,
+    content: string,
     additionaldataMap: Array<[string, string]>,
     modelparametersMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
   }

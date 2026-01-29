@@ -32,23 +32,23 @@ import {
 
 export type AgentDeployment =
   | {
-      type: "debugger";
-      deployment: AssistantDebuggerDeployment;
-      inAudio: boolean;
-      outAudio: boolean;
-    }
+    type: "debugger";
+    deployment: AssistantDebuggerDeployment;
+    inAudio: boolean;
+    outAudio: boolean;
+  }
   | {
-      type: "web-plugin";
-      deployment: AssistantWebpluginDeployment;
-      inAudio: boolean;
-      outAudio: boolean;
-    }
+    type: "web-plugin";
+    deployment: AssistantWebpluginDeployment;
+    inAudio: boolean;
+    outAudio: boolean;
+  }
   | {
-      type: "api";
-      deployment: AssistantApiDeployment;
-      inAudio: boolean;
-      outAudio: boolean;
-    };
+    type: "api";
+    deployment: AssistantApiDeployment;
+    inAudio: boolean;
+    outAudio: boolean;
+  };
 
 export const GetDeployment = (
   assistant: Assistant,
@@ -59,33 +59,33 @@ export const GetDeployment = (
       const deployment = assistant.getDebuggerdeployment();
       return deployment
         ? {
-            type: "debugger",
-            deployment: deployment,
-            inAudio: deployment.getInputaudio() != undefined,
-            outAudio: deployment.getOutputaudio() != undefined,
-          }
+          type: "debugger",
+          deployment: deployment,
+          inAudio: deployment.getInputaudio() != undefined,
+          outAudio: deployment.getOutputaudio() != undefined,
+        }
         : undefined;
     }
     case "web-plugin": {
       const deployment = assistant.getWebplugindeployment();
       return deployment
         ? {
-            type: "web-plugin",
-            deployment: deployment,
-            inAudio: deployment.getInputaudio() != undefined,
-            outAudio: deployment.getOutputaudio() != undefined,
-          }
+          type: "web-plugin",
+          deployment: deployment,
+          inAudio: deployment.getInputaudio() != undefined,
+          outAudio: deployment.getOutputaudio() != undefined,
+        }
         : undefined;
     }
     default: {
       const deployment = assistant.getApideployment();
       return deployment
         ? {
-            type: "api",
-            deployment: deployment,
-            inAudio: deployment.getInputaudio() != undefined,
-            outAudio: deployment.getOutputaudio() != undefined,
-          }
+          type: "api",
+          deployment: deployment,
+          inAudio: deployment.getInputaudio() != undefined,
+          outAudio: deployment.getOutputaudio() != undefined,
+        }
         : undefined;
     }
   }

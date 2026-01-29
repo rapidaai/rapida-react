@@ -23,14 +23,15 @@
  *
  */
 import { DeviceManager } from "@/rapida/devices/device-manager";
-import { AssistantMessagingResponse } from "@/rapida/clients/protos/talk-api_pb";
+import { AssistantTalkOutput } from "@/rapida/clients/protos/talk-api_pb";
 import { AgentEvent } from "@/rapida/types/agent-event";
+
 import {
-  AssistantConversationAction,
-  AssistantConversationAssistantMessage,
-  AssistantConversationInterruption,
-  AssistantConversationUserMessage,
-} from "@/rapida/clients/protos/common_pb";
+  ConversationDirective,
+  ConversationAssistantMessage as CAMessage,
+  ConversationInterruption,
+  ConversationUserMessage as CUMessage,
+} from "@/rapida/clients/protos/talk-api_pb";
 import { toDate, isChrome } from "@/rapida/utils";
 import { MessageRole, MessageStatus } from "@/rapida/types/message";
 import { Channel } from "@/rapida/types/channel";
@@ -375,19 +376,19 @@ export class VoiceAgent extends Agent {
    * @param interruptionData
    */
   private onHandleInterruption = (
-    interruptionData: AssistantConversationInterruption | undefined
+    interruptionData: ConversationInterruption | undefined
   ) => {
     if (interruptionData) {
       switch (interruptionData.getType()) {
-        case AssistantConversationInterruption.InterruptionType
+        case ConversationInterruption.InterruptionType
           .INTERRUPTION_TYPE_UNSPECIFIED:
           console.log("Unspecified interruption type");
           break;
-        case AssistantConversationInterruption.InterruptionType
+        case ConversationInterruption.InterruptionType
           .INTERRUPTION_TYPE_VAD:
           this.fadeOutAudio();
           break;
-        case AssistantConversationInterruption.InterruptionType
+        case ConversationInterruption.InterruptionType
           .INTERRUPTION_TYPE_WORD:
           // when interrupt then mark last message completed
           if (this.agentMessages.length > 0) {
@@ -404,7 +405,7 @@ export class VoiceAgent extends Agent {
       }
       this.emit(
         AgentEvent.ConversationEvent,
-        AssistantMessagingResponse.DataCase.INTERRUPTION,
+        AssistantTalkOutput.DataCase.INTERRUPTION,
         interruptionData
       );
     }
@@ -416,14 +417,14 @@ export class VoiceAgent extends Agent {
    * @param userContent 
    */
   private onHandleUser = (
-    userContent: AssistantConversationUserMessage | undefined
+    userContent: CUMessage | undefined
   ) => {
     if (userContent) {
       switch (userContent.getMessageCase()) {
-        case AssistantConversationUserMessage.MessageCase.MESSAGE_NOT_SET:
-        case AssistantConversationUserMessage.MessageCase.AUDIO:
-        case AssistantConversationUserMessage.MessageCase.TEXT:
-          const agentTranscript = userContent.getText()?.getContent();
+        case CUMessage.MessageCase.MESSAGE_NOT_SET:
+        case CUMessage.MessageCase.AUDIO:
+        case CUMessage.MessageCase.TEXT:
+          const agentTranscript = userContent.getText();
           if (agentTranscript) {
             if (this.agentMessages.length > 0) {
               const lastMessage =
@@ -449,7 +450,7 @@ export class VoiceAgent extends Agent {
 
       this.emit(
         AgentEvent.ConversationEvent,
-        AssistantMessagingResponse.DataCase.USER,
+        AssistantTalkOutput.DataCase.USER,
         userContent
       );
     }
@@ -461,21 +462,20 @@ export class VoiceAgent extends Agent {
    * @param systemContent 
    */
   private onHandleAssistant = (
-    systemContent: AssistantConversationAssistantMessage | undefined
+    systemContent: CAMessage | undefined
   ) => {
     if (systemContent) {
       //
       switch (systemContent.getMessageCase()) {
-        case AssistantConversationAssistantMessage.MessageCase.MESSAGE_NOT_SET:
-        case AssistantConversationAssistantMessage.MessageCase.AUDIO:
-          const content = systemContent.getAudio();
+        case CAMessage.MessageCase.MESSAGE_NOT_SET:
+        case CAMessage.MessageCase.AUDIO:
+          const content = systemContent.getAudio_asU8();
           if (content) {
-            const audioData = content.getContent_asU8();
-            this.addAudioChunk(new Uint8Array(audioData).buffer);
+            this.addAudioChunk(new Uint8Array(content).buffer);
           }
           break;
-        case AssistantConversationAssistantMessage.MessageCase.TEXT:
-          const systemTranscript = systemContent.getText()?.getContent();
+        case CAMessage.MessageCase.TEXT:
+          const systemTranscript = systemContent.getText();
           if (systemTranscript) {
             if (systemContent.getCompleted()) {
               // Complete message
@@ -546,7 +546,7 @@ export class VoiceAgent extends Agent {
       }
       this.emit(
         AgentEvent.ConversationEvent,
-        AssistantMessagingResponse.DataCase.ASSISTANT,
+        AssistantTalkOutput.DataCase.ASSISTANT,
         systemContent
       );
     }
@@ -557,20 +557,20 @@ export class VoiceAgent extends Agent {
    * @param response
    * @returns
    */
-  override onRecieve = async (response: AssistantMessagingResponse) => {
+  override onRecieve = async (response: AssistantTalkOutput) => {
     switch (response.getDataCase()) {
-      case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
+      case AssistantTalkOutput.DataCase.DATA_NOT_SET:
         break;
-      case AssistantMessagingResponse.DataCase.INTERRUPTION:
+      case AssistantTalkOutput.DataCase.INTERRUPTION:
         this.onHandleInterruption(response.getInterruption());
         break;
-      case AssistantMessagingResponse.DataCase.USER:
+      case AssistantTalkOutput.DataCase.USER:
         this.onHandleUser(response.getUser());
         break;
-      case AssistantMessagingResponse.DataCase.ASSISTANT:
+      case AssistantTalkOutput.DataCase.ASSISTANT:
         this.onHandleAssistant(response.getAssistant());
         break;
-      case AssistantMessagingResponse.DataCase.CONFIGURATION:
+      case AssistantTalkOutput.DataCase.CONFIGURATION:
         const conversation = response.getConfiguration();
         if (!conversation?.getAssistantconversationid()) return;
         break;
@@ -583,40 +583,40 @@ export class VoiceAgent extends Agent {
   // Adding a check to filter out audio chunks
   // Implementing a debounce mechanism
   // These suggestions can guide the team in finding an appropriate solution to optimize the onMessage callback handling.
-  onCallback = async (response: AssistantMessagingResponse) => {
+  onCallback = async (response: AssistantTalkOutput) => {
     // check if callback is register then call it off
     for (const agentCallback of this.agentCallbacks) {
       switch (response.getDataCase()) {
-        case AssistantMessagingResponse.DataCase.DATA_NOT_SET:
+        case AssistantTalkOutput.DataCase.DATA_NOT_SET:
           break;
-        case AssistantMessagingResponse.DataCase.ACTION:
-          if (response.getAction()?.getAction() === AssistantConversationAction.ActionType.END_CONVERSATION) {
+        case AssistantTalkOutput.DataCase.DIRECTIVE:
+          if (response.getDirective()?.getType() === ConversationDirective.DirectiveType.END_CONVERSATION) {
             await this.disconnect();
           }
           if (agentCallback && agentCallback?.onAction) {
-            agentCallback.onAction(response.getAction()?.toObject());
+            agentCallback.onAction(response.getDirective()?.toObject());
           }
           break;
-        case AssistantMessagingResponse.DataCase.INTERRUPTION:
+        case AssistantTalkOutput.DataCase.INTERRUPTION:
           if (agentCallback && agentCallback?.onInterrupt) {
             agentCallback.onInterrupt(response.getInterruption()?.toObject());
           }
           break;
-        case AssistantMessagingResponse.DataCase.USER:
+        case AssistantTalkOutput.DataCase.USER:
           if (agentCallback && agentCallback?.onUserMessage) {
             agentCallback.onUserMessage(
               new ConversationUserMessage(response.getUser())
             );
           }
           break;
-        case AssistantMessagingResponse.DataCase.ASSISTANT:
+        case AssistantTalkOutput.DataCase.ASSISTANT:
           if (agentCallback && agentCallback?.onAssistantMessage) {
             agentCallback.onAssistantMessage(
               new ConversationAssistantMessage(response.getAssistant())
             );
           }
           break;
-        case AssistantMessagingResponse.DataCase.CONFIGURATION:
+        case AssistantTalkOutput.DataCase.CONFIGURATION:
           if (agentCallback && agentCallback?.onConfiguration) {
             agentCallback.onConfiguration(
               response.getConfiguration()?.toObject()

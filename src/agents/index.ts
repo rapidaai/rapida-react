@@ -26,8 +26,10 @@
 import { AgentConfig } from "@/rapida/types/agent-config";
 import { AgentCallback } from "@/rapida/types/agent-callback";
 import {
-  AssistantMessagingRequest,
-  AssistantMessagingResponse,
+  AssistantTalkInput,
+  AssistantTalkOutput,
+  AudioConfig,
+  StreamConfig,
   CreateConversationMetricRequest,
   CreateMessageMetricRequest,
 } from "@/rapida/clients/protos/talk-api_pb";
@@ -36,7 +38,9 @@ import { ConnectionState } from "@/rapida/types/connection-state";
 import { AgentEventCallback } from "@/rapida/types/agent-event-callback";
 import { EventEmitter } from "events";
 import type TypedEmitter from "typed-emitter";
-import { AssistantDefinition, AudioConfig, Metric, StreamConfig } from "@/rapida/clients/protos/common_pb";
+import {
+  AssistantDefinition, Metric,
+} from "@/rapida/clients/protos/common_pb";
 import { Message as LocalMessage, MessageRole } from "@/rapida/types/message";
 import { AgentEvent } from "@/rapida/types/agent-event";
 import {
@@ -53,11 +57,9 @@ import { GetAssistant } from "@/rapida/clients/assistant";
 
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 import {
-  AssistantConversationConfiguration,
-  AssistantConversationMessageTextContent,
-  AssistantConversationUserMessage,
-  AssistantConversationMessageAudioContent,
-} from "@/rapida/clients/protos/common_pb";
+  ConversationConfiguration,
+  ConversationUserMessage,
+} from '../clients/protos/talk-api_pb';
 /**
  * Rapida Agent SDK
  *
@@ -380,12 +382,10 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    */
   protected createAssistantTextMessage(
     content: string
-  ): AssistantMessagingRequest {
-    const request = new AssistantMessagingRequest();
-    const userMessage = new AssistantConversationUserMessage();
-    const message = new AssistantConversationMessageTextContent();
-    message.setContent(content);
-    userMessage.setText(message);
+  ): AssistantTalkInput {
+    const request = new AssistantTalkInput();
+    const userMessage = new ConversationUserMessage();
+    userMessage.setText(content);
     request.setMessage(userMessage);
     return request;
   }
@@ -397,12 +397,10 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    */
   protected createAssistantAudioMessage(
     content: Uint8Array | string
-  ): AssistantMessagingRequest {
-    const request = new AssistantMessagingRequest();
-    const userMessage = new AssistantConversationUserMessage();
-    const message = new AssistantConversationMessageAudioContent();
-    message.setContent(content);
-    userMessage.setAudio(message);
+  ): AssistantTalkInput {
+    const request = new AssistantTalkInput();
+    const userMessage = new ConversationUserMessage();
+    userMessage.setAudio(content);
     request.setMessage(userMessage);
     return request;
   }
@@ -421,7 +419,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    * }
    * ```
    */
-  protected onRecieve = async (_: AssistantMessagingResponse) => {
+  protected onRecieve = async (_: AssistantTalkOutput) => {
     console.warn(
       "No receive method implemented. Override onReceive() in your Agent subclass."
     );
@@ -446,9 +444,9 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     args?: Map<string, google_protobuf_any_pb.Any>,
     metadatas?: Map<string, google_protobuf_any_pb.Any>,
     options?: Map<string, google_protobuf_any_pb.Any>,
-  ): AssistantMessagingRequest {
-    const request = new AssistantMessagingRequest();
-    const assistantConfiguration = new AssistantConversationConfiguration();
+  ): AssistantTalkInput {
+    const request = new AssistantTalkInput();
+    const assistantConfiguration = new ConversationConfiguration();
 
     if (this._conversationId) {
       assistantConfiguration.setAssistantconversationid(this._conversationId);

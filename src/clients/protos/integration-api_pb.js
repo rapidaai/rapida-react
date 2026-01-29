@@ -2331,7 +2331,7 @@ proto.integration_api.Reranking.prototype.toObject = function(opt_includeInstanc
 proto.integration_api.Reranking.toObject = function(includeInstance, msg) {
   var f, obj = {
     index: jspb.Message.getFieldWithDefault(msg, 1, 0),
-    content: (f = msg.getContent()) && common_pb.Content.toObject(includeInstance, f),
+    content: jspb.Message.getFieldWithDefault(msg, 2, ""),
     relevancescore: jspb.Message.getFloatingPointFieldWithDefault(msg, 3, 0.0)
   };
 
@@ -2374,8 +2374,7 @@ proto.integration_api.Reranking.deserializeBinaryFromReader = function(msg, read
       msg.setIndex(value);
       break;
     case 2:
-      var value = new common_pb.Content;
-      reader.readMessage(value,common_pb.Content.deserializeBinaryFromReader);
+      var value = /** @type {string} */ (reader.readString());
       msg.setContent(value);
       break;
     case 3:
@@ -2419,11 +2418,10 @@ proto.integration_api.Reranking.serializeBinaryToWriter = function(message, writ
     );
   }
   f = message.getContent();
-  if (f != null) {
-    writer.writeMessage(
+  if (f.length > 0) {
+    writer.writeString(
       2,
-      f,
-      common_pb.Content.serializeBinaryToWriter
+      f
     );
   }
   f = message.getRelevancescore();
@@ -2455,44 +2453,25 @@ proto.integration_api.Reranking.prototype.setIndex = function(value) {
 
 
 /**
- * optional Content content = 2;
- * @return {?proto.Content}
+ * optional string content = 2;
+ * @return {string}
  */
 proto.integration_api.Reranking.prototype.getContent = function() {
-  return /** @type{?proto.Content} */ (
-    jspb.Message.getWrapperField(this, common_pb.Content, 2));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
 /**
- * @param {?proto.Content|undefined} value
+ * @param {string} value
  * @return {!proto.integration_api.Reranking} returns this
-*/
+ */
 proto.integration_api.Reranking.prototype.setContent = function(value) {
-  return jspb.Message.setWrapperField(this, 2, value);
+  return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
 /**
- * Clears the message field making it undefined.
- * @return {!proto.integration_api.Reranking} returns this
- */
-proto.integration_api.Reranking.prototype.clearContent = function() {
-  return this.setContent(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.integration_api.Reranking.prototype.hasContent = function() {
-  return jspb.Message.getField(this, 2) != null;
-};
-
-
-/**
- * optional double RelevanceScore = 3;
+ * optional double relevanceScore = 3;
  * @return {number}
  */
 proto.integration_api.Reranking.prototype.getRelevancescore = function() {
@@ -2543,7 +2522,7 @@ proto.integration_api.RerankingRequest.toObject = function(includeInstance, msg)
   var f, obj = {
     credential: (f = msg.getCredential()) && proto.integration_api.Credential.toObject(includeInstance, f),
     query: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    contentMap: (f = msg.getContentMap()) ? f.toObject(includeInstance, proto.Content.toObject) : [],
+    contentMap: (f = msg.getContentMap()) ? f.toObject(includeInstance, undefined) : [],
     modelparametersMap: (f = msg.getModelparametersMap()) ? f.toObject(includeInstance, proto.google.protobuf.Any.toObject) : [],
     additionaldataMap: (f = msg.getAdditionaldataMap()) ? f.toObject(includeInstance, undefined) : []
   };
@@ -2594,7 +2573,7 @@ proto.integration_api.RerankingRequest.deserializeBinaryFromReader = function(ms
     case 5:
       var value = msg.getContentMap();
       reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readInt32, jspb.BinaryReader.prototype.readMessage, proto.Content.deserializeBinaryFromReader, 0, new proto.Content());
+        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readInt32, jspb.BinaryReader.prototype.readString, null, 0, "");
          });
       break;
     case 6:
@@ -2655,7 +2634,7 @@ proto.integration_api.RerankingRequest.serializeBinaryToWriter = function(messag
   }
   f = message.getContentMap(true);
   if (f && f.getLength() > 0) {
-    f.serializeBinary(5, writer, jspb.BinaryWriter.prototype.writeInt32, jspb.BinaryWriter.prototype.writeMessage, proto.Content.serializeBinaryToWriter);
+    f.serializeBinary(5, writer, jspb.BinaryWriter.prototype.writeInt32, jspb.BinaryWriter.prototype.writeString);
   }
   f = message.getModelparametersMap(true);
   if (f && f.getLength() > 0) {
@@ -2724,15 +2703,15 @@ proto.integration_api.RerankingRequest.prototype.setQuery = function(value) {
 
 
 /**
- * map<int32, Content> content = 5;
+ * map<int32, string> content = 5;
  * @param {boolean=} opt_noLazyCreate Do not create the map if
  * empty, instead returning `undefined`
- * @return {!jspb.Map<number,!proto.Content>}
+ * @return {!jspb.Map<number,string>}
  */
 proto.integration_api.RerankingRequest.prototype.getContentMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<number,!proto.Content>} */ (
+  return /** @type {!jspb.Map<number,string>} */ (
       jspb.Message.getMapField(this, 5, opt_noLazyCreate,
-      proto.Content));
+      null));
 };
 
 
@@ -4469,7 +4448,7 @@ proto.integration_api.GetModerationRequest.toObject = function(includeInstance, 
     credential: (f = msg.getCredential()) && proto.integration_api.Credential.toObject(includeInstance, f),
     model: jspb.Message.getFieldWithDefault(msg, 2, ""),
     version: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    content: (f = msg.getContent()) && common_pb.Content.toObject(includeInstance, f),
+    content: jspb.Message.getFieldWithDefault(msg, 4, ""),
     additionaldataMap: (f = msg.getAdditionaldataMap()) ? f.toObject(includeInstance, undefined) : [],
     modelparametersMap: (f = msg.getModelparametersMap()) ? f.toObject(includeInstance, proto.google.protobuf.Any.toObject) : []
   };
@@ -4522,8 +4501,7 @@ proto.integration_api.GetModerationRequest.deserializeBinaryFromReader = functio
       msg.setVersion(value);
       break;
     case 4:
-      var value = new common_pb.Content;
-      reader.readMessage(value,common_pb.Content.deserializeBinaryFromReader);
+      var value = /** @type {string} */ (reader.readString());
       msg.setContent(value);
       break;
     case 5:
@@ -4590,11 +4568,10 @@ proto.integration_api.GetModerationRequest.serializeBinaryToWriter = function(me
     );
   }
   f = message.getContent();
-  if (f != null) {
-    writer.writeMessage(
+  if (f.length > 0) {
+    writer.writeString(
       4,
-      f,
-      common_pb.Content.serializeBinaryToWriter
+      f
     );
   }
   f = message.getAdditionaldataMap(true);
@@ -4682,39 +4659,20 @@ proto.integration_api.GetModerationRequest.prototype.setVersion = function(value
 
 
 /**
- * optional Content content = 4;
- * @return {?proto.Content}
+ * optional string content = 4;
+ * @return {string}
  */
 proto.integration_api.GetModerationRequest.prototype.getContent = function() {
-  return /** @type{?proto.Content} */ (
-    jspb.Message.getWrapperField(this, common_pb.Content, 4));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
 };
 
 
 /**
- * @param {?proto.Content|undefined} value
+ * @param {string} value
  * @return {!proto.integration_api.GetModerationRequest} returns this
-*/
+ */
 proto.integration_api.GetModerationRequest.prototype.setContent = function(value) {
-  return jspb.Message.setWrapperField(this, 4, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.integration_api.GetModerationRequest} returns this
- */
-proto.integration_api.GetModerationRequest.prototype.clearContent = function() {
-  return this.setContent(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.integration_api.GetModerationRequest.prototype.hasContent = function() {
-  return jspb.Message.getField(this, 4) != null;
+  return jspb.Message.setProto3StringField(this, 4, value);
 };
 
 

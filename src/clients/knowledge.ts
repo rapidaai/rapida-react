@@ -28,7 +28,6 @@
 
 import {
   BaseResponse,
-  Content,
   Criteria,
   Paginate,
 } from "@/rapida/clients/protos/common_pb";
@@ -59,7 +58,7 @@ import {
   UpdateKnowledgeDetailRequest,
   UpdateKnowledgeDocumentSegmentRequest,
 } from "@/rapida/clients/protos/knowledge-api_pb";
-import { DeleteKnowledgeDocumentSegmentRequest } from "./protos/knowledge-api_pb";
+import { DeleteKnowledgeDocumentSegmentRequest, DocumentContent } from './protos/knowledge-api_pb';
 import {
   RapidaDocumentPreProcessing,
   RapidaDocumentSource,
@@ -170,7 +169,7 @@ export function GetAllKnowledgeBases(
  * @param documentSource - The source of the document.
  * @param datasource - The data source for the document.
  * @param preProcessor - The pre-processing method to use.
- * @param contents - An array of content to include in the document.
+ * @param DocumentContents - An array of DocumentContent to include in the document.
  * @param separator - The separator used in custom processing.
  * @param maxchunksize - The maximum chunk size for document processing.
  * @param chunkoverlap - The overlap between chunks.
@@ -185,7 +184,7 @@ export function CreateKnowledgeDocument(
   datasource: string,
   documentType: RapidaDocumentType,
   preProcessor: RapidaDocumentPreProcessing,
-  contents: Array<Content>,
+  DocumentContents: Array<DocumentContent>,
   separator: string,
   maxchunksize: number,
   chunkoverlap: number,
@@ -208,7 +207,7 @@ export function CreateKnowledgeDocument(
   req.setKnowledgeid(knowledgeId);
   req.setDatasource(datasource);
   req.setPreprocess(CreateKnowledgeDocumentRequest.PRE_PROCESS[preProcessor]);
-  req.setContentsList(contents);
+  req.setContentsList(DocumentContents);
 
   if (preProcessor === RapidaDocumentPreProcessing.CUSTOM) {
     req.setSeparator(separator);

@@ -26,13 +26,12 @@ import { Subject, map, Observable, startWith, finalize, concat } from "rxjs";
 import { VoiceAgent } from "@/rapida/agents/voice-agent";
 import { AgentEvent } from "@/rapida/types/agent-event";
 import { ConnectionState } from "@/rapida/types/connection-state";
-import { AssistantMessagingResponse } from "@/rapida/clients/protos/talk-api_pb";
 import {
-  AssistantConversationConfiguration,
-  AssistantConversationInterruption,
-  AssistantConversationUserMessage,
-  AssistantConversationAssistantMessage,
-} from "@/rapida/clients/protos/common_pb";
+  AssistantTalkOutput, ConversationConfiguration,
+  ConversationInterruption,
+  ConversationUserMessage,
+  ConversationAssistantMessage,
+} from "@/rapida/clients/protos/talk-api_pb";
 /**
  * Utility function to observe a specific agent event.
  * @param agent The voice agent instance.
@@ -84,12 +83,12 @@ export function observeAgentConnectionState(
  * Observes server events from the agent.
  */
 export function observeAgentServerEvents(agent: VoiceAgent): Observable<{
-  eventType?: AssistantMessagingResponse.DataCase;
+  eventType?: AssistantTalkOutput.DataCase;
   argument?:
-    | AssistantConversationConfiguration
-    | AssistantConversationInterruption
-    | AssistantConversationUserMessage
-    | AssistantConversationAssistantMessage;
+  | ConversationConfiguration
+  | ConversationInterruption
+  | ConversationUserMessage
+  | ConversationAssistantMessage;
 }> {
   return agentEventSelector(agent, AgentEvent.ConversationEvent).pipe(
     map(([eventType, event]) => ({

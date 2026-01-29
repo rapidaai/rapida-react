@@ -2,7 +2,7 @@
  * Tests for AgentConfig and related types
  */
 
-import { InputOptions, OutputOptions, RecorderOptions, PlayerOptions } from '@/rapida/types/agent-config';
+import { InputOptions, RecorderOptions, PlayerOptions } from '@/rapida/types/agent-config';
 import { Channel } from '@/rapida/types/channel';
 
 describe('RecorderOptions', () => {

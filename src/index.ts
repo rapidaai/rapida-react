@@ -23,11 +23,11 @@
  *
  */
 export { VoiceAgent } from "@/rapida/agents/voice-agent";
-export {
-  toTextContent,
-  toContentText,
-  toStreamAudioContent,
-} from "@/rapida/utils/rapida_content";
+// export {
+//   // toTextContent,
+//   // toContentText,
+//   toStreamAudioContent,
+// } from "@/rapida/utils/rapida_content";
 export { useMessageFeedback } from "@/rapida/hooks/use-message-feedback";
 export { useConversationFeedback } from "@/rapida/hooks/use-conversation-feedback";
 export { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
@@ -287,8 +287,8 @@ export {
   GetCredentialResponse,
 } from "@/rapida/clients/protos/vault-api_pb";
 export {
-  AssistantMessagingRequest,
-  AssistantMessagingResponse,
+  AssistantTalkInput,
+  AssistantTalkOutput,
   CreateMessageMetricRequest,
   CreateMessageMetricResponse,
   CreateConversationMetricRequest,
@@ -383,7 +383,6 @@ export {
   Tag,
   Organization,
   Metric,
-  Content,
   Message as ProtoMessage,
   ToolCall,
   FunctionCall,
@@ -400,10 +399,6 @@ export {
   AssistantConversationRecording,
   AssistantDefinition,
   Telemetry,
-  AssistantConversationConfiguration,
-  AssistantConversationInterruption,
-  AssistantConversationUserMessage,
-  AssistantConversationAssistantMessage,
   AssistantConversationTelephonyEvent,
 } from "@/rapida/clients/protos/common_pb";
 export {
@@ -630,3 +625,14 @@ export {
   GetNotificationSetting,
   UpdateNotificationSetting,
 } from "./clients/notification";
+
+
+export {
+  ConversationConfiguration,
+  ConversationInterruption,
+  ConversationAssistantMessage,
+  ConversationUserMessage,
+  ConversationToolCall,
+  ConversationToolResult,
+  ConversationDirective,
+} from "@/rapida/clients/protos/talk-api_pb";
