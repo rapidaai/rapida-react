@@ -51,6 +51,9 @@ class AudioConcatProcessor extends AudioWorkletProcessor {
         case "interrupt":
           this.wasInterrupted = true;
           break;
+        case "resetInterrupt":
+          this.wasInterrupted = false;
+          break;
         case "clearInterrupted":
           if (this.wasInterrupted) {
             this.wasInterrupted = false;

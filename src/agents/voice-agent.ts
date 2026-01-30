@@ -242,6 +242,9 @@ export class VoiceAgent extends Agent {
   private fadeOutAudio = (duration: number = 2) => {
     if (!this.output) return;
 
+    // Reset interrupt flag to prevent VAD from clearing audio due to previous WORD interrupt
+    this.output.worklet.port.postMessage({ type: "resetInterrupt" });
+
     const currentTime = this.output.context.currentTime;
     this.output.gain.gain.exponentialRampToValueAtTime(
       0.0001,
