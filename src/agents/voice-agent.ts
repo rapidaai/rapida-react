@@ -363,7 +363,18 @@ export class VoiceAgent extends Agent {
       return;
     }
     this.agentConfig.outputOptions.playerOption.device = deviceId;
-    await this.connectDevice();
+
+    if (this.useWebRTCMode && this.webrtcAudioManager) {
+      // Use WebRTC manager's device switching (more efficient)
+      try {
+        await this.webrtcAudioManager.setOutputDevice(deviceId);
+      } catch (err) {
+        console.warn("Failed to set output device via WebRTC, falling back:", err);
+        await this.connectDevice();
+      }
+    } else {
+      await this.connectDevice();
+    }
     this.emit(AgentEvent.OutputMediaDeviceChangeEvent, deviceId);
   };
 
@@ -378,7 +389,18 @@ export class VoiceAgent extends Agent {
     }
     console.log("changing the input audio with new device id " + deviceId);
     this.agentConfig.inputOptions.recorderOption.device = deviceId;
-    await this.connectDevice();
+
+    if (this.useWebRTCMode && this.webrtcAudioManager) {
+      // Use WebRTC manager's device switching (more efficient)
+      try {
+        await this.webrtcAudioManager.setInputDevice(deviceId);
+      } catch (err) {
+        console.warn("Failed to set input device via WebRTC, falling back:", err);
+        await this.connectDevice();
+      }
+    } else {
+      await this.connectDevice();
+    }
     this.emit(AgentEvent.InputMediaDeviceChangeEvent, deviceId);
   };
 

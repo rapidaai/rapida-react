@@ -34,21 +34,21 @@ const LIBSAMPLERATE_JS =
 /**
  * WebRTC Audio Manager
  * 
- * Provides enhanced echo cancellation and lower latency by using:
- * 1. RTCPeerConnection loopback - Triggers browser's best AEC algorithm
- * 2. Shared AudioContext - Better correlation between input/output for AEC
- * 3. Insertable Streams (when available) - Lower processing latency
+ * Pure WebRTC-based audio capture with browser's native AEC, noise suppression,
+ * and auto gain control. Audio data flows through gRPC to backend.
  * 
- * Audio still flows through gRPC - this only enhances browser-side capture/playback
+ * Features:
+ * - Native browser echo cancellation via getUserMedia constraints
+ * - Shared AudioContext for input/output correlation
+ * - AudioWorklet-based processing for low latency
+ * - Device selection support for input and output
  */
 export class WebRTCAudioManager {
   private audioContext: AudioContext | null = null;
-  private peerConnection: RTCPeerConnection | null = null;
-  private loopbackConnection: RTCPeerConnection | null = null;
   private inputStream: MediaStream | null = null;
-  private processedStream: MediaStream | null = null;
 
   // Input components
+  private inputSource: MediaStreamAudioSourceNode | null = null;
   private inputAnalyser: AnalyserNode | null = null;
   private inputWorklet: AudioWorkletNode | null = null;
 
@@ -56,12 +56,18 @@ export class WebRTCAudioManager {
   private outputAnalyser: AnalyserNode | null = null;
   private outputWorklet: AudioWorkletNode | null = null;
   private outputGain: GainNode | null = null;
+  private outputDestination: MediaStreamAudioDestinationNode | null = null;
+  private outputAudioElement: HTMLAudioElement | null = null;
+
+  // Store options for device updates
+  private recorderOptions: RecorderOptions | null = null;
+  private playerOptions: PlayerOptions | null = null;
 
   private isInitialized = false;
   private volume: number = 1;
 
   /**
-   * Create WebRTC-enhanced audio manager with shared context
+   * Create WebRTC audio manager with shared context
    */
   public static async create(
     recorderOptions: RecorderOptions,
@@ -75,20 +81,25 @@ export class WebRTCAudioManager {
   private constructor() { }
 
   /**
-   * Initialize the WebRTC audio pipeline
+   * Initialize the audio pipeline
    */
   private async initialize(
     recorderOptions: RecorderOptions,
     playerOptions: PlayerOptions
   ): Promise<void> {
     try {
-      // Use shared sample rate (prefer input rate for STT quality)
+      // Store options for device updates
+      this.recorderOptions = recorderOptions;
+      this.playerOptions = playerOptions;
+
+      // Use input sample rate for STT quality
       const sampleRate = recorderOptions.sampleRate;
 
-      // Create shared AudioContext for better AEC correlation
+      // Check if browser supports sample rate constraint
       const supportsSampleRateConstraint =
         navigator.mediaDevices.getSupportedConstraints().sampleRate;
 
+      // Create shared AudioContext
       this.audioContext = new AudioContext(
         supportsSampleRateConstraint ? { sampleRate } : {}
       );
@@ -100,13 +111,10 @@ export class WebRTCAudioManager {
       await loadRawAudioProcessor(this.audioContext.audioWorklet);
       await loadAudioConcatProcessor(this.audioContext.audioWorklet);
 
-      // Setup WebRTC loopback for enhanced AEC
-      await this.setupWebRTCLoopback(recorderOptions);
-
-      // Setup input pipeline
+      // Setup input pipeline (microphone capture)
       await this.setupInput(recorderOptions);
 
-      // Setup output pipeline
+      // Setup output pipeline (speaker playback)
       await this.setupOutput(playerOptions);
 
       await this.audioContext.resume();
@@ -118,95 +126,29 @@ export class WebRTCAudioManager {
   }
 
   /**
-   * Setup WebRTC peer connection loopback
-   * This tricks the browser into using its full AEC pipeline
+   * Setup input audio pipeline with WebRTC constraints for AEC
    */
-  private async setupWebRTCLoopback(recorderOptions: RecorderOptions): Promise<void> {
-    // Get raw microphone stream first
-    const constraints = this.getAudioConstraints(recorderOptions.sampleRate);
+  private async setupInput(recorderOptions: RecorderOptions): Promise<void> {
+    if (!this.audioContext) {
+      throw new Error("AudioContext not available");
+    }
+
+    // Get microphone stream with WebRTC audio processing
+    const constraints = this.getAudioConstraints(
+      recorderOptions.sampleRate,
+      recorderOptions.device
+    );
+
     this.inputStream = await navigator.mediaDevices.getUserMedia({
       audio: constraints,
     });
 
-    // Create peer connections for loopback
-    this.peerConnection = new RTCPeerConnection({
-      iceServers: [], // No ICE needed for loopback
-    });
-    this.loopbackConnection = new RTCPeerConnection({
-      iceServers: [],
-    });
-
-    // Connect ICE candidates between peers
-    this.peerConnection.onicecandidate = (e) => {
-      if (e.candidate) {
-        this.loopbackConnection?.addIceCandidate(e.candidate);
-      }
-    };
-    this.loopbackConnection.onicecandidate = (e) => {
-      if (e.candidate) {
-        this.peerConnection?.addIceCandidate(e.candidate);
-      }
-    };
-
-    // Setup processed stream receiver
-    this.loopbackConnection.ontrack = (e) => {
-      this.processedStream = e.streams[0];
-    };
-
-    // Add input track to peer connection
-    this.inputStream.getTracks().forEach((track) => {
-      this.peerConnection?.addTrack(track, this.inputStream!);
-    });
-
-    // Create and exchange SDP
-    const offer = await this.peerConnection.createOffer();
-    await this.peerConnection.setLocalDescription(offer);
-    await this.loopbackConnection.setRemoteDescription(offer);
-
-    const answer = await this.loopbackConnection.createAnswer();
-    await this.loopbackConnection.setLocalDescription(answer);
-    await this.peerConnection.setRemoteDescription(answer);
-
-    // Wait for processed stream to be ready
-    await this.waitForProcessedStream();
-  }
-
-  /**
-   * Wait for the loopback stream to be available
-   */
-  private waitForProcessedStream(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const timeout = setTimeout(() => {
-        reject(new Error("Timeout waiting for WebRTC loopback stream"));
-      }, 5000);
-
-      const check = () => {
-        if (this.processedStream && this.processedStream.active) {
-          clearTimeout(timeout);
-          resolve();
-        } else {
-          setTimeout(check, 50);
-        }
-      };
-      check();
-    });
-  }
-
-  /**
-   * Setup input audio pipeline using processed WebRTC stream
-   */
-  private async setupInput(recorderOptions: RecorderOptions): Promise<void> {
-    if (!this.audioContext || !this.processedStream) {
-      throw new Error("AudioContext or processed stream not available");
-    }
-
-    // Use the WebRTC-processed stream (has better AEC)
-    const source = this.audioContext.createMediaStreamSource(this.processedStream);
-
+    // Create audio nodes
+    this.inputSource = this.audioContext.createMediaStreamSource(this.inputStream);
     this.inputAnalyser = this.audioContext.createAnalyser();
     this.inputWorklet = new AudioWorkletNode(this.audioContext, "raw-audio-processor");
 
-    // Configure worklet
+    // Configure worklet for audio format
     this.inputWorklet.port.postMessage({
       type: "setFormat",
       format: recorderOptions.format,
@@ -214,7 +156,7 @@ export class WebRTCAudioManager {
     });
 
     // Connect: source -> analyser -> worklet
-    source.connect(this.inputAnalyser);
+    this.inputSource.connect(this.inputAnalyser);
     this.inputAnalyser.connect(this.inputWorklet);
   }
 
@@ -226,38 +168,71 @@ export class WebRTCAudioManager {
       throw new Error("AudioContext not available");
     }
 
+    // Create audio nodes
     this.outputAnalyser = this.audioContext.createAnalyser();
     this.outputGain = this.audioContext.createGain();
     this.outputWorklet = new AudioWorkletNode(this.audioContext, "audio-concat-processor");
 
-    // Configure worklet
+    // Configure worklet for audio format
     this.outputWorklet.port.postMessage({
       type: "setFormat",
       format: playerOptions.format,
     });
 
+    // Create MediaStreamDestination for device selection support
+    this.outputDestination = this.audioContext.createMediaStreamDestination();
+
     // Connect: worklet -> gain -> analyser -> destination
     this.outputWorklet.connect(this.outputGain);
     this.outputGain.connect(this.outputAnalyser);
-    this.outputAnalyser.connect(this.audioContext.destination);
+    this.outputAnalyser.connect(this.outputDestination);
+
+    // Create audio element for playback with device selection
+    this.outputAudioElement = new Audio();
+    this.outputAudioElement.srcObject = this.outputDestination.stream;
+    this.outputAudioElement.autoplay = true;
+
+    // Set output device if specified
+    if (playerOptions.device && 'setSinkId' in this.outputAudioElement) {
+      try {
+        await (this.outputAudioElement as any).setSinkId(playerOptions.device);
+      } catch (err) {
+        console.warn("Failed to set output device:", err);
+      }
+    }
+
+    // Start playback
+    await this.outputAudioElement.play().catch((err) => {
+      console.warn("Audio autoplay blocked, will play on user interaction:", err);
+    });
   }
 
   /**
-   * Get optimized audio constraints
+   * Get optimized audio constraints for WebRTC
+   * Enables browser's native AEC, noise suppression, and auto gain control
    */
-  private getAudioConstraints(sampleRate: number): MediaTrackConstraints {
+  private getAudioConstraints(
+    sampleRate: number,
+    deviceId?: string
+  ): MediaTrackConstraints {
     const baseConstraints: MediaTrackConstraints = {
       sampleRate: { ideal: sampleRate },
       channelCount: { ideal: 1 },
     };
 
+    // Add device ID if specified
+    if (deviceId) {
+      baseConstraints.deviceId = { exact: deviceId };
+    }
+
     if (isChrome()) {
+      // Chrome needs explicit true values for audio processing
       return {
         ...baseConstraints,
         echoCancellation: true,
         noiseSuppression: true,
         autoGainControl: true,
-        // Chrome-specific: Advanced constraints for better quality
+        // Chrome-specific constraints for better quality
         // @ts-ignore - Chrome-specific constraints
         googEchoCancellation: true,
         // @ts-ignore
@@ -269,6 +244,7 @@ export class WebRTCAudioManager {
       };
     }
 
+    // Default constraints for other browsers
     return {
       ...baseConstraints,
       echoCancellation: { ideal: true },
@@ -327,7 +303,7 @@ export class WebRTCAudioManager {
   }
 
   /**
-   * Set muted state
+   * Set muted state for input
    */
   public setMuted(isMuted: boolean): void {
     this.inputWorklet?.port.postMessage({ type: "setMuted", isMuted });
@@ -344,7 +320,7 @@ export class WebRTCAudioManager {
   }
 
   /**
-   * Add audio chunk to output buffer
+   * Add audio chunk to output buffer for playback
    */
   public addAudioChunk(chunk: ArrayBuffer): void {
     if (this.outputWorklet && this.outputGain) {
@@ -358,7 +334,7 @@ export class WebRTCAudioManager {
   }
 
   /**
-   * Interrupt audio playback
+   * Interrupt audio playback immediately
    */
   public interruptAudio(): void {
     if (this.outputWorklet && this.outputGain && this.audioContext) {
@@ -377,7 +353,7 @@ export class WebRTCAudioManager {
   }
 
   /**
-   * Fade out audio
+   * Fade out audio gradually
    */
   public fadeOutAudio(duration: number = 2): void {
     if (!this.outputGain || !this.audioContext) return;
@@ -405,42 +381,104 @@ export class WebRTCAudioManager {
   }
 
   /**
+   * Update input device (microphone)
+   */
+  public async setInputDevice(deviceId: string): Promise<void> {
+    if (!this.recorderOptions || !this.audioContext) {
+      throw new Error("Manager not initialized");
+    }
+
+    // Update stored options
+    this.recorderOptions.device = deviceId;
+
+    // Stop old input tracks
+    this.inputStream?.getTracks().forEach((track) => track.stop());
+
+    // Disconnect old input source
+    this.inputSource?.disconnect();
+
+    // Get new microphone stream with device
+    const constraints = this.getAudioConstraints(
+      this.recorderOptions.sampleRate,
+      deviceId
+    );
+
+    this.inputStream = await navigator.mediaDevices.getUserMedia({
+      audio: constraints,
+    });
+
+    // Reconnect input pipeline
+    this.inputSource = this.audioContext.createMediaStreamSource(this.inputStream);
+    if (this.inputAnalyser) {
+      this.inputSource.connect(this.inputAnalyser);
+    }
+  }
+
+  /**
+   * Update output device (speaker)
+   */
+  public async setOutputDevice(deviceId: string): Promise<void> {
+    if (!this.outputAudioElement || !this.playerOptions) {
+      throw new Error("Manager not initialized or output device selection not supported");
+    }
+
+    if (!('setSinkId' in this.outputAudioElement)) {
+      throw new Error("setSinkId not supported in this browser");
+    }
+
+    // Update stored options
+    this.playerOptions.device = deviceId;
+
+    // Set new output device
+    await (this.outputAudioElement as any).setSinkId(deviceId);
+  }
+
+  /**
    * Close and cleanup all resources
    */
   public async close(): Promise<void> {
     // Stop input tracks
     this.inputStream?.getTracks().forEach((track) => track.stop());
-    this.processedStream?.getTracks().forEach((track) => track.stop());
 
-    // Close peer connections
-    this.peerConnection?.close();
-    this.loopbackConnection?.close();
+    // Stop and cleanup audio element
+    if (this.outputAudioElement) {
+      this.outputAudioElement.pause();
+      this.outputAudioElement.srcObject = null;
+      this.outputAudioElement = null;
+    }
+
+    // Disconnect audio nodes
+    this.inputSource?.disconnect();
+    this.outputDestination?.disconnect();
 
     // Close audio context
     await this.audioContext?.close();
 
     // Clear references
     this.audioContext = null;
-    this.peerConnection = null;
-    this.loopbackConnection = null;
     this.inputStream = null;
-    this.processedStream = null;
+    this.inputSource = null;
     this.inputAnalyser = null;
     this.inputWorklet = null;
     this.outputAnalyser = null;
     this.outputWorklet = null;
     this.outputGain = null;
+    this.outputDestination = null;
+    this.recorderOptions = null;
+    this.playerOptions = null;
     this.isInitialized = false;
   }
 }
 
 /**
- * Feature detection for WebRTC audio enhancements
+ * Feature detection for WebRTC audio
  */
 export function supportsWebRTCAudioEnhancements(): boolean {
   return (
-    typeof RTCPeerConnection !== "undefined" &&
     typeof AudioContext !== "undefined" &&
-    typeof AudioWorkletNode !== "undefined"
+    typeof AudioWorkletNode !== "undefined" &&
+    typeof navigator !== "undefined" &&
+    typeof navigator.mediaDevices !== "undefined" &&
+    typeof navigator.mediaDevices.getUserMedia !== "undefined"
   );
 }
