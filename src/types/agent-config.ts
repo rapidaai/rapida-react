@@ -57,6 +57,12 @@ export class InputOptions {
   channels: Channel[] = [Channel.Audio, Channel.Text];
 
   /**
+   * Enable WebRTC-enhanced audio capture
+   * Provides better echo cancellation and lower latency via RTCPeerConnection loopback
+   */
+  useWebRTC: boolean = true;
+
+  /**
    * sample rate for player
    */
   recorderOptions: RecorderOptions = {
@@ -98,11 +104,13 @@ export class InputOptions {
    * @param channels
    * @param channel
    * @param deviceId
+   * @param useWebRTC - Enable WebRTC-enhanced audio (default: true)
    */
-  constructor(channels: Channel[], channel?: Channel, deviceId?: string) {
+  constructor(channels: Channel[], channel?: Channel, deviceId?: string, useWebRTC: boolean = true) {
     this.channels = channels;
     if (channel) this.channel = channel;
     if (deviceId) this.recorderOptions.device = deviceId;
+    this.useWebRTC = useWebRTC;
   }
 
 

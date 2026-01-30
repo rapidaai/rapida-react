@@ -40,6 +40,7 @@ import { ConnectionConfig } from "@/rapida/types/connection-config";
 import { Agent } from "@/rapida/agents/";
 import { Input } from "@/rapida/audio/input";
 import { Output } from "@/rapida/audio/output";
+import { WebRTCAudioManager, supportsWebRTCAudioEnhancements } from "@/rapida/audio/webrtc-audio-manager";
 import { isAndroidDevice, isIosDevice } from "@/rapida/audio/compatibility";
 import { arrayBufferToUint8 } from "@/rapida/audio/audio";
 import {
@@ -53,8 +54,10 @@ import { ConnectionState } from "@/rapida/types/connection-state";
 export class VoiceAgent extends Agent {
   private input: Input | null = null;
   private output: Output | null = null;
+  private webrtcAudioManager: WebRTCAudioManager | null = null;
   private preliminaryInputStream: MediaStream | null = null;
   private volume: number = 1;
+  private useWebRTCMode: boolean = true;
 
   private inputFrequencyData?: Uint8Array;
   private outputFrequencyData?: Uint8Array;
@@ -69,6 +72,10 @@ export class VoiceAgent extends Agent {
     agentCallback?: AgentCallback
   ) {
     super(connection, agentConfig, agentCallback);
+    // Determine if WebRTC mode should be used
+    this.useWebRTCMode =
+      agentConfig.inputOptions.useWebRTC &&
+      supportsWebRTCAudioEnhancements();
   }
 
   /**
@@ -85,8 +92,14 @@ export class VoiceAgent extends Agent {
   public disconnectAudio = async () => {
     try {
       this.preliminaryInputStream?.getTracks().forEach((track) => track.stop());
-      await this.input?.close();
-      await this.output?.close();
+
+      if (this.useWebRTCMode && this.webrtcAudioManager) {
+        await this.webrtcAudioManager.close();
+        this.webrtcAudioManager = null;
+      } else {
+        await this.input?.close();
+        await this.output?.close();
+      }
     } catch (error) {
       console.error("Error during cleanup:", error);
       // Optionally, you can add more specific error handling or logging here
@@ -95,23 +108,42 @@ export class VoiceAgent extends Agent {
 
   private connectDevice = async () => {
     try {
-      // Get the MediaStream with AEC enabled - we'll reuse this same stream
-      // to preserve the browser's echo cancellation state
-      this.preliminaryInputStream = await this.waitForUserMediaPermission();
+      if (this.useWebRTCMode) {
+        // Use WebRTC-enhanced audio manager for better AEC and lower latency
+        this.webrtcAudioManager = await WebRTCAudioManager.create(
+          this.agentConfig.inputOptions.recorderOption,
+          this.agentConfig.outputOptions.playerOption
+        );
 
-      // Create Output first, then Input with the existing stream
-      // This ensures AEC can correlate output audio with mic input
-      this.output = await Output.create(this.agentConfig.outputOptions.playerOption);
-      this.input = await Input.create(
-        this.agentConfig.inputOptions.recorderOption,
-        this.preliminaryInputStream // Reuse the same MediaStream
-      );
+        // Setup worklet message handlers
+        if (this.webrtcAudioManager.inputWorkletNode) {
+          this.webrtcAudioManager.inputWorkletNode.port.onmessage = this.onInputWorkletMessage;
+        }
+        if (this.webrtcAudioManager.outputWorkletNode) {
+          this.webrtcAudioManager.outputWorkletNode.port.onmessage = this.onOutputWorkletMessage;
+        }
 
-      this.input.worklet.port.onmessage = this.onInputWorkletMessage;
-      this.output.worklet.port.onmessage = this.onOutputWorkletMessage;
+        console.log("WebRTC-enhanced audio mode enabled");
+      } else {
+        // Fallback to legacy mode
+        // Get the MediaStream with AEC enabled - we'll reuse this same stream
+        // to preserve the browser's echo cancellation state
+        this.preliminaryInputStream = await this.waitForUserMediaPermission();
 
-      // Don't stop the stream - it's now being used by Input
-      this.preliminaryInputStream = null;
+        // Create Output first, then Input with the existing stream
+        // This ensures AEC can correlate output audio with mic input
+        this.output = await Output.create(this.agentConfig.outputOptions.playerOption);
+        this.input = await Input.create(
+          this.agentConfig.inputOptions.recorderOption,
+          this.preliminaryInputStream // Reuse the same MediaStream
+        );
+
+        this.input.worklet.port.onmessage = this.onInputWorkletMessage;
+        this.output.worklet.port.onmessage = this.onOutputWorkletMessage;
+
+        // Don't stop the stream - it's now being used by Input
+        this.preliminaryInputStream = null;
+      }
     } catch (error) {
       await this.disconnectAudio();
       console.error("Microphone permission error:", error);
@@ -223,15 +255,19 @@ export class VoiceAgent extends Agent {
    *
    */
   private interruptAudio = () => {
-    this.output?.worklet.port.postMessage({ type: "interrupt" });
-    this.output?.gain.gain.exponentialRampToValueAtTime(
-      0.0001,
-      this.output.context.currentTime + 2
-    );
-    setTimeout(() => {
-      if (this.output) this.output.gain.gain.value = this.volume;
-      this.output?.worklet.port.postMessage({ type: "clearInterrupted" });
-    }, 2000);
+    if (this.useWebRTCMode && this.webrtcAudioManager) {
+      this.webrtcAudioManager.interruptAudio();
+    } else {
+      this.output?.worklet.port.postMessage({ type: "interrupt" });
+      this.output?.gain.gain.exponentialRampToValueAtTime(
+        0.0001,
+        this.output.context.currentTime + 2
+      );
+      setTimeout(() => {
+        if (this.output) this.output.gain.gain.value = this.volume;
+        this.output?.worklet.port.postMessage({ type: "clearInterrupted" });
+      }, 2000);
+    }
   };
 
   /**
@@ -240,6 +276,11 @@ export class VoiceAgent extends Agent {
    * @returns
    */
   private fadeOutAudio = (duration: number = 2) => {
+    if (this.useWebRTCMode && this.webrtcAudioManager) {
+      this.webrtcAudioManager.fadeOutAudio(duration);
+      return;
+    }
+
     if (!this.output) return;
 
     // Reset interrupt flag to prevent VAD from clearing audio due to previous WORD interrupt
@@ -261,7 +302,9 @@ export class VoiceAgent extends Agent {
    * @param chunk
    */
   private addAudioChunk = (chunk: ArrayBuffer) => {
-    if (this.output) {
+    if (this.useWebRTCMode && this.webrtcAudioManager) {
+      this.webrtcAudioManager.addAudioChunk(chunk);
+    } else if (this.output) {
       this.output.gain.gain.value = this.volume;
       this.output.worklet.port.postMessage({ type: "clearInterrupted" });
       this.output.worklet.port.postMessage({
@@ -642,12 +685,14 @@ export class VoiceAgent extends Agent {
    * @returns
    */
   public getInputByteFrequencyData = (): Uint8Array | undefined => {
-    if (this.input) {
-      this.inputFrequencyData = new Uint8Array(
-        this.input.analyser.frequencyBinCount
-      );
+    const analyser = this.useWebRTCMode
+      ? this.webrtcAudioManager?.inputAnalyserNode
+      : this.input?.analyser;
+
+    if (analyser) {
+      this.inputFrequencyData = new Uint8Array(analyser.frequencyBinCount);
       // Use type assertion to satisfy TypeScript
-      (this.input.analyser.getByteFrequencyData as (array: Uint8Array) => void)(
+      (analyser.getByteFrequencyData as (array: Uint8Array) => void)(
         this.inputFrequencyData
       );
     }
@@ -659,15 +704,24 @@ export class VoiceAgent extends Agent {
    * @returns
    */
   public getOutputByteFrequencyData = (): Uint8Array | undefined => {
-    if (this.output) {
-      this.outputFrequencyData = new Uint8Array(
-        this.output.analyser.frequencyBinCount
-      );
+    const analyser = this.useWebRTCMode
+      ? this.webrtcAudioManager?.outputAnalyserNode
+      : this.output?.analyser;
+
+    if (analyser) {
+      this.outputFrequencyData = new Uint8Array(analyser.frequencyBinCount);
       // Use type assertion to satisfy TypeScript
-      (
-        this.output.analyser.getByteFrequencyData as (array: Uint8Array) => void
-      )(this.outputFrequencyData);
+      (analyser.getByteFrequencyData as (array: Uint8Array) => void)(
+        this.outputFrequencyData
+      );
     }
     return this.outputFrequencyData;
   };
+
+  /**
+   * Check if WebRTC audio mode is active
+   */
+  public get isWebRTCMode(): boolean {
+    return this.useWebRTCMode && this.webrtcAudioManager !== null;
+  }
 }

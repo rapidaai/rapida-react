@@ -23,6 +23,10 @@
  *
  */
 export { VoiceAgent } from "@/rapida/agents/voice-agent";
+export {
+  WebRTCAudioManager,
+  supportsWebRTCAudioEnhancements
+} from "@/rapida/audio/webrtc-audio-manager";
 // export {
 //   // toTextContent,
 //   // toContentText,
