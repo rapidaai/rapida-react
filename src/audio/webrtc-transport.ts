@@ -181,16 +181,31 @@ export class WebRTCTransport {
    */
   private async setupLocalMedia(): Promise<void> {
     const constraints = this.getAudioConstraints();
+    console.log("Requesting microphone with constraints:", constraints);
 
     this.localStream = await navigator.mediaDevices.getUserMedia({
       audio: constraints,
       video: false,
     });
 
+    console.log("Microphone access granted, tracks:", this.localStream.getAudioTracks().length);
+
+    // Log track settings
+    const track = this.localStream.getAudioTracks()[0];
+    if (track) {
+      console.log("Audio track settings:", track.getSettings());
+    }
+
     // Setup audio context for visualization
     this.audioContext = new AudioContext({
       sampleRate: this.config.recorderOptions.sampleRate,
     });
+
+    // Resume audio context if suspended
+    if (this.audioContext.state === "suspended") {
+      await this.audioContext.resume();
+      console.log("AudioContext resumed");
+    }
 
     const source = this.audioContext.createMediaStreamSource(this.localStream);
     this.inputAnalyser = this.audioContext.createAnalyser();
@@ -303,11 +318,17 @@ export class WebRTCTransport {
    * Setup remote audio playback
    */
   private setupRemoteAudio(stream: MediaStream): void {
+    console.log("Setting up remote audio playback, tracks:", stream.getAudioTracks().length);
+
     // Create audio element for playback
     this.audioElement = new Audio();
     this.audioElement.srcObject = stream;
     this.audioElement.autoplay = true;
     this.audioElement.volume = this.volume;
+
+    // Muted initially to allow autoplay, unmute after play starts
+    // Note: This is a workaround for strict autoplay policies
+    // this.audioElement.muted = true;
 
     // Set output device if specified
     if (this.config.playerOptions.device && "setSinkId" in this.audioElement) {
@@ -318,16 +339,92 @@ export class WebRTCTransport {
 
     // Setup output analyser for visualization
     if (this.audioContext) {
+      // Resume audio context if suspended
+      if (this.audioContext.state === "suspended") {
+        this.audioContext.resume().catch(console.warn);
+      }
+
       const source = this.audioContext.createMediaStreamSource(stream);
       this.outputAnalyser = this.audioContext.createAnalyser();
       this.outputAnalyser.fftSize = 256;
       source.connect(this.outputAnalyser);
     }
 
-    // Start playback
-    this.audioElement.play().catch((err) => {
-      console.warn("Audio autoplay blocked:", err);
-    });
+    // Start playback with retry
+    this.startAudioPlayback();
+  }
+
+  /**
+   * Start audio playback with retry logic
+   */
+  private startAudioPlayback(): void {
+    if (!this.audioElement) return;
+
+    const attemptPlay = () => {
+      this.audioElement?.play()
+        .then(() => {
+          console.log("Audio playback started successfully");
+          // Unmute after successful play
+          if (this.audioElement) {
+            this.audioElement.muted = false;
+            this.audioElement.volume = this.volume;
+          }
+        })
+        .catch((err) => {
+          console.warn("Audio autoplay blocked:", err.message);
+          // Will need user interaction to start audio
+          // Setup click handler as fallback
+          this.setupUserInteractionHandler();
+        });
+    };
+
+    attemptPlay();
+  }
+
+  /**
+   * Setup handler for user interaction to start audio
+   * (Required by some browsers due to autoplay policy)
+   */
+  private setupUserInteractionHandler(): void {
+    const startAudio = () => {
+      if (this.audioElement && this.audioElement.paused) {
+        this.audioElement.muted = false;
+        this.audioElement.play()
+          .then(() => {
+            console.log("Audio started after user interaction");
+            document.removeEventListener("click", startAudio);
+            document.removeEventListener("touchstart", startAudio);
+            document.removeEventListener("keydown", startAudio);
+          })
+          .catch(console.warn);
+      }
+      // Also resume audio context
+      if (this.audioContext?.state === "suspended") {
+        this.audioContext.resume().catch(console.warn);
+      }
+    };
+
+    document.addEventListener("click", startAudio, { once: true });
+    document.addEventListener("touchstart", startAudio, { once: true });
+    document.addEventListener("keydown", startAudio, { once: true });
+
+    console.log("Waiting for user interaction to start audio...");
+  }
+
+  /**
+   * Manually start audio playback (call from user interaction)
+   */
+  public async resumeAudio(): Promise<void> {
+    // Resume audio context
+    if (this.audioContext?.state === "suspended") {
+      await this.audioContext.resume();
+    }
+
+    // Start audio element playback
+    if (this.audioElement && this.audioElement.paused) {
+      this.audioElement.muted = false;
+      await this.audioElement.play();
+    }
   }
 
   /**

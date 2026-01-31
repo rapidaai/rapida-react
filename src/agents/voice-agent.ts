@@ -135,18 +135,22 @@ export class VoiceAgent extends Agent {
         {
           onConnectionStateChange: (state) => {
             console.log("WebRTC transport state:", state);
-            this.emit(AgentEvent.ConnectionStateChangeEvent, state);
+            // Map RTCPeerConnectionState to ConnectionState
+            if (state === "connected") {
+              this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Connected);
+            } else if (state === "disconnected" || state === "closed" || state === "failed") {
+              this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Disconnected);
+            }
           },
           onConnected: () => {
             console.log("WebRTC transport connected");
-            this.emit(AgentEvent.ConversationReady, null);
           },
           onDisconnected: () => {
             console.log("WebRTC transport disconnected");
           },
           onError: (error) => {
             console.error("WebRTC transport error:", error);
-            this.emit(AgentEvent.ErrorEvent, error);
+            this.emit(AgentEvent.ErrorEvent, "client", error.message || String(error));
           },
         }
       );
@@ -220,9 +224,9 @@ export class VoiceAgent extends Agent {
 
   /**
    * Add audio chunk - not needed for WebRTC (audio flows via peer connection)
-   * @param chunk
+   * @param _chunk - Unused in WebRTC mode
    */
-  private addAudioChunk = (chunk: ArrayBuffer) => {
+  private addAudioChunk = (_chunk: ArrayBuffer) => {
     // WebRTC transport handles audio via peer connection
     // This method is not used in WebRTC mode
   };
@@ -239,6 +243,16 @@ export class VoiceAgent extends Agent {
       await this.connectAgent();
     } catch (err) {
       console.error("error while connect " + err);
+    }
+  };
+
+  /**
+   * Resume audio playback - call this from a user interaction (click/tap)
+   * Required by some browsers due to autoplay policies
+   */
+  public resumeAudio = async () => {
+    if (this.webrtcTransport) {
+      await this.webrtcTransport.resumeAudio();
     }
   };
 

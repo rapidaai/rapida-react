@@ -11,42 +11,22 @@
 
 import { mockMediaDevices, MockMediaStream } from '../setup';
 
-// Mock dependencies
-jest.mock('@/rapida/audio/input', () => ({
-  Input: {
-    create: jest.fn().mockResolvedValue({
-      context: { close: jest.fn() },
-      analyser: { frequencyBinCount: 1024, getByteFrequencyData: jest.fn() },
-      worklet: {
-        port: {
-          postMessage: jest.fn(),
-          onmessage: null,
-        },
-      },
-      inputStream: new (jest.requireActual('../setup').MockMediaStream)(),
-      close: jest.fn(),
-      setMuted: jest.fn(),
-    }),
-  },
-}));
+// Mock WebRTC Transport
+const mockWebRTCTransport = {
+  close: jest.fn().mockResolvedValue(undefined),
+  setMuted: jest.fn(),
+  setVolume: jest.fn(),
+  setInputDevice: jest.fn().mockResolvedValue(undefined),
+  setOutputDevice: jest.fn().mockResolvedValue(undefined),
+  inputAnalyser: { frequencyBinCount: 1024, getByteFrequencyData: jest.fn() },
+  outputAnalyser: { frequencyBinCount: 1024, getByteFrequencyData: jest.fn() },
+};
 
-jest.mock('@/rapida/audio/output', () => ({
-  Output: {
-    create: jest.fn().mockResolvedValue({
-      context: { close: jest.fn(), currentTime: 0 },
-      analyser: { frequencyBinCount: 1024, getByteFrequencyData: jest.fn() },
-      gain: {
-        gain: { value: 1, exponentialRampToValueAtTime: jest.fn() },
-      },
-      worklet: {
-        port: {
-          postMessage: jest.fn(),
-          onmessage: null,
-        },
-      },
-      close: jest.fn(),
-    }),
+jest.mock('@/rapida/audio/webrtc-transport', () => ({
+  WebRTCTransport: {
+    create: jest.fn().mockResolvedValue(mockWebRTCTransport),
   },
+  supportsWebRTCTransport: jest.fn().mockReturnValue(true),
 }));
 
 jest.mock('@/rapida/audio/compatibility', () => ({
@@ -100,8 +80,7 @@ jest.mock('@/rapida/agents/', () => {
 });
 
 import { VoiceAgent } from '@/rapida/agents/voice-agent';
-import { Input } from '@/rapida/audio/input';
-import { Output } from '@/rapida/audio/output';
+import { WebRTCTransport } from '@/rapida/audio/webrtc-transport';
 import { Channel } from '@/rapida/types/channel';
 import { AgentEvent } from '@/rapida/types/agent-event';
 import { ConnectionState } from '@/rapida/types/connection-state';
@@ -110,10 +89,14 @@ describe('VoiceAgent', () => {
   let voiceAgent: VoiceAgent;
 
   const mockConnectionConfig = {
-    // Mock connection config
+    endpoint: {
+      assistant: 'https://assistant-01.rapida.ai',
+    },
+    apiKey: 'test-api-key',
   };
 
   const mockAgentConfig = {
+    id: 'test-assistant-id',
     inputOptions: {
       channel: Channel.Audio,
       recorderOption: {
@@ -121,6 +104,7 @@ describe('VoiceAgent', () => {
         format: 'pcm' as const,
         device: undefined,
       },
+      webrtcSignalingUrl: 'wss://assistant-01.rapida.ai/v1/talk/webrtc/test-assistant-id',
     },
     outputOptions: {
       channel: Channel.Audio,
@@ -164,8 +148,7 @@ describe('VoiceAgent', () => {
     it('should connect audio when channel is Audio', async () => {
       await voiceAgent.connect();
 
-      expect(Input.create).toHaveBeenCalled();
-      expect(Output.create).toHaveBeenCalled();
+      expect(WebRTCTransport.create).toHaveBeenCalled();
     });
 
     it('should not connect audio when channel is Text', async () => {
@@ -180,9 +163,8 @@ describe('VoiceAgent', () => {
 
       await textAgent.connect();
 
-      // Input and Output should not be created for text channel
-      expect(Input.create).not.toHaveBeenCalled();
-      expect(Output.create).not.toHaveBeenCalled();
+      // WebRTCTransport should not be created for text channel
+      expect(WebRTCTransport.create).not.toHaveBeenCalled();
     });
   });
 
@@ -197,16 +179,12 @@ describe('VoiceAgent', () => {
   });
 
   describe('disconnectAudio()', () => {
-    it('should close input and output', async () => {
+    it('should close WebRTC transport', async () => {
       await voiceAgent.connect();
       await voiceAgent.disconnectAudio();
 
-      // Input and Output close methods should be called
-      const input = await Input.create(mockAgentConfig.inputOptions.recorderOption);
-      const output = await Output.create(mockAgentConfig.outputOptions.playerOption);
-
-      expect(input.close).toBeDefined();
-      expect(output.close).toBeDefined();
+      // WebRTC transport close should be called
+      expect(mockWebRTCTransport.close).toHaveBeenCalled();
     });
 
     it('should handle errors gracefully', async () => {
@@ -215,58 +193,40 @@ describe('VoiceAgent', () => {
     });
   });
 
-  describe('MediaStream reuse for AEC', () => {
-    it('should reuse preliminary MediaStream for Input creation', async () => {
+  describe('WebRTC Transport', () => {
+    it('should create WebRTC transport with correct config', async () => {
       await voiceAgent.connect();
 
-      // Verify that Input.create was called with the existing stream
-      expect(Input.create).toHaveBeenCalledWith(
-        expect.any(Object),
-        expect.any(Object) // The MediaStream
+      expect(WebRTCTransport.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          signalingUrl: expect.any(String),
+          recorderOptions: expect.any(Object),
+          playerOptions: expect.any(Object),
+        }),
+        expect.any(Object) // callbacks
       );
     });
 
-    it('should request getUserMedia with AEC constraints', async () => {
+    it('should pass recorder options to WebRTC transport', async () => {
       await voiceAgent.connect();
 
-      expect(mockMediaDevices.getUserMedia).toHaveBeenCalledWith({
-        audio: expect.objectContaining({
-          echoCancellation: { ideal: true },
-          noiseSuppression: { ideal: true },
+      expect(WebRTCTransport.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          recorderOptions: mockAgentConfig.inputOptions.recorderOption,
         }),
-      });
+        expect.any(Object)
+      );
     });
 
-    it('should create Output before Input', async () => {
-      const createOrder: string[] = [];
-
-      (Output.create as jest.Mock).mockImplementation(async () => {
-        createOrder.push('output');
-        return {
-          context: { close: jest.fn(), currentTime: 0 },
-          analyser: { frequencyBinCount: 1024 },
-          gain: { gain: { value: 1, exponentialRampToValueAtTime: jest.fn() } },
-          worklet: { port: { postMessage: jest.fn(), onmessage: null } },
-          close: jest.fn(),
-        };
-      });
-
-      (Input.create as jest.Mock).mockImplementation(async () => {
-        createOrder.push('input');
-        return {
-          context: { close: jest.fn() },
-          analyser: { frequencyBinCount: 1024 },
-          worklet: { port: { postMessage: jest.fn(), onmessage: null } },
-          inputStream: new MockMediaStream(),
-          close: jest.fn(),
-          setMuted: jest.fn(),
-        };
-      });
-
+    it('should pass player options to WebRTC transport', async () => {
       await voiceAgent.connect();
 
-      // Output should be created first for AEC
-      expect(createOrder).toEqual(['output', 'input']);
+      expect(WebRTCTransport.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          playerOptions: mockAgentConfig.outputOptions.playerOption,
+        }),
+        expect.any(Object)
+      );
     });
   });
 
@@ -342,11 +302,13 @@ describe('VoiceAgent', () => {
 
       await agent.connect();
 
+      // Reset mock to track new calls
+      (WebRTCTransport.create as jest.Mock).mockClear();
+
       // Now switch to audio
       await agent.setInputChannel(Channel.Audio);
 
-      expect(Input.create).toHaveBeenCalled();
-      expect(Output.create).toHaveBeenCalled();
+      expect(WebRTCTransport.create).toHaveBeenCalled();
     });
   });
 
