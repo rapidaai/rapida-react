@@ -29,6 +29,20 @@ import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
 import { Channel } from "@/rapida/types/channel";
 
 /**
+ * Transport mode for audio streaming
+ * WebRTC is the only supported mode - audio flows through RTCPeerConnection
+ */
+export enum AudioTransportMode {
+  /**
+   * Use native WebRTC for audio transport
+   * Audio flows through RTCPeerConnection media tracks (SRTP)
+   * Uses WebSocket only for signaling (SDP/ICE exchange)
+   * Lower latency and better NAT traversal
+   */
+  WEBRTC = "webrtc",
+}
+
+/**
  *
  */
 export interface PlayerOptions {
@@ -57,10 +71,23 @@ export class InputOptions {
   channels: Channel[] = [Channel.Audio, Channel.Text];
 
   /**
-   * Enable WebRTC-enhanced audio capture
-   * Provides better echo cancellation and lower latency via RTCPeerConnection loopback
+   * Audio transport mode
+   * WebRTC: Audio sent over native WebRTC media tracks (lower latency)
    */
-  useWebRTC: boolean = true;
+  transportMode: AudioTransportMode = AudioTransportMode.WEBRTC;
+
+  /**
+   * WebSocket signaling URL for native WebRTC transport
+   * Auto-constructed from connection endpoint if not provided
+   * Example: "wss://assistant-01.rapida.ai/v1/talk/webrtc/{assistantId}"
+   */
+  webrtcSignalingUrl?: string;
+
+  /**
+   * ICE servers for WebRTC (STUN/TURN)
+   * Default uses Google's public STUN servers
+   */
+  iceServers?: RTCIceServer[];
 
   /**
    * sample rate for player
@@ -104,13 +131,21 @@ export class InputOptions {
    * @param channels
    * @param channel
    * @param deviceId
-   * @param useWebRTC - Enable WebRTC-enhanced audio (default: true)
+   * @param webrtcSignalingUrl - WebSocket signaling URL for WebRTC transport (auto-constructed if not provided)
+   * @param iceServers - ICE servers for WebRTC
    */
-  constructor(channels: Channel[], channel?: Channel, deviceId?: string, useWebRTC: boolean = true) {
+  constructor(
+    channels: Channel[],
+    channel?: Channel,
+    deviceId?: string,
+    webrtcSignalingUrl?: string,
+    iceServers?: RTCIceServer[]
+  ) {
     this.channels = channels;
     if (channel) this.channel = channel;
     if (deviceId) this.recorderOptions.device = deviceId;
-    this.useWebRTC = useWebRTC;
+    this.webrtcSignalingUrl = webrtcSignalingUrl;
+    this.iceServers = iceServers;
   }
 
 

@@ -24,9 +24,11 @@
  */
 export { VoiceAgent } from "@/rapida/agents/voice-agent";
 export {
-  WebRTCAudioManager,
-  supportsWebRTCAudioEnhancements
-} from "@/rapida/audio/webrtc-audio-manager";
+  WebRTCTransport,
+  supportsWebRTCTransport,
+  type WebRTCTransportConfig,
+  type WebRTCTransportCallbacks,
+} from "@/rapida/audio/webrtc-transport";
 // export {
 //   // toTextContent,
 //   // toContentText,
@@ -44,6 +46,7 @@ export {
   InputOptions,
   OutputOptions,
   AgentConfig,
+  AudioTransportMode,
 } from "@/rapida/types/agent-config";
 export { AgentCallback } from "@/rapida/types/agent-callback";
 export { Message, MessageRole, MessageStatus } from "@/rapida/types/message";

@@ -38,11 +38,8 @@ import { Channel } from "@/rapida/types/channel";
 import { AgentConfig } from "@/rapida/types/agent-config";
 import { ConnectionConfig } from "@/rapida/types/connection-config";
 import { Agent } from "@/rapida/agents/";
-import { Input } from "@/rapida/audio/input";
-import { Output } from "@/rapida/audio/output";
-import { WebRTCAudioManager, supportsWebRTCAudioEnhancements } from "@/rapida/audio/webrtc-audio-manager";
+import { WebRTCTransport, supportsWebRTCTransport } from "@/rapida/audio/webrtc-transport";
 import { isAndroidDevice, isIosDevice } from "@/rapida/audio/compatibility";
-import { arrayBufferToUint8 } from "@/rapida/audio/audio";
 import {
   AgentCallback,
   ConversationAssistantMessage,
@@ -52,12 +49,8 @@ import {
 import { ConnectionState } from "@/rapida/types/connection-state";
 
 export class VoiceAgent extends Agent {
-  private input: Input | null = null;
-  private output: Output | null = null;
-  private webrtcAudioManager: WebRTCAudioManager | null = null;
-  private preliminaryInputStream: MediaStream | null = null;
+  private webrtcTransport: WebRTCTransport | null = null;
   private volume: number = 1;
-  private useWebRTCMode: boolean = true;
 
   private inputFrequencyData?: Uint8Array;
   private outputFrequencyData?: Uint8Array;
@@ -72,10 +65,39 @@ export class VoiceAgent extends Agent {
     agentCallback?: AgentCallback
   ) {
     super(connection, agentConfig, agentCallback);
-    // Determine if WebRTC mode should be used
-    this.useWebRTCMode =
-      agentConfig.inputOptions.useWebRTC &&
-      supportsWebRTCAudioEnhancements();
+
+    // Auto-construct WebRTC signaling URL if not provided
+    if (!agentConfig.inputOptions.webrtcSignalingUrl) {
+      agentConfig.inputOptions.webrtcSignalingUrl = this.buildWebRTCSignalingUrl(
+        connection.endpoint.assistant,
+        agentConfig.id
+      );
+    }
+
+    // Verify WebRTC is supported
+    if (!supportsWebRTCTransport()) {
+      console.warn("WebRTC transport not supported in this browser");
+    }
+  }
+
+  /**
+   * Build WebRTC signaling URL from assistant API endpoint and assistant ID
+   * Converts HTTP(S) URL to WS(S) URL with WebRTC path
+   * @param assistantEndpoint - The assistant API endpoint (e.g., "https://assistant-01.rapida.ai")
+   * @param assistantId - The assistant ID
+   * @returns WebSocket signaling URL (e.g., "wss://assistant-01.rapida.ai/v1/talk/webrtc/{assistantId}")
+   */
+  private buildWebRTCSignalingUrl(assistantEndpoint: string, assistantId: string): string {
+    // Convert HTTP(S) to WS(S)
+    let wsUrl = assistantEndpoint
+      .replace(/^https:\/\//i, "wss://")
+      .replace(/^http:\/\//i, "ws://");
+
+    // Remove trailing slash if present
+    wsUrl = wsUrl.replace(/\/$/, "");
+
+    // Append WebRTC signaling path with assistant ID
+    return `${wsUrl}/v1/talk/webrtc/${assistantId}`;
   }
 
   /**
@@ -91,95 +113,48 @@ export class VoiceAgent extends Agent {
    */
   public disconnectAudio = async () => {
     try {
-      this.preliminaryInputStream?.getTracks().forEach((track) => track.stop());
-
-      if (this.useWebRTCMode && this.webrtcAudioManager) {
-        await this.webrtcAudioManager.close();
-        this.webrtcAudioManager = null;
-      } else {
-        await this.input?.close();
-        await this.output?.close();
+      if (this.webrtcTransport) {
+        await this.webrtcTransport.close();
+        this.webrtcTransport = null;
       }
     } catch (error) {
       console.error("Error during cleanup:", error);
-      // Optionally, you can add more specific error handling or logging here
     }
   };
 
   private connectDevice = async () => {
     try {
-      if (this.useWebRTCMode) {
-        // Use WebRTC-enhanced audio manager for better AEC and lower latency
-        this.webrtcAudioManager = await WebRTCAudioManager.create(
-          this.agentConfig.inputOptions.recorderOption,
-          this.agentConfig.outputOptions.playerOption
-        );
-
-        // Setup worklet message handlers
-        if (this.webrtcAudioManager.inputWorkletNode) {
-          this.webrtcAudioManager.inputWorkletNode.port.onmessage = this.onInputWorkletMessage;
+      // Use native WebRTC transport - audio flows through peer connection
+      this.webrtcTransport = await WebRTCTransport.create(
+        {
+          signalingUrl: this.agentConfig.inputOptions.webrtcSignalingUrl!,
+          iceServers: this.agentConfig.inputOptions.iceServers,
+          recorderOptions: this.agentConfig.inputOptions.recorderOption,
+          playerOptions: this.agentConfig.outputOptions.playerOption,
+        },
+        {
+          onConnectionStateChange: (state) => {
+            console.log("WebRTC transport state:", state);
+            this.emit(AgentEvent.ConnectionStateChangeEvent, state);
+          },
+          onConnected: () => {
+            console.log("WebRTC transport connected");
+            this.emit(AgentEvent.ConversationReady, null);
+          },
+          onDisconnected: () => {
+            console.log("WebRTC transport disconnected");
+          },
+          onError: (error) => {
+            console.error("WebRTC transport error:", error);
+            this.emit(AgentEvent.ErrorEvent, error);
+          },
         }
-        if (this.webrtcAudioManager.outputWorkletNode) {
-          this.webrtcAudioManager.outputWorkletNode.port.onmessage = this.onOutputWorkletMessage;
-        }
+      );
 
-        console.log("WebRTC-enhanced audio mode enabled");
-      } else {
-        // Fallback to legacy mode
-        // Get the MediaStream with AEC enabled - we'll reuse this same stream
-        // to preserve the browser's echo cancellation state
-        this.preliminaryInputStream = await this.waitForUserMediaPermission();
-
-        // Create Output first, then Input with the existing stream
-        // This ensures AEC can correlate output audio with mic input
-        this.output = await Output.create(this.agentConfig.outputOptions.playerOption);
-        this.input = await Input.create(
-          this.agentConfig.inputOptions.recorderOption,
-          this.preliminaryInputStream // Reuse the same MediaStream
-        );
-
-        this.input.worklet.port.onmessage = this.onInputWorkletMessage;
-        this.output.worklet.port.onmessage = this.onOutputWorkletMessage;
-
-        // Don't stop the stream - it's now being used by Input
-        this.preliminaryInputStream = null;
-      }
+      console.log("WebRTC transport mode enabled - audio via peer connection");
     } catch (error) {
       await this.disconnectAudio();
       console.error("Microphone permission error:", error);
-    }
-  };
-
-  // Helper method to handle media permissions:
-  private waitForUserMediaPermission = async (): Promise<MediaStream> => {
-    try {
-      const sampleRate = this.agentConfig.inputOptions.recorderOption.sampleRate;
-
-      // Chrome needs explicit true values, not just { ideal: true }
-      // to properly enable audio processing and reduce noise
-      const options: MediaTrackConstraints = isChrome()
-        ? {
-          sampleRate: { ideal: sampleRate },
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true,
-          channelCount: { ideal: 1 },
-        }
-        : {
-          sampleRate: { ideal: sampleRate },
-          echoCancellation: { ideal: true },
-          noiseSuppression: { ideal: true },
-          autoGainControl: { ideal: true },
-        };
-
-      return await navigator.mediaDevices.getUserMedia({ audio: options });
-    } catch (error) {
-      // Handle permission denied or other errors.
-      console.error(
-        "Permission denied or error while requesting microphone access:",
-        error
-      );
-      throw error; // Propagate the error for further handling by `connectDevice`.
     }
   };
 
@@ -220,98 +195,36 @@ export class VoiceAgent extends Agent {
   };
 
   /**
-   *
-   * Sending a message to server contains audio buffer
-   * Very optimize version that will handle the request and response wihtout modifying
-   * this makes the actual data sent to the server to process
-   * @param event
-   */
-  private onInputWorkletMessage = (event: MessageEvent): void => {
-    const rawAudioPcmData = event.data[0];
-    if (this.connectionState !== ConnectionState.Connected) {
-      console.log("Please call connect first, agent is not connected");
-      return;
-    }
-
-    if (this.agentConfig.inputOptions.channel == Channel.Audio)
-      this.talkingConnection?.write(
-        this.createAssistantAudioMessage(
-          arrayBufferToUint8(rawAudioPcmData.buffer)
-        )
-      );
-  };
-
-  /**
-   *
-   * @param param0
-   */
-  private onOutputWorkletMessage = ({ data }: MessageEvent): void => {
-    if (data.type === "process") {
-      // this.updateMode(data.finished ? "listening" : "speaking");
-    }
-  };
-
-  /**
-   *
+   * Interrupt audio playback (WebRTC handles audio directly via peer connection)
    */
   private interruptAudio = () => {
-    if (this.useWebRTCMode && this.webrtcAudioManager) {
-      this.webrtcAudioManager.interruptAudio();
-    } else {
-      this.output?.worklet.port.postMessage({ type: "interrupt" });
-      this.output?.gain.gain.exponentialRampToValueAtTime(
-        0.0001,
-        this.output.context.currentTime + 2
-      );
-      setTimeout(() => {
-        if (this.output) this.output.gain.gain.value = this.volume;
-        this.output?.worklet.port.postMessage({ type: "clearInterrupted" });
-      }, 2000);
-    }
+    // WebRTC transport handles audio via peer connection
+    // Audio interruption is handled server-side
+    console.log("Audio interrupt requested");
   };
 
   /**
-   *
+   * Fade out audio (WebRTC handles audio directly via peer connection)
    * @param duration
-   * @returns
    */
   private fadeOutAudio = (duration: number = 2) => {
-    if (this.useWebRTCMode && this.webrtcAudioManager) {
-      this.webrtcAudioManager.fadeOutAudio(duration);
-      return;
+    // WebRTC transport handles audio via peer connection
+    // Volume control can be done via the audio element
+    if (this.webrtcTransport) {
+      this.webrtcTransport.setVolume(0);
+      setTimeout(() => {
+        this.webrtcTransport?.setVolume(this.volume);
+      }, duration * 1000);
     }
-
-    if (!this.output) return;
-
-    // Reset interrupt flag to prevent VAD from clearing audio due to previous WORD interrupt
-    this.output.worklet.port.postMessage({ type: "resetInterrupt" });
-
-    const currentTime = this.output.context.currentTime;
-    this.output.gain.gain.exponentialRampToValueAtTime(
-      0.0001,
-      currentTime + duration
-    );
-
-    setTimeout(() => {
-      if (this.output) this.output.gain.gain.value = this.volume;
-    }, duration * 1000);
   };
 
   /**
-   *
+   * Add audio chunk - not needed for WebRTC (audio flows via peer connection)
    * @param chunk
    */
   private addAudioChunk = (chunk: ArrayBuffer) => {
-    if (this.useWebRTCMode && this.webrtcAudioManager) {
-      this.webrtcAudioManager.addAudioChunk(chunk);
-    } else if (this.output) {
-      this.output.gain.gain.value = this.volume;
-      this.output.worklet.port.postMessage({ type: "clearInterrupted" });
-      this.output.worklet.port.postMessage({
-        type: "buffer",
-        buffer: chunk,
-      });
-    }
+    // WebRTC transport handles audio via peer connection
+    // This method is not used in WebRTC mode
   };
 
   /**
@@ -364,16 +277,13 @@ export class VoiceAgent extends Agent {
     }
     this.agentConfig.outputOptions.playerOption.device = deviceId;
 
-    if (this.useWebRTCMode && this.webrtcAudioManager) {
-      // Use WebRTC manager's device switching (more efficient)
+    if (this.webrtcTransport) {
       try {
-        await this.webrtcAudioManager.setOutputDevice(deviceId);
+        await this.webrtcTransport.setOutputDevice(deviceId);
       } catch (err) {
-        console.warn("Failed to set output device via WebRTC, falling back:", err);
+        console.warn("Failed to set output device:", err);
         await this.connectDevice();
       }
-    } else {
-      await this.connectDevice();
     }
     this.emit(AgentEvent.OutputMediaDeviceChangeEvent, deviceId);
   };
@@ -390,16 +300,13 @@ export class VoiceAgent extends Agent {
     console.log("changing the input audio with new device id " + deviceId);
     this.agentConfig.inputOptions.recorderOption.device = deviceId;
 
-    if (this.useWebRTCMode && this.webrtcAudioManager) {
-      // Use WebRTC manager's device switching (more efficient)
+    if (this.webrtcTransport) {
       try {
-        await this.webrtcAudioManager.setInputDevice(deviceId);
+        await this.webrtcTransport.setInputDevice(deviceId);
       } catch (err) {
-        console.warn("Failed to set input device via WebRTC, falling back:", err);
+        console.warn("Failed to set input device:", err);
         await this.connectDevice();
       }
-    } else {
-      await this.connectDevice();
     }
     this.emit(AgentEvent.InputMediaDeviceChangeEvent, deviceId);
   };
@@ -707,13 +614,10 @@ export class VoiceAgent extends Agent {
    * @returns
    */
   public getInputByteFrequencyData = (): Uint8Array | undefined => {
-    const analyser = this.useWebRTCMode
-      ? this.webrtcAudioManager?.inputAnalyserNode
-      : this.input?.analyser;
+    const analyser = this.webrtcTransport?.inputAnalyserNode;
 
     if (analyser) {
       this.inputFrequencyData = new Uint8Array(analyser.frequencyBinCount);
-      // Use type assertion to satisfy TypeScript
       (analyser.getByteFrequencyData as (array: Uint8Array) => void)(
         this.inputFrequencyData
       );
@@ -726,13 +630,10 @@ export class VoiceAgent extends Agent {
    * @returns
    */
   public getOutputByteFrequencyData = (): Uint8Array | undefined => {
-    const analyser = this.useWebRTCMode
-      ? this.webrtcAudioManager?.outputAnalyserNode
-      : this.output?.analyser;
+    const analyser = this.webrtcTransport?.outputAnalyserNode;
 
     if (analyser) {
       this.outputFrequencyData = new Uint8Array(analyser.frequencyBinCount);
-      // Use type assertion to satisfy TypeScript
       (analyser.getByteFrequencyData as (array: Uint8Array) => void)(
         this.outputFrequencyData
       );
@@ -741,9 +642,16 @@ export class VoiceAgent extends Agent {
   };
 
   /**
-   * Check if WebRTC audio mode is active
+   * Check if WebRTC transport is connected
    */
-  public get isWebRTCMode(): boolean {
-    return this.useWebRTCMode && this.webrtcAudioManager !== null;
+  public get isWebRTCConnected(): boolean {
+    return this.webrtcTransport?.connected ?? false;
+  }
+
+  /**
+   * Get the WebRTC transport instance
+   */
+  public get transport(): WebRTCTransport | null {
+    return this.webrtcTransport;
   }
 }
