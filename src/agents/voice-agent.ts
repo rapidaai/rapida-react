@@ -51,6 +51,7 @@ import { ConnectionState } from "@/rapida/types/connection-state";
 export class VoiceAgent extends Agent {
   private webrtcTransport: WebRTCTransport | null = null;
   private volume: number = 1;
+  private connectionConfig: ConnectionConfig;
 
   private inputFrequencyData?: Uint8Array;
   private outputFrequencyData?: Uint8Array;
@@ -65,6 +66,7 @@ export class VoiceAgent extends Agent {
     agentCallback?: AgentCallback
   ) {
     super(connection, agentConfig, agentCallback);
+    this.connectionConfig = connection;
 
     // Auto-construct WebRTC signaling URL if not provided
     if (!agentConfig.inputOptions.webrtcSignalingUrl) {
@@ -83,9 +85,10 @@ export class VoiceAgent extends Agent {
   /**
    * Build WebRTC signaling URL from assistant API endpoint and assistant ID
    * Converts HTTP(S) URL to WS(S) URL with WebRTC path
+   * Includes auth credentials as query parameters (required for WebSocket auth)
    * @param assistantEndpoint - The assistant API endpoint (e.g., "https://assistant-01.rapida.ai")
    * @param assistantId - The assistant ID
-   * @returns WebSocket signaling URL (e.g., "wss://assistant-01.rapida.ai/v1/talk/webrtc/{assistantId}")
+   * @returns WebSocket signaling URL (e.g., "wss://assistant-01.rapida.ai/v1/talk/webrtc/{assistantId}?authorization=xxx")
    */
   private buildWebRTCSignalingUrl(assistantEndpoint: string, assistantId: string): string {
     // Convert HTTP(S) to WS(S)
@@ -96,8 +99,39 @@ export class VoiceAgent extends Agent {
     // Remove trailing slash if present
     wsUrl = wsUrl.replace(/\/$/, "");
 
-    // Append WebRTC signaling path with assistant ID
-    return `${wsUrl}/v1/talk/webrtc/${assistantId}`;
+    // Build base URL with path
+    let url = `${wsUrl}/v1/talk/webrtc/${assistantId}`;
+
+    // Add auth credentials as query parameters (browser WebSocket doesn't support custom headers)
+    const authInfo = this.connectionConfig.authInfo;
+    if (authInfo) {
+      const params = new URLSearchParams();
+
+      // Map SDK auth to server expected query params
+      // Check for 'authorization' first (UserAuthInfo - debugger/personal token)
+      // Then check for 'x-api-key' (ClientAuthInfo - SDK/webplugin)
+      if ('authorization' in authInfo && authInfo['authorization']) {
+        params.append('authorization', authInfo['authorization'] as string);
+      } else if ('x-api-key' in authInfo && authInfo['x-api-key']) {
+        params.append('authorization', authInfo['x-api-key'] as string);
+      }
+      // x-auth-id -> x-auth-id
+      if ('x-auth-id' in authInfo && authInfo['x-auth-id']) {
+        params.append('x-auth-id', authInfo['x-auth-id'] as string);
+      }
+      // x-project-id -> x-project-id
+      if ('x-project-id' in authInfo && authInfo['x-project-id']) {
+        params.append('x-project-id', authInfo['x-project-id'] as string);
+      }
+
+      const queryString = params.toString();
+      if (queryString) {
+        url = `${url}?${queryString}`;
+      }
+    }
+
+    console.log("[VoiceAgent] WebRTC signaling URL:", url.replace(/authorization=[^&]+/, 'authorization=***'));
+    return url;
   }
 
   /**
@@ -125,6 +159,7 @@ export class VoiceAgent extends Agent {
   private connectDevice = async () => {
     try {
       // Use native WebRTC transport - audio flows through peer connection
+      // Text/content also flows through WebRTC signaling
       this.webrtcTransport = await WebRTCTransport.create(
         {
           signalingUrl: this.agentConfig.inputOptions.webrtcSignalingUrl!,
@@ -137,13 +172,22 @@ export class VoiceAgent extends Agent {
             console.log("WebRTC transport state:", state);
             // Map RTCPeerConnectionState to ConnectionState
             if (state === "connected") {
+              this.connectionState = ConnectionState.Connected;
               this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Connected);
             } else if (state === "disconnected" || state === "closed" || state === "failed") {
+              this.connectionState = ConnectionState.Disconnected;
               this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Disconnected);
             }
           },
-          onConnected: () => {
+          onConnected: async () => {
             console.log("WebRTC transport connected");
+            // Proactively resume audio to prevent first audio cutoff
+            try {
+              await this.webrtcTransport?.resumeAudio();
+              console.log("Audio resumed on connection");
+            } catch (err) {
+              console.warn("Failed to resume audio on connection:", err);
+            }
           },
           onDisconnected: () => {
             console.log("WebRTC transport disconnected");
@@ -151,6 +195,28 @@ export class VoiceAgent extends Agent {
           onError: (error) => {
             console.error("WebRTC transport error:", error);
             this.emit(AgentEvent.ErrorEvent, "client", error.message || String(error));
+          },
+          onTextReceived: (text, messageId, completed) => {
+            // Handle assistant text response
+            console.log("Assistant text received:", text, "completed:", completed);
+            this._handleAssistantText(text, messageId, completed ?? true);
+          },
+          onUserTranscription: (text, messageId, completed) => {
+            // Handle user speech transcription
+            console.log("User transcription:", text, "completed:", completed);
+            this._handleUserTranscription(text, messageId, completed ?? true);
+          },
+          onClear: () => {
+            // Handle audio interruption
+            console.log("Audio clear/interruption");
+            this.interruptAudio();
+          },
+          onConfiguration: (conversationId) => {
+            // Handle configuration with conversation ID
+            console.log("Configuration received, conversation ID:", conversationId);
+            if (conversationId) {
+              this.changeConversation(String(conversationId));
+            }
           },
         }
       );
@@ -161,6 +227,146 @@ export class VoiceAgent extends Agent {
       console.error("Microphone permission error:", error);
     }
   };
+
+  /**
+   * Handle assistant text from WebRTC - supports streaming with completed flag
+   * Similar to original onHandleAssistant for gRPC
+   */
+  private _handleAssistantText(text: string, messageId?: string, completed: boolean = true) {
+    const id = messageId || `msg_${Date.now()}`;
+    const now = new Date();
+
+    if (completed) {
+      // Complete message
+      if (this.agentMessages.length > 0) {
+        const lastMessage = this.agentMessages[this.agentMessages.length - 1];
+        if (
+          lastMessage.role === MessageRole.System &&
+          lastMessage.status === MessageStatus.Pending
+        ) {
+          // Update the existing message to complete
+          lastMessage.messages = [text]; // Replace with complete message
+          lastMessage.status = MessageStatus.Complete;
+          lastMessage.time = now;
+        } else {
+          // Unexpected case: complete message without pending, create new
+          this.agentMessages.push({
+            id: id,
+            role: MessageRole.System,
+            messages: [text],
+            time: now,
+            status: MessageStatus.Complete,
+          });
+        }
+      } else {
+        this.agentMessages.push({
+          id: id,
+          role: MessageRole.System,
+          messages: [text],
+          time: now,
+          status: MessageStatus.Complete,
+        });
+      }
+    } else {
+      // Chunk - streaming text
+      if (this.agentMessages.length > 0) {
+        const lastMessage = this.agentMessages[this.agentMessages.length - 1];
+        if (
+          lastMessage.role === MessageRole.System &&
+          lastMessage.status === MessageStatus.Pending
+        ) {
+          // Update existing message with new chunk
+          lastMessage.messages[0] += text; // Merge strings
+          lastMessage.time = now;
+        } else {
+          // Create new pending message for chunk
+          this.agentMessages.push({
+            id: id,
+            role: MessageRole.System,
+            messages: [text],
+            time: now,
+            status: MessageStatus.Pending,
+          });
+        }
+      } else {
+        // Create new pending message for chunk if no messages exist
+        this.agentMessages.push({
+          id: id,
+          role: MessageRole.System,
+          messages: [text],
+          time: now,
+          status: MessageStatus.Pending,
+        });
+      }
+    }
+
+    // Create callback message and notify callbacks
+    const callbackMessage = new ConversationAssistantMessage();
+    (callbackMessage as any).id = id;
+    (callbackMessage as any).text = text;
+    (callbackMessage as any).messageText = text;
+    (callbackMessage as any).completed = completed;
+
+    // Notify all registered callbacks
+    this.agentCallbacks.forEach((cb) => {
+      cb.onAssistantMessage?.(callbackMessage);
+    });
+
+    // Emit conversation event (cast to any for WebRTC mode compatibility)
+    this.emit(
+      AgentEvent.ConversationEvent,
+      AssistantTalkOutput.DataCase.ASSISTANT,
+      callbackMessage as any
+    );
+  }
+
+  /**
+   * Handle user transcription from WebRTC - supports streaming with completed flag
+   * Similar to original onHandleUser for gRPC
+   */
+  private _handleUserTranscription(text: string, messageId?: string, completed: boolean = true) {
+    const id = messageId || `msg_${Date.now()}`;
+    const now = new Date();
+
+    // Check if we need to update existing message or create new one
+    if (this.agentMessages.length > 0) {
+      const lastMessage = this.agentMessages[this.agentMessages.length - 1];
+      if (
+        lastMessage.role === MessageRole.User &&
+        lastMessage.id === id
+      ) {
+        // Update existing message with same ID
+        this.agentMessages.pop();
+      }
+    }
+
+    this.agentMessages.push({
+      id: id,
+      role: MessageRole.User,
+      messages: [text],
+      time: now,
+      status: completed ? MessageStatus.Complete : MessageStatus.Pending,
+    });
+
+    // Create callback message and notify callbacks
+    const callbackMessage = new ConversationUserMessage();
+    (callbackMessage as any).id = id;
+    (callbackMessage as any).text = text;
+    (callbackMessage as any).messageText = text;
+    (callbackMessage as any).completed = completed;
+
+    // Notify all registered callbacks
+    this.agentCallbacks.forEach((cb) => {
+      cb.onUserMessage?.(callbackMessage);
+    });
+
+    // Emit conversation event (cast to any for WebRTC mode compatibility)
+    this.emit(
+      AgentEvent.ConversationEvent,
+      AssistantTalkOutput.DataCase.USER,
+      callbackMessage as any
+    );
+  }
 
   /**
    *
@@ -202,8 +408,10 @@ export class VoiceAgent extends Agent {
    * Interrupt audio playback (WebRTC handles audio directly via peer connection)
    */
   private interruptAudio = () => {
-    // WebRTC transport handles audio via peer connection
-    // Audio interruption is handled server-side
+    // Call WebRTC transport's interrupt method for smooth audio cutoff
+    if (this.webrtcTransport) {
+      this.webrtcTransport.interruptAudio();
+    }
     console.log("Audio interrupt requested");
   };
 
@@ -232,15 +440,20 @@ export class VoiceAgent extends Agent {
   };
 
   /**
-   *
-   * @returns
+   * Connect to the assistant
+   * For Audio channel: Uses WebRTC for both audio and signaling (no gRPC needed)
+   * For Text channel: Uses gRPC connection
    */
   public connect = async () => {
     try {
       if (this.agentConfig.inputOptions.channel == Channel.Audio) {
+        // WebRTC handles everything - audio via peer connection, text via signaling
         await this.connectAudio();
+        // Don't call connectAgent - WebRTC endpoint creates conversation on server
+      } else {
+        // Text-only mode uses gRPC
+        await this.connectAgent();
       }
-      await this.connectAgent();
     } catch (err) {
       console.error("error while connect " + err);
     }
@@ -257,13 +470,41 @@ export class VoiceAgent extends Agent {
   };
 
   /**
-   *
+   * Send text message to the assistant
+   * Works in both Audio and Text modes
    * @param text
    */
   public onSendText = async (text: string) => {
     if (!this.isConnected) await this.connect();
-    if (this.agentConfig.inputOptions.channel == Channel.Text) {
-      // only send text when you know the channel is text
+
+    // Add user message to agentMessages immediately
+    const messageId = `msg_${Date.now()}`;
+    const now = new Date();
+    this.agentMessages.push({
+      id: messageId,
+      role: MessageRole.User,
+      messages: [text],
+      time: now,
+      status: MessageStatus.Complete,
+    });
+
+    // Emit conversation event for UI update
+    const userMessage = new ConversationUserMessage();
+    (userMessage as any).id = messageId;
+    (userMessage as any).text = text;
+    (userMessage as any).messageText = text;
+    this.emit(AgentEvent.ConversationEvent, AssistantTalkOutput.DataCase.USER, userMessage as any);
+
+    if (this.agentConfig.inputOptions.channel == Channel.Audio) {
+      // In Audio mode, send text via WebRTC signaling
+      if (this.webrtcTransport) {
+        this.webrtcTransport.sendText(text);
+        console.log("Text sent via WebRTC signaling:", text);
+      } else {
+        console.warn("WebRTC transport not available for text sending");
+      }
+    } else {
+      // In Text mode, use gRPC connection
       this.talkingConnection?.write(this.createAssistantTextMessage(text));
     }
   };
@@ -662,10 +903,18 @@ export class VoiceAgent extends Agent {
     return this.webrtcTransport?.connected ?? false;
   }
 
-  /**
-   * Get the WebRTC transport instance
-   */
+  /** Get the WebRTC transport instance */
   public get transport(): WebRTCTransport | null {
     return this.webrtcTransport;
+  }
+
+  /** Get WebRTC connection statistics */
+  public async getStats() {
+    return this.webrtcTransport?.getStats() ?? null;
+  }
+
+  /** Start periodic stats monitoring (returns cleanup function) */
+  public startAudioMonitoring(): () => void {
+    return this.webrtcTransport?.startAudioMonitoring() ?? (() => { });
   }
 }

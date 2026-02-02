@@ -26,9 +26,14 @@
 import { RecorderOptions, PlayerOptions } from "@/rapida/types/agent-config";
 import { isChrome } from "@/rapida/utils";
 
-/**
- * ICE Candidate structure matching server format
- */
+// Audio constants matching server configuration
+const OPUS_SAMPLE_RATE = 48000;
+const DEFAULT_ICE_SERVERS: RTCIceServer[] = [
+  { urls: "stun:stun.l.google.com:19302" },
+  { urls: "stun:stun1.l.google.com:19302" },
+];
+
+/** ICE Candidate structure matching server format */
 interface ICECandidateData {
   candidate: string;
   sdpMid: string;
@@ -41,7 +46,7 @@ interface ICECandidateData {
  * Matches assistant-api WebRTC signaling protocol
  */
 interface SignalingMessage {
-  type: "connect" | "config" | "offer" | "answer" | "ice_candidate" | "disconnect" | "error";
+  type: "connect" | "config" | "offer" | "answer" | "ice_candidate" | "disconnect" | "error" | "content" | "clear" | "audio_ready";
   sdp?: string;
   candidate?: ICECandidateData;
   sessionId?: string;
@@ -50,6 +55,11 @@ interface SignalingMessage {
     ice_servers?: RTCIceServer[];
     audio_codec?: string;
     sample_rate?: number;
+    content_type?: string;
+    text?: string;
+    message_id?: string;
+    completed?: boolean;
+    conversation_id?: number;
   };
 }
 
@@ -67,9 +77,7 @@ export interface WebRTCTransportConfig {
   playerOptions: PlayerOptions;
 }
 
-/**
- * WebRTC Transport Events
- */
+/** WebRTC Transport Events */
 export interface WebRTCTransportCallbacks {
   /** Called when connection state changes */
   onConnectionStateChange?: (state: RTCPeerConnectionState) => void;
@@ -81,19 +89,45 @@ export interface WebRTCTransportCallbacks {
   onConnected?: () => void;
   /** Called when disconnected */
   onDisconnected?: () => void;
+  /** Called when text content is received from assistant */
+  onTextReceived?: (text: string, messageId?: string, completed?: boolean) => void;
+  /** Called when user transcription is received */
+  onUserTranscription?: (text: string, messageId?: string, completed?: boolean) => void;
+  /** Called when audio should be cleared (interruption) */
+  onClear?: () => void;
+  /** Called when configuration is received (conversation ID, etc.) */
+  onConfiguration?: (conversationId: number) => void;
+}
+
+/** WebRTC connection statistics */
+export interface WebRTCStats {
+  /** Total packets received */
+  packetsReceived: number;
+  /** Total packets lost */
+  packetsLost: number;
+  /** Total packets sent */
+  packetsSent: number;
+  /** Total bytes received */
+  bytesReceived: number;
+  /** Total bytes sent */
+  bytesSent: number;
+  /** Current jitter in seconds */
+  jitter: number;
+  /** Packet loss rate (0-1) */
+  lossRate: number;
 }
 
 /**
  * WebRTC Transport
- * 
- * Native WebRTC-based audio transport that uses:
- * - WebSocket for signaling (SDP/ICE exchange) only
- * - WebRTC media tracks (SRTP) for actual audio transport
- * 
- * This is more efficient than streaming audio over gRPC because:
+ *
+ * Native WebRTC-based audio transport using:
+ * - WebSocket for signaling (SDP/ICE exchange)
+ * - WebRTC media tracks (SRTP) for audio
+ *
+ * Benefits over gRPC streaming:
  * - Lower latency (direct peer connection)
  * - Built-in encryption (SRTP)
- * - Browser-optimized audio processing
+ * - Browser-optimized audio pipeline
  * - Better NAT traversal via ICE
  */
 export class WebRTCTransport {
@@ -119,17 +153,14 @@ export class WebRTCTransport {
   private isConnected = false;
   private isMuted = false;
   private volume = 1;
+  private statsInterval: ReturnType<typeof setInterval> | null = null;
+  private lastPacketsReceived = 0;
+  private lastPacketsLost = 0;
 
-  /**
-   * Create a new WebRTC transport
-   */
   constructor(config: WebRTCTransportConfig, callbacks: WebRTCTransportCallbacks = {}) {
     this.config = {
       ...config,
-      iceServers: config.iceServers || [
-        { urls: "stun:stun.l.google.com:19302" },
-        { urls: "stun:stun1.l.google.com:19302" },
-      ],
+      iceServers: config.iceServers || DEFAULT_ICE_SERVERS,
     };
     this.callbacks = callbacks;
   }
@@ -181,30 +212,15 @@ export class WebRTCTransport {
    */
   private async setupLocalMedia(): Promise<void> {
     const constraints = this.getAudioConstraints();
-    console.log("Requesting microphone with constraints:", constraints);
+    this.localStream = await navigator.mediaDevices.getUserMedia({ audio: constraints, video: false });
 
-    this.localStream = await navigator.mediaDevices.getUserMedia({
-      audio: constraints,
-      video: false,
-    });
-
-    console.log("Microphone access granted, tracks:", this.localStream.getAudioTracks().length);
-
-    // Log track settings
     const track = this.localStream.getAudioTracks()[0];
-    if (track) {
-      console.log("Audio track settings:", track.getSettings());
-    }
+    if (track) track.enabled = true;
 
     // Setup audio context for visualization
-    this.audioContext = new AudioContext({
-      sampleRate: this.config.recorderOptions.sampleRate,
-    });
-
-    // Resume audio context if suspended
+    this.audioContext = new AudioContext();
     if (this.audioContext.state === "suspended") {
       await this.audioContext.resume();
-      console.log("AudioContext resumed");
     }
 
     const source = this.audioContext.createMediaStreamSource(this.localStream);
@@ -214,7 +230,8 @@ export class WebRTCTransport {
   }
 
   /**
-   * Get audio constraints with WebRTC processing enabled
+   * Get audio constraints - echo cancellation ON, others OFF
+   * Testing if noise suppression/auto gain cause clipping
    */
   private getAudioConstraints(): MediaTrackConstraints {
     const { sampleRate, device } = this.config.recorderOptions;
@@ -222,6 +239,11 @@ export class WebRTCTransport {
     const baseConstraints: MediaTrackConstraints = {
       sampleRate: { ideal: sampleRate },
       channelCount: { ideal: 1 },
+      // Echo cancellation ON to prevent echo
+      echoCancellation: true,
+      // Keep these OFF to test if they cause clipping
+      noiseSuppression: false,
+      autoGainControl: false,
     };
 
     if (device) {
@@ -231,72 +253,65 @@ export class WebRTCTransport {
     if (isChrome()) {
       return {
         ...baseConstraints,
-        echoCancellation: true,
-        noiseSuppression: true,
-        autoGainControl: true,
         // @ts-ignore Chrome-specific
         googEchoCancellation: true,
-        // @ts-ignore
-        googAutoGainControl: true,
-        // @ts-ignore
-        googNoiseSuppression: true,
-        // @ts-ignore
-        googHighpassFilter: true,
+        // @ts-ignore - keep OFF
+        googAutoGainControl: false,
+        // @ts-ignore - keep OFF
+        googNoiseSuppression: false,
+        // @ts-ignore - keep OFF
+        googHighpassFilter: false,
       };
     }
 
-    return {
-      ...baseConstraints,
-      echoCancellation: { ideal: true },
-      noiseSuppression: { ideal: true },
-      autoGainControl: { ideal: true },
-    };
+    return baseConstraints;
   }
 
   /**
    * Setup RTCPeerConnection
    */
   private setupPeerConnection(): void {
-    this.peerConnection = new RTCPeerConnection({
-      iceServers: this.config.iceServers,
-    });
+    this.peerConnection = new RTCPeerConnection({ iceServers: this.config.iceServers });
 
-    // Add local tracks to peer connection
+    // Add local audio track
     if (this.localStream) {
-      this.localStream.getTracks().forEach((track) => {
-        this.peerConnection!.addTrack(track, this.localStream!);
-      });
+      const track = this.localStream.getAudioTracks()[0];
+      if (track) {
+        const sender = this.peerConnection.addTrack(track, this.localStream);
+        const transceiver = this.peerConnection.getTransceivers().find(t => t.sender === sender);
+        if (transceiver) {
+          transceiver.direction = "sendrecv";
+          this.setCodecPreferences(transceiver);
+        }
+      }
     }
 
-    // Handle remote tracks (audio from server)
+    // Handle remote audio
     this.peerConnection.ontrack = (event) => {
-      console.log("Remote track received:", event.track.kind);
       this.remoteStream = event.streams[0];
       this.setupRemoteAudio(event.streams[0]);
     };
 
-    // Handle ICE candidates - send to server in expected format
+    // Handle ICE candidates
     this.peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
-        const candidateJson = event.candidate.toJSON();
+        const c = event.candidate.toJSON();
         this.sendSignalingMessage({
           type: "ice_candidate",
           sessionId: this.sessionId || undefined,
           candidate: {
-            candidate: candidateJson.candidate || "",
-            sdpMid: candidateJson.sdpMid || "",
-            sdpMLineIndex: candidateJson.sdpMLineIndex || 0,
-            usernameFragment: candidateJson.usernameFragment || undefined,
+            candidate: c.candidate || "",
+            sdpMid: c.sdpMid || "",
+            sdpMLineIndex: c.sdpMLineIndex || 0,
+            usernameFragment: c.usernameFragment || undefined,
           },
         });
       }
     };
 
-    // Handle connection state changes
+    // Handle connection state
     this.peerConnection.onconnectionstatechange = () => {
       const state = this.peerConnection?.connectionState;
-      console.log("WebRTC connection state:", state);
-
       this.callbacks.onConnectionStateChange?.(state as RTCPeerConnectionState);
 
       if (state === "connected") {
@@ -304,127 +319,114 @@ export class WebRTCTransport {
         this.callbacks.onConnected?.();
       } else if (state === "disconnected" || state === "failed" || state === "closed") {
         this.isConnected = false;
+        this.stopStatsMonitoring();
         this.callbacks.onDisconnected?.();
       }
     };
-
-    // Handle ICE connection state
-    this.peerConnection.oniceconnectionstatechange = () => {
-      console.log("ICE connection state:", this.peerConnection?.iceConnectionState);
-    };
   }
 
   /**
-   * Setup remote audio playback
+   * Setup remote audio playback using HTMLAudioElement.
+   * Simple and reliable - no AudioContext interference.
    */
-  private setupRemoteAudio(stream: MediaStream): void {
-    console.log("Setting up remote audio playback, tracks:", stream.getAudioTracks().length);
+  private async setupRemoteAudio(stream: MediaStream): Promise<void> {
+    // Skip if already setup with same stream
+    if (this.audioElement?.srcObject === stream) return;
 
-    // Create audio element for playback
-    this.audioElement = new Audio();
+    // Create audio element only once
+    if (!this.audioElement) {
+      this.audioElement = new Audio();
+      this.audioElement.autoplay = true;
+
+      // Set output device if specified
+      if (this.config.playerOptions.device && "setSinkId" in this.audioElement) {
+        try {
+          await (this.audioElement as any).setSinkId(this.config.playerOptions.device);
+        } catch { }
+      }
+    }
+
+    // Set stream and volume
     this.audioElement.srcObject = stream;
-    this.audioElement.autoplay = true;
     this.audioElement.volume = this.volume;
 
-    // Muted initially to allow autoplay, unmute after play starts
-    // Note: This is a workaround for strict autoplay policies
-    // this.audioElement.muted = true;
+    // Play immediately - fall back to user interaction if autoplay blocked
+    try {
+      await this.audioElement.play();
+    } catch {
+      this.setupUserInteractionHandler();
+    }
+  }
 
-    // Set output device if specified
-    if (this.config.playerOptions.device && "setSinkId" in this.audioElement) {
-      (this.audioElement as any).setSinkId(this.config.playerOptions.device).catch((err: Error) => {
-        console.warn("Failed to set output device:", err);
+  /** Set codec preferences to prefer Opus (best quality) over G.711 */
+  private setCodecPreferences(transceiver: RTCRtpTransceiver): void {
+    if (!transceiver.setCodecPreferences) return;
+
+    try {
+      const capabilities = RTCRtpReceiver.getCapabilities("audio");
+      if (!capabilities?.codecs) return;
+
+      const opus = capabilities.codecs.filter(c => c.mimeType.toLowerCase() === "audio/opus");
+      const pcmu = capabilities.codecs.filter(c => c.mimeType.toLowerCase() === "audio/pcmu");
+      const pcma = capabilities.codecs.filter(c => c.mimeType.toLowerCase() === "audio/pcma");
+      const others = capabilities.codecs.filter(c =>
+        !["audio/opus", "audio/pcmu", "audio/pcma"].includes(c.mimeType.toLowerCase())
+      );
+
+      transceiver.setCodecPreferences([...opus, ...pcmu, ...pcma, ...others]);
+    } catch { }
+  }
+
+  /** Start RTP stats monitoring (for debugging only) */
+  private startStatsMonitoring(): void {
+    this.stopStatsMonitoring();
+    this.statsInterval = setInterval(() => this.updateStats(), 5000);
+  }
+
+  /** Stop RTP stats monitoring */
+  private stopStatsMonitoring(): void {
+    if (this.statsInterval) {
+      clearInterval(this.statsInterval);
+      this.statsInterval = null;
+    }
+  }
+
+  /** Update internal stats counters (silent, for getStats() API) */
+  private async updateStats(): Promise<void> {
+    if (!this.peerConnection) return;
+    try {
+      const stats = await this.peerConnection.getStats();
+      stats.forEach((report) => {
+        if (report.type === "inbound-rtp" && report.kind === "audio") {
+          this.lastPacketsReceived = report.packetsReceived || 0;
+          this.lastPacketsLost = report.packetsLost || 0;
+        }
       });
-    }
-
-    // Setup output analyser for visualization
-    if (this.audioContext) {
-      // Resume audio context if suspended
-      if (this.audioContext.state === "suspended") {
-        this.audioContext.resume().catch(console.warn);
-      }
-
-      const source = this.audioContext.createMediaStreamSource(stream);
-      this.outputAnalyser = this.audioContext.createAnalyser();
-      this.outputAnalyser.fftSize = 256;
-      source.connect(this.outputAnalyser);
-    }
-
-    // Start playback with retry
-    this.startAudioPlayback();
+    } catch { }
   }
 
   /**
-   * Start audio playback with retry logic
-   */
-  private startAudioPlayback(): void {
-    if (!this.audioElement) return;
-
-    const attemptPlay = () => {
-      this.audioElement?.play()
-        .then(() => {
-          console.log("Audio playback started successfully");
-          // Unmute after successful play
-          if (this.audioElement) {
-            this.audioElement.muted = false;
-            this.audioElement.volume = this.volume;
-          }
-        })
-        .catch((err) => {
-          console.warn("Audio autoplay blocked:", err.message);
-          // Will need user interaction to start audio
-          // Setup click handler as fallback
-          this.setupUserInteractionHandler();
-        });
-    };
-
-    attemptPlay();
-  }
-
-  /**
-   * Setup handler for user interaction to start audio
-   * (Required by some browsers due to autoplay policy)
+   * Setup handler for user interaction to start audio (autoplay policy fallback)
    */
   private setupUserInteractionHandler(): void {
-    const startAudio = () => {
-      if (this.audioElement && this.audioElement.paused) {
-        this.audioElement.muted = false;
-        this.audioElement.play()
-          .then(() => {
-            console.log("Audio started after user interaction");
-            document.removeEventListener("click", startAudio);
-            document.removeEventListener("touchstart", startAudio);
-            document.removeEventListener("keydown", startAudio);
-          })
-          .catch(console.warn);
-      }
-      // Also resume audio context
-      if (this.audioContext?.state === "suspended") {
-        this.audioContext.resume().catch(console.warn);
-      }
+    const startAudio = async () => {
+      try {
+        if (this.audioContext?.state === "suspended") await this.audioContext.resume();
+        if (this.audioElement?.paused) await this.audioElement.play();
+      } catch { }
+      document.removeEventListener("click", startAudio);
+      document.removeEventListener("touchstart", startAudio);
     };
-
     document.addEventListener("click", startAudio, { once: true });
     document.addEventListener("touchstart", startAudio, { once: true });
-    document.addEventListener("keydown", startAudio, { once: true });
-
-    console.log("Waiting for user interaction to start audio...");
   }
 
   /**
    * Manually start audio playback (call from user interaction)
    */
   public async resumeAudio(): Promise<void> {
-    // Resume audio context
-    if (this.audioContext?.state === "suspended") {
-      await this.audioContext.resume();
-    }
-
-    // Start audio element playback
-    if (this.audioElement && this.audioElement.paused) {
-      this.audioElement.muted = false;
-      await this.audioElement.play();
-    }
+    if (this.audioContext?.state === "suspended") await this.audioContext.resume();
+    if (this.audioElement?.paused) await this.audioElement.play();
   }
 
   /**
@@ -434,22 +436,20 @@ export class WebRTCTransport {
     return new Promise((resolve, reject) => {
       this.signalingSocket = new WebSocket(this.config.signalingUrl);
 
-      this.signalingSocket.onopen = () => {
-        console.log("Signaling WebSocket connected");
-        resolve();
-      };
+      this.signalingSocket.onopen = () => resolve();
+      this.signalingSocket.onerror = () => reject(new Error("Signaling connection failed"));
 
-      this.signalingSocket.onerror = (error) => {
-        console.error("Signaling WebSocket error:", error);
-        reject(new Error("Failed to connect to signaling server"));
-      };
-
-      this.signalingSocket.onclose = () => {
-        console.log("Signaling WebSocket closed");
+      this.signalingSocket.onclose = (event) => {
+        if (!event.wasClean && this.isConnected) {
+          this.callbacks.onError?.(new Error(`WebSocket closed: ${event.reason || "Unknown"}`));
+        }
+        this.callbacks.onDisconnected?.();
       };
 
       this.signalingSocket.onmessage = (event) => {
-        this.handleSignalingMessage(JSON.parse(event.data));
+        try {
+          this.handleSignalingMessage(JSON.parse(event.data));
+        } catch { }
       };
     });
   }
@@ -458,40 +458,24 @@ export class WebRTCTransport {
    * Handle incoming signaling message
    */
   private async handleSignalingMessage(msg: SignalingMessage): Promise<void> {
-    console.log("Received signaling message:", msg.type);
-
     switch (msg.type) {
       case "config":
-        // Server sends config with ICE servers and audio settings
-        if (msg.sessionId) {
-          this.sessionId = msg.sessionId;
-        }
-        if (msg.metadata?.ice_servers) {
-          // Update ICE servers from server config
-          this.config.iceServers = msg.metadata.ice_servers;
-        }
-        // Setup peer connection with server's ICE config
+        if (msg.sessionId) this.sessionId = msg.sessionId;
+        if (msg.metadata?.ice_servers) this.config.iceServers = msg.metadata.ice_servers;
+        if (msg.metadata?.conversation_id) this.callbacks.onConfiguration?.(msg.metadata.conversation_id);
         this.setupPeerConnection();
         break;
 
       case "offer":
-        // Server sends offer - create and send answer
         if (msg.sdp && this.peerConnection) {
-          await this.peerConnection.setRemoteDescription({
-            type: "offer",
-            sdp: msg.sdp,
-          });
+          await this.peerConnection.setRemoteDescription({ type: "offer", sdp: msg.sdp });
           await this.createAndSendAnswer();
         }
         break;
 
       case "answer":
-        // If we sent an offer, handle answer (fallback mode)
         if (msg.sdp && this.peerConnection) {
-          await this.peerConnection.setRemoteDescription({
-            type: "answer",
-            sdp: msg.sdp,
-          });
+          await this.peerConnection.setRemoteDescription({ type: "answer", sdp: msg.sdp });
         }
         break;
 
@@ -506,13 +490,32 @@ export class WebRTCTransport {
         break;
 
       case "disconnect":
-        console.log("Server requested disconnect");
         await this.close();
         break;
 
       case "error":
-        console.error("Signaling error:", msg.error);
-        this.callbacks.onError?.(new Error(msg.error || "Unknown signaling error"));
+        this.callbacks.onError?.(new Error(msg.error || "Signaling error"));
+        break;
+
+      case "content":
+        const text = msg.metadata?.text || "";
+        const completed = msg.metadata?.completed ?? true;
+        if (msg.metadata?.content_type === "text") {
+          this.callbacks.onTextReceived?.(text, msg.metadata.message_id, completed);
+        } else if (msg.metadata?.content_type === "user_text") {
+          this.callbacks.onUserTranscription?.(text, msg.metadata.message_id, completed);
+        }
+        break;
+
+      case "clear":
+        this.callbacks.onClear?.();
+        break;
+
+      case "audio_ready":
+        if (this.audioContext?.state === "suspended") await this.audioContext.resume();
+        if (this.audioElement?.paused) {
+          try { await this.audioElement.play(); } catch { }
+        }
         break;
     }
   }
@@ -527,190 +530,151 @@ export class WebRTCTransport {
   }
 
   /**
-   * Create and send SDP answer (response to server's offer)
+   * Create and send SDP answer
    */
   private async createAndSendAnswer(): Promise<void> {
     if (!this.peerConnection) return;
-
     const answer = await this.peerConnection.createAnswer();
     await this.peerConnection.setLocalDescription(answer);
-
-    this.sendSignalingMessage({
-      type: "answer",
-      sdp: answer.sdp,
-      sessionId: this.sessionId || undefined,
-    });
+    this.sendSignalingMessage({ type: "answer", sdp: answer.sdp, sessionId: this.sessionId || undefined });
   }
 
-  /**
-   * Create and send SDP offer (fallback - client as offerer)
-   */
-  private async createAndSendOffer(): Promise<void> {
-    if (!this.peerConnection) return;
-
-    const offer = await this.peerConnection.createOffer();
-    await this.peerConnection.setLocalDescription(offer);
-
-    this.sendSignalingMessage({
-      type: "offer",
-      sdp: offer.sdp,
-      sessionId: this.sessionId || undefined,
-    });
+  /** Interrupt audio playback - server handles via jitter buffer timing */
+  interruptAudio(): void {
+    // No-op: Server-side pacing handles interruption gracefully
+    // Muting here would cause audio artifacts
   }
 
-  /**
-   * Set muted state
-   */
   setMuted(muted: boolean): void {
     this.isMuted = muted;
-    this.localStream?.getAudioTracks().forEach((track) => {
-      track.enabled = !muted;
-    });
+    this.localStream?.getAudioTracks().forEach(t => t.enabled = !muted);
   }
 
-  /**
-   * Get muted state
-   */
   getMuted(): boolean {
     return this.isMuted;
   }
 
-  /**
-   * Set output volume
-   */
   setVolume(volume: number): void {
     this.volume = Math.max(0, Math.min(1, volume));
-    if (this.audioElement) {
-      this.audioElement.volume = this.volume;
-    }
+    if (this.audioElement) this.audioElement.volume = this.volume;
   }
 
-  /**
-   * Get output volume
-   */
   getVolume(): number {
     return this.volume;
   }
 
-  /**
-   * Get input analyser for visualization
-   */
-  get inputAnalyserNode(): AnalyserNode | null {
-    return this.inputAnalyser;
+  sendText(text: string): void {
+    this.sendSignalingMessage({
+      type: "content",
+      sessionId: this.sessionId || undefined,
+      metadata: {
+        content_type: "user_text",
+        text: text,
+        message_id: `msg_${Date.now()}`,
+      },
+    });
   }
 
-  /**
-   * Get output analyser for visualization
-   */
-  get outputAnalyserNode(): AnalyserNode | null {
-    return this.outputAnalyser;
-  }
+  get inputAnalyserNode(): AnalyserNode | null { return this.inputAnalyser; }
+  get outputAnalyserNode(): AnalyserNode | null { return this.outputAnalyser; }
+  get mediaStream(): MediaStream | null { return this.localStream; }
+  get remoteMediaStream(): MediaStream | null { return this.remoteStream; }
+  get context(): AudioContext | null { return this.audioContext; }
+  get connected(): boolean { return this.isConnected; }
 
-  /**
-   * Get local media stream
-   */
-  get mediaStream(): MediaStream | null {
-    return this.localStream;
-  }
-
-  /**
-   * Get remote media stream
-   */
-  get remoteMediaStream(): MediaStream | null {
-    return this.remoteStream;
-  }
-
-  /**
-   * Get audio context
-   */
-  get context(): AudioContext | null {
-    return this.audioContext;
-  }
-
-  /**
-   * Check if connected
-   */
-  get connected(): boolean {
-    return this.isConnected;
-  }
-
-  /**
-   * Update input device
-   */
   async setInputDevice(deviceId: string): Promise<void> {
     this.config.recorderOptions.device = deviceId;
+    this.localStream?.getTracks().forEach(t => t.stop());
 
-    // Stop old tracks
-    this.localStream?.getTracks().forEach((track) => track.stop());
-
-    // Get new stream with device
-    const constraints = this.getAudioConstraints();
     this.localStream = await navigator.mediaDevices.getUserMedia({
-      audio: constraints,
+      audio: this.getAudioConstraints(),
       video: false,
     });
 
-    // Replace tracks in peer connection
     if (this.peerConnection) {
-      const senders = this.peerConnection.getSenders();
-      const audioSender = senders.find((s) => s.track?.kind === "audio");
+      const sender = this.peerConnection.getSenders().find(s => s.track?.kind === "audio");
       const newTrack = this.localStream.getAudioTracks()[0];
-
-      if (audioSender && newTrack) {
-        await audioSender.replaceTrack(newTrack);
-      }
+      if (sender && newTrack) await sender.replaceTrack(newTrack);
     }
 
-    // Update input analyser
     if (this.audioContext && this.inputAnalyser) {
       const source = this.audioContext.createMediaStreamSource(this.localStream);
       source.connect(this.inputAnalyser);
     }
   }
 
-  /**
-   * Update output device
-   */
   async setOutputDevice(deviceId: string): Promise<void> {
     this.config.playerOptions.device = deviceId;
-
     if (this.audioElement && "setSinkId" in this.audioElement) {
       await (this.audioElement as any).setSinkId(deviceId);
     }
   }
 
-  /**
-   * Close the transport
-   */
-  async close(): Promise<void> {
-    // Send disconnect message to server
-    if (this.signalingSocket?.readyState === WebSocket.OPEN) {
-      this.sendSignalingMessage({
-        type: "disconnect",
-        sessionId: this.sessionId || undefined,
+  /** Get current connection statistics */
+  async getStats(): Promise<WebRTCStats | null> {
+    if (!this.peerConnection) return null;
+
+    const result: WebRTCStats = {
+      packetsReceived: 0,
+      packetsLost: 0,
+      packetsSent: 0,
+      bytesReceived: 0,
+      bytesSent: 0,
+      jitter: 0,
+      lossRate: 0,
+    };
+
+    try {
+      const stats = await this.peerConnection.getStats();
+      stats.forEach(r => {
+        if (r.type === "inbound-rtp" && r.kind === "audio") {
+          result.packetsReceived = r.packetsReceived || 0;
+          result.packetsLost = r.packetsLost || 0;
+          result.bytesReceived = r.bytesReceived || 0;
+          result.jitter = r.jitter || 0;
+          if (result.packetsReceived > 0) {
+            result.lossRate = result.packetsLost / (result.packetsReceived + result.packetsLost);
+          }
+        }
+        if (r.type === "outbound-rtp" && r.kind === "audio") {
+          result.packetsSent = r.packetsSent || 0;
+          result.bytesSent = r.bytesSent || 0;
+        }
       });
+    } catch { }
+
+    return result;
+  }
+
+  /** Start periodic stats monitoring (returns cleanup function) */
+  startAudioMonitoring(): () => void {
+    this.startStatsMonitoring();
+    return () => this.stopStatsMonitoring();
+  }
+
+  async close(): Promise<void> {
+    // Stop stats monitoring
+    this.stopStatsMonitoring();
+
+    if (this.signalingSocket?.readyState === WebSocket.OPEN) {
+      this.sendSignalingMessage({ type: "disconnect", sessionId: this.sessionId || undefined });
     }
 
-    // Stop local media tracks
-    this.localStream?.getTracks().forEach((track) => track.stop());
+    this.localStream?.getTracks().forEach(t => t.stop());
     this.localStream = null;
 
-    // Close peer connection
     this.peerConnection?.close();
     this.peerConnection = null;
 
-    // Close signaling socket
     this.signalingSocket?.close();
     this.signalingSocket = null;
 
-    // Stop audio playback
     if (this.audioElement) {
       this.audioElement.pause();
       this.audioElement.srcObject = null;
       this.audioElement = null;
     }
 
-    // Close audio context
     if (this.audioContext?.state !== "closed") {
       await this.audioContext?.close();
     }
