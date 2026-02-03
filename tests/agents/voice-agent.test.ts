@@ -22,11 +22,17 @@ const mockWebRTCTransport = {
   outputAnalyser: { frequencyBinCount: 1024, getByteFrequencyData: jest.fn() },
 };
 
-jest.mock('@/rapida/audio/webrtc-transport', () => ({
-  WebRTCTransport: {
-    create: jest.fn().mockResolvedValue(mockWebRTCTransport),
+jest.mock('@/rapida/audio/webrtc-grpc-transport', () => ({
+  WebRTCGrpcTransport: {
+    create: jest.fn().mockImplementation(async (_config, callbacks) => {
+      // Simulate successful connection by calling onConnectionStateChange
+      if (callbacks?.onConnectionStateChange) {
+        callbacks.onConnectionStateChange('connected');
+      }
+      return mockWebRTCTransport;
+    }),
   },
-  supportsWebRTCTransport: jest.fn().mockReturnValue(true),
+  supportsWebRTCGrpcTransport: jest.fn().mockReturnValue(true),
 }));
 
 jest.mock('@/rapida/audio/compatibility', () => ({
@@ -71,7 +77,6 @@ jest.mock('@/rapida/agents/', () => {
 
     disconnectAgent = jest.fn().mockResolvedValue(undefined);
     switchAgent = jest.fn().mockResolvedValue(undefined);
-    createAssistantAudioMessage = jest.fn().mockReturnValue({});
     createAssistantTextMessage = jest.fn().mockReturnValue({});
     changeConversation = jest.fn();
   }
@@ -80,7 +85,7 @@ jest.mock('@/rapida/agents/', () => {
 });
 
 import { VoiceAgent } from '@/rapida/agents/voice-agent';
-import { WebRTCTransport } from '@/rapida/audio/webrtc-transport';
+import { WebRTCGrpcTransport } from '@/rapida/audio/webrtc-grpc-transport';
 import { Channel } from '@/rapida/types/channel';
 import { AgentEvent } from '@/rapida/types/agent-event';
 import { ConnectionState } from '@/rapida/types/connection-state';
@@ -99,20 +104,13 @@ describe('VoiceAgent', () => {
     id: 'test-assistant-id',
     inputOptions: {
       channel: Channel.Audio,
-      recorderOption: {
-        sampleRate: 16000,
-        format: 'pcm' as const,
-        device: undefined,
-      },
-      webrtcSignalingUrl: 'wss://assistant-01.rapida.ai/v1/talk/webrtc/test-assistant-id',
+      channels: [Channel.Audio, Channel.Text],
+      device: undefined as string | undefined,
     },
     outputOptions: {
       channel: Channel.Audio,
-      playerOption: {
-        sampleRate: 24000,
-        format: 'pcm' as const,
-        device: undefined,
-      },
+      channels: [Channel.Audio, Channel.Text],
+      device: undefined as string | undefined,
     },
   };
 
@@ -148,7 +146,7 @@ describe('VoiceAgent', () => {
     it('should connect audio when channel is Audio', async () => {
       await voiceAgent.connect();
 
-      expect(WebRTCTransport.create).toHaveBeenCalled();
+      expect(WebRTCGrpcTransport.create).toHaveBeenCalled();
     });
 
     it('should not connect audio when channel is Text', async () => {
@@ -163,8 +161,91 @@ describe('VoiceAgent', () => {
 
       await textAgent.connect();
 
-      // WebRTCTransport should not be created for text channel
-      expect(WebRTCTransport.create).not.toHaveBeenCalled();
+      // WebRTCGrpcTransport should not be created for text channel
+      expect(WebRTCGrpcTransport.create).not.toHaveBeenCalled();
+    });
+
+    it('should only create one WebRTC transport when connect() is called multiple times concurrently', async () => {
+      // Call connect multiple times concurrently (simulates React StrictMode or double-clicks)
+      const connectPromises = [
+        voiceAgent.connect(),
+        voiceAgent.connect(),
+        voiceAgent.connect(),
+      ];
+
+      await Promise.all(connectPromises);
+
+      // WebRTCGrpcTransport.create should only be called once
+      expect(WebRTCGrpcTransport.create).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not reconnect if already connected', async () => {
+      // First connection
+      await voiceAgent.connect();
+      expect(WebRTCGrpcTransport.create).toHaveBeenCalledTimes(1);
+
+      // Clear mock to track subsequent calls
+      (WebRTCGrpcTransport.create as jest.Mock).mockClear();
+
+      // Try to connect again when already connected
+      await voiceAgent.connect();
+
+      // Should not create another transport
+      expect(WebRTCGrpcTransport.create).not.toHaveBeenCalled();
+    });
+
+    it('should set _isConnecting flag during connection and reset after completion', async () => {
+      // Access private field for testing
+      expect((voiceAgent as any)._isConnecting).toBe(false);
+
+      const connectPromise = voiceAgent.connect();
+
+      // During connection, flag should be true (can't reliably check this in sync test)
+
+      await connectPromise;
+
+      // After completion, flag should be reset to false
+      expect((voiceAgent as any)._isConnecting).toBe(false);
+    });
+
+    it('should reset _isConnecting flag even if connection fails', async () => {
+      // Make WebRTCGrpcTransport.create throw an error
+      (WebRTCGrpcTransport.create as jest.Mock).mockRejectedValueOnce(new Error('Connection failed'));
+
+      await voiceAgent.connect();
+
+      // Flag should be reset even after error
+      expect((voiceAgent as any)._isConnecting).toBe(false);
+    });
+
+    it('should not create second transport when connect is called after first connect returns but before connected state', async () => {
+      // Simulate the race condition:
+      // 1. First connect() returns (transport created, config sent)
+      // 2. But connectionState is still not Connected (WebRTC handshake in progress)
+      // 3. Second connect() is called (e.g., from onSendText auto-connect)
+
+      // First connection - transport created but connection state not yet "connected"
+      // (mock doesn't call onConnectionStateChange with 'connected')
+      const mockTransportNoConnect = {
+        ...mockWebRTCTransport,
+      };
+      (WebRTCGrpcTransport.create as jest.Mock).mockResolvedValueOnce(mockTransportNoConnect);
+
+      await voiceAgent.connect();
+      expect(WebRTCGrpcTransport.create).toHaveBeenCalledTimes(1);
+
+      // connectionState is still not Connected, but webrtcTransport exists
+      expect(voiceAgent.isConnected).toBe(false);
+      expect((voiceAgent as any).webrtcTransport).not.toBeNull();
+
+      // Clear mock to track subsequent calls
+      (WebRTCGrpcTransport.create as jest.Mock).mockClear();
+
+      // Second connect attempt - should be blocked by webrtcTransport guard
+      await voiceAgent.connect();
+
+      // Should NOT create another transport
+      expect(WebRTCGrpcTransport.create).not.toHaveBeenCalled();
     });
   });
 
@@ -197,33 +278,21 @@ describe('VoiceAgent', () => {
     it('should create WebRTC transport with correct config', async () => {
       await voiceAgent.connect();
 
-      expect(WebRTCTransport.create).toHaveBeenCalledWith(
+      expect(WebRTCGrpcTransport.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          signalingUrl: expect.any(String),
-          recorderOptions: expect.any(Object),
-          playerOptions: expect.any(Object),
+          connectionConfig: expect.any(Object),
+          agentConfig: mockAgentConfig,
         }),
         expect.any(Object) // callbacks
       );
     });
 
-    it('should pass recorder options to WebRTC transport', async () => {
+    it('should pass agentConfig to WebRTC transport', async () => {
       await voiceAgent.connect();
 
-      expect(WebRTCTransport.create).toHaveBeenCalledWith(
+      expect(WebRTCGrpcTransport.create).toHaveBeenCalledWith(
         expect.objectContaining({
-          recorderOptions: mockAgentConfig.inputOptions.recorderOption,
-        }),
-        expect.any(Object)
-      );
-    });
-
-    it('should pass player options to WebRTC transport', async () => {
-      await voiceAgent.connect();
-
-      expect(WebRTCTransport.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          playerOptions: mockAgentConfig.outputOptions.playerOption,
+          agentConfig: mockAgentConfig,
         }),
         expect.any(Object)
       );
@@ -244,7 +313,7 @@ describe('VoiceAgent', () => {
     });
 
     it('should not reconnect if device is the same', async () => {
-      mockAgentConfig.inputOptions.recorderOption.device = 'same-device';
+      mockAgentConfig.inputOptions.device = 'same-device';
       const agent = new VoiceAgent(
         mockConnectionConfig as any,
         mockAgentConfig as any
@@ -303,12 +372,12 @@ describe('VoiceAgent', () => {
       await agent.connect();
 
       // Reset mock to track new calls
-      (WebRTCTransport.create as jest.Mock).mockClear();
+      (WebRTCGrpcTransport.create as jest.Mock).mockClear();
 
       // Now switch to audio
       await agent.setInputChannel(Channel.Audio);
 
-      expect(WebRTCTransport.create).toHaveBeenCalled();
+      expect(WebRTCGrpcTransport.create).toHaveBeenCalled();
     });
   });
 
@@ -347,7 +416,7 @@ describe('VoiceAgent', () => {
 
   describe('inputMediaDevice getter', () => {
     it('should return current input device', () => {
-      mockAgentConfig.inputOptions.recorderOption.device = 'test-device';
+      mockAgentConfig.inputOptions.device = 'test-device';
       const agent = new VoiceAgent(
         mockConnectionConfig as any,
         mockAgentConfig as any

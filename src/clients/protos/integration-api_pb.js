@@ -3163,7 +3163,7 @@ proto.integration_api.ChatResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
     code: jspb.Message.getFieldWithDefault(msg, 1, 0),
     success: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
-    requestid: jspb.Message.getFieldWithDefault(msg, 3, 0),
+    requestid: jspb.Message.getFieldWithDefault(msg, 3, ""),
     data: (f = msg.getData()) && common_pb.Message.toObject(includeInstance, f),
     error: (f = msg.getError()) && common_pb.Error.toObject(includeInstance, f),
     metricsList: jspb.Message.toObjectList(msg.getMetricsList(),
@@ -3214,7 +3214,7 @@ proto.integration_api.ChatResponse.deserializeBinaryFromReader = function(msg, r
       msg.setSuccess(value);
       break;
     case 3:
-      var value = /** @type {number} */ (reader.readUint64());
+      var value = /** @type {string} */ (reader.readString());
       msg.setRequestid(value);
       break;
     case 4:
@@ -3280,8 +3280,8 @@ proto.integration_api.ChatResponse.serializeBinaryToWriter = function(message, w
     );
   }
   f = message.getRequestid();
-  if (f !== 0) {
-    writer.writeUint64(
+  if (f.length > 0) {
+    writer.writeString(
       3,
       f
     );
@@ -3357,20 +3357,20 @@ proto.integration_api.ChatResponse.prototype.setSuccess = function(value) {
 
 
 /**
- * optional uint64 requestId = 3;
- * @return {number}
+ * optional string requestId = 3;
+ * @return {string}
  */
 proto.integration_api.ChatResponse.prototype.getRequestid = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
 };
 
 
 /**
- * @param {number} value
+ * @param {string} value
  * @return {!proto.integration_api.ChatResponse} returns this
  */
 proto.integration_api.ChatResponse.prototype.setRequestid = function(value) {
-  return jspb.Message.setProto3IntField(this, 3, value);
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 
@@ -3544,6 +3544,7 @@ proto.integration_api.ChatRequest.prototype.toObject = function(opt_includeInsta
 proto.integration_api.ChatRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     credential: (f = msg.getCredential()) && proto.integration_api.Credential.toObject(includeInstance, f),
+    requestid: jspb.Message.getFieldWithDefault(msg, 3, ""),
     conversationsList: jspb.Message.toObjectList(msg.getConversationsList(),
     common_pb.Message.toObject, includeInstance),
     additionaldataMap: (f = msg.getAdditionaldataMap()) ? f.toObject(includeInstance, undefined) : [],
@@ -3590,6 +3591,10 @@ proto.integration_api.ChatRequest.deserializeBinaryFromReader = function(msg, re
       var value = new proto.integration_api.Credential;
       reader.readMessage(value,proto.integration_api.Credential.deserializeBinaryFromReader);
       msg.setCredential(value);
+      break;
+    case 3:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setRequestid(value);
       break;
     case 4:
       var value = new common_pb.Message;
@@ -3648,6 +3653,13 @@ proto.integration_api.ChatRequest.serializeBinaryToWriter = function(message, wr
       1,
       f,
       proto.integration_api.Credential.serializeBinaryToWriter
+    );
+  }
+  f = message.getRequestid();
+  if (f.length > 0) {
+    writer.writeString(
+      3,
+      f
     );
   }
   f = message.getConversationsList();
@@ -3711,6 +3723,24 @@ proto.integration_api.ChatRequest.prototype.clearCredential = function() {
  */
 proto.integration_api.ChatRequest.prototype.hasCredential = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional string requestId = 3;
+ * @return {string}
+ */
+proto.integration_api.ChatRequest.prototype.getRequestid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.integration_api.ChatRequest} returns this
+ */
+proto.integration_api.ChatRequest.prototype.setRequestid = function(value) {
+  return jspb.Message.setProto3StringField(this, 3, value);
 };
 
 

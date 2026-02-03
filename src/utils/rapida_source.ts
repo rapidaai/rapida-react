@@ -28,12 +28,14 @@ export type RapidaSource =
   | "debugger"
   | "sdk"
   | "phone-call"
-  | "whatsapp";
+  | "whatsapp"
+  | "webrtc";
 export const WEB_PLUGIN_SOURCE: RapidaSource = "web-plugin";
 export const DEBUGGER_SOURCE: RapidaSource = "debugger";
 export const SDK_SOURCE: RapidaSource = "sdk";
 export const PHONE_CALL_SOURCE: RapidaSource = "phone-call";
 export const WHATSAPP_SOURCE: RapidaSource = "whatsapp";
+export const WEBRTC_SOURCE: RapidaSource = "webrtc";
 
 export function getRapidaSourceValue(source: RapidaSource): string {
   return source;
@@ -53,10 +55,12 @@ export function fromStr(label: string): RapidaSource {
       return PHONE_CALL_SOURCE;
     case "whatsapp":
       return WHATSAPP_SOURCE;
+    case "webrtc":
+      return WEBRTC_SOURCE;
 
     default:
       console.warn(
-        "The source is not supported. Only 'web-plugin', 'debugger', 'sdk' are allowed."
+        "The source is not supported. Only 'web-plugin', 'debugger', 'sdk', 'webrtc' are allowed."
       );
       return SDK_SOURCE;
   }

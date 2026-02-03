@@ -89,21 +89,18 @@ describe('SDK Exports', () => {
 });
 
 describe('SDK Type Definitions', () => {
-  it('should have RecorderOptions interface', async () => {
-    // This test verifies the type exists by using it
-    const options: import('@/rapida/types/agent-config').RecorderOptions = {
-      format: 'pcm',
-      sampleRate: 16000,
-    };
-    expect(options.format).toBe('pcm');
+  it('should have InputOptions class', async () => {
+    const { InputOptions } = await import('@/rapida/types/agent-config');
+    const { Channel } = await import('@/rapida/types/channel');
+    const options = new InputOptions([Channel.Audio]);
+    expect(options.channel).toBe(Channel.Audio);
   });
 
-  it('should have PlayerOptions interface', async () => {
-    const options: import('@/rapida/types/agent-config').PlayerOptions = {
-      format: 'pcm',
-      sampleRate: 24000,
-    };
-    expect(options.format).toBe('pcm');
+  it('should have OutputOptions class', async () => {
+    const { OutputOptions } = await import('@/rapida/types/agent-config');
+    const { Channel } = await import('@/rapida/types/channel');
+    const options = new OutputOptions([Channel.Audio]);
+    expect(options.channel).toBe(Channel.Audio);
   });
 
   it('should have Message interface', async () => {

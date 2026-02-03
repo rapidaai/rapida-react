@@ -29,184 +29,72 @@ import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
 import { Channel } from "@/rapida/types/channel";
 
 /**
- * Transport mode for audio streaming
- * WebRTC is the only supported mode - audio flows through RTCPeerConnection
- */
-export enum AudioTransportMode {
-  /**
-   * Use native WebRTC for audio transport
-   * Audio flows through RTCPeerConnection media tracks (SRTP)
-   * Uses WebSocket only for signaling (SDP/ICE exchange)
-   * Lower latency and better NAT traversal
-   */
-  WEBRTC = "webrtc",
-}
-
-/**
- *
- */
-export interface PlayerOptions {
-  format: "pcm" | "ulaw";
-  sampleRate: number;
-  device?: string;
-}
-
-/**
- *
- */
-export interface RecorderOptions {
-  format: "pcm" | "ulaw";
-  sampleRate: number;
-  device?: string;
-}
-
-/**
- *
+ * Input options for the agent (microphone/recording settings)
  */
 export class InputOptions {
-  /**
-   * enable channels
-   */
-
+  /** Enabled channels for input */
   channels: Channel[] = [Channel.Audio, Channel.Text];
 
-  /**
-   * Audio transport mode
-   * WebRTC: Audio sent over native WebRTC media tracks (lower latency)
-   */
-  transportMode: AudioTransportMode = AudioTransportMode.WEBRTC;
+  /** Default input channel */
+  channel: Channel = Channel.Audio;
 
-  /**
-   * WebSocket signaling URL for native WebRTC transport
-   * Auto-constructed from connection endpoint if not provided
-   * Example: "wss://assistant-01.rapida.ai/v1/talk/webrtc/{assistantId}"
-   */
-  webrtcSignalingUrl?: string;
+  /** Input device ID (microphone) */
+  device?: string;
 
-  /**
-   * ICE servers for WebRTC (STUN/TURN)
-   * Default uses Google's public STUN servers
-   */
+  /** ICE servers for WebRTC (STUN/TURN) */
   iceServers?: RTCIceServer[];
 
-  /**
-   * sample rate for player
-   */
-  recorderOptions: RecorderOptions = {
-    format: "pcm",
-    sampleRate: 16000,
-  };
-  get recorderOption(): RecorderOptions {
-    return this.recorderOptions;
-  }
-
-  /**
-   * channel for providing output
-   */
-  channel: Channel = Channel.Audio;
-  get defaultChannel(): Channel {
-    return this.channel;
-  }
-
-
-  /**
-   * stream config
-   * define audio codacs and sample rate. these will be directly translated to stt 
-   */
-  get defaultInputStreamOption(): StreamConfig {
-    const inputStreamConfig = new StreamConfig()
-    if (this.channel == Channel.Audio) {
-      // only send when audio is enabled
-      const inputAudioConfig = new AudioConfig()
-      inputAudioConfig.setChannels(1)
-      inputAudioConfig.setAudioformat(AudioConfig.AudioFormat.LINEAR16)
-      inputAudioConfig.setSamplerate(this.recorderOptions.sampleRate)
-      inputStreamConfig.setAudio(inputAudioConfig)
-    }
-    return inputStreamConfig
-  }
-
-  /**
-   *
-   * @param channels
-   * @param channel
-   * @param deviceId
-   * @param webrtcSignalingUrl - WebSocket signaling URL for WebRTC transport (auto-constructed if not provided)
-   * @param iceServers - ICE servers for WebRTC
-   */
   constructor(
     channels: Channel[],
     channel?: Channel,
     deviceId?: string,
-    webrtcSignalingUrl?: string,
     iceServers?: RTCIceServer[]
   ) {
     this.channels = channels;
     if (channel) this.channel = channel;
-    if (deviceId) this.recorderOptions.device = deviceId;
-    this.webrtcSignalingUrl = webrtcSignalingUrl;
+    if (deviceId) this.device = deviceId;
     this.iceServers = iceServers;
   }
 
-
+  /** Stream config for STT */
+  get defaultInputStreamOption(): StreamConfig {
+    const streamConfig = new StreamConfig();
+    if (this.channel === Channel.Audio) {
+      const audioConfig = new AudioConfig();
+      streamConfig.setAudio(audioConfig);
+    }
+    return streamConfig;
+  }
 }
 
 /**
- *
+ * Output options for the agent (speaker/playback settings)
  */
 export class OutputOptions {
-  /**
-   * enable channels
-   */
-
+  /** Enabled channels for output */
   channels: Channel[] = [Channel.Audio, Channel.Text];
 
-  /**
-   * sample rate for player
-   */
-  protected playerOptions: PlayerOptions = {
-    format: "pcm",
-    sampleRate: 16000,
-  };
-
-  get playerOption(): PlayerOptions {
-    return this.playerOptions;
-  }
-
-  /**
-   * channel for providing output
-   */
+  /** Default output channel */
   channel: Channel = Channel.Audio;
 
-  /**
-   *
-   * @param channels
-   * @param channel
-   * @param deviceId
-   */
+  /** Output device ID (speaker) */
+  device?: string;
+
   constructor(channels: Channel[], channel?: Channel, deviceId?: string) {
     this.channels = channels;
     if (channel) this.channel = channel;
-    if (deviceId) this.playerOption.device = deviceId;
+    if (deviceId) this.device = deviceId;
   }
 
-  /**
-   * stream config
-   * define audio codacs and sample rate. these will be directly translated to tts 
-   */
+  /** Stream config for TTS */
   get defaultOutputStreamOption(): StreamConfig {
-    const inputStreamConfig = new StreamConfig()
-    if (this.channel == Channel.Audio) {
-      const inputAudioConfig = new AudioConfig()
-      inputAudioConfig.setChannels(1)
-      inputAudioConfig.setAudioformat(AudioConfig.AudioFormat.LINEAR16)
-      inputAudioConfig.setSamplerate(this.playerOption.sampleRate)
-      inputStreamConfig.setAudio(inputAudioConfig)
+    const streamConfig = new StreamConfig();
+    if (this.channel === Channel.Audio) {
+      const audioConfig = new AudioConfig();
+      streamConfig.setAudio(audioConfig);
     }
-    return inputStreamConfig
+    return streamConfig;
   }
-
-
 }
 /**
  * Represents the configuration settings for an agent.

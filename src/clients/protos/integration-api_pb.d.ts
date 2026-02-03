@@ -376,8 +376,8 @@ export class ChatResponse extends jspb.Message {
   getSuccess(): boolean;
   setSuccess(value: boolean): void;
 
-  getRequestid(): number;
-  setRequestid(value: number): void;
+  getRequestid(): string;
+  setRequestid(value: string): void;
 
   hasData(): boolean;
   clearData(): void;
@@ -411,7 +411,7 @@ export namespace ChatResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    requestid: number,
+    requestid: string,
     data?: common_pb.Message.AsObject,
     error?: common_pb.Error.AsObject,
     metricsList: Array<common_pb.Metric.AsObject>,
@@ -424,6 +424,9 @@ export class ChatRequest extends jspb.Message {
   clearCredential(): void;
   getCredential(): Credential | undefined;
   setCredential(value?: Credential): void;
+
+  getRequestid(): string;
+  setRequestid(value: string): void;
 
   clearConversationsList(): void;
   getConversationsList(): Array<common_pb.Message>;
@@ -452,6 +455,7 @@ export class ChatRequest extends jspb.Message {
 export namespace ChatRequest {
   export type AsObject = {
     credential?: Credential.AsObject,
+    requestid: string,
     conversationsList: Array<common_pb.Message.AsObject>,
     additionaldataMap: Array<[string, string]>,
     modelparametersMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,

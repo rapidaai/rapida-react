@@ -24,21 +24,16 @@
  */
 export { VoiceAgent } from "@/rapida/agents/voice-agent";
 export {
-  WebRTCTransport,
-  supportsWebRTCTransport,
-  type WebRTCTransportConfig,
-  type WebRTCTransportCallbacks,
-} from "@/rapida/audio/webrtc-transport";
-// export {
-//   // toTextContent,
-//   // toContentText,
-//   toStreamAudioContent,
-// } from "@/rapida/utils/rapida_content";
+  WebRTCGrpcTransport,
+  supportsWebRTCGrpcTransport,
+  type WebRTCGrpcTransportConfig,
+} from "@/rapida/audio/webrtc-grpc-transport";
 export { useMessageFeedback } from "@/rapida/hooks/use-message-feedback";
 export { useConversationFeedback } from "@/rapida/hooks/use-conversation-feedback";
 export { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
 export { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
 export { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
+export { useMuteAgent } from "@/rapida/hooks/use-mute-agent";
 export { ConnectionState } from "@/rapida/types/connection-state";
 export { Channel } from "@/rapida/types/channel";
 export { MediaDeviceFailure } from "@/rapida/types/device-failure";
@@ -46,7 +41,6 @@ export {
   InputOptions,
   OutputOptions,
   AgentConfig,
-  AudioTransportMode,
 } from "@/rapida/types/agent-config";
 export { AgentCallback } from "@/rapida/types/agent-callback";
 export { Message, MessageRole, MessageStatus } from "@/rapida/types/message";

@@ -80,6 +80,20 @@ export function observeAgentConnectionState(
 }
 
 /**
+ * Observes mute state changes for the agent.
+ */
+export function observeAgentMuteState(
+  agent: VoiceAgent
+): Observable<{ isMuted: boolean }> {
+  return agentEventSelector(agent, AgentEvent.MuteStateEvent).pipe(
+    map(([isMuted]: [boolean]) => ({
+      isMuted,
+    })),
+    startWith({ isMuted: agent.isMuted })
+  );
+}
+
+/**
  * Observes server events from the agent.
  */
 export function observeAgentServerEvents(agent: VoiceAgent): Observable<{

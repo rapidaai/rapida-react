@@ -1,6 +1,6 @@
 {
     "name": "@rapidaai/react",
-    "version": "1.1.55-v25",
+    "version": "1.1.55-57",
     "description": "An easy to use react client for building generative ai application using Rapida platform.",
     "repository": {
         "type": "git",

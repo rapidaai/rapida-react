@@ -23,41 +23,47 @@
  *
  */
 
-import { useObservableState } from "@/rapida/hooks/use-observable-state";
 import * as React from "react";
-import { observeAgentInputChannel } from "@/rapida/hooks/observables/voice-agent";
-import { Channel } from "@/rapida/types/channel";
 import { VoiceAgent } from "@/rapida/agents/voice-agent";
+import { useObservableState } from "@/rapida/hooks/use-observable-state";
+import { observeAgentMuteState } from "@/rapida/hooks/observables/voice-agent";
 
 /**
- * Custom hook for toggling input mode (voice/text) for the agent.
- * @returns An object containing toggle handlers and the current input channel.
+ * Custom hook for managing microphone mute state in a voice agent.
+ * @param agent The VoiceAgent instance
+ * @returns An object containing mute handlers and the current mute state.
  */
-export function useInputModeToggleAgent(agent: VoiceAgent) {
-  const { handleTextToggle, handleVoiceToggle } = React.useMemo(
+export function useMuteAgent(agent: VoiceAgent) {
+  // Memoize the mute handlers to ensure stable references
+  const { handleMute, handleUnmute, handleToggleMute } = React.useMemo(
     () => ({
-      handleTextToggle: async () => {
+      handleMute: () => {
         if (!agent) throw new Error("VoiceAgent instance not available");
-        if (agent.agentConfiguration.inputOptions.channel === Channel.Text) return;
-        await agent.setInputChannel(Channel.Text);
+        agent.mute();
       },
-      handleVoiceToggle: async () => {
+      handleUnmute: () => {
         if (!agent) throw new Error("VoiceAgent instance not available");
-        if (agent.agentConfiguration.inputOptions.channel === Channel.Audio) return;
-        await agent.setInputChannel(Channel.Audio);
+        agent.unmute();
+      },
+      handleToggleMute: () => {
+        if (!agent) throw new Error("VoiceAgent instance not available");
+        return agent.toggleMute();
       },
     }),
     [agent]
   );
 
+  // Observe the mute state using RxJS
   const observable = React.useMemo(
-    () => (agent ? observeAgentInputChannel(agent) : undefined),
+    () => (agent ? observeAgentMuteState(agent) : undefined),
     [agent]
   );
 
-  const { channel } = useObservableState(observable, {
-    channel: agent.agentConfiguration.inputOptions.channel ?? Channel.Text,
+  // Subscribe to the observable and manage component state
+  const { isMuted } = useObservableState(observable, {
+    isMuted: agent?.isMuted ?? false,
   });
 
-  return { handleTextToggle, handleVoiceToggle, channel };
+  // Return the mute handlers and current mute state
+  return { handleMute, handleUnmute, handleToggleMute, isMuted };
 }

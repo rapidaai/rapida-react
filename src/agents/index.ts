@@ -28,7 +28,6 @@ import { AgentCallback } from "@/rapida/types/agent-callback";
 import {
   AssistantTalkInput,
   AssistantTalkOutput,
-  AudioConfig,
   StreamConfig,
   CreateConversationMetricRequest,
   CreateMessageMetricRequest,
@@ -61,42 +60,8 @@ import {
   ConversationUserMessage,
 } from '../clients/protos/talk-api_pb';
 /**
- * Rapida Agent SDK
- *
- * The Agent class provides a high-level interface for interacting with Rapida AI assistants.
- * It manages bidirectional communication, handles connection states, and provides utilities
- * for metrics, feedback, and dynamic agent switching.
- *
- * Key Features:
- * - Bidirectional streaming communication with assistants
- * - Real-time connection state management
- * - Message and conversation metrics
- * - Dynamic agent switching during conversations
- * - Event-driven architecture with typed events
- *
- * @example
- * ```typescript
- * const agent = new MyAgent(connectionConfig, agentConfig);
- *
- * // Listen for events
- * agent.on(AgentEvent.Initialized, (assistant) => {
- *   console.log('Agent initialized:', assistant.getName());
- * });
- *
- * agent.on(AgentEvent.ConnectionChanged, (state) => {
- *   console.log('Connection state:', state);
- * });
- *
- * // Connect and start conversation
- * await agent.connect();
- *
- * // Switch to a different agent during conversation
- * await agent.switchAgent({
- *   agentId: 'new-agent-id',
- *   version: 'v2.0',
- *   options: new Map([['temperature', createAnyValue('0.7')]])
- * });
- * ```
+ * Base Agent class for interacting with Rapida AI assistants.
+ * Manages bidirectional communication, connection states, metrics, and events.
  */
 export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCallback>) {
   // Connection and State Management
@@ -122,24 +87,9 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
 
   /**
    * Creates a new Agent instance
-   *
-   * @param connection - Connection configuration for the assistant
-   * @param agentConfig - Initial agent configuration
-   *
-   * @example
-   * ```typescript
-   * const connectionConfig = new AssistantConnectionConfig({
-   *   endpoint: 'https://api.rapida.ai',
-   *   auth: { apiKey: 'your-api-key' }
-   * });
-   *
-   * const agentConfig = new AgentConfig({
-   *   id: 'assistant-id',
-   *   definition: assistantDefinition
-   * });
-   *
-   * const agent = new MyAgent(connectionConfig, agentConfig);
-   * ```
+   * @param connection - Connection configuration
+   * @param agentConfig - Agent configuration
+   * @param agentCallback - Optional callback handler
    */
   protected constructor(
     connection: ConnectionConfig,
@@ -191,35 +141,8 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
   }
   /**
    * Switches to a different agent during an active conversation
-   *
-   * This method allows dynamic agent switching without losing conversation context.
-   * The new agent will receive the conversation history and continue from where
-   * the previous agent left off.
-   *
    * @param config - Configuration for the new agent
-   * @throws {Error} If agent is not connected or switch fails
-   *
-   * @example
-   * ```typescript
-   * // Switch to a specialized agent for technical queries
-   * await agent.switchAgent({
-   *   agentId: 'technical-support-agent',
-   *   version: 'v1.2',
-   *   options: new Map([
-   *     ['specialization', createAnyValue('technical')],
-   *     ['expertise_level', createAnyValue('advanced')]
-   *   ])
-   * });
-   *
-   * // Switch to a different language agent
-   * await agent.switchAgent({
-   *   agentId: 'multilingual-agent',
-   *   metadata: new Map([
-   *     ['language', createAnyValue('spanish')],
-   *     ['region', createAnyValue('es-ES')]
-   *   ])
-   * });
-   * ```
+   * @throws {Error} If agent is not connected
    */
   public async switchAgent(config: AgentConfig): Promise<void> {
     if (!this.isConnected) {
@@ -248,25 +171,8 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
 
   /**
    * Creates metrics for a specific message
-   *
-   * @param messageId - ID of the message to create metrics for
+   * @param messageId - ID of the message
    * @param metrics - Array of metric objects
-   *
-   * @example
-   * ```typescript
-   * agent.createMessageMetric('msg-123', [
-   *   {
-   *     name: 'user_satisfaction',
-   *     description: 'User satisfaction rating',
-   *     value: '4.5'
-   *   },
-   *   {
-   *     name: 'response_time',
-   *     description: 'Time taken to respond',
-   *     value: '1.2'
-   *   }
-   * ]);
-   * ```
    */
   public createMessageMetric(
     messageId: string,
@@ -301,31 +207,14 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
         this._updateMessageFeedback(messageId, feedback);
         this.emit(AgentEvent.FeedbackEvent, "message", feedback);
       })
-      .catch((error) => {
-        console.error("Failed to create message metric:", error);
+      .catch(() => {
+        // Metric creation failure is non-critical
       });
   }
 
   /**
    * Creates metrics for the entire conversation
-   *
    * @param metrics - Array of metric objects
-   *
-   * @example
-   * ```typescript
-   * agent.createConversationMetric([
-   *   {
-   *     name: 'conversation_length',
-   *     description: 'Total messages in conversation',
-   *     value: '15'
-   *   },
-   *   {
-   *     name: 'resolution_status',
-   *     description: 'Whether the issue was resolved',
-   *     value: 'resolved'
-   *   }
-   * ]);
-   * ```
    */
   public createConversationMetric(
     metrics: Array<{
@@ -352,8 +241,8 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
       req.addMetrics(_m);
     }
 
-    CreateConversationMetric(this._connectionConfig, req).catch((error) => {
-      console.error("Failed to create conversation metric:", error);
+    CreateConversationMetric(this._connectionConfig, req).catch(() => {
+      // Metric creation failure is non-critical
     });
   }
 
@@ -390,40 +279,8 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     return request;
   }
 
-  /**
-   *
-   * @param content
-   * @returns
-   */
-  protected createAssistantAudioMessage(
-    content: Uint8Array | string
-  ): AssistantTalkInput {
-    const request = new AssistantTalkInput();
-    const userMessage = new ConversationUserMessage();
-    userMessage.setAudio(content);
-    request.setMessage(userMessage);
-    return request;
-  }
-
-  /**
-   * Override this method to handle incoming messages from the assistant
-   *
-   * @param response - Response from the assistant
-   *
-   * @example
-   * ```typescript
-   * protected onReceive(response: AssistantMessagingResponse) {
-   *   if (response.hasMessage()) {
-   *     console.log('Received message:', response.getMessage()?.getContentsList());
-   *   }
-   * }
-   * ```
-   */
-  protected onRecieve = async (_: AssistantTalkOutput) => {
-    console.warn(
-      "No receive method implemented. Override onReceive() in your Agent subclass."
-    );
-  };
+  /** Override in subclass to handle incoming messages */
+  protected onReceive = async (_response: AssistantTalkOutput) => { };
 
   // Private Methods
 
@@ -437,7 +294,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
   /**
    * Creates an assistant configuration request
    */
-  private _createAssistantConfigureRequest(
+  protected _createAssistantConfigureRequest(
     definition: AssistantDefinition,
     inputStreamConfig: StreamConfig,
     outputStreamConfig: StreamConfig,
@@ -499,14 +356,23 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
 
   /**
    * Establishes connection to the assistant
+   * @param force - If true, creates gRPC connection even if connectionState is Connected
+   *                (used when switching from audio mode which sets Connected state via WebRTC)
    */
-  protected async connectAgent(): Promise<void> {
-    if (this.connectionState === ConnectionState.Connected) {
+  protected async connectAgent(force: boolean = false): Promise<void> {
+    // Skip if already connected (unless force is true for mode switching)
+    if (!force && this.connectionState === ConnectionState.Connected) {
       return;
     }
+
+    // Skip if we already have a talking connection
+    if (this.talkingConnection) {
+      return;
+    }
+
     try {
       this.talkingConnection = AssistantTalk(this._connectionConfig);
-      this.talkingConnection.on("data", this.onRecieve);
+      this.talkingConnection.on("data", this.onReceive);
       this.talkingConnection.on("end", this._onEnd);
       this.talkingConnection.on("status", this._onStatusChange);
 
@@ -524,15 +390,9 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
 
       this._setAndEmitConnectionState(ConnectionState.Connected);
     } catch (err) {
-      const error = new Error(
-        `Failed to connect to talking server: ${err instanceof Error ? err.message : String(err)
-        }`
-      );
-      console.error(error.message);
-      this.emit(AgentEvent.ErrorEvent, "server", error.message);
-
-      // Return the error for calling code to catch
-      return Promise.reject(error);
+      const errorMsg = `Failed to connect: ${err instanceof Error ? err.message : String(err)}`;
+      this.emit(AgentEvent.ErrorEvent, "server", errorMsg);
+      return Promise.reject(new Error(errorMsg));
     }
   }
 
@@ -546,8 +406,8 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
 
     try {
       await this.talkingConnection?.end();
-    } catch (error) {
-      console.error("Error ending talking connection:", error);
+    } catch {
+      // Connection end errors are non-critical
     }
   }
 
@@ -558,12 +418,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     this._setAndEmitConnectionState(ConnectionState.Disconnected);
   };
 
-  /**
-   * Handles connection status changes
-   */
-  private _onStatusChange = (status: any): void => {
-    console.log("Connection status changed:", status);
-  };
+  private _onStatusChange = (_status: any): void => { };
 
   /**
    * Fetches assistant data for a specific agent ID and version

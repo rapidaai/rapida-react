@@ -23,7 +23,7 @@
  *
  */
 import { cn } from "@/rapida/styles";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 
 /**
  * @beta
@@ -55,16 +55,27 @@ export const MultibandAudioVisualizerComponent = ({
   barColor = "bg-white",
   frequencies,
 }: MultibandAudioVisualizerComponentProps) => {
-  const summedFrequencies = frequencies.map((bandFrequencies) => {
-    const sum = (bandFrequencies as number[]).reduce((a, b) => a + b, 0);
-    return Math.sqrt(sum / bandFrequencies.length);
-  });
+  // Calculate summed frequencies with enhanced sensitivity for voice
+  const summedFrequencies = useMemo(() => {
+    return frequencies.map((bandFrequencies) => {
+      if (!bandFrequencies || bandFrequencies.length === 0) return 0;
+
+      const freqArray = bandFrequencies as number[];
+      // Calculate RMS (Root Mean Square) for more accurate energy representation
+      const sumSquares = freqArray.reduce((acc, val) => acc + val * val, 0);
+      const rms = Math.sqrt(sumSquares / freqArray.length);
+
+      // Apply a curve to make the visualization more responsive to voice
+      // This enhances mid-range values while keeping peaks visible
+      return Math.min(1, Math.pow(rms, 0.7) * 1.2);
+    });
+  }, [frequencies]);
 
   const [thinkingIndex, setThinkingIndex] = useState(
-    Math.floor(summedFrequencies.length / 2)
+    Math.floor(summedFrequencies.length / 2),
   );
   const [thinkingDirection, setThinkingDirection] = useState<"left" | "right">(
-    "right"
+    "right",
   );
 
   useEffect(() => {
@@ -93,29 +104,44 @@ export const MultibandAudioVisualizerComponent = ({
     return () => clearTimeout(timeout);
   }, [state, summedFrequencies.length, thinkingDirection, thinkingIndex]);
 
+  // Determine if the visualizer is active (has meaningful audio input)
+  const isActive = useMemo(() => {
+    return state === "listening" || state === "speaking";
+  }, [state]);
+
   return (
     <div className={cn(classNames, "flex flex-row items-center")}>
       {summedFrequencies.map((frequency, index) => {
         const isCenter = index === Math.floor(summedFrequencies.length / 2);
-        let transform;
+
+        // Calculate height with minimum threshold for visibility
+        const minThreshold = 0.05;
+        const effectiveFrequency = Math.max(frequency, minThreshold);
+        const height =
+          minBarHeight + effectiveFrequency * (maxBarHeight - minBarHeight);
+
+        // Add subtle scale effect based on frequency intensity
+        const scale = isActive && frequency > 0.3 ? 1 + frequency * 0.1 : 1;
 
         return (
           <div
             className={cn(
               barColor,
               "rounded-full",
-              isCenter && state === "listening" ? "animate-pulse" : ""
+              isCenter && state === "listening" && frequency < 0.1
+                ? "animate-pulse"
+                : "",
             )}
             key={"frequency-" + index}
             style={{
-              height:
-                minBarHeight + frequency * (maxBarHeight - minBarHeight) + "px",
-              width: barWidth + "px",
+              height: `${height}px`,
+              width: `${barWidth}px`,
+              transform: `scaleY(${scale})`,
               transition:
-                "background-color 0.35s ease-out, transform 0.25s ease-out",
-              transform: transform,
+                "height 0.08s ease-out, transform 0.08s ease-out, background-color 0.2s ease-out",
+              willChange: "height, transform",
             }}
-          ></div>
+          />
         );
       })}
     </div>

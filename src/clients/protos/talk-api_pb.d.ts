@@ -181,6 +181,243 @@ export namespace ConversationConfiguration {
   }
 }
 
+export class ICEServer extends jspb.Message {
+  clearUrlsList(): void;
+  getUrlsList(): Array<string>;
+  setUrlsList(value: Array<string>): void;
+  addUrls(value: string, index?: number): string;
+
+  getUsername(): string;
+  setUsername(value: string): void;
+
+  getCredential(): string;
+  setCredential(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ICEServer.AsObject;
+  static toObject(includeInstance: boolean, msg: ICEServer): ICEServer.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ICEServer, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ICEServer;
+  static deserializeBinaryFromReader(message: ICEServer, reader: jspb.BinaryReader): ICEServer;
+}
+
+export namespace ICEServer {
+  export type AsObject = {
+    urlsList: Array<string>,
+    username: string,
+    credential: string,
+  }
+}
+
+export class ICECandidate extends jspb.Message {
+  getCandidate(): string;
+  setCandidate(value: string): void;
+
+  getSdpmid(): string;
+  setSdpmid(value: string): void;
+
+  getSdpmlineindex(): number;
+  setSdpmlineindex(value: number): void;
+
+  getUsernamefragment(): string;
+  setUsernamefragment(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ICECandidate.AsObject;
+  static toObject(includeInstance: boolean, msg: ICECandidate): ICECandidate.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ICECandidate, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ICECandidate;
+  static deserializeBinaryFromReader(message: ICECandidate, reader: jspb.BinaryReader): ICECandidate;
+}
+
+export namespace ICECandidate {
+  export type AsObject = {
+    candidate: string,
+    sdpmid: string,
+    sdpmlineindex: number,
+    usernamefragment: string,
+  }
+}
+
+export class WebRTCSDP extends jspb.Message {
+  getType(): WebRTCSDP.SDPTypeMap[keyof WebRTCSDP.SDPTypeMap];
+  setType(value: WebRTCSDP.SDPTypeMap[keyof WebRTCSDP.SDPTypeMap]): void;
+
+  getSdp(): string;
+  setSdp(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): WebRTCSDP.AsObject;
+  static toObject(includeInstance: boolean, msg: WebRTCSDP): WebRTCSDP.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: WebRTCSDP, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): WebRTCSDP;
+  static deserializeBinaryFromReader(message: WebRTCSDP, reader: jspb.BinaryReader): WebRTCSDP;
+}
+
+export namespace WebRTCSDP {
+  export type AsObject = {
+    type: WebRTCSDP.SDPTypeMap[keyof WebRTCSDP.SDPTypeMap],
+    sdp: string,
+  }
+
+  export interface SDPTypeMap {
+    SDP_TYPE_UNSPECIFIED: 0;
+    OFFER: 1;
+    ANSWER: 2;
+  }
+
+  export const SDPType: SDPTypeMap;
+}
+
+export class ClientSignaling extends jspb.Message {
+  getSessionid(): string;
+  setSessionid(value: string): void;
+
+  hasSdp(): boolean;
+  clearSdp(): void;
+  getSdp(): WebRTCSDP | undefined;
+  setSdp(value?: WebRTCSDP): void;
+
+  hasIcecandidate(): boolean;
+  clearIcecandidate(): void;
+  getIcecandidate(): ICECandidate | undefined;
+  setIcecandidate(value?: ICECandidate): void;
+
+  hasDisconnect(): boolean;
+  clearDisconnect(): void;
+  getDisconnect(): boolean;
+  setDisconnect(value: boolean): void;
+
+  getMessageCase(): ClientSignaling.MessageCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ClientSignaling.AsObject;
+  static toObject(includeInstance: boolean, msg: ClientSignaling): ClientSignaling.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ClientSignaling, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ClientSignaling;
+  static deserializeBinaryFromReader(message: ClientSignaling, reader: jspb.BinaryReader): ClientSignaling;
+}
+
+export namespace ClientSignaling {
+  export type AsObject = {
+    sessionid: string,
+    sdp?: WebRTCSDP.AsObject,
+    icecandidate?: ICECandidate.AsObject,
+    disconnect: boolean,
+  }
+
+  export enum MessageCase {
+    MESSAGE_NOT_SET = 0,
+    SDP = 2,
+    ICECANDIDATE = 3,
+    DISCONNECT = 4,
+  }
+}
+
+export class ServerSignaling extends jspb.Message {
+  getSessionid(): string;
+  setSessionid(value: string): void;
+
+  hasConfig(): boolean;
+  clearConfig(): void;
+  getConfig(): WebRTCConfig | undefined;
+  setConfig(value?: WebRTCConfig): void;
+
+  hasSdp(): boolean;
+  clearSdp(): void;
+  getSdp(): WebRTCSDP | undefined;
+  setSdp(value?: WebRTCSDP): void;
+
+  hasIcecandidate(): boolean;
+  clearIcecandidate(): void;
+  getIcecandidate(): ICECandidate | undefined;
+  setIcecandidate(value?: ICECandidate): void;
+
+  hasReady(): boolean;
+  clearReady(): void;
+  getReady(): boolean;
+  setReady(value: boolean): void;
+
+  hasClear(): boolean;
+  clearClear(): void;
+  getClear(): boolean;
+  setClear(value: boolean): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): string;
+  setError(value: string): void;
+
+  getMessageCase(): ServerSignaling.MessageCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ServerSignaling.AsObject;
+  static toObject(includeInstance: boolean, msg: ServerSignaling): ServerSignaling.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ServerSignaling, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ServerSignaling;
+  static deserializeBinaryFromReader(message: ServerSignaling, reader: jspb.BinaryReader): ServerSignaling;
+}
+
+export namespace ServerSignaling {
+  export type AsObject = {
+    sessionid: string,
+    config?: WebRTCConfig.AsObject,
+    sdp?: WebRTCSDP.AsObject,
+    icecandidate?: ICECandidate.AsObject,
+    ready: boolean,
+    clear: boolean,
+    error: string,
+  }
+
+  export enum MessageCase {
+    MESSAGE_NOT_SET = 0,
+    CONFIG = 2,
+    SDP = 3,
+    ICECANDIDATE = 4,
+    READY = 5,
+    CLEAR = 6,
+    ERROR = 7,
+  }
+}
+
+export class WebRTCConfig extends jspb.Message {
+  clearIceserversList(): void;
+  getIceserversList(): Array<ICEServer>;
+  setIceserversList(value: Array<ICEServer>): void;
+  addIceservers(value?: ICEServer, index?: number): ICEServer;
+
+  getAudiocodec(): string;
+  setAudiocodec(value: string): void;
+
+  getSamplerate(): number;
+  setSamplerate(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): WebRTCConfig.AsObject;
+  static toObject(includeInstance: boolean, msg: WebRTCConfig): WebRTCConfig.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: WebRTCConfig, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): WebRTCConfig;
+  static deserializeBinaryFromReader(message: WebRTCConfig, reader: jspb.BinaryReader): WebRTCConfig;
+}
+
+export namespace WebRTCConfig {
+  export type AsObject = {
+    iceserversList: Array<ICEServer.AsObject>,
+    audiocodec: string,
+    samplerate: number,
+  }
+}
+
 export class StreamConfig extends jspb.Message {
   hasAudio(): boolean;
   clearAudio(): void;
@@ -415,6 +652,11 @@ export class AssistantTalkInput extends jspb.Message {
   getMessage(): ConversationUserMessage | undefined;
   setMessage(value?: ConversationUserMessage): void;
 
+  hasSignaling(): boolean;
+  clearSignaling(): void;
+  getSignaling(): ClientSignaling | undefined;
+  setSignaling(value?: ClientSignaling): void;
+
   getRequestCase(): AssistantTalkInput.RequestCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantTalkInput.AsObject;
@@ -430,12 +672,14 @@ export namespace AssistantTalkInput {
   export type AsObject = {
     configuration?: ConversationConfiguration.AsObject,
     message?: ConversationUserMessage.AsObject,
+    signaling?: ClientSignaling.AsObject,
   }
 
   export enum RequestCase {
     REQUEST_NOT_SET = 0,
     CONFIGURATION = 2,
     MESSAGE = 3,
+    SIGNALING = 4,
   }
 }
 
@@ -486,6 +730,11 @@ export class AssistantTalkOutput extends jspb.Message {
   getError(): common_pb.Error | undefined;
   setError(value?: common_pb.Error): void;
 
+  hasSignaling(): boolean;
+  clearSignaling(): void;
+  getSignaling(): ServerSignaling | undefined;
+  setSignaling(value?: ServerSignaling): void;
+
   getDataCase(): AssistantTalkOutput.DataCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantTalkOutput.AsObject;
@@ -509,6 +758,7 @@ export namespace AssistantTalkOutput {
     toolresult?: ConversationToolResult.AsObject,
     directive?: ConversationDirective.AsObject,
     error?: common_pb.Error.AsObject,
+    signaling?: ServerSignaling.AsObject,
   }
 
   export enum DataCase {
@@ -521,6 +771,7 @@ export namespace AssistantTalkOutput {
     TOOLRESULT = 14,
     DIRECTIVE = 16,
     ERROR = 15,
+    SIGNALING = 17,
   }
 }
 

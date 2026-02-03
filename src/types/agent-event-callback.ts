@@ -60,6 +60,9 @@ export type AgentEventCallback = {
   onInputChannelChangeEvent: (cnl: Channel) => void;
   onOutputChannelChangeEvent: (cnl: Channel) => void;
 
+  // mute state change event
+  onMuteStateEvent: (isMuted: boolean) => void;
+
   // when server sent an event to client
   onConversationEvent: (
     eventType?: AssistantTalkOutput.DataCase,
