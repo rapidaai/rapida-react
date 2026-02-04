@@ -463,18 +463,23 @@ export class WebRTCGrpcTransport {
 
       case ServerSignaling.MessageCase.SDP:
         const sdpMsg = signaling.getSdp();
-        if (sdpMsg && this.peerConnection) {
+        if (sdpMsg) {
           const sdpType = sdpMsg.getType();
           const sdp = sdpMsg.getSdp();
 
           if (sdpType === WebRTCSDP.SDPType.OFFER && this.localStream) {
+            // Create peer connection if it doesn't exist (e.g., after audio reconnect)
+            if (!this.peerConnection) {
+              this.setupPeerConnection();
+            }
+
             // Server sent offer - set remote description and send answer
-            await this.peerConnection.setRemoteDescription({ type: "offer", sdp });
+            await this.peerConnection!.setRemoteDescription({ type: "offer", sdp });
 
             // Attach local audio track
             const track = this.localStream.getAudioTracks()[0];
             if (track) {
-              const transceivers = this.peerConnection.getTransceivers();
+              const transceivers = this.peerConnection!.getTransceivers();
               const audioTransceiver = transceivers.find(t =>
                 t.mid !== null && t.receiver.track?.kind === "audio"
               );
@@ -487,7 +492,7 @@ export class WebRTCGrpcTransport {
             }
 
             await this.createAndSendAnswer();
-          } else if (sdpType === WebRTCSDP.SDPType.ANSWER) {
+          } else if (sdpType === WebRTCSDP.SDPType.ANSWER && this.peerConnection) {
             // Server sent answer (unusual but handle it)
             await this.peerConnection.setRemoteDescription({ type: "answer", sdp });
           }
