@@ -79,20 +79,6 @@ export class TalkService {
   static readonly CreateBulkPhoneCall: TalkServiceCreateBulkPhoneCall;
 }
 
-type AgentKitTalk = {
-  readonly methodName: string;
-  readonly service: typeof AgentKit;
-  readonly requestStream: true;
-  readonly responseStream: true;
-  readonly requestType: typeof talk_api_pb.TalkInput;
-  readonly responseType: typeof talk_api_pb.TalkOutput;
-};
-
-export class AgentKit {
-  static readonly serviceName: string;
-  static readonly Talk: AgentKitTalk;
-}
-
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
 export type Status = { details: string, code: number; metadata: grpc.Metadata }
 
@@ -180,12 +166,5 @@ export class TalkServiceClient {
     requestMessage: talk_api_pb.CreateBulkPhoneCallRequest,
     callback: (error: ServiceError|null, responseMessage: talk_api_pb.CreateBulkPhoneCallResponse|null) => void
   ): UnaryResponse;
-}
-
-export class AgentKitClient {
-  readonly serviceHost: string;
-
-  constructor(serviceHost: string, options?: grpc.RpcOptions);
-  talk(metadata?: grpc.Metadata): BidirectionalStream<talk_api_pb.TalkInput, talk_api_pb.TalkOutput>;
 }
 
