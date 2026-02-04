@@ -59,6 +59,7 @@ import {
   HEADER_SOURCE_KEY,
 } from "@/rapida/utils/rapida_header";
 import { NotificationServiceClient } from "@/rapida/clients/protos/notification-api_pb_service";
+import { WebRTCClient } from "@/rapida/clients/protos/webrtc_pb_service";
 
 /**
  *
@@ -196,10 +197,10 @@ export class ConnectionConfig {
       web?: string;
       endpoint?: string;
     } = {
-      assistant: ASSISTANT_API,
-      web: WEB_API,
-      endpoint: ENDPOINT_API,
-    },
+        assistant: ASSISTANT_API,
+        web: WEB_API,
+        endpoint: ENDPOINT_API,
+      },
     debug: boolean = false
   ) {
     this.endpoint = {
@@ -303,6 +304,13 @@ export class ConnectionConfig {
     });
   }
 
+  get webrtcClient(): WebRTCClient {
+    return new WebRTCClient(this.endpoint.assistant, {
+      ...this.getClientOptions(),
+      transport: grpc.WebsocketTransport(),
+    });
+  }
+
   withLocal(): this {
     return this.withCustomEndpoint({
       assistant: LOCAL_ASSISTANT_API,
@@ -345,10 +353,10 @@ export class ConnectionConfig {
       web?: string;
       endpoint?: string;
     } = {
-      assistant: ASSISTANT_API,
-      web: WEB_API,
-      endpoint: ENDPOINT_API,
-    },
+        assistant: ASSISTANT_API,
+        web: WEB_API,
+        endpoint: ENDPOINT_API,
+      },
     debug?: boolean
   ): this {
     this.endpoint = {

@@ -23,11 +23,10 @@
  *
  */
 
+import { WebTalkInput, WebTalkOutput } from "@/rapida/clients/protos/webrtc_pb";
 import { AgentConfig } from "@/rapida/types/agent-config";
 import { AgentCallback } from "@/rapida/types/agent-callback";
 import {
-  AssistantTalkInput,
-  AssistantTalkOutput,
   StreamConfig,
   CreateConversationMetricRequest,
   CreateMessageMetricRequest,
@@ -43,10 +42,12 @@ import {
 import { Message as LocalMessage, MessageRole } from "@/rapida/types/message";
 import { AgentEvent } from "@/rapida/types/agent-event";
 import {
-  AssistantTalk,
   CreateConversationMetric,
   CreateMessageMetric,
 } from "@/rapida/clients/talk";
+import {
+  WebTalk,
+} from "@/rapida/clients/webrtc";
 import { getFeedback } from "@/rapida/types/feedback";
 import {
   GetAssistantRequest,
@@ -271,8 +272,8 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    */
   protected createAssistantTextMessage(
     content: string
-  ): AssistantTalkInput {
-    const request = new AssistantTalkInput();
+  ): WebTalkInput {
+    const request = new WebTalkInput();
     const userMessage = new ConversationUserMessage();
     userMessage.setText(content);
     request.setMessage(userMessage);
@@ -280,7 +281,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
   }
 
   /** Override in subclass to handle incoming messages */
-  protected onReceive = async (_response: AssistantTalkOutput) => { };
+  protected onReceive = async (_response: WebTalkOutput) => { };
 
   // Private Methods
 
@@ -301,8 +302,8 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     args?: Map<string, google_protobuf_any_pb.Any>,
     metadatas?: Map<string, google_protobuf_any_pb.Any>,
     options?: Map<string, google_protobuf_any_pb.Any>,
-  ): AssistantTalkInput {
-    const request = new AssistantTalkInput();
+  ): WebTalkInput {
+    const request = new WebTalkInput();
     const assistantConfiguration = new ConversationConfiguration();
 
     if (this._conversationId) {
@@ -371,7 +372,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     }
 
     try {
-      this.talkingConnection = AssistantTalk(this._connectionConfig);
+      this.talkingConnection = WebTalk(this._connectionConfig);
       this.talkingConnection.on("data", this.onReceive);
       this.talkingConnection.on("end", this._onEnd);
       this.talkingConnection.on("status", this._onStatusChange);

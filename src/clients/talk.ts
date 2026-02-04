@@ -37,7 +37,6 @@ import {
 } from "@/rapida/clients";
 import { BidirectionalStream, ServiceError } from "@/rapida/clients/types";
 import { Criteria, Paginate } from "@/rapida/clients/protos/common_pb";
-import { TalkServiceClient } from "@/rapida/clients/protos/talk-api_pb_service";
 import {
   CreateConversationMetricResponse,
   CreateConversationMetricRequest,

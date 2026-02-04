@@ -30,21 +30,20 @@ import {
   ConversationAssistantMessage as AssistantMessageWrapper,
   ConversationUserMessage as UserMessageWrapper,
 } from "@/rapida/types/agent-callback";
-import { AssistantTalk } from "@/rapida/clients/talk";
+import { WebTalk } from "@/rapida/clients/webrtc";
 import {
-  AssistantTalkInput,
-  AssistantTalkOutput,
   ConversationConfiguration,
   ConversationUserMessage,
-  ConversationAssistantMessage,
-  ConversationInterruption,
-  ConversationDirective,
+} from "@/rapida/clients/protos/talk-api_pb";
+import {
+  WebTalkInput,
+  WebTalkOutput,
   // Clean WebRTC signaling types
   ClientSignaling,
   ServerSignaling,
   WebRTCSDP,
   ICECandidate as ProtoICECandidate,
-} from "@/rapida/clients/protos/talk-api_pb";
+} from "@/rapida/clients/protos/webrtc_pb";
 import { AssistantDefinition } from "@/rapida/clients/protos/common_pb";
 import { BidirectionalStream } from "@/rapida/clients/types";
 import { isChrome } from "@/rapida/utils";
@@ -107,7 +106,7 @@ export class WebRTCGrpcTransport {
   private remoteStream: MediaStream | null = null;
 
   // gRPC Signaling
-  private grpcStream: BidirectionalStream<AssistantTalkInput, AssistantTalkOutput> | null = null;
+  private grpcStream: BidirectionalStream<WebTalkInput, WebTalkOutput> | null = null;
   private sessionId: string | null = null;
   private conversationId: string | null = null;
 
@@ -350,9 +349,9 @@ export class WebRTCGrpcTransport {
   private connectGrpcSignaling(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
-        this.grpcStream = AssistantTalk(this.config.connectionConfig);
+        this.grpcStream = WebTalk(this.config.connectionConfig);
 
-        this.grpcStream.on("data", (response: AssistantTalkOutput) => {
+        this.grpcStream.on("data", (response: WebTalkOutput) => {
           this.handleGrpcMessage(response);
         });
 
@@ -389,7 +388,7 @@ export class WebRTCGrpcTransport {
   /**
    * Handle incoming gRPC message
    */
-  private async handleGrpcMessage(response: AssistantTalkOutput): Promise<void> {
+  private async handleGrpcMessage(response: WebTalkOutput): Promise<void> {
     // Check for server signaling (using clean proto types)
     if (response.hasSignaling()) {
       const signaling = response.getSignaling();
@@ -541,7 +540,7 @@ export class WebRTCGrpcTransport {
 
     console.log("Sending conversation configuration via gRPC signaling");
 
-    const request = new AssistantTalkInput();
+    const request = new WebTalkInput();
     const config = new ConversationConfiguration();
 
     // Set assistant definition
@@ -588,7 +587,7 @@ export class WebRTCGrpcTransport {
   private sendWebRTCAnswer(sdp: string): void {
     if (!this.grpcStream) return;
 
-    const request = new AssistantTalkInput();
+    const request = new WebTalkInput();
     const signaling = new ClientSignaling();
 
     // Set session ID
@@ -612,7 +611,7 @@ export class WebRTCGrpcTransport {
   private sendICECandidate(candidate: RTCIceCandidateInit): void {
     if (!this.grpcStream) return;
 
-    const request = new AssistantTalkInput();
+    const request = new WebTalkInput();
     const signaling = new ClientSignaling();
 
     // Set session ID
@@ -684,7 +683,7 @@ export class WebRTCGrpcTransport {
   sendText(text: string): void {
     if (!this.grpcStream) return;
 
-    const request = new AssistantTalkInput();
+    const request = new WebTalkInput();
     const userMessage = new ConversationUserMessage();
     userMessage.setText(text);
     userMessage.setId(`msg_${Date.now()}`);

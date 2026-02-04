@@ -23,7 +23,7 @@
  *
  */
 import { DeviceManager } from "@/rapida/devices/device-manager";
-import { AssistantTalkOutput } from "@/rapida/clients/protos/talk-api_pb";
+import { WebTalkOutput } from "@/rapida/clients/protos/webrtc_pb";
 import { AgentEvent } from "@/rapida/types/agent-event";
 
 import {
@@ -265,7 +265,7 @@ export class VoiceAgent extends Agent {
     // Emit conversation event (cast to any for WebRTC mode compatibility)
     this.emit(
       AgentEvent.ConversationEvent,
-      AssistantTalkOutput.DataCase.ASSISTANT,
+      WebTalkOutput.DataCase.ASSISTANT,
       callbackMessage as any
     );
   }
@@ -313,7 +313,7 @@ export class VoiceAgent extends Agent {
     // Emit conversation event (cast to any for WebRTC mode compatibility)
     this.emit(
       AgentEvent.ConversationEvent,
-      AssistantTalkOutput.DataCase.USER,
+      WebTalkOutput.DataCase.USER,
       callbackMessage as any
     );
   }
@@ -667,7 +667,7 @@ export class VoiceAgent extends Agent {
       }
       this.emit(
         AgentEvent.ConversationEvent,
-        AssistantTalkOutput.DataCase.INTERRUPTION,
+        WebTalkOutput.DataCase.INTERRUPTION,
         interruptionData
       );
     }
@@ -712,7 +712,7 @@ export class VoiceAgent extends Agent {
 
       this.emit(
         AgentEvent.ConversationEvent,
-        AssistantTalkOutput.DataCase.USER,
+        WebTalkOutput.DataCase.USER,
         userContent
       );
     }
@@ -804,7 +804,7 @@ export class VoiceAgent extends Agent {
       }
       this.emit(
         AgentEvent.ConversationEvent,
-        AssistantTalkOutput.DataCase.ASSISTANT,
+        WebTalkOutput.DataCase.ASSISTANT,
         systemContent
       );
     }
@@ -815,20 +815,20 @@ export class VoiceAgent extends Agent {
    * @param response
    * @returns
    */
-  override onReceive = async (response: AssistantTalkOutput) => {
+  override onReceive = async (response: WebTalkOutput) => {
     switch (response.getDataCase()) {
-      case AssistantTalkOutput.DataCase.DATA_NOT_SET:
+      case WebTalkOutput.DataCase.DATA_NOT_SET:
         break;
-      case AssistantTalkOutput.DataCase.INTERRUPTION:
+      case WebTalkOutput.DataCase.INTERRUPTION:
         this.onHandleInterruption(response.getInterruption());
         break;
-      case AssistantTalkOutput.DataCase.USER:
+      case WebTalkOutput.DataCase.USER:
         this.onHandleUser(response.getUser());
         break;
-      case AssistantTalkOutput.DataCase.ASSISTANT:
+      case WebTalkOutput.DataCase.ASSISTANT:
         this.onHandleAssistant(response.getAssistant());
         break;
-      case AssistantTalkOutput.DataCase.CONFIGURATION:
+      case WebTalkOutput.DataCase.CONFIGURATION:
         const conversation = response.getConfiguration();
         if (!conversation?.getAssistantconversationid()) return;
         break;
@@ -841,13 +841,13 @@ export class VoiceAgent extends Agent {
   // Adding a check to filter out audio chunks
   // Implementing a debounce mechanism
   // These suggestions can guide the team in finding an appropriate solution to optimize the onMessage callback handling.
-  onCallback = async (response: AssistantTalkOutput) => {
+  onCallback = async (response: WebTalkOutput) => {
     // check if callback is register then call it off
     for (const agentCallback of this.agentCallbacks) {
       switch (response.getDataCase()) {
-        case AssistantTalkOutput.DataCase.DATA_NOT_SET:
+        case WebTalkOutput.DataCase.DATA_NOT_SET:
           break;
-        case AssistantTalkOutput.DataCase.DIRECTIVE:
+        case WebTalkOutput.DataCase.DIRECTIVE:
           if (response.getDirective()?.getType() === ConversationDirective.DirectiveType.END_CONVERSATION) {
             await this.disconnect();
           }
@@ -855,26 +855,26 @@ export class VoiceAgent extends Agent {
             agentCallback.onAction(response.getDirective()?.toObject());
           }
           break;
-        case AssistantTalkOutput.DataCase.INTERRUPTION:
+        case WebTalkOutput.DataCase.INTERRUPTION:
           if (agentCallback && agentCallback?.onInterrupt) {
             agentCallback.onInterrupt(response.getInterruption()?.toObject());
           }
           break;
-        case AssistantTalkOutput.DataCase.USER:
+        case WebTalkOutput.DataCase.USER:
           if (agentCallback && agentCallback?.onUserMessage) {
             agentCallback.onUserMessage(
               new ConversationUserMessage(response.getUser())
             );
           }
           break;
-        case AssistantTalkOutput.DataCase.ASSISTANT:
+        case WebTalkOutput.DataCase.ASSISTANT:
           if (agentCallback && agentCallback?.onAssistantMessage) {
             agentCallback.onAssistantMessage(
               new ConversationAssistantMessage(response.getAssistant())
             );
           }
           break;
-        case AssistantTalkOutput.DataCase.CONFIGURATION:
+        case WebTalkOutput.DataCase.CONFIGURATION:
           if (agentCallback && agentCallback?.onConfiguration) {
             agentCallback.onConfiguration(
               response.getConfiguration()?.toObject()

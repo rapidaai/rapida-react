@@ -185,6 +185,7 @@ export {
   CreateConversationMetric,
   GetAllAssistantConversation,
 } from "@/rapida/clients/talk";
+export { WebTalk } from '@/rapida/clients/webrtc';
 export {
   CreateKnowledge,
   GetKnowledgeBase,
@@ -295,6 +296,10 @@ export {
   CreateConversationMetricRequest,
   CreateConversationMetricResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
+export {
+  WebTalkInput,
+  WebTalkOutput,
+} from "@/rapida/clients/protos/webrtc_pb";
 export {
   AssistantAnalysis,
   CreateAssistantAnalysisRequest,
