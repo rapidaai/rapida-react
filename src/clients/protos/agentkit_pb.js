@@ -74,13 +74,14 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.talk_api.TalkInput.oneofGroups_ = [[2,3,4,5,6]];
+proto.talk_api.TalkInput.oneofGroups_ = [[1,2,3,4,5,6]];
 
 /**
  * @enum {number}
  */
 proto.talk_api.TalkInput.RequestCase = {
   REQUEST_NOT_SET: 0,
+  INITIALIZATION: 1,
   CONFIGURATION: 2,
   MESSAGE: 3,
   INTERRUPTION: 4,
@@ -126,6 +127,7 @@ proto.talk_api.TalkInput.prototype.toObject = function(opt_includeInstance) {
  */
 proto.talk_api.TalkInput.toObject = function(includeInstance, msg) {
   var f, obj = {
+    initialization: (f = msg.getInitialization()) && talk$api_pb.ConversationInitialization.toObject(includeInstance, f),
     configuration: (f = msg.getConfiguration()) && talk$api_pb.ConversationConfiguration.toObject(includeInstance, f),
     message: (f = msg.getMessage()) && talk$api_pb.ConversationUserMessage.toObject(includeInstance, f),
     interruption: (f = msg.getInterruption()) && talk$api_pb.ConversationInterruption.toObject(includeInstance, f),
@@ -167,6 +169,11 @@ proto.talk_api.TalkInput.deserializeBinaryFromReader = function(msg, reader) {
     }
     var field = reader.getFieldNumber();
     switch (field) {
+    case 1:
+      var value = new talk$api_pb.ConversationInitialization;
+      reader.readMessage(value,talk$api_pb.ConversationInitialization.deserializeBinaryFromReader);
+      msg.setInitialization(value);
+      break;
     case 2:
       var value = new talk$api_pb.ConversationConfiguration;
       reader.readMessage(value,talk$api_pb.ConversationConfiguration.deserializeBinaryFromReader);
@@ -221,6 +228,14 @@ proto.talk_api.TalkInput.prototype.serializeBinary = function() {
  */
 proto.talk_api.TalkInput.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
+  f = message.getInitialization();
+  if (f != null) {
+    writer.writeMessage(
+      1,
+      f,
+      talk$api_pb.ConversationInitialization.serializeBinaryToWriter
+    );
+  }
   f = message.getConfiguration();
   if (f != null) {
     writer.writeMessage(
@@ -261,6 +276,43 @@ proto.talk_api.TalkInput.serializeBinaryToWriter = function(message, writer) {
       talk$api_pb.ConversationMerics.serializeBinaryToWriter
     );
   }
+};
+
+
+/**
+ * optional ConversationInitialization initialization = 1;
+ * @return {?proto.talk_api.ConversationInitialization}
+ */
+proto.talk_api.TalkInput.prototype.getInitialization = function() {
+  return /** @type{?proto.talk_api.ConversationInitialization} */ (
+    jspb.Message.getWrapperField(this, talk$api_pb.ConversationInitialization, 1));
+};
+
+
+/**
+ * @param {?proto.talk_api.ConversationInitialization|undefined} value
+ * @return {!proto.talk_api.TalkInput} returns this
+*/
+proto.talk_api.TalkInput.prototype.setInitialization = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 1, proto.talk_api.TalkInput.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.talk_api.TalkInput} returns this
+ */
+proto.talk_api.TalkInput.prototype.clearInitialization = function() {
+  return this.setInitialization(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.talk_api.TalkInput.prototype.hasInitialization = function() {
+  return jspb.Message.getField(this, 1) != null;
 };
 
 
@@ -458,13 +510,14 @@ proto.talk_api.TalkInput.prototype.hasMetrics = function() {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.talk_api.TalkOutput.oneofGroups_ = [[10,12,13,14,16,15]];
+proto.talk_api.TalkOutput.oneofGroups_ = [[9,10,12,13,14,16,15]];
 
 /**
  * @enum {number}
  */
 proto.talk_api.TalkOutput.DataCase = {
   DATA_NOT_SET: 0,
+  INITIALIZATION: 9,
   INTERRUPTION: 10,
   ASSISTANT: 12,
   TOOL: 13,
@@ -513,6 +566,7 @@ proto.talk_api.TalkOutput.toObject = function(includeInstance, msg) {
   var f, obj = {
     code: jspb.Message.getFieldWithDefault(msg, 1, 0),
     success: jspb.Message.getBooleanFieldWithDefault(msg, 2, false),
+    initialization: (f = msg.getInitialization()) && talk$api_pb.ConversationInitialization.toObject(includeInstance, f),
     interruption: (f = msg.getInterruption()) && talk$api_pb.ConversationInterruption.toObject(includeInstance, f),
     assistant: (f = msg.getAssistant()) && talk$api_pb.ConversationAssistantMessage.toObject(includeInstance, f),
     tool: (f = msg.getTool()) && talk$api_pb.ConversationToolCall.toObject(includeInstance, f),
@@ -562,6 +616,11 @@ proto.talk_api.TalkOutput.deserializeBinaryFromReader = function(msg, reader) {
     case 2:
       var value = /** @type {boolean} */ (reader.readBool());
       msg.setSuccess(value);
+      break;
+    case 9:
+      var value = new talk$api_pb.ConversationInitialization;
+      reader.readMessage(value,talk$api_pb.ConversationInitialization.deserializeBinaryFromReader);
+      msg.setInitialization(value);
       break;
     case 10:
       var value = new talk$api_pb.ConversationInterruption;
@@ -634,6 +693,14 @@ proto.talk_api.TalkOutput.serializeBinaryToWriter = function(message, writer) {
     writer.writeBool(
       2,
       f
+    );
+  }
+  f = message.getInitialization();
+  if (f != null) {
+    writer.writeMessage(
+      9,
+      f,
+      talk$api_pb.ConversationInitialization.serializeBinaryToWriter
     );
   }
   f = message.getInterruption();
@@ -720,6 +787,43 @@ proto.talk_api.TalkOutput.prototype.getSuccess = function() {
  */
 proto.talk_api.TalkOutput.prototype.setSuccess = function(value) {
   return jspb.Message.setProto3BooleanField(this, 2, value);
+};
+
+
+/**
+ * optional ConversationInitialization initialization = 9;
+ * @return {?proto.talk_api.ConversationInitialization}
+ */
+proto.talk_api.TalkOutput.prototype.getInitialization = function() {
+  return /** @type{?proto.talk_api.ConversationInitialization} */ (
+    jspb.Message.getWrapperField(this, talk$api_pb.ConversationInitialization, 9));
+};
+
+
+/**
+ * @param {?proto.talk_api.ConversationInitialization|undefined} value
+ * @return {!proto.talk_api.TalkOutput} returns this
+*/
+proto.talk_api.TalkOutput.prototype.setInitialization = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 9, proto.talk_api.TalkOutput.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.talk_api.TalkOutput} returns this
+ */
+proto.talk_api.TalkOutput.prototype.clearInitialization = function() {
+  return this.setInitialization(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.talk_api.TalkOutput.prototype.hasInitialization = function() {
+  return jspb.Message.getField(this, 9) != null;
 };
 
 

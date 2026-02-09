@@ -23,13 +23,13 @@
  *
  */
 
-import { WebTalkInput, WebTalkOutput } from "@/rapida/clients/protos/webrtc_pb";
+import { WebTalkRequest, WebTalkResponse } from "@/rapida/clients/protos/webrtc_pb";
 import { AgentConfig } from "@/rapida/types/agent-config";
 import { AgentCallback } from "@/rapida/types/agent-callback";
 import {
-  StreamConfig,
   CreateConversationMetricRequest,
   CreateMessageMetricRequest,
+  ConversationInitialization,
 } from "@/rapida/clients/protos/talk-api_pb";
 import { ConnectionConfig } from "@/rapida/types/connection-config";
 import { ConnectionState } from "@/rapida/types/connection-state";
@@ -45,9 +45,6 @@ import {
   CreateConversationMetric,
   CreateMessageMetric,
 } from "@/rapida/clients/talk";
-import {
-  WebTalk,
-} from "@/rapida/clients/webrtc";
 import { getFeedback } from "@/rapida/types/feedback";
 import {
   GetAssistantRequest,
@@ -55,11 +52,87 @@ import {
 } from "@/rapida/clients/protos/assistant-api_pb";
 import { GetAssistant } from "@/rapida/clients/assistant";
 
-import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
+import { StreamMode, StreamModeMap } from '../clients/protos/talk-api_pb';
 import {
   ConversationConfiguration,
-  ConversationUserMessage,
 } from '../clients/protos/talk-api_pb';
+import { Channel } from "../types/channel";
+
+// ---------------------------------------------------------------------------
+// Logging helpers
+// ---------------------------------------------------------------------------
+
+/** Human-readable summary of a WebTalkRequest for logging */
+export function describeRequest(req: WebTalkRequest): string {
+  if (req.hasInitialization()) return "Initialization";
+  if (req.hasConfiguration()) return "Configuration";
+  if (req.hasMessage()) return `Text("${req.getMessage()?.getText()?.substring(0, 80) ?? ""}")`;
+  if (req.hasSignaling()) return "Signaling";
+  return "Unknown";
+}
+
+/** Human-readable summary of a WebTalkResponse for logging */
+export function describeResponse(res: WebTalkResponse): string {
+  const parts: string[] = [];
+  if (res.hasInitialization()) parts.push("Initialization");
+  if (res.hasConfiguration()) parts.push("Configuration");
+  if (res.hasAssistant()) parts.push(`Assistant("${res.getAssistant()?.getText()?.substring(0, 80) ?? ""}"`);
+  if (res.hasUser()) parts.push(`User("${res.getUser()?.getText()?.substring(0, 80) ?? ""}"`);
+  if (res.hasInterruption()) parts.push("Interruption");
+  if (res.hasDirective()) parts.push("Directive");
+  if (res.hasSignaling()) parts.push("Signaling");
+  return parts.length > 0 ? parts.join(" + ") : "Empty";
+}
+
+// ---------------------------------------------------------------------------
+// Shared message builders
+// ---------------------------------------------------------------------------
+
+/** Resolve Channel enum → StreamMode proto value */
+export function resolveStreamMode(channel: Channel): StreamModeMap[keyof StreamModeMap] {
+  return channel === Channel.Audio
+    ? StreamMode.STREAM_MODE_AUDIO
+    : channel === Channel.Text
+      ? StreamMode.STREAM_MODE_TEXT
+      : StreamMode.STREAM_MODE_BOTH;
+}
+
+/**
+ * Build the ConversationInitialization WebTalkRequest.
+ * This is the single source of truth for the initialization proto — used by
+ * GrpcSignalingManager for all connection modes (audio and text-only).
+ */
+export function buildInitializationRequest(agentConfig: AgentConfig, conversationId?: string): WebTalkRequest {
+  const request = new WebTalkRequest();
+  const init = new ConversationInitialization();
+
+  if (conversationId) {
+    init.setAssistantconversationid(conversationId);
+  }
+
+  init.setAssistant(agentConfig.definition);
+
+  agentConfig.options?.forEach((v, k) => init.getOptionsMap().set(k, v));
+  agentConfig.metadata?.forEach((v, k) => init.getMetadataMap().set(k, v));
+  agentConfig.arguments?.forEach((v, k) => init.getArgsMap().set(k, v));
+
+  init.setStreammode(resolveStreamMode(agentConfig.inputOptions.channel));
+
+  request.setInitialization(init);
+  return request;
+}
+
+/**
+ * Build a ConversationConfiguration WebTalkRequest for mode switching.
+ */
+export function buildConfigurationRequest(channel: Channel): WebTalkRequest {
+  const request = new WebTalkRequest();
+  const config = new ConversationConfiguration();
+  config.setStreammode(resolveStreamMode(channel));
+  request.setConfiguration(config);
+  return request;
+}
+
 /**
  * Base Agent class for interacting with Rapida AI assistants.
  * Manages bidirectional communication, connection states, metrics, and events.
@@ -71,10 +144,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
   // conversation id
   private _conversationId?: string;
 
-  // connection
-  protected talkingConnection?: any;
-
-  // // Agent Configuration
+  // Agent Configuration
   protected agentConfig: AgentConfig;
 
   // callbacks can have multiple callback
@@ -141,33 +211,14 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     return this.agentConfig;
   }
   /**
-   * Switches to a different agent during an active conversation
+   * Switches to a different agent during an active conversation.
+   * Subclasses override this to send the configuration through their transport.
+   *
    * @param config - Configuration for the new agent
    * @throws {Error} If agent is not connected
    */
-  public async switchAgent(config: AgentConfig): Promise<void> {
-    if (!this.isConnected) {
-      throw new Error("Cannot switch agent: not connected");
-    }
-
-    if (!this.talkingConnection) {
-      throw new Error("No active connection available for agent switch");
-    }
-
-    // Update agent config
-    this.agentConfig = config;
-
-
-    const switchRequest = this._createAssistantConfigureRequest(
-      this.agentConfig.definition,
-      this.agentConfig.inputOptions.defaultInputStreamOption,
-      this.agentConfig.outputOptions.defaultOutputStreamOption,
-      this.agentConfig.arguments,
-      this.agentConfig.metadata,
-      this.agentConfig.options
-    );
-
-    await this.talkingConnection.write(switchRequest);
+  public async switchAgent(_config: AgentConfig): Promise<void> {
+    throw new Error("switchAgent must be implemented by subclass");
   }
 
   /**
@@ -263,25 +314,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
 
   // Protected Methods
 
-  /**
-   * Creates an assistant messaging request with the given role and contents
-   *
-   * @param role - Message role (user, assistant, system)
-   * @param contents - Message contents
-   * @returns Configured messaging request
-   */
-  protected createAssistantTextMessage(
-    content: string
-  ): WebTalkInput {
-    const request = new WebTalkInput();
-    const userMessage = new ConversationUserMessage();
-    userMessage.setText(content);
-    request.setMessage(userMessage);
-    return request;
-  }
 
-  /** Override in subclass to handle incoming messages */
-  protected onReceive = async (_response: WebTalkOutput) => { };
 
   // Private Methods
 
@@ -290,47 +323,6 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    */
   public async getAssistant(): Promise<GetAssistantResponse> {
     return this._fetchAssistant(this.agentConfig.id, this.agentConfig.version);
-  }
-
-  /**
-   * Creates an assistant configuration request
-   */
-  protected _createAssistantConfigureRequest(
-    definition: AssistantDefinition,
-    inputStreamConfig: StreamConfig,
-    outputStreamConfig: StreamConfig,
-    args?: Map<string, google_protobuf_any_pb.Any>,
-    metadatas?: Map<string, google_protobuf_any_pb.Any>,
-    options?: Map<string, google_protobuf_any_pb.Any>,
-  ): WebTalkInput {
-    const request = new WebTalkInput();
-    const assistantConfiguration = new ConversationConfiguration();
-
-    if (this._conversationId) {
-      assistantConfiguration.setAssistantconversationid(this._conversationId);
-    }
-
-    assistantConfiguration.setAssistant(definition);
-
-    // Set options
-    options?.forEach((v, k) => {
-      assistantConfiguration.getOptionsMap().set(k, v);
-    });
-
-    // Set metadata
-    metadatas?.forEach((v, k) => {
-      assistantConfiguration.getMetadataMap().set(k, v);
-    });
-
-    // Set arguments
-    args?.forEach((v, k) => {
-      assistantConfiguration.getArgsMap().set(k, v);
-    });
-
-    assistantConfiguration.setOutputconfig(outputStreamConfig)
-    assistantConfiguration.setInputconfig(inputStreamConfig)
-    request.setConfiguration(assistantConfiguration);
-    return request;
   }
 
   /**
@@ -356,70 +348,16 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
   };
 
   /**
-   * Establishes connection to the assistant
-   * @param force - If true, creates gRPC connection even if connectionState is Connected
-   *                (used when switching from audio mode which sets Connected state via WebRTC)
-   */
-  protected async connectAgent(force: boolean = false): Promise<void> {
-    // Skip if already connected (unless force is true for mode switching)
-    if (!force && this.connectionState === ConnectionState.Connected) {
-      return;
-    }
-
-    // Skip if we already have a talking connection
-    if (this.talkingConnection) {
-      return;
-    }
-
-    try {
-      this.talkingConnection = WebTalk(this._connectionConfig);
-      this.talkingConnection.on("data", this.onReceive);
-      this.talkingConnection.on("end", this._onEnd);
-      this.talkingConnection.on("status", this._onStatusChange);
-
-      // Send initial configuration
-      await this.talkingConnection.write(
-        this._createAssistantConfigureRequest(
-          this.agentConfig.definition,
-          this.agentConfig.inputOptions.defaultInputStreamOption,
-          this.agentConfig.outputOptions.defaultOutputStreamOption,
-          this.agentConfig.arguments,
-          this.agentConfig.metadata,
-          this.agentConfig.options
-        )
-      );
-
-      this._setAndEmitConnectionState(ConnectionState.Connected);
-    } catch (err) {
-      const errorMsg = `Failed to connect: ${err instanceof Error ? err.message : String(err)}`;
-      this.emit(AgentEvent.ErrorEvent, "server", errorMsg);
-      return Promise.reject(new Error(errorMsg));
-    }
-  }
-
-  /**
-   * Disconnects from the assistant
+   * Disconnects from the assistant.
+   * Subclasses should override `disconnect()` to tear down their transport
+   * and then call this to update state.
    */
   protected async disconnectAgent(): Promise<void> {
     if (this.connectionState !== ConnectionState.Connected) {
       return;
     }
-
-    try {
-      await this.talkingConnection?.end();
-    } catch {
-      // Connection end errors are non-critical
-    }
-  }
-
-  /**
-   * Handles connection end events
-   */
-  private _onEnd = (): void => {
     this._setAndEmitConnectionState(ConnectionState.Disconnected);
-  };
-
-  private _onStatusChange = (_status: any): void => { };
+  }
 
   /**
    * Fetches assistant data for a specific agent ID and version

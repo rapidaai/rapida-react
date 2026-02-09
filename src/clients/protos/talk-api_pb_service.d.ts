@@ -10,8 +10,8 @@ type TalkServiceAssistantTalk = {
   readonly service: typeof TalkService;
   readonly requestStream: true;
   readonly responseStream: true;
-  readonly requestType: typeof talk_api_pb.AssistantTalkInput;
-  readonly responseType: typeof talk_api_pb.AssistantTalkOutput;
+  readonly requestType: typeof talk_api_pb.AssistantTalkRequest;
+  readonly responseType: typeof talk_api_pb.AssistantTalkResponse;
 };
 
 type TalkServiceGetAllAssistantConversation = {
@@ -111,7 +111,7 @@ export class TalkServiceClient {
   readonly serviceHost: string;
 
   constructor(serviceHost: string, options?: grpc.RpcOptions);
-  assistantTalk(metadata?: grpc.Metadata): BidirectionalStream<talk_api_pb.AssistantTalkInput, talk_api_pb.AssistantTalkOutput>;
+  assistantTalk(metadata?: grpc.Metadata): BidirectionalStream<talk_api_pb.AssistantTalkRequest, talk_api_pb.AssistantTalkResponse>;
   getAllAssistantConversation(
     requestMessage: common_pb.GetAllAssistantConversationRequest,
     metadata: grpc.Metadata,

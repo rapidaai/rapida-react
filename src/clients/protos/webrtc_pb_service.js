@@ -15,8 +15,8 @@ WebRTC.WebTalk = {
   service: WebRTC,
   requestStream: true,
   responseStream: true,
-  requestType: webrtc_pb.WebTalkInput,
-  responseType: webrtc_pb.WebTalkOutput
+  requestType: webrtc_pb.WebTalkRequest,
+  responseType: webrtc_pb.WebTalkResponse
 };
 
 exports.WebRTC = WebRTC;

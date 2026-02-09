@@ -32,7 +32,7 @@ import {
   ConversationUserMessage,
   ConversationAssistantMessage,
 } from "@/rapida/clients/protos/talk-api_pb";
-import { WebTalkOutput } from "@/rapida/clients/protos/webrtc_pb";
+import { WebTalkResponse } from "@/rapida/clients/protos/webrtc_pb";
 /**
  * Utility function to observe a specific agent event.
  * @param agent The voice agent instance.
@@ -98,7 +98,7 @@ export function observeAgentMuteState(
  * Observes server events from the agent.
  */
 export function observeAgentServerEvents(agent: VoiceAgent): Observable<{
-  eventType?: WebTalkOutput.DataCase;
+  eventType?: WebTalkResponse.DataCase;
   argument?:
   | ConversationConfiguration
   | ConversationInterruption

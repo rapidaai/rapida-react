@@ -16,8 +16,8 @@ TalkService.AssistantTalk = {
   service: TalkService,
   requestStream: true,
   responseStream: true,
-  requestType: talk_api_pb.AssistantTalkInput,
-  responseType: talk_api_pb.AssistantTalkOutput
+  requestType: talk_api_pb.AssistantTalkRequest,
+  responseType: talk_api_pb.AssistantTalkResponse
 };
 
 TalkService.GetAllAssistantConversation = {

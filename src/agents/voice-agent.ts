@@ -23,22 +23,16 @@
  *
  */
 import { DeviceManager } from "@/rapida/devices/device-manager";
-import { WebTalkOutput } from "@/rapida/clients/protos/webrtc_pb";
+import { WebTalkResponse } from "@/rapida/clients/protos/webrtc_pb";
 import { AgentEvent } from "@/rapida/types/agent-event";
 
-import {
-  ConversationDirective,
-  ConversationAssistantMessage as CAMessage,
-  ConversationInterruption,
-  ConversationUserMessage as CUMessage,
-} from "@/rapida/clients/protos/talk-api_pb";
-import { toDate } from "@/rapida/utils";
+
 import { MessageRole, MessageStatus } from "@/rapida/types/message";
 import { Channel } from "@/rapida/types/channel";
 import { AgentConfig } from "@/rapida/types/agent-config";
 import { ConnectionConfig } from "@/rapida/types/connection-config";
 import { Agent } from "@/rapida/agents/";
-import { WebRTCGrpcTransport, supportsWebRTCGrpcTransport } from "@/rapida/audio/webrtc-grpc-transport";
+import { WebRTCGrpcTransport } from "@/rapida/audio/webrtc-grpc-transport";
 import { isAndroidDevice, isIosDevice } from "@/rapida/audio/compatibility";
 import {
   AgentCallback,
@@ -68,6 +62,61 @@ export class VoiceAgent extends Agent {
   ) {
     super(connection, agentConfig, agentCallback);
     this.connectionConfig = connection;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Shared transport callbacks (used for both audio and text-only modes)
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Build the AgentCallback wiring used by WebRTCGrpcTransport.
+   * Both audio-mode and text-only-mode go through the same transport,
+   * so we share a single callback object.
+   */
+  private buildTransportCallbacks(): AgentCallback {
+    return {
+      onConnectionStateChange: (state) => {
+        if (state === "connected") {
+          this.connectionState = ConnectionState.Connected;
+          this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Connected);
+        } else if (state === "disconnected" || state === "closed" || state === "failed") {
+          this.connectionState = ConnectionState.Disconnected;
+          this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Disconnected);
+          this.switchToTextModeOnDisconnect();
+        }
+      },
+      onConnected: async () => {
+        try {
+          await this.webrtcTransport?.resumeAudio();
+        } catch {
+          // Audio resume may fail if autoplay policy blocks it
+        }
+      },
+      onDisconnected: () => {
+        this.switchToTextModeOnDisconnect();
+      },
+      onError: (error) => {
+        this.emit(AgentEvent.ErrorEvent, "client", error.message || String(error));
+      },
+      onAssistantMessage: (message) => {
+        if (message?.messageText) {
+          this._handleAssistantText(message.messageText, message.id, message.completed ?? true);
+        }
+      },
+      onUserMessage: (message) => {
+        if (message?.messageText) {
+          this._handleUserTranscription(message.messageText, message.id, message.completed ?? true);
+        }
+      },
+      onInterrupt: () => {
+        this.interruptAudio();
+      },
+      onInitialization: (config) => {
+        if (config?.assistantconversationid) {
+          this.changeConversation(String(config.assistantconversationid));
+        }
+      },
+    };
   }
 
   /**
@@ -104,7 +153,14 @@ export class VoiceAgent extends Agent {
     }
   };
 
-  private connectDevice = async () => {
+  /**
+   * Create or recreate the WebRTCGrpcTransport.
+   *
+   * @param textOnly  When true, connects gRPC + signaling only (no microphone).
+   *                  The server still sends WebRTC signaling even in text mode;
+   *                  the transport handles it, we just skip local media.
+   */
+  private connectDevice = async (textOnly: boolean = false) => {
     // Close existing transport before creating new one
     if (this.webrtcTransport) {
       await this.webrtcTransport.close();
@@ -112,70 +168,27 @@ export class VoiceAgent extends Agent {
     }
 
     try {
-      // Use WebRTC transport with gRPC signaling
-      // Audio flows through WebRTC peer connection
-      // Signaling flows through gRPC bidirectional stream
       this.webrtcTransport = await WebRTCGrpcTransport.create(
         {
           connectionConfig: this.connectionConfig,
           agentConfig: this.agentConfig,
           conversationId: this.conversationId,
         },
-        {
-          onConnectionStateChange: (state) => {
-            if (state === "connected") {
-              this.connectionState = ConnectionState.Connected;
-              this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Connected);
-            } else if (state === "disconnected" || state === "closed" || state === "failed") {
-              this.connectionState = ConnectionState.Disconnected;
-              this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Disconnected);
-              // Switch to text mode when server disconnects
-              this.switchToTextModeOnDisconnect();
-            }
-          },
-          onConnected: async () => {
-            try {
-              await this.webrtcTransport?.resumeAudio();
-            } catch {
-              // Audio resume may fail if autoplay policy blocks it
-            }
-          },
-          onDisconnected: () => {
-            // Connection closed - switch to text mode
-            this.switchToTextModeOnDisconnect();
-          },
-          onError: (error) => {
-            this.emit(AgentEvent.ErrorEvent, "client", error.message || String(error));
-          },
-          onAssistantMessage: (message) => {
-            if (message?.messageText) {
-              this._handleAssistantText(message.messageText, message.id, message.completed ?? true);
-            }
-          },
-          onUserMessage: (message) => {
-            if (message?.messageText) {
-              this._handleUserTranscription(message.messageText, message.id, message.completed ?? true);
-            }
-          },
-          onInterrupt: () => {
-            this.interruptAudio();
-          },
-          onConfiguration: (config) => {
-            if (config?.assistantconversationid) {
-              this.changeConversation(String(config.assistantconversationid));
-            }
-          },
-        }
+        this.buildTransportCallbacks(),
+        textOnly,
       );
 
       // After transport is created, emit the device change event so UI can update
-      // This handles the case where no device was specified and the default device is used
-      if (this.agentConfig.inputOptions.device) {
+      if (!textOnly && this.agentConfig.inputOptions.device) {
         this.emit(AgentEvent.InputMediaDeviceChangeEvent, this.agentConfig.inputOptions.device);
       }
     } catch (error) {
       await this.disconnectAudio();
-      this.emit(AgentEvent.ErrorEvent, "client", "Microphone permission denied or unavailable");
+      if (textOnly) {
+        this.emit(AgentEvent.ErrorEvent, "client", "Text connection failed");
+      } else {
+        this.emit(AgentEvent.ErrorEvent, "client", "Microphone permission denied or unavailable");
+      }
     }
   };
 
@@ -265,7 +278,7 @@ export class VoiceAgent extends Agent {
     // Emit conversation event (cast to any for WebRTC mode compatibility)
     this.emit(
       AgentEvent.ConversationEvent,
-      WebTalkOutput.DataCase.ASSISTANT,
+      WebTalkResponse.DataCase.ASSISTANT,
       callbackMessage as any
     );
   }
@@ -313,7 +326,7 @@ export class VoiceAgent extends Agent {
     // Emit conversation event (cast to any for WebRTC mode compatibility)
     this.emit(
       AgentEvent.ConversationEvent,
-      WebTalkOutput.DataCase.USER,
+      WebTalkResponse.DataCase.USER,
       callbackMessage as any
     );
   }
@@ -376,36 +389,34 @@ export class VoiceAgent extends Agent {
   };
 
   /**
-   * Connect to the assistant
-   * For Audio channel: Uses WebRTC for both audio and signaling (no gRPC needed)
-   * For Text channel: Uses gRPC connection
+   * Connect to the assistant.
+   *
+   * ALL connections go through WebRTCGrpcTransport so that the gRPC
+   * signaling (SDP/ICE negotiation) the server always expects is handled
+   * properly.
+   *
+   * - Audio mode → full transport (mic + WebRTC peer + gRPC)
+   * - Text mode  → text-only transport (gRPC + signaling, no mic)
    */
   public connect = async () => {
-    console.log("VoiceAgent: connect called");
+    console.log("[Rapida:VoiceAgent] connect called");
+
     // Guard: prevent concurrent connection attempts
-    if (this._isConnecting) {
-      return;
-    }
+    if (this._isConnecting) return;
 
     // Guard: already connected
-    if (this.connectionState === ConnectionState.Connected) {
-      return;
-    }
+    if (this.connectionState === ConnectionState.Connected) return;
 
-    // Guard: WebRTC transport already exists (connection in progress)
-    if (this.agentConfig.inputOptions.channel == Channel.Audio && this.webrtcTransport) {
-      return;
-    }
+    // Guard: transport already exists (connection in progress)
+    if (this.webrtcTransport) return;
 
     this._isConnecting = true;
     try {
-      if (this.agentConfig.inputOptions.channel == Channel.Audio) {
-        // WebRTC handles everything - audio via peer connection, text via signaling
+      if (this.agentConfig.inputOptions.channel === Channel.Audio) {
         await this.connectAudio();
-        // Don't call connectAgent - WebRTC endpoint creates conversation on server
       } else {
-        // Text-only mode uses gRPC
-        await this.connectAgent();
+        // Text-only — transport handles gRPC + signaling, no microphone
+        await this.connectDevice(/* textOnly */ true);
       }
     } catch (err) {
       this.emit(AgentEvent.ErrorEvent, "client", `Connection failed: ${err}`);
@@ -426,24 +437,37 @@ export class VoiceAgent extends Agent {
 
 
   /**
-   * Send text message to the assistant
-   * Works in both Audio and Text modes
+   * Send text message to the assistant.
+   * Works in both Audio and Text modes — always goes through the transport.
+   *
    * @param text
    */
   public onSendText = async (text: string) => {
     if (!this.isConnected) await this.connect();
 
-    // Try WebRTC transport first (works for both audio mode and text mode with persistent connection)
     if (this.webrtcTransport?.isGrpcConnected) {
+      // GrpcSignalingManager guards with ensureInitializationSent()
       this.webrtcTransport.sendText(text);
-    } else if (this.talkingConnection) {
-      // Fallback to standalone gRPC connection (text-only mode without WebRTC)
-      this.talkingConnection.write(this.createAssistantTextMessage(text));
     } else {
-      // No connection available
       this.emit(AgentEvent.ErrorEvent, "client", "No connection available to send text");
     }
   };
+
+  /**
+   * Switch to a different agent configuration during an active conversation.
+   * Sends a ConversationConfiguration through the transport.
+   */
+  public override async switchAgent(config: AgentConfig): Promise<void> {
+    if (!this.isConnected) {
+      throw new Error("Cannot switch agent: not connected");
+    }
+    this.agentConfig = config;
+    if (this.webrtcTransport?.isGrpcConnected) {
+      this.webrtcTransport.sendConversationConfiguration();
+    } else {
+      throw new Error("No active connection available for agent switch");
+    }
+  }
 
   /**
    * Getting  all the list of deviceid
@@ -587,24 +611,19 @@ export class VoiceAgent extends Agent {
   };
 
   /**
-   * Switch to text mode - disconnect audio but keep gRPC connection
+   * Switch to text mode — disconnect audio but keep gRPC connection.
+   * If gRPC was lost, create a fresh text-only transport.
    */
   private switchToTextMode = async () => {
-    if (this.webrtcTransport) {
-      // Check if gRPC is still connected
-      if (this.webrtcTransport.isGrpcConnected) {
-        // Disconnect just audio, keep gRPC for text messaging
-        await this.webrtcTransport.disconnectAudioOnly();
-        // gRPC is still connected, so we can send text via the existing transport
-        console.log("Switched to text mode, gRPC connection preserved");
-      } else {
-        // gRPC was lost, disconnect everything and connect fresh for text
-        await this.disconnectAudio();
-        await this.connectAgent(true);
-      }
+    if (this.webrtcTransport?.isGrpcConnected) {
+      // Disconnect just audio, keep gRPC for text messaging
+      await this.webrtcTransport.disconnectAudioOnly();
+      this.webrtcTransport.sendConversationConfiguration();
+      console.log("[Rapida:VoiceAgent] switched to text mode, gRPC preserved");
     } else {
-      // No WebRTC transport exists, ensure we have a text connection
-      await this.connectAgent(true);
+      // gRPC was lost or no transport — create fresh text-only transport
+      await this.disconnectAudio();
+      await this.connectDevice(/* textOnly */ true);
     }
   };
 
@@ -612,6 +631,8 @@ export class VoiceAgent extends Agent {
    * Switch to audio mode - reconnect audio using existing gRPC or create new connection
    */
   private switchToAudioMode = async () => {
+    let shouldSendConfig = false;
+
     if (this.webrtcTransport) {
       // Check if gRPC is still connected
       if (this.webrtcTransport.isGrpcConnected) {
@@ -620,275 +641,33 @@ export class VoiceAgent extends Agent {
           // Reconnect audio via existing gRPC stream
           await this.webrtcTransport.reconnectAudio();
           console.log("Reconnecting audio via existing gRPC connection");
+        } else {
+          shouldSendConfig = true;
         }
-        // If audio already connected, just send updated config
-        // (handled by reconnectAudio which calls sendConversationConfiguration)
       } else {
         // gRPC was lost, need to create a new connection
         await this.disconnectAudio();
         await this.connectAudio();
+        shouldSendConfig = true;
       }
     } else {
       // No WebRTC transport exists, create new connection
       await this.connectAudio();
+      shouldSendConfig = true;
+    }
+
+    if (shouldSendConfig) {
+      this.webrtcTransport?.sendConversationConfiguration();
     }
   };
 
   /**
-   *
-   * @param interruptionData
+   * Disconnect just audio while keeping gRPC connection
+   * Used when switching from audio to text mode
    */
-  private onHandleInterruption = (
-    interruptionData: ConversationInterruption | undefined
-  ) => {
-    if (interruptionData) {
-      switch (interruptionData.getType()) {
-        case ConversationInterruption.InterruptionType
-          .INTERRUPTION_TYPE_UNSPECIFIED:
-          break;
-        case ConversationInterruption.InterruptionType
-          .INTERRUPTION_TYPE_VAD:
-          this.fadeOutAudio();
-          break;
-        case ConversationInterruption.InterruptionType
-          .INTERRUPTION_TYPE_WORD:
-          // when interrupt then mark last message completed
-          if (this.agentMessages.length > 0) {
-            const lastIndex = this.agentMessages.length - 1;
-            this.agentMessages[lastIndex] = {
-              ...this.agentMessages[lastIndex],
-              status: MessageStatus.Complete,
-            };
-          }
-          this.interruptAudio();
-          break;
-        default:
-          break;
-      }
-      this.emit(
-        AgentEvent.ConversationEvent,
-        WebTalkOutput.DataCase.INTERRUPTION,
-        interruptionData
-      );
-    }
-  };
-
-
-  /**
-   * on handle user content
-   * @param userContent 
-   */
-  private onHandleUser = (
-    userContent: CUMessage | undefined
-  ) => {
-    if (userContent) {
-      switch (userContent.getMessageCase()) {
-        case CUMessage.MessageCase.MESSAGE_NOT_SET:
-        case CUMessage.MessageCase.AUDIO:
-        case CUMessage.MessageCase.TEXT:
-          const agentTranscript = userContent.getText();
-          if (agentTranscript) {
-            if (this.agentMessages.length > 0) {
-              const lastMessage =
-                this.agentMessages[this.agentMessages.length - 1];
-              if (
-                lastMessage.role === MessageRole.User &&
-                lastMessage.id === userContent.getId()
-              ) {
-                this.agentMessages.pop();
-              }
-            }
-            this.agentMessages.push({
-              id: userContent.getId(),
-              role: MessageRole.User,
-              messages: [agentTranscript],
-              time: toDate(userContent?.getTime()),
-              status: userContent.getCompleted()
-                ? MessageStatus.Complete
-                : MessageStatus.Pending,
-            });
-          }
-      }
-
-      this.emit(
-        AgentEvent.ConversationEvent,
-        WebTalkOutput.DataCase.USER,
-        userContent
-      );
-    }
-  };
-
-
-  /**
-   * on handle assistant content
-   * @param systemContent 
-   */
-  private onHandleAssistant = (
-    systemContent: CAMessage | undefined
-  ) => {
-    if (systemContent) {
-      switch (systemContent.getMessageCase()) {
-        case CAMessage.MessageCase.MESSAGE_NOT_SET:
-        case CAMessage.MessageCase.AUDIO:
-          // Audio is handled via WebRTC transport, not gRPC
-          break;
-        case CAMessage.MessageCase.TEXT:
-          const systemTranscript = systemContent.getText();
-          if (systemTranscript) {
-            if (systemContent.getCompleted()) {
-              // Complete message
-              if (this.agentMessages.length > 0) {
-                const lastMessage =
-                  this.agentMessages[this.agentMessages.length - 1];
-                if (
-                  lastMessage.role === MessageRole.System &&
-                  lastMessage.status === MessageStatus.Pending
-                ) {
-                  // Update the existing message to complete
-                  lastMessage.messages = [systemTranscript]; // Replace with complete message
-                  lastMessage.status = MessageStatus.Complete;
-                  lastMessage.time = toDate(systemContent?.getTime());
-                } else {
-                  // Unexpected case: complete message without pending, create new
-                  this.agentMessages.push({
-                    id: systemContent.getId(),
-                    role: MessageRole.System,
-                    messages: [systemTranscript],
-                    time: toDate(systemContent?.getTime()),
-                    status: MessageStatus.Complete,
-                  });
-                }
-              } else {
-                this.agentMessages.push({
-                  id: systemContent.getId(),
-                  role: MessageRole.System,
-                  messages: [systemTranscript],
-                  time: toDate(systemContent?.getTime()),
-                  status: MessageStatus.Complete,
-                });
-              }
-            } else {
-              // Chunk
-              if (this.agentMessages.length > 0) {
-                const lastMessage =
-                  this.agentMessages[this.agentMessages.length - 1];
-                if (
-                  lastMessage.role === MessageRole.System &&
-                  lastMessage.status === MessageStatus.Pending
-                ) {
-                  // Update existing message with new chunk
-                  lastMessage.messages[0] += systemTranscript; // Merge strings
-                  lastMessage.time = toDate(systemContent?.getTime());
-                } else {
-                  // Create new pending message for chunk
-                  this.agentMessages.push({
-                    id: systemContent.getId(),
-                    role: MessageRole.System,
-                    messages: [systemTranscript],
-                    time: toDate(systemContent?.getTime()),
-                    status: MessageStatus.Pending,
-                  });
-                }
-              } else {
-                // Create new pending message for chunk if no messages exist
-                this.agentMessages.push({
-                  id: systemContent.getId(),
-                  role: MessageRole.System,
-                  messages: [systemTranscript],
-                  time: toDate(systemContent?.getTime()),
-                  status: MessageStatus.Pending,
-                });
-              }
-            }
-          }
-      }
-      this.emit(
-        AgentEvent.ConversationEvent,
-        WebTalkOutput.DataCase.ASSISTANT,
-        systemContent
-      );
-    }
-  };
-
-  /**
-   *  streaming response from the server
-   * @param response
-   * @returns
-   */
-  override onReceive = async (response: WebTalkOutput) => {
-    switch (response.getDataCase()) {
-      case WebTalkOutput.DataCase.DATA_NOT_SET:
-        break;
-      case WebTalkOutput.DataCase.INTERRUPTION:
-        this.onHandleInterruption(response.getInterruption());
-        break;
-      case WebTalkOutput.DataCase.USER:
-        this.onHandleUser(response.getUser());
-        break;
-      case WebTalkOutput.DataCase.ASSISTANT:
-        this.onHandleAssistant(response.getAssistant());
-        break;
-      case WebTalkOutput.DataCase.CONFIGURATION:
-        const conversation = response.getConfiguration();
-        if (!conversation?.getAssistantconversationid()) return;
-        break;
-      default:
-        break;
-    }
-    await this.onCallback(response);
-  };
-
-  // Adding a check to filter out audio chunks
-  // Implementing a debounce mechanism
-  // These suggestions can guide the team in finding an appropriate solution to optimize the onMessage callback handling.
-  onCallback = async (response: WebTalkOutput) => {
-    // check if callback is register then call it off
-    for (const agentCallback of this.agentCallbacks) {
-      switch (response.getDataCase()) {
-        case WebTalkOutput.DataCase.DATA_NOT_SET:
-          break;
-        case WebTalkOutput.DataCase.DIRECTIVE:
-          if (response.getDirective()?.getType() === ConversationDirective.DirectiveType.END_CONVERSATION) {
-            await this.disconnect();
-          }
-          if (agentCallback && agentCallback?.onAction) {
-            agentCallback.onAction(response.getDirective()?.toObject());
-          }
-          break;
-        case WebTalkOutput.DataCase.INTERRUPTION:
-          if (agentCallback && agentCallback?.onInterrupt) {
-            agentCallback.onInterrupt(response.getInterruption()?.toObject());
-          }
-          break;
-        case WebTalkOutput.DataCase.USER:
-          if (agentCallback && agentCallback?.onUserMessage) {
-            agentCallback.onUserMessage(
-              new ConversationUserMessage(response.getUser())
-            );
-          }
-          break;
-        case WebTalkOutput.DataCase.ASSISTANT:
-          if (agentCallback && agentCallback?.onAssistantMessage) {
-            agentCallback.onAssistantMessage(
-              new ConversationAssistantMessage(response.getAssistant())
-            );
-          }
-          break;
-        case WebTalkOutput.DataCase.CONFIGURATION:
-          if (agentCallback && agentCallback?.onConfiguration) {
-            agentCallback.onConfiguration(
-              response.getConfiguration()?.toObject()
-            );
-          }
-          const cnvId = response
-            .getConfiguration()
-            ?.getAssistantconversationid();
-          if (cnvId) this.changeConversation(cnvId);
-          break;
-
-        default:
-          break;
-      }
+  private disconnectAudioOnly = async () => {
+    if (this.webrtcTransport) {
+      await this.webrtcTransport.disconnectAudioOnly();
     }
   };
 

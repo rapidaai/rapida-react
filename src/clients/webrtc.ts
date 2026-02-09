@@ -30,12 +30,12 @@ import {
 } from "@/rapida/clients";
 import { ConnectionConfig } from "@/rapida/types/connection-config";
 import { BidirectionalStream, ServiceError } from "@/rapida/clients/types";
-import { WebTalkInput, WebTalkOutput } from "@/rapida/clients/protos/webrtc_pb";
+import { WebTalkRequest, WebTalkResponse } from "@/rapida/clients/protos/webrtc_pb";
 
 export function WebTalk(
   connectionConfig: ConnectionConfig,
   authHeader?: UserAuthInfo | ClientAuthInfo
-): BidirectionalStream<WebTalkInput, WebTalkOutput> {
+): BidirectionalStream<WebTalkRequest, WebTalkResponse> {
   return connectionConfig.webrtcClient.webTalk(
     WithAuthContext(connectionConfig.auth || authHeader)
   );

@@ -9,8 +9,8 @@ type WebRTCWebTalk = {
   readonly service: typeof WebRTC;
   readonly requestStream: true;
   readonly responseStream: true;
-  readonly requestType: typeof webrtc_pb.WebTalkInput;
-  readonly responseType: typeof webrtc_pb.WebTalkOutput;
+  readonly requestType: typeof webrtc_pb.WebTalkRequest;
+  readonly responseType: typeof webrtc_pb.WebTalkResponse;
 };
 
 export class WebRTC {
@@ -50,6 +50,6 @@ export class WebRTCClient {
   readonly serviceHost: string;
 
   constructor(serviceHost: string, options?: grpc.RpcOptions);
-  webTalk(metadata?: grpc.Metadata): BidirectionalStream<webrtc_pb.WebTalkInput, webrtc_pb.WebTalkOutput>;
+  webTalk(metadata?: grpc.Metadata): BidirectionalStream<webrtc_pb.WebTalkRequest, webrtc_pb.WebTalkResponse>;
 }
 

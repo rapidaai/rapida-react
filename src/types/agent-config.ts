@@ -56,15 +56,6 @@ export class InputOptions {
     this.iceServers = iceServers;
   }
 
-  /** Stream config for STT */
-  get defaultInputStreamOption(): StreamConfig {
-    const streamConfig = new StreamConfig();
-    if (this.channel === Channel.Audio) {
-      const audioConfig = new AudioConfig();
-      streamConfig.setAudio(audioConfig);
-    }
-    return streamConfig;
-  }
 }
 
 /**
@@ -86,15 +77,6 @@ export class OutputOptions {
     if (deviceId) this.device = deviceId;
   }
 
-  /** Stream config for TTS */
-  get defaultOutputStreamOption(): StreamConfig {
-    const streamConfig = new StreamConfig();
-    if (this.channel === Channel.Audio) {
-      const audioConfig = new AudioConfig();
-      streamConfig.setAudio(audioConfig);
-    }
-    return streamConfig;
-  }
 }
 /**
  * Represents the configuration settings for an agent.

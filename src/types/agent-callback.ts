@@ -27,7 +27,8 @@ import {
   ConversationAssistantMessage as CAMessage,
   ConversationConfiguration,
   ConversationInterruption,
-  ConversationDirective
+  ConversationDirective,
+  ConversationInitialization
 } from "@/rapida/clients/protos/talk-api_pb";
 
 import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
@@ -86,6 +87,9 @@ export interface ConversationMessage
  * Callbacks for agent events
  */
 export interface AgentCallback {
+
+  onInitialization?: (args: ConversationInitialization.AsObject | undefined) => void;
+
   /** Called when configuration is received (conversation ID, etc.) */
   onConfiguration?: (args: ConversationConfiguration.AsObject | undefined) => void;
 

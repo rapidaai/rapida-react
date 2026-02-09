@@ -6,6 +6,11 @@ import * as common_pb from "./common_pb";
 import * as talk_api_pb from "./talk-api_pb";
 
 export class TalkInput extends jspb.Message {
+  hasInitialization(): boolean;
+  clearInitialization(): void;
+  getInitialization(): talk_api_pb.ConversationInitialization | undefined;
+  setInitialization(value?: talk_api_pb.ConversationInitialization): void;
+
   hasConfiguration(): boolean;
   clearConfiguration(): void;
   getConfiguration(): talk_api_pb.ConversationConfiguration | undefined;
@@ -44,6 +49,7 @@ export class TalkInput extends jspb.Message {
 
 export namespace TalkInput {
   export type AsObject = {
+    initialization?: talk_api_pb.ConversationInitialization.AsObject,
     configuration?: talk_api_pb.ConversationConfiguration.AsObject,
     message?: talk_api_pb.ConversationUserMessage.AsObject,
     interruption?: talk_api_pb.ConversationInterruption.AsObject,
@@ -53,6 +59,7 @@ export namespace TalkInput {
 
   export enum RequestCase {
     REQUEST_NOT_SET = 0,
+    INITIALIZATION = 1,
     CONFIGURATION = 2,
     MESSAGE = 3,
     INTERRUPTION = 4,
@@ -67,6 +74,11 @@ export class TalkOutput extends jspb.Message {
 
   getSuccess(): boolean;
   setSuccess(value: boolean): void;
+
+  hasInitialization(): boolean;
+  clearInitialization(): void;
+  getInitialization(): talk_api_pb.ConversationInitialization | undefined;
+  setInitialization(value?: talk_api_pb.ConversationInitialization): void;
 
   hasInterruption(): boolean;
   clearInterruption(): void;
@@ -113,6 +125,7 @@ export namespace TalkOutput {
   export type AsObject = {
     code: number,
     success: boolean,
+    initialization?: talk_api_pb.ConversationInitialization.AsObject,
     interruption?: talk_api_pb.ConversationInterruption.AsObject,
     assistant?: talk_api_pb.ConversationAssistantMessage.AsObject,
     tool?: talk_api_pb.ConversationToolCall.AsObject,
@@ -123,6 +136,7 @@ export namespace TalkOutput {
 
   export enum DataCase {
     DATA_NOT_SET = 0,
+    INITIALIZATION = 9,
     INTERRUPTION = 10,
     ASSISTANT = 12,
     TOOL = 13,

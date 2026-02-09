@@ -289,16 +289,16 @@ export {
   GetCredentialResponse,
 } from "@/rapida/clients/protos/vault-api_pb";
 export {
-  AssistantTalkInput,
-  AssistantTalkOutput,
+  AssistantTalkRequest,
+  AssistantTalkResponse,
   CreateMessageMetricRequest,
   CreateMessageMetricResponse,
   CreateConversationMetricRequest,
   CreateConversationMetricResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
 export {
-  WebTalkInput,
-  WebTalkOutput,
+  WebTalkRequest,
+  WebTalkResponse,
 } from "@/rapida/clients/protos/webrtc_pb";
 export {
   AssistantAnalysis,

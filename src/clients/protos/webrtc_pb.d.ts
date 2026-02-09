@@ -2,7 +2,6 @@
 // file: webrtc.proto
 
 import * as jspb from "google-protobuf";
-import * as common_pb from "./common_pb";
 import * as talk_api_pb from "./talk-api_pb";
 
 export class ICEServer extends jspb.Message {
@@ -242,7 +241,12 @@ export namespace WebRTCConfig {
   }
 }
 
-export class WebTalkInput extends jspb.Message {
+export class WebTalkRequest extends jspb.Message {
+  hasInitialization(): boolean;
+  clearInitialization(): void;
+  getInitialization(): talk_api_pb.ConversationInitialization | undefined;
+  setInitialization(value?: talk_api_pb.ConversationInitialization): void;
+
   hasConfiguration(): boolean;
   clearConfiguration(): void;
   getConfiguration(): talk_api_pb.ConversationConfiguration | undefined;
@@ -268,19 +272,20 @@ export class WebTalkInput extends jspb.Message {
   getMetrics(): talk_api_pb.ConversationMerics | undefined;
   setMetrics(value?: talk_api_pb.ConversationMerics): void;
 
-  getRequestCase(): WebTalkInput.RequestCase;
+  getRequestCase(): WebTalkRequest.RequestCase;
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): WebTalkInput.AsObject;
-  static toObject(includeInstance: boolean, msg: WebTalkInput): WebTalkInput.AsObject;
+  toObject(includeInstance?: boolean): WebTalkRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: WebTalkRequest): WebTalkRequest.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: WebTalkInput, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): WebTalkInput;
-  static deserializeBinaryFromReader(message: WebTalkInput, reader: jspb.BinaryReader): WebTalkInput;
+  static serializeBinaryToWriter(message: WebTalkRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): WebTalkRequest;
+  static deserializeBinaryFromReader(message: WebTalkRequest, reader: jspb.BinaryReader): WebTalkRequest;
 }
 
-export namespace WebTalkInput {
+export namespace WebTalkRequest {
   export type AsObject = {
+    initialization?: talk_api_pb.ConversationInitialization.AsObject,
     configuration?: talk_api_pb.ConversationConfiguration.AsObject,
     message?: talk_api_pb.ConversationUserMessage.AsObject,
     signaling?: ClientSignaling.AsObject,
@@ -290,6 +295,7 @@ export namespace WebTalkInput {
 
   export enum RequestCase {
     REQUEST_NOT_SET = 0,
+    INITIALIZATION = 1,
     CONFIGURATION = 2,
     MESSAGE = 3,
     SIGNALING = 4,
@@ -298,12 +304,17 @@ export namespace WebTalkInput {
   }
 }
 
-export class WebTalkOutput extends jspb.Message {
+export class WebTalkResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
   getSuccess(): boolean;
   setSuccess(value: boolean): void;
+
+  hasInitialization(): boolean;
+  clearInitialization(): void;
+  getInitialization(): talk_api_pb.ConversationInitialization | undefined;
+  setInitialization(value?: talk_api_pb.ConversationInitialization): void;
 
   hasConfiguration(): boolean;
   clearConfiguration(): void;
@@ -342,8 +353,8 @@ export class WebTalkOutput extends jspb.Message {
 
   hasError(): boolean;
   clearError(): void;
-  getError(): common_pb.Error | undefined;
-  setError(value?: common_pb.Error): void;
+  getError(): talk_api_pb.ConversationError | undefined;
+  setError(value?: talk_api_pb.ConversationError): void;
 
   hasSignaling(): boolean;
   clearSignaling(): void;
@@ -360,21 +371,22 @@ export class WebTalkOutput extends jspb.Message {
   getMetrics(): talk_api_pb.ConversationMerics | undefined;
   setMetrics(value?: talk_api_pb.ConversationMerics): void;
 
-  getDataCase(): WebTalkOutput.DataCase;
+  getDataCase(): WebTalkResponse.DataCase;
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): WebTalkOutput.AsObject;
-  static toObject(includeInstance: boolean, msg: WebTalkOutput): WebTalkOutput.AsObject;
+  toObject(includeInstance?: boolean): WebTalkResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: WebTalkResponse): WebTalkResponse.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: WebTalkOutput, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): WebTalkOutput;
-  static deserializeBinaryFromReader(message: WebTalkOutput, reader: jspb.BinaryReader): WebTalkOutput;
+  static serializeBinaryToWriter(message: WebTalkResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): WebTalkResponse;
+  static deserializeBinaryFromReader(message: WebTalkResponse, reader: jspb.BinaryReader): WebTalkResponse;
 }
 
-export namespace WebTalkOutput {
+export namespace WebTalkResponse {
   export type AsObject = {
     code: number,
     success: boolean,
+    initialization?: talk_api_pb.ConversationInitialization.AsObject,
     configuration?: talk_api_pb.ConversationConfiguration.AsObject,
     interruption?: talk_api_pb.ConversationInterruption.AsObject,
     user?: talk_api_pb.ConversationUserMessage.AsObject,
@@ -382,7 +394,7 @@ export namespace WebTalkOutput {
     tool?: talk_api_pb.ConversationToolCall.AsObject,
     toolresult?: talk_api_pb.ConversationToolResult.AsObject,
     directive?: talk_api_pb.ConversationDirective.AsObject,
-    error?: common_pb.Error.AsObject,
+    error?: talk_api_pb.ConversationError.AsObject,
     signaling?: ServerSignaling.AsObject,
     metadata?: talk_api_pb.ConversationMetadata.AsObject,
     metrics?: talk_api_pb.ConversationMerics.AsObject,
@@ -390,6 +402,7 @@ export namespace WebTalkOutput {
 
   export enum DataCase {
     DATA_NOT_SET = 0,
+    INITIALIZATION = 8,
     CONFIGURATION = 9,
     INTERRUPTION = 10,
     USER = 11,

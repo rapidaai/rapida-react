@@ -31,7 +31,7 @@ import {
   ConversationInterruption,
   ConversationUserMessage,
 } from "@/rapida/clients/protos/talk-api_pb";
-import { WebTalkOutput } from "@/rapida/clients/protos/webrtc_pb";
+import { WebTalkResponse } from "@/rapida/clients/protos/webrtc_pb";
 import { ConnectionState } from "@/rapida/types/connection-state";
 /**
  * Defines the structure for callback functions used in voice agent events.
@@ -65,7 +65,7 @@ export type AgentEventCallback = {
 
   // when server sent an event to client
   onConversationEvent: (
-    eventType?: WebTalkOutput.DataCase,
+    eventType?: WebTalkResponse.DataCase,
     event?:
       | ConversationConfiguration
       | ConversationUserMessage
