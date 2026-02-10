@@ -203,28 +203,23 @@ describe('VoiceAgent', () => {
       expect(WebRTCGrpcTransport.create).not.toHaveBeenCalled();
     });
 
-    it('should set _isConnecting flag during connection and reset after completion', async () => {
-      // Access private field for testing
-      expect((voiceAgent as any)._isConnecting).toBe(false);
+    it('should clear _connectPromise after connection completes', async () => {
+      expect((voiceAgent as any)._connectPromise).toBeNull();
 
-      const connectPromise = voiceAgent.connect();
+      await voiceAgent.connect();
 
-      // During connection, flag should be true (can't reliably check this in sync test)
-
-      await connectPromise;
-
-      // After completion, flag should be reset to false
-      expect((voiceAgent as any)._isConnecting).toBe(false);
+      // After completion, promise should be cleared
+      expect((voiceAgent as any)._connectPromise).toBeNull();
     });
 
-    it('should reset _isConnecting flag even if connection fails', async () => {
+    it('should clear _connectPromise even if connection fails', async () => {
       // Make WebRTCGrpcTransport.create throw an error
       (WebRTCGrpcTransport.create as jest.Mock).mockRejectedValueOnce(new Error('Connection failed'));
 
       await voiceAgent.connect();
 
-      // Flag should be reset even after error
-      expect((voiceAgent as any)._isConnecting).toBe(false);
+      // Promise should be cleared even after error
+      expect((voiceAgent as any)._connectPromise).toBeNull();
     });
 
     it('should not create second transport when connect is called after first connect returns but before connected state', async () => {
@@ -382,17 +377,23 @@ describe('VoiceAgent', () => {
 
       await agent.connect();
 
-      // Simulate text-only mode: gRPC connected, but audio is NOT connected
-      mockWebRTCTransport.isAudioConnected = false;
-
       // Now switch to audio — should reconnect audio via existing transport
       await agent.setInputChannel(Channel.Audio);
 
-      // Transport already exists with gRPC connected, so reconnectAudio should be called
+      // reconnectAudio adds audio transport, sendConversationConfiguration tells server
       expect(mockWebRTCTransport.reconnectAudio).toHaveBeenCalled();
+      expect(mockWebRTCTransport.sendConversationConfiguration).toHaveBeenCalled();
+    });
 
-      // Restore default
-      mockWebRTCTransport.isAudioConnected = true;
+    it('should disconnect audio when switching to Text channel while connected', async () => {
+      // Start with audio channel
+      await voiceAgent.connect();
+
+      // Switch to text — should disconnect audio but keep gRPC session
+      await voiceAgent.setInputChannel(Channel.Text);
+
+      expect(mockWebRTCTransport.disconnectAudioOnly).toHaveBeenCalled();
+      expect(mockWebRTCTransport.sendConversationConfiguration).toHaveBeenCalled();
     });
   });
 

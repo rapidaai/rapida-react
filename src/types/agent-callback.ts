@@ -103,7 +103,7 @@ export interface AgentCallback {
   onUserMessage?: (args: ConversationUserMessage | undefined) => void;
 
   /** Called when directive/action is received */
-  onAction?: (arg?: ConversationDirective.AsObject) => void;
+  onDirective?: (arg?: ConversationDirective.AsObject) => void;
 
   /** Called when connection state changes */
   onConnectionStateChange?: (state: RTCPeerConnectionState) => void;
@@ -116,4 +116,5 @@ export interface AgentCallback {
 
   /** Called on error */
   onError?: (error: Error) => void;
+
 }

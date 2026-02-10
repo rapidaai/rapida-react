@@ -22,8 +22,7 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { AssistantDefinition } from "@/rapida/clients/protos/common_pb";
-import { AudioConfig, StreamConfig } from "@/rapida/clients/protos/talk-api_pb";
+import { AssistantDefinition, User } from "@/rapida/clients/protos/common_pb";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
 import { Channel } from "@/rapida/types/channel";
@@ -76,7 +75,21 @@ export class OutputOptions {
     if (channel) this.channel = channel;
     if (deviceId) this.device = deviceId;
   }
+}
 
+export class UserIdentifier {
+  /** User identifier type */
+  id: string;
+
+  // name of user identifier
+  name?: string;
+
+
+  constructor(id: string, name?: string) {
+    this.id = id;
+    this.name = name;
+
+  }
 }
 /**
  * Represents the configuration settings for an agent.
@@ -118,6 +131,12 @@ export class AgentConfig {
    */
   outputOptions: OutputOptions;
 
+
+  /**
+   * user identifier for conversation
+   */
+  userIdentifier?: UserIdentifier;
+
   /**
    * Initializes a new instance of `AgentConfig`.
    *
@@ -135,7 +154,8 @@ export class AgentConfig {
     version?: string,
     argument?: Map<string, google_protobuf_any_pb.Any>,
     options?: Map<string, google_protobuf_any_pb.Any>,
-    metadata?: Map<string, google_protobuf_any_pb.Any>
+    metadata?: Map<string, google_protobuf_any_pb.Any>,
+    userIdentifier?: UserIdentifier,
   ) {
     this.id = id;
     this.version = version;
@@ -144,6 +164,7 @@ export class AgentConfig {
     this.metadata = metadata;
     this.inputOptions = inputOptions;
     this.outputOptions = outputOptions;
+    this.userIdentifier = userIdentifier;
   }
 
   /**

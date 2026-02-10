@@ -138,6 +138,19 @@ export class AudioMediaManager {
     this.audioElement.srcObject = stream;
     this.audioElement.volume = this._volume;
 
+    // Setup output analyser for remote audio visualization
+    try {
+      if (this.audioContext && !this._outputAnalyser) {
+        const remoteSource = this.audioContext.createMediaStreamSource(stream);
+        this._outputAnalyser = this.audioContext.createAnalyser();
+        this._outputAnalyser.fftSize = 1024;
+        this._outputAnalyser.smoothingTimeConstant = 0.4;
+        remoteSource.connect(this._outputAnalyser);
+      }
+    } catch (error) {
+      console.debug("Failed to setup output analyser", error);
+    }
+
     try {
       await this.audioElement.play();
     } catch {
@@ -147,17 +160,38 @@ export class AudioMediaManager {
 
   /** Resume audio after user interaction */
   async resumeAudio(): Promise<void> {
-    if (this.audioContext?.state === "suspended") await this.audioContext.resume();
-    if (this.audioElement?.paused) await this.audioElement.play();
+    try {
+      if (this.audioContext?.state === "suspended") {
+        await this.audioContext.resume();
+      }
+      if (this.audioElement?.paused) {
+        await this.audioElement.play();
+      }
+    } catch (error) {
+      console.error("Failed to resume audio", error);
+      throw error;
+    }
   }
 
   /** Ensure audio context is running and element is playing (e.g. on READY signal) */
   async ensurePlayback(): Promise<void> {
-    if (this.audioContext?.state === "suspended") await this.audioContext.resume();
-    if (this.audioElement?.paused) {
-      try { await this.audioElement.play(); } catch { }
+    try {
+      if (this.audioContext?.state === "suspended") {
+        await this.audioContext.resume();
+      }
+      if (this.audioElement?.paused) {
+        try {
+          await this.audioElement.play();
+        } catch (error) {
+          console.debug("Autoplay failed, waiting for user interaction", error);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to ensure playback", error);
     }
   }
+
+
 
   private setupUserInteractionHandler(): void {
     const startAudio = async () => {
@@ -186,8 +220,13 @@ export class AudioMediaManager {
       video: false,
     });
 
+    // Reconnect analyser (disconnect old source first to avoid leaking audio nodes)
     if (this.audioContext && this._inputAnalyser) {
+      this._inputAnalyser.disconnect();
       const source = this.audioContext.createMediaStreamSource(this.localStream);
+      this._inputAnalyser = this.audioContext.createAnalyser();
+      this._inputAnalyser.fftSize = 1024;
+      this._inputAnalyser.smoothingTimeConstant = 0.4;
       source.connect(this._inputAnalyser);
     }
   }
@@ -237,29 +276,36 @@ export class AudioMediaManager {
   // Cleanup
   // ---------------------------------------------------------------------------
 
-  /** Tear down audio only (keep gRPC alive for text mode) */
+  /** Disconnect audio (for text mode) - stops local media but keeps gRPC stream */
   async disconnectAudio(): Promise<void> {
-    this.localStream?.getTracks().forEach(t => t.stop());
-    this.localStream = null;
+    try {
+      this.localStream?.getTracks().forEach(t => t.stop());
+      this.localStream = null;
 
-    if (this.audioElement) {
-      this.audioElement.pause();
-      this.audioElement.srcObject = null;
-      this.audioElement = null;
+      if (this.audioElement) {
+        this.audioElement.pause();
+        this.audioElement.srcObject = null;
+      }
+    } catch (error) {
+      console.error("Failed to disconnect audio", error);
     }
-
-    if (this.audioContext?.state !== "closed") {
-      await this.audioContext?.close();
-    }
-    this.audioContext = null;
-
-    this._inputAnalyser = null;
-    this._outputAnalyser = null;
-    this.remoteStream = null;
   }
 
-  /** Full cleanup */
+  /** Full cleanup - closes audio context and clears all resources */
   async close(): Promise<void> {
-    await this.disconnectAudio();
+    try {
+      await this.disconnectAudio();
+
+      // Clean up audio context and analysers
+      if (this.audioContext?.state !== "closed") {
+        await this.audioContext?.close();
+      }
+      this.audioContext = null;
+      this._inputAnalyser = null;
+      this._outputAnalyser = null;
+      this.remoteStream = null;
+    } catch (error) {
+      console.error("Error during audio cleanup", error);
+    }
   }
 }

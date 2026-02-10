@@ -30,6 +30,7 @@ import {
   CreateConversationMetricRequest,
   CreateMessageMetricRequest,
   ConversationInitialization,
+  WebIdentity,
 } from "@/rapida/clients/protos/talk-api_pb";
 import { ConnectionConfig } from "@/rapida/types/connection-config";
 import { ConnectionState } from "@/rapida/types/connection-state";
@@ -109,15 +110,18 @@ export function buildInitializationRequest(agentConfig: AgentConfig, conversatio
   if (conversationId) {
     init.setAssistantconversationid(conversationId);
   }
-
   init.setAssistant(agentConfig.definition);
-
   agentConfig.options?.forEach((v, k) => init.getOptionsMap().set(k, v));
   agentConfig.metadata?.forEach((v, k) => init.getMetadataMap().set(k, v));
   agentConfig.arguments?.forEach((v, k) => init.getArgsMap().set(k, v));
-
   init.setStreammode(resolveStreamMode(agentConfig.inputOptions.channel));
 
+  if (agentConfig.userIdentifier) {
+    // later we want to profile the user properly, but for now we just need a unique ID to correlate conversations
+    const identity = new WebIdentity();
+    identity.setUserid(agentConfig.userIdentifier.id);
+    init.setWeb(identity)
+  }
   request.setInitialization(init);
   return request;
 }

@@ -97,6 +97,9 @@ export class GrpcSignalingManager {
             this.callbacks.onError?.(new Error(`gRPC error: ${errorMessage}`));
             this.callbacks.onConnectionStateChange?.("failed");
             this.callbacks.onDisconnected?.();
+            // Mark stream as disconnected
+            this.grpcStream = null;
+            this.initializationSent = false;
           }
         });
 
@@ -132,10 +135,15 @@ export class GrpcSignalingManager {
   sendConversationInitialization(): void {
     if (!this.grpcStream) return;
 
-    const request = buildInitializationRequest(this.agentConfig, this.conversationId ?? undefined);
-    console.log(`${LOG_PREFIX} → OUT | ${describeRequest(request)}`);
-    this.grpcStream.write(request);
-    this.initializationSent = true;
+    try {
+      const request = buildInitializationRequest(this.agentConfig, this.conversationId ?? undefined);
+      console.log(`${LOG_PREFIX} → OUT | ${describeRequest(request)}`);
+      this.grpcStream.write(request);
+      this.initializationSent = true;
+    } catch (error) {
+      console.error(`${LOG_PREFIX} Failed to send initialization`, error);
+      this.callbacks.onError?.(new Error(`Failed to send initialization: ${error}`));
+    }
   }
 
   /**
@@ -146,9 +154,14 @@ export class GrpcSignalingManager {
     if (!this.grpcStream) return;
     this.ensureInitializationSent();
 
-    const request = buildConfigurationRequest(this.agentConfig.inputOptions.channel);
-    console.log(`${LOG_PREFIX} → OUT | ${describeRequest(request)}`);
-    this.grpcStream.write(request);
+    try {
+      const request = buildConfigurationRequest(this.agentConfig.inputOptions.channel);
+      console.log(`${LOG_PREFIX} → OUT | ${describeRequest(request)}`);
+      this.grpcStream.write(request);
+    } catch (error) {
+      console.error(`${LOG_PREFIX} Failed to send configuration`, error);
+      this.callbacks.onError?.(new Error(`Failed to send configuration: ${error}`));
+    }
   }
 
   /**
@@ -159,50 +172,65 @@ export class GrpcSignalingManager {
     if (!this.grpcStream) return;
     this.ensureInitializationSent();
 
-    console.log(`${LOG_PREFIX} → OUT | Text("${text.substring(0, 80)}")`);
-    const request = new WebTalkRequest();
-    const userMessage = new ConversationUserMessage();
-    userMessage.setText(text);
-    userMessage.setId(`msg_${Date.now()}`);
-    request.setMessage(userMessage);
-    this.grpcStream.write(request);
+    try {
+      console.log(`${LOG_PREFIX} → OUT | Text("${text.substring(0, 80)}")`);
+      const request = new WebTalkRequest();
+      const userMessage = new ConversationUserMessage();
+      userMessage.setText(text);
+      userMessage.setId(`msg_${Date.now()}`);
+      request.setMessage(userMessage);
+      this.grpcStream.write(request);
+    } catch (error) {
+      console.error(`${LOG_PREFIX} Failed to send text message`, error);
+      this.callbacks.onError?.(new Error(`Failed to send text: ${error}`));
+    }
   }
 
   /** Send an SDP answer via ClientSignaling */
   sendWebRTCAnswer(sdp: string): void {
     if (!this.grpcStream) return;
-    console.log(`${LOG_PREFIX} → OUT | Signaling(SDP Answer)`);
 
-    const request = new WebTalkRequest();
-    const signaling = new ClientSignaling();
-    if (this.sessionId) signaling.setSessionid(this.sessionId);
+    try {
+      console.log(`${LOG_PREFIX} → OUT | Signaling(SDP Answer)`);
+      const request = new WebTalkRequest();
+      const signaling = new ClientSignaling();
+      if (this.sessionId) signaling.setSessionid(this.sessionId);
 
-    const sdpMsg = new WebRTCSDP();
-    sdpMsg.setType(WebRTCSDP.SDPType.ANSWER);
-    sdpMsg.setSdp(sdp);
-    signaling.setSdp(sdpMsg);
+      const sdpMsg = new WebRTCSDP();
+      sdpMsg.setType(WebRTCSDP.SDPType.ANSWER);
+      sdpMsg.setSdp(sdp);
+      signaling.setSdp(sdpMsg);
 
-    request.setSignaling(signaling);
-    this.grpcStream.write(request);
+      request.setSignaling(signaling);
+      this.grpcStream.write(request);
+    } catch (error) {
+      console.error(`${LOG_PREFIX} Failed to send WebRTC answer`, error);
+      this.callbacks.onError?.(new Error(`Failed to send WebRTC answer: ${error}`));
+    }
   }
 
   /** Send an ICE candidate via ClientSignaling */
   sendICECandidate(candidate: RTCIceCandidateInit): void {
     if (!this.grpcStream) return;
-    console.log(`${LOG_PREFIX} → OUT | Signaling(ICE ${candidate.candidate?.substring(0, 50) ?? ""})`);
 
-    const request = new WebTalkRequest();
-    const signaling = new ClientSignaling();
-    if (this.sessionId) signaling.setSessionid(this.sessionId);
+    try {
+      console.log(`${LOG_PREFIX} → OUT | Signaling(ICE ${candidate.candidate?.substring(0, 50) ?? ""})`);
+      const request = new WebTalkRequest();
+      const signaling = new ClientSignaling();
+      if (this.sessionId) signaling.setSessionid(this.sessionId);
 
-    const ice = new ProtoICECandidate();
-    ice.setCandidate(candidate.candidate || "");
-    ice.setSdpmid(candidate.sdpMid || "");
-    ice.setSdpmlineindex(candidate.sdpMLineIndex || 0);
-    signaling.setIcecandidate(ice);
+      const ice = new ProtoICECandidate();
+      ice.setCandidate(candidate.candidate || "");
+      ice.setSdpmid(candidate.sdpMid || "");
+      ice.setSdpmlineindex(candidate.sdpMLineIndex || 0);
+      signaling.setIcecandidate(ice);
 
-    request.setSignaling(signaling);
-    this.grpcStream.write(request);
+      request.setSignaling(signaling);
+      this.grpcStream.write(request);
+    } catch (error) {
+      console.error(`${LOG_PREFIX} Failed to send ICE candidate`, error);
+      // Don't fail the entire connection on ICE candidate send failure
+    }
   }
 
   // ---------------------------------------------------------------------------

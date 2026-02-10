@@ -105,11 +105,7 @@ export class WebRTCGrpcTransport {
     textOnly: boolean = false,
   ): Promise<WebRTCGrpcTransport> {
     const transport = new WebRTCGrpcTransport(config, callbacks);
-    if (textOnly) {
-      await transport.connectTextOnly();
-    } else {
-      await transport.connect();
-    }
+    await transport.connect(textOnly);
     return transport;
   }
 
@@ -118,22 +114,26 @@ export class WebRTCGrpcTransport {
   // ---------------------------------------------------------------------------
 
   /**
-   * Connect with full audio (microphone + WebRTC peer + gRPC signaling).
+   * Connect the transport.
+   *
+   * @param textOnly  When true, skip microphone — gRPC + signaling only.
    *
    * Flow:
-   * 1. Get local media stream (microphone)
+   * 1. (Audio only) Get local media stream (microphone)
    * 2. Connect gRPC bidirectional stream
    * 3. Send ConversationInitialization
    * 4. Server responds with Signaling (SDP offer, ICE)
-   * 5. Create peer connection and send SDP answer
-   * 6. Audio flows over WebRTC data channel
+   * 5. Client creates peer connection and sends SDP answer
+   * 6. Audio flows over WebRTC / text flows over gRPC
    */
-  async connect(): Promise<void> {
+  async connect(textOnly: boolean = false): Promise<void> {
     try {
-      await this.audio.setupLocalMedia();
+      if (!textOnly) {
+        await this.audio.setupLocalMedia();
+      }
       await this.signaling.connect();
       this.signaling.sendConversationInitialization();
-      console.log("[WebRTCTransport] connected (audio mode)");
+      console.log(`[WebRTCTransport] connected (${textOnly ? "text-only" : "audio"} mode)`);
     } catch (error) {
       this.callbacks.onError?.(error as Error);
       await this.close();
@@ -142,64 +142,48 @@ export class WebRTCGrpcTransport {
   }
 
   /**
-   * Connect for text-only mode (gRPC signaling only, no microphone).
-   *
-   * The server still sends WebRTC Signaling (SDP offers, ICE) even in
-   * text mode. We must handle them so the server considers the session
-   * properly negotiated. We just skip local media capture.
-   *
-   * Flow:
-   * 1. Connect gRPC bidirectional stream
-   * 2. Send ConversationInitialization (stream mode = TEXT)
-   * 3. Server sends Signaling → we negotiate WebRTC with no local audio track
-   * 4. Text flows over gRPC messages
-   */
-  async connectTextOnly(): Promise<void> {
-    try {
-      await this.signaling.connect();
-      this.signaling.sendConversationInitialization();
-      console.log("[WebRTCTransport] connected (text-only mode)");
-    } catch (error) {
-      this.callbacks.onError?.(error as Error);
-      await this.close();
-      throw error;
-    }
-  }
-
-  /**
-   * Disconnect audio only (close WebRTC peer) but keep gRPC stream alive.
-   * Used when switching from audio mode to text mode.
+   * Disconnect audio only (close WebRTC peer) but keep gRPC session alive.
+   * This is a transport-layer operation — the session is unaffected.
    */
   async disconnectAudioOnly(): Promise<void> {
     this.peer.close();
     await this.audio.disconnectAudio();
-    console.log("[WebRTCTransport] audio disconnected, gRPC stream kept alive");
+    this.callbacks.onConnectionStateChange?.("disconnected");
   }
 
   /**
-   * Reconnect audio (setup local media and trigger WebRTC negotiation).
-   * Used when switching from text mode back to audio mode.
+   * Reconnect audio — setup local media (microphone).
+   * The caller is responsible for sending ConversationConfiguration to the server.
+   *
+   * This is a transport-layer operation: it only adds the audio transport
+   * to an existing session. It does NOT create a new session.
    */
   async reconnectAudio(): Promise<void> {
     if (!this.signaling.isConnected) {
       throw new Error("Cannot reconnect audio: gRPC stream not connected");
     }
+
     try {
       await this.audio.setupLocalMedia();
-      this.signaling.sendConversationConfiguration();
-      console.log("[WebRTCTransport] audio reconnection initiated");
+      this.callbacks.onConnectionStateChange?.("connecting");
     } catch (error) {
+      console.error("[WebRTCTransport] failed to reconnect audio", error);
+      this.callbacks.onConnectionStateChange?.("failed");
       this.callbacks.onError?.(error as Error);
       throw error;
     }
   }
 
   async close(): Promise<void> {
-    const wasConnected = this.peer.isConnected;
+    const wasConnected = this.peer.isConnected || this.signaling.isConnected;
 
-    this.signaling.close();
-    this.peer.close();
-    await this.audio.close();
+    try {
+      this.signaling.close();
+      this.peer.close();
+      await this.audio.close();
+    } catch (error) {
+      console.error("[WebRTCTransport] error during close", error);
+    }
 
     if (wasConnected) {
       this.callbacks.onConnectionStateChange?.("closed");

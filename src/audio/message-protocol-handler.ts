@@ -107,7 +107,7 @@ export class MessageProtocolHandler {
     // Directive / action
     if (response.hasDirective()) {
       const directive = response.getDirective();
-      if (directive) this.callbacks.onAction?.(directive.toObject());
+      if (directive) this.callbacks.onDirective?.(directive.toObject());
     }
   }
 
@@ -127,36 +127,57 @@ export class MessageProtocolHandler {
         break;
 
       case ServerSignaling.MessageCase.SDP: {
-        const sdpMsg = signaling.getSdp();
-        if (!sdpMsg) break;
+        try {
+          const sdpMsg = signaling.getSdp();
+          if (!sdpMsg) break;
 
-        const sdpType = sdpMsg.getType();
-        const sdp = sdpMsg.getSdp();
+          const sdpType = sdpMsg.getType();
+          const sdp = sdpMsg.getSdp();
 
-        if (sdpType === WebRTCSDP.SDPType.OFFER) {
-          await this.peer.handleOffer(sdp, this.audio.mediaStream);
-          const answerSdp = this.peer.getLocalSDP();
-          if (answerSdp) this.signaling.sendWebRTCAnswer(answerSdp);
-        } else if (sdpType === WebRTCSDP.SDPType.ANSWER) {
-          await this.peer.handleAnswer(sdp);
+          if (sdpType === WebRTCSDP.SDPType.OFFER) {
+            console.log("[Protocol] Handling SDP OFFER");
+            await this.peer.handleOffer(sdp, this.audio.mediaStream);
+            const answerSdp = this.peer.getLocalSDP();
+            if (answerSdp) {
+              this.signaling.sendWebRTCAnswer(answerSdp);
+            } else {
+              console.error("No local SDP after creating answer");
+            }
+          } else if (sdpType === WebRTCSDP.SDPType.ANSWER) {
+            console.log("[Protocol] Handling SDP ANSWER");
+            await this.peer.handleAnswer(sdp);
+          }
+        } catch (error) {
+          console.error("Failed to handle SDP signaling", error);
+          this.callbacks.onConnectionStateChange?.("failed");
+          this.callbacks.onError?.(new Error(`SDP signaling failed: ${error}`));
         }
         break;
       }
 
       case ServerSignaling.MessageCase.ICECANDIDATE: {
-        const ice = signaling.getIcecandidate();
-        if (ice) {
-          await this.peer.addICECandidate(
-            ice.getCandidate(),
-            ice.getSdpmid(),
-            ice.getSdpmlineindex(),
-          );
+        try {
+          const ice = signaling.getIcecandidate();
+          if (ice && ice.getCandidate()) {
+            await this.peer.addICECandidate(
+              ice.getCandidate(),
+              ice.getSdpmid(),
+              ice.getSdpmlineindex(),
+            );
+          }
+        } catch (error) {
+          console.debug("Failed to add ICE candidate (non-fatal)", error);
         }
         break;
       }
 
       case ServerSignaling.MessageCase.READY:
-        await this.audio.ensurePlayback();
+        try {
+          await this.audio.ensurePlayback();
+        } catch (error) {
+          console.error("Failed to ensure audio playback", error);
+          this.callbacks.onError?.(new Error(`Audio playback setup failed: ${error}`));
+        }
         break;
 
       case ServerSignaling.MessageCase.CLEAR:

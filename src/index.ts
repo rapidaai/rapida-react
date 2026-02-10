@@ -41,6 +41,7 @@ export {
   InputOptions,
   OutputOptions,
   AgentConfig,
+  UserIdentifier,
 } from "@/rapida/types/agent-config";
 export { AgentCallback } from "@/rapida/types/agent-callback";
 export { Message, MessageRole, MessageStatus } from "@/rapida/types/message";

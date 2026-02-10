@@ -61,15 +61,24 @@ export class WebRTCPeerManager {
 
   /** Create a new RTCPeerConnection */
   setup(): void {
+    // Close existing connection before creating a new one to prevent leaks
+    if (this.peerConnection) {
+      try { this.peerConnection.close(); } catch { }
+      this.peerConnection = null;
+      this._isConnected = false;
+    }
+
     this.peerConnection = new RTCPeerConnection({
       iceServers: ICE_SERVERS,
       iceTransportPolicy: ICE_TRANSPORT_POLICY,
       bundlePolicy: BUNDLE_POLICY,
     });
 
-    // Remote audio track
+    // Remote audio track — fallback to wrapping track in stream if server
+    // doesn't attach a MediaStream to the track
     this.peerConnection.ontrack = (event) => {
-      this.onRemoteTrack(event.streams[0]);
+      const stream = event.streams[0] ?? new MediaStream([event.track]);
+      this.onRemoteTrack(stream);
     };
 
     // ICE candidates
@@ -94,9 +103,15 @@ export class WebRTCPeerManager {
     };
   }
 
-  /** Close the peer connection */
+  /** Close the peer connection and reset state */
   close(): void {
-    this.peerConnection?.close();
+    try {
+      if (this.peerConnection) {
+        this.peerConnection.close();
+      }
+    } catch (error) {
+      console.warn("Error closing peer connection", error);
+    }
     this.peerConnection = null;
     this._isConnected = false;
   }
@@ -122,16 +137,25 @@ export class WebRTCPeerManager {
 
     const track = localStream?.getAudioTracks()[0];
     const transceivers = this.peerConnection!.getTransceivers();
-    const audioTransceiver = transceivers.find(
-      t => t.mid !== null && t.receiver.track?.kind === "audio",
-    );
+    const audioTransceiver = transceivers.find(t => t.receiver.track?.kind === "audio");
 
-    if (track && audioTransceiver) {
+    if (!audioTransceiver) {
+      console.warn("No audio transceiver found in offer");
+      const answer = await this.peerConnection!.createAnswer();
+      await this.peerConnection!.setLocalDescription(answer);
+      return;
+    }
+
+    if (track) {
       // Audio mode — bidirectional
       audioTransceiver.direction = "sendrecv";
-      await audioTransceiver.sender.replaceTrack(track);
+      try {
+        await audioTransceiver.sender.replaceTrack(track);
+      } catch (error) {
+        console.error("Failed to replace audio track", error);
+      }
       this.setCodecPreferences(audioTransceiver);
-    } else if (audioTransceiver) {
+    } else {
       // Text-only mode — receive only (no microphone)
       audioTransceiver.direction = "recvonly";
     }
@@ -182,13 +206,17 @@ export class WebRTCPeerManager {
       const capabilities = RTCRtpReceiver.getCapabilities("audio");
       if (!capabilities?.codecs) return;
 
-      const opus = capabilities.codecs.filter(c => c.mimeType.toLowerCase() === "audio/opus");
-      const pcmu = capabilities.codecs.filter(c => c.mimeType.toLowerCase() === "audio/pcmu");
-      const pcma = capabilities.codecs.filter(c => c.mimeType.toLowerCase() === "audio/pcma");
-      const others = capabilities.codecs.filter(c =>
-        !["audio/opus", "audio/pcmu", "audio/pcma"].includes(c.mimeType.toLowerCase()),
-      );
+      const mimeTypeLower = (c: RTCRtpCodec) => c.mimeType.toLowerCase();
+      const opus = capabilities.codecs.filter(c => mimeTypeLower(c) === "audio/opus");
+      const pcmu = capabilities.codecs.filter(c => mimeTypeLower(c) === "audio/pcmu");
+      const pcma = capabilities.codecs.filter(c => mimeTypeLower(c) === "audio/pcma");
+      const others = capabilities.codecs.filter(c => {
+        const mime = mimeTypeLower(c);
+        return mime !== "audio/opus" && mime !== "audio/pcmu" && mime !== "audio/pcma";
+      });
       transceiver.setCodecPreferences([...opus, ...pcmu, ...pcma, ...others]);
-    } catch { }
+    } catch (error) {
+      console.warn("Failed to set codec preferences", error);
+    }
   }
 }
