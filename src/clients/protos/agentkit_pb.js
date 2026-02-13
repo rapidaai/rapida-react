@@ -86,7 +86,7 @@ proto.talk_api.TalkInput.RequestCase = {
   MESSAGE: 3,
   INTERRUPTION: 4,
   METADATA: 5,
-  METRICS: 6
+  METRIC: 6
 };
 
 /**
@@ -132,7 +132,7 @@ proto.talk_api.TalkInput.toObject = function(includeInstance, msg) {
     message: (f = msg.getMessage()) && talk$api_pb.ConversationUserMessage.toObject(includeInstance, f),
     interruption: (f = msg.getInterruption()) && talk$api_pb.ConversationInterruption.toObject(includeInstance, f),
     metadata: (f = msg.getMetadata()) && talk$api_pb.ConversationMetadata.toObject(includeInstance, f),
-    metrics: (f = msg.getMetrics()) && talk$api_pb.ConversationMerics.toObject(includeInstance, f)
+    metric: (f = msg.getMetric()) && talk$api_pb.ConversationMetric.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -195,9 +195,9 @@ proto.talk_api.TalkInput.deserializeBinaryFromReader = function(msg, reader) {
       msg.setMetadata(value);
       break;
     case 6:
-      var value = new talk$api_pb.ConversationMerics;
-      reader.readMessage(value,talk$api_pb.ConversationMerics.deserializeBinaryFromReader);
-      msg.setMetrics(value);
+      var value = new talk$api_pb.ConversationMetric;
+      reader.readMessage(value,talk$api_pb.ConversationMetric.deserializeBinaryFromReader);
+      msg.setMetric(value);
       break;
     default:
       reader.skipField();
@@ -268,12 +268,12 @@ proto.talk_api.TalkInput.serializeBinaryToWriter = function(message, writer) {
       talk$api_pb.ConversationMetadata.serializeBinaryToWriter
     );
   }
-  f = message.getMetrics();
+  f = message.getMetric();
   if (f != null) {
     writer.writeMessage(
       6,
       f,
-      talk$api_pb.ConversationMerics.serializeBinaryToWriter
+      talk$api_pb.ConversationMetric.serializeBinaryToWriter
     );
   }
 };
@@ -465,20 +465,20 @@ proto.talk_api.TalkInput.prototype.hasMetadata = function() {
 
 
 /**
- * optional ConversationMerics metrics = 6;
- * @return {?proto.talk_api.ConversationMerics}
+ * optional ConversationMetric metric = 6;
+ * @return {?proto.talk_api.ConversationMetric}
  */
-proto.talk_api.TalkInput.prototype.getMetrics = function() {
-  return /** @type{?proto.talk_api.ConversationMerics} */ (
-    jspb.Message.getWrapperField(this, talk$api_pb.ConversationMerics, 6));
+proto.talk_api.TalkInput.prototype.getMetric = function() {
+  return /** @type{?proto.talk_api.ConversationMetric} */ (
+    jspb.Message.getWrapperField(this, talk$api_pb.ConversationMetric, 6));
 };
 
 
 /**
- * @param {?proto.talk_api.ConversationMerics|undefined} value
+ * @param {?proto.talk_api.ConversationMetric|undefined} value
  * @return {!proto.talk_api.TalkInput} returns this
 */
-proto.talk_api.TalkInput.prototype.setMetrics = function(value) {
+proto.talk_api.TalkInput.prototype.setMetric = function(value) {
   return jspb.Message.setOneofWrapperField(this, 6, proto.talk_api.TalkInput.oneofGroups_[0], value);
 };
 
@@ -487,8 +487,8 @@ proto.talk_api.TalkInput.prototype.setMetrics = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.talk_api.TalkInput} returns this
  */
-proto.talk_api.TalkInput.prototype.clearMetrics = function() {
-  return this.setMetrics(undefined);
+proto.talk_api.TalkInput.prototype.clearMetric = function() {
+  return this.setMetric(undefined);
 };
 
 
@@ -496,7 +496,7 @@ proto.talk_api.TalkInput.prototype.clearMetrics = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.talk_api.TalkInput.prototype.hasMetrics = function() {
+proto.talk_api.TalkInput.prototype.hasMetric = function() {
   return jspb.Message.getField(this, 6) != null;
 };
 

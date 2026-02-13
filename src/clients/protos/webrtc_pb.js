@@ -1808,7 +1808,7 @@ proto.talk_api.WebTalkRequest.RequestCase = {
   MESSAGE: 3,
   SIGNALING: 4,
   METADATA: 5,
-  METRICS: 6
+  METRIC: 6
 };
 
 /**
@@ -1854,7 +1854,7 @@ proto.talk_api.WebTalkRequest.toObject = function(includeInstance, msg) {
     message: (f = msg.getMessage()) && talk$api_pb.ConversationUserMessage.toObject(includeInstance, f),
     signaling: (f = msg.getSignaling()) && proto.talk_api.ClientSignaling.toObject(includeInstance, f),
     metadata: (f = msg.getMetadata()) && talk$api_pb.ConversationMetadata.toObject(includeInstance, f),
-    metrics: (f = msg.getMetrics()) && talk$api_pb.ConversationMerics.toObject(includeInstance, f)
+    metric: (f = msg.getMetric()) && talk$api_pb.ConversationMetric.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1917,9 +1917,9 @@ proto.talk_api.WebTalkRequest.deserializeBinaryFromReader = function(msg, reader
       msg.setMetadata(value);
       break;
     case 6:
-      var value = new talk$api_pb.ConversationMerics;
-      reader.readMessage(value,talk$api_pb.ConversationMerics.deserializeBinaryFromReader);
-      msg.setMetrics(value);
+      var value = new talk$api_pb.ConversationMetric;
+      reader.readMessage(value,talk$api_pb.ConversationMetric.deserializeBinaryFromReader);
+      msg.setMetric(value);
       break;
     default:
       reader.skipField();
@@ -1990,12 +1990,12 @@ proto.talk_api.WebTalkRequest.serializeBinaryToWriter = function(message, writer
       talk$api_pb.ConversationMetadata.serializeBinaryToWriter
     );
   }
-  f = message.getMetrics();
+  f = message.getMetric();
   if (f != null) {
     writer.writeMessage(
       6,
       f,
-      talk$api_pb.ConversationMerics.serializeBinaryToWriter
+      talk$api_pb.ConversationMetric.serializeBinaryToWriter
     );
   }
 };
@@ -2187,20 +2187,20 @@ proto.talk_api.WebTalkRequest.prototype.hasMetadata = function() {
 
 
 /**
- * optional ConversationMerics metrics = 6;
- * @return {?proto.talk_api.ConversationMerics}
+ * optional ConversationMetric metric = 6;
+ * @return {?proto.talk_api.ConversationMetric}
  */
-proto.talk_api.WebTalkRequest.prototype.getMetrics = function() {
-  return /** @type{?proto.talk_api.ConversationMerics} */ (
-    jspb.Message.getWrapperField(this, talk$api_pb.ConversationMerics, 6));
+proto.talk_api.WebTalkRequest.prototype.getMetric = function() {
+  return /** @type{?proto.talk_api.ConversationMetric} */ (
+    jspb.Message.getWrapperField(this, talk$api_pb.ConversationMetric, 6));
 };
 
 
 /**
- * @param {?proto.talk_api.ConversationMerics|undefined} value
+ * @param {?proto.talk_api.ConversationMetric|undefined} value
  * @return {!proto.talk_api.WebTalkRequest} returns this
 */
-proto.talk_api.WebTalkRequest.prototype.setMetrics = function(value) {
+proto.talk_api.WebTalkRequest.prototype.setMetric = function(value) {
   return jspb.Message.setOneofWrapperField(this, 6, proto.talk_api.WebTalkRequest.oneofGroups_[0], value);
 };
 
@@ -2209,8 +2209,8 @@ proto.talk_api.WebTalkRequest.prototype.setMetrics = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.talk_api.WebTalkRequest} returns this
  */
-proto.talk_api.WebTalkRequest.prototype.clearMetrics = function() {
-  return this.setMetrics(undefined);
+proto.talk_api.WebTalkRequest.prototype.clearMetric = function() {
+  return this.setMetric(undefined);
 };
 
 
@@ -2218,7 +2218,7 @@ proto.talk_api.WebTalkRequest.prototype.clearMetrics = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.talk_api.WebTalkRequest.prototype.hasMetrics = function() {
+proto.talk_api.WebTalkRequest.prototype.hasMetric = function() {
   return jspb.Message.getField(this, 6) != null;
 };
 
@@ -2250,7 +2250,7 @@ proto.talk_api.WebTalkResponse.DataCase = {
   ERROR: 15,
   SIGNALING: 17,
   METADATA: 19,
-  METRICS: 20
+  METRIC: 20
 };
 
 /**
@@ -2304,7 +2304,7 @@ proto.talk_api.WebTalkResponse.toObject = function(includeInstance, msg) {
     error: (f = msg.getError()) && talk$api_pb.ConversationError.toObject(includeInstance, f),
     signaling: (f = msg.getSignaling()) && proto.talk_api.ServerSignaling.toObject(includeInstance, f),
     metadata: (f = msg.getMetadata()) && talk$api_pb.ConversationMetadata.toObject(includeInstance, f),
-    metrics: (f = msg.getMetrics()) && talk$api_pb.ConversationMerics.toObject(includeInstance, f)
+    metric: (f = msg.getMetric()) && talk$api_pb.ConversationMetric.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -2405,9 +2405,9 @@ proto.talk_api.WebTalkResponse.deserializeBinaryFromReader = function(msg, reade
       msg.setMetadata(value);
       break;
     case 20:
-      var value = new talk$api_pb.ConversationMerics;
-      reader.readMessage(value,talk$api_pb.ConversationMerics.deserializeBinaryFromReader);
-      msg.setMetrics(value);
+      var value = new talk$api_pb.ConversationMetric;
+      reader.readMessage(value,talk$api_pb.ConversationMetric.deserializeBinaryFromReader);
+      msg.setMetric(value);
       break;
     default:
       reader.skipField();
@@ -2540,12 +2540,12 @@ proto.talk_api.WebTalkResponse.serializeBinaryToWriter = function(message, write
       talk$api_pb.ConversationMetadata.serializeBinaryToWriter
     );
   }
-  f = message.getMetrics();
+  f = message.getMetric();
   if (f != null) {
     writer.writeMessage(
       20,
       f,
-      talk$api_pb.ConversationMerics.serializeBinaryToWriter
+      talk$api_pb.ConversationMetric.serializeBinaryToWriter
     );
   }
 };
@@ -2995,20 +2995,20 @@ proto.talk_api.WebTalkResponse.prototype.hasMetadata = function() {
 
 
 /**
- * optional ConversationMerics metrics = 20;
- * @return {?proto.talk_api.ConversationMerics}
+ * optional ConversationMetric metric = 20;
+ * @return {?proto.talk_api.ConversationMetric}
  */
-proto.talk_api.WebTalkResponse.prototype.getMetrics = function() {
-  return /** @type{?proto.talk_api.ConversationMerics} */ (
-    jspb.Message.getWrapperField(this, talk$api_pb.ConversationMerics, 20));
+proto.talk_api.WebTalkResponse.prototype.getMetric = function() {
+  return /** @type{?proto.talk_api.ConversationMetric} */ (
+    jspb.Message.getWrapperField(this, talk$api_pb.ConversationMetric, 20));
 };
 
 
 /**
- * @param {?proto.talk_api.ConversationMerics|undefined} value
+ * @param {?proto.talk_api.ConversationMetric|undefined} value
  * @return {!proto.talk_api.WebTalkResponse} returns this
 */
-proto.talk_api.WebTalkResponse.prototype.setMetrics = function(value) {
+proto.talk_api.WebTalkResponse.prototype.setMetric = function(value) {
   return jspb.Message.setOneofWrapperField(this, 20, proto.talk_api.WebTalkResponse.oneofGroups_[0], value);
 };
 
@@ -3017,8 +3017,8 @@ proto.talk_api.WebTalkResponse.prototype.setMetrics = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.talk_api.WebTalkResponse} returns this
  */
-proto.talk_api.WebTalkResponse.prototype.clearMetrics = function() {
-  return this.setMetrics(undefined);
+proto.talk_api.WebTalkResponse.prototype.clearMetric = function() {
+  return this.setMetric(undefined);
 };
 
 
@@ -3026,7 +3026,7 @@ proto.talk_api.WebTalkResponse.prototype.clearMetrics = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.talk_api.WebTalkResponse.prototype.hasMetrics = function() {
+proto.talk_api.WebTalkResponse.prototype.hasMetric = function() {
   return jspb.Message.getField(this, 20) != null;
 };
 

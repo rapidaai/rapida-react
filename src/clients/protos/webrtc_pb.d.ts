@@ -267,10 +267,10 @@ export class WebTalkRequest extends jspb.Message {
   getMetadata(): talk_api_pb.ConversationMetadata | undefined;
   setMetadata(value?: talk_api_pb.ConversationMetadata): void;
 
-  hasMetrics(): boolean;
-  clearMetrics(): void;
-  getMetrics(): talk_api_pb.ConversationMerics | undefined;
-  setMetrics(value?: talk_api_pb.ConversationMerics): void;
+  hasMetric(): boolean;
+  clearMetric(): void;
+  getMetric(): talk_api_pb.ConversationMetric | undefined;
+  setMetric(value?: talk_api_pb.ConversationMetric): void;
 
   getRequestCase(): WebTalkRequest.RequestCase;
   serializeBinary(): Uint8Array;
@@ -290,7 +290,7 @@ export namespace WebTalkRequest {
     message?: talk_api_pb.ConversationUserMessage.AsObject,
     signaling?: ClientSignaling.AsObject,
     metadata?: talk_api_pb.ConversationMetadata.AsObject,
-    metrics?: talk_api_pb.ConversationMerics.AsObject,
+    metric?: talk_api_pb.ConversationMetric.AsObject,
   }
 
   export enum RequestCase {
@@ -300,7 +300,7 @@ export namespace WebTalkRequest {
     MESSAGE = 3,
     SIGNALING = 4,
     METADATA = 5,
-    METRICS = 6,
+    METRIC = 6,
   }
 }
 
@@ -366,10 +366,10 @@ export class WebTalkResponse extends jspb.Message {
   getMetadata(): talk_api_pb.ConversationMetadata | undefined;
   setMetadata(value?: talk_api_pb.ConversationMetadata): void;
 
-  hasMetrics(): boolean;
-  clearMetrics(): void;
-  getMetrics(): talk_api_pb.ConversationMerics | undefined;
-  setMetrics(value?: talk_api_pb.ConversationMerics): void;
+  hasMetric(): boolean;
+  clearMetric(): void;
+  getMetric(): talk_api_pb.ConversationMetric | undefined;
+  setMetric(value?: talk_api_pb.ConversationMetric): void;
 
   getDataCase(): WebTalkResponse.DataCase;
   serializeBinary(): Uint8Array;
@@ -397,7 +397,7 @@ export namespace WebTalkResponse {
     error?: talk_api_pb.ConversationError.AsObject,
     signaling?: ServerSignaling.AsObject,
     metadata?: talk_api_pb.ConversationMetadata.AsObject,
-    metrics?: talk_api_pb.ConversationMerics.AsObject,
+    metric?: talk_api_pb.ConversationMetric.AsObject,
   }
 
   export enum DataCase {
@@ -413,7 +413,7 @@ export namespace WebTalkResponse {
     ERROR = 15,
     SIGNALING = 17,
     METADATA = 19,
-    METRICS = 20,
+    METRIC = 20,
   }
 }
 

@@ -134,6 +134,15 @@ export class WebRTCGrpcTransport {
       await this.signaling.connect();
       this.signaling.sendConversationInitialization();
       console.log(`[WebRTCTransport] connected (${textOnly ? "text-only" : "audio"} mode)`);
+
+      // In text-only mode there is no WebRTC peer whose
+      // `onconnectionstatechange` would fire "connected".
+      // Signal the connected state explicitly so that consumers
+      // (e.g. useConnectAgent / isConnected) reflect the right status.
+      if (textOnly) {
+        this.callbacks.onConnectionStateChange?.("connected");
+        this.callbacks.onConnected?.();
+      }
     } catch (error) {
       this.callbacks.onError?.(error as Error);
       await this.close();

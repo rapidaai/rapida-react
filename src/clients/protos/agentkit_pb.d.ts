@@ -31,10 +31,10 @@ export class TalkInput extends jspb.Message {
   getMetadata(): talk_api_pb.ConversationMetadata | undefined;
   setMetadata(value?: talk_api_pb.ConversationMetadata): void;
 
-  hasMetrics(): boolean;
-  clearMetrics(): void;
-  getMetrics(): talk_api_pb.ConversationMerics | undefined;
-  setMetrics(value?: talk_api_pb.ConversationMerics): void;
+  hasMetric(): boolean;
+  clearMetric(): void;
+  getMetric(): talk_api_pb.ConversationMetric | undefined;
+  setMetric(value?: talk_api_pb.ConversationMetric): void;
 
   getRequestCase(): TalkInput.RequestCase;
   serializeBinary(): Uint8Array;
@@ -54,7 +54,7 @@ export namespace TalkInput {
     message?: talk_api_pb.ConversationUserMessage.AsObject,
     interruption?: talk_api_pb.ConversationInterruption.AsObject,
     metadata?: talk_api_pb.ConversationMetadata.AsObject,
-    metrics?: talk_api_pb.ConversationMerics.AsObject,
+    metric?: talk_api_pb.ConversationMetric.AsObject,
   }
 
   export enum RequestCase {
@@ -64,7 +64,7 @@ export namespace TalkInput {
     MESSAGE = 3,
     INTERRUPTION = 4,
     METADATA = 5,
-    METRICS = 6,
+    METRIC = 6,
   }
 }
 

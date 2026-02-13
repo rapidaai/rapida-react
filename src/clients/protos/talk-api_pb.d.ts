@@ -26,8 +26,8 @@ export class ConversationToolCall extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationToolCall.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationToolCall): ConversationToolCall.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ConversationToolCall, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ConversationToolCall;
   static deserializeBinaryFromReader(message: ConversationToolCall, reader: jspb.BinaryReader): ConversationToolCall;
@@ -66,8 +66,8 @@ export class ConversationToolResult extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationToolResult.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationToolResult): ConversationToolResult.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ConversationToolResult, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ConversationToolResult;
   static deserializeBinaryFromReader(message: ConversationToolResult, reader: jspb.BinaryReader): ConversationToolResult;
@@ -84,7 +84,7 @@ export namespace ConversationToolResult {
   }
 }
 
-export class ConversationMerics extends jspb.Message {
+export class ConversationMetric extends jspb.Message {
   getAssistantconversationid(): string;
   setAssistantconversationid(value: string): void;
 
@@ -94,16 +94,16 @@ export class ConversationMerics extends jspb.Message {
   addMetrics(value?: common_pb.Metric, index?: number): common_pb.Metric;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ConversationMerics.AsObject;
-  static toObject(includeInstance: boolean, msg: ConversationMerics): ConversationMerics.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
-  static serializeBinaryToWriter(message: ConversationMerics, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ConversationMerics;
-  static deserializeBinaryFromReader(message: ConversationMerics, reader: jspb.BinaryReader): ConversationMerics;
+  toObject(includeInstance?: boolean): ConversationMetric.AsObject;
+  static toObject(includeInstance: boolean, msg: ConversationMetric): ConversationMetric.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ConversationMetric, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ConversationMetric;
+  static deserializeBinaryFromReader(message: ConversationMetric, reader: jspb.BinaryReader): ConversationMetric;
 }
 
-export namespace ConversationMerics {
+export namespace ConversationMetric {
   export type AsObject = {
     assistantconversationid: string,
     metricsList: Array<common_pb.Metric.AsObject>,
@@ -122,8 +122,8 @@ export class ConversationMetadata extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationMetadata.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationMetadata): ConversationMetadata.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ConversationMetadata, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ConversationMetadata;
   static deserializeBinaryFromReader(message: ConversationMetadata, reader: jspb.BinaryReader): ConversationMetadata;
@@ -153,8 +153,8 @@ export class ConversationDirective extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationDirective.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationDirective): ConversationDirective.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ConversationDirective, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ConversationDirective;
   static deserializeBinaryFromReader(message: ConversationDirective, reader: jspb.BinaryReader): ConversationDirective;
@@ -189,8 +189,8 @@ export class ConversationError extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationError.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationError): ConversationError.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ConversationError, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ConversationError;
   static deserializeBinaryFromReader(message: ConversationError, reader: jspb.BinaryReader): ConversationError;
@@ -217,8 +217,8 @@ export class AudioConfig extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AudioConfig.AsObject;
   static toObject(includeInstance: boolean, msg: AudioConfig): AudioConfig.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: AudioConfig, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): AudioConfig;
   static deserializeBinaryFromReader(message: AudioConfig, reader: jspb.BinaryReader): AudioConfig;
@@ -246,8 +246,8 @@ export class TextConfig extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TextConfig.AsObject;
   static toObject(includeInstance: boolean, msg: TextConfig): TextConfig.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: TextConfig, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): TextConfig;
   static deserializeBinaryFromReader(message: TextConfig, reader: jspb.BinaryReader): TextConfig;
@@ -273,8 +273,8 @@ export class StreamConfig extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): StreamConfig.AsObject;
   static toObject(includeInstance: boolean, msg: StreamConfig): StreamConfig.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: StreamConfig, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): StreamConfig;
   static deserializeBinaryFromReader(message: StreamConfig, reader: jspb.BinaryReader): StreamConfig;
@@ -294,8 +294,8 @@ export class WebIdentity extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): WebIdentity.AsObject;
   static toObject(includeInstance: boolean, msg: WebIdentity): WebIdentity.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: WebIdentity, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): WebIdentity;
   static deserializeBinaryFromReader(message: WebIdentity, reader: jspb.BinaryReader): WebIdentity;
@@ -314,8 +314,8 @@ export class PhoneIdentity extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): PhoneIdentity.AsObject;
   static toObject(includeInstance: boolean, msg: PhoneIdentity): PhoneIdentity.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: PhoneIdentity, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): PhoneIdentity;
   static deserializeBinaryFromReader(message: PhoneIdentity, reader: jspb.BinaryReader): PhoneIdentity;
@@ -364,8 +364,8 @@ export class ConversationInitialization extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationInitialization.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationInitialization): ConversationInitialization.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ConversationInitialization, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ConversationInitialization;
   static deserializeBinaryFromReader(message: ConversationInitialization, reader: jspb.BinaryReader): ConversationInitialization;
@@ -398,8 +398,8 @@ export class ConversationConfiguration extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationConfiguration.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationConfiguration): ConversationConfiguration.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ConversationConfiguration, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ConversationConfiguration;
   static deserializeBinaryFromReader(message: ConversationConfiguration, reader: jspb.BinaryReader): ConversationConfiguration;
@@ -426,8 +426,8 @@ export class ConversationInterruption extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationInterruption.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationInterruption): ConversationInterruption.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ConversationInterruption, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ConversationInterruption;
   static deserializeBinaryFromReader(message: ConversationInterruption, reader: jspb.BinaryReader): ConversationInterruption;
@@ -467,8 +467,8 @@ export class ConversationDisconnection extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationDisconnection.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationDisconnection): ConversationDisconnection.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ConversationDisconnection, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ConversationDisconnection;
   static deserializeBinaryFromReader(message: ConversationDisconnection, reader: jspb.BinaryReader): ConversationDisconnection;
@@ -519,8 +519,8 @@ export class ConversationAssistantMessage extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationAssistantMessage.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationAssistantMessage): ConversationAssistantMessage.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ConversationAssistantMessage, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ConversationAssistantMessage;
   static deserializeBinaryFromReader(message: ConversationAssistantMessage, reader: jspb.BinaryReader): ConversationAssistantMessage;
@@ -570,8 +570,8 @@ export class ConversationUserMessage extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationUserMessage.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationUserMessage): ConversationUserMessage.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ConversationUserMessage, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ConversationUserMessage;
   static deserializeBinaryFromReader(message: ConversationUserMessage, reader: jspb.BinaryReader): ConversationUserMessage;
@@ -605,8 +605,8 @@ export class ConversationModeChange extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationModeChange.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationModeChange): ConversationModeChange.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: ConversationModeChange, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): ConversationModeChange;
   static deserializeBinaryFromReader(message: ConversationModeChange, reader: jspb.BinaryReader): ConversationModeChange;
@@ -648,17 +648,17 @@ export class AssistantTalkRequest extends jspb.Message {
   getMetadata(): ConversationMetadata | undefined;
   setMetadata(value?: ConversationMetadata): void;
 
-  hasMetrics(): boolean;
-  clearMetrics(): void;
-  getMetrics(): ConversationMerics | undefined;
-  setMetrics(value?: ConversationMerics): void;
+  hasMetric(): boolean;
+  clearMetric(): void;
+  getMetric(): ConversationMetric | undefined;
+  setMetric(value?: ConversationMetric): void;
 
   getRequestCase(): AssistantTalkRequest.RequestCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantTalkRequest.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantTalkRequest): AssistantTalkRequest.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: AssistantTalkRequest, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): AssistantTalkRequest;
   static deserializeBinaryFromReader(message: AssistantTalkRequest, reader: jspb.BinaryReader): AssistantTalkRequest;
@@ -670,7 +670,7 @@ export namespace AssistantTalkRequest {
     configuration?: ConversationConfiguration.AsObject,
     message?: ConversationUserMessage.AsObject,
     metadata?: ConversationMetadata.AsObject,
-    metrics?: ConversationMerics.AsObject,
+    metric?: ConversationMetric.AsObject,
   }
 
   export enum RequestCase {
@@ -679,7 +679,7 @@ export namespace AssistantTalkRequest {
     CONFIGURATION = 2,
     MESSAGE = 3,
     METADATA = 4,
-    METRICS = 5,
+    METRIC = 5,
   }
 }
 
@@ -735,10 +735,10 @@ export class AssistantTalkResponse extends jspb.Message {
   getMetadata(): ConversationMetadata | undefined;
   setMetadata(value?: ConversationMetadata): void;
 
-  hasMetrics(): boolean;
-  clearMetrics(): void;
-  getMetrics(): ConversationMerics | undefined;
-  setMetrics(value?: ConversationMerics): void;
+  hasMetric(): boolean;
+  clearMetric(): void;
+  getMetric(): ConversationMetric | undefined;
+  setMetric(value?: ConversationMetric): void;
 
   hasDisconnection(): boolean;
   clearDisconnection(): void;
@@ -754,8 +754,8 @@ export class AssistantTalkResponse extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantTalkResponse.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantTalkResponse): AssistantTalkResponse.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: AssistantTalkResponse, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): AssistantTalkResponse;
   static deserializeBinaryFromReader(message: AssistantTalkResponse, reader: jspb.BinaryReader): AssistantTalkResponse;
@@ -774,7 +774,7 @@ export namespace AssistantTalkResponse {
     toolresult?: ConversationToolResult.AsObject,
     directive?: ConversationDirective.AsObject,
     metadata?: ConversationMetadata.AsObject,
-    metrics?: ConversationMerics.AsObject,
+    metric?: ConversationMetric.AsObject,
     disconnection?: ConversationDisconnection.AsObject,
     error?: ConversationError.AsObject,
   }
@@ -790,7 +790,7 @@ export namespace AssistantTalkResponse {
     TOOLRESULT = 14,
     DIRECTIVE = 16,
     METADATA = 17,
-    METRICS = 18,
+    METRIC = 18,
     DISCONNECTION = 19,
     ERROR = 15,
   }
@@ -814,8 +814,8 @@ export class CreateMessageMetricRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateMessageMetricRequest.AsObject;
   static toObject(includeInstance: boolean, msg: CreateMessageMetricRequest): CreateMessageMetricRequest.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: CreateMessageMetricRequest, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): CreateMessageMetricRequest;
   static deserializeBinaryFromReader(message: CreateMessageMetricRequest, reader: jspb.BinaryReader): CreateMessageMetricRequest;
@@ -850,8 +850,8 @@ export class CreateMessageMetricResponse extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateMessageMetricResponse.AsObject;
   static toObject(includeInstance: boolean, msg: CreateMessageMetricResponse): CreateMessageMetricResponse.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: CreateMessageMetricResponse, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): CreateMessageMetricResponse;
   static deserializeBinaryFromReader(message: CreateMessageMetricResponse, reader: jspb.BinaryReader): CreateMessageMetricResponse;
@@ -881,8 +881,8 @@ export class CreateConversationMetricRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateConversationMetricRequest.AsObject;
   static toObject(includeInstance: boolean, msg: CreateConversationMetricRequest): CreateConversationMetricRequest.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: CreateConversationMetricRequest, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): CreateConversationMetricRequest;
   static deserializeBinaryFromReader(message: CreateConversationMetricRequest, reader: jspb.BinaryReader): CreateConversationMetricRequest;
@@ -916,8 +916,8 @@ export class CreateConversationMetricResponse extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateConversationMetricResponse.AsObject;
   static toObject(includeInstance: boolean, msg: CreateConversationMetricResponse): CreateConversationMetricResponse.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: CreateConversationMetricResponse, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): CreateConversationMetricResponse;
   static deserializeBinaryFromReader(message: CreateConversationMetricResponse, reader: jspb.BinaryReader): CreateConversationMetricResponse;
@@ -953,8 +953,8 @@ export class CreatePhoneCallRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreatePhoneCallRequest.AsObject;
   static toObject(includeInstance: boolean, msg: CreatePhoneCallRequest): CreatePhoneCallRequest.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: CreatePhoneCallRequest, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): CreatePhoneCallRequest;
   static deserializeBinaryFromReader(message: CreatePhoneCallRequest, reader: jspb.BinaryReader): CreatePhoneCallRequest;
@@ -991,8 +991,8 @@ export class CreatePhoneCallResponse extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreatePhoneCallResponse.AsObject;
   static toObject(includeInstance: boolean, msg: CreatePhoneCallResponse): CreatePhoneCallResponse.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: CreatePhoneCallResponse, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): CreatePhoneCallResponse;
   static deserializeBinaryFromReader(message: CreatePhoneCallResponse, reader: jspb.BinaryReader): CreatePhoneCallResponse;
@@ -1016,8 +1016,8 @@ export class CreateBulkPhoneCallRequest extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateBulkPhoneCallRequest.AsObject;
   static toObject(includeInstance: boolean, msg: CreateBulkPhoneCallRequest): CreateBulkPhoneCallRequest.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: CreateBulkPhoneCallRequest, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): CreateBulkPhoneCallRequest;
   static deserializeBinaryFromReader(message: CreateBulkPhoneCallRequest, reader: jspb.BinaryReader): CreateBulkPhoneCallRequest;
@@ -1049,8 +1049,8 @@ export class CreateBulkPhoneCallResponse extends jspb.Message {
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateBulkPhoneCallResponse.AsObject;
   static toObject(includeInstance: boolean, msg: CreateBulkPhoneCallResponse): CreateBulkPhoneCallResponse.AsObject;
-  static extensions: { [key: number]: jspb.ExtensionFieldInfo<jspb.Message> };
-  static extensionsBinary: { [key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message> };
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
   static serializeBinaryToWriter(message: CreateBulkPhoneCallResponse, writer: jspb.BinaryWriter): void;
   static deserializeBinary(bytes: Uint8Array): CreateBulkPhoneCallResponse;
   static deserializeBinaryFromReader(message: CreateBulkPhoneCallResponse, reader: jspb.BinaryReader): CreateBulkPhoneCallResponse;
