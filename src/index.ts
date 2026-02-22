@@ -159,6 +159,7 @@ export {
   GetAllAssistantToolLog,
   CreateAssistantProvider,
   GetAllAssistantProvider,
+  GetAllAssistantConversation,
 } from "@/rapida/clients/assistant";
 export { GetActivities, GetActivity } from "@/rapida/clients/activity";
 export {
@@ -184,7 +185,6 @@ export {
   AssistantTalk,
   CreateMessageMetric,
   CreateConversationMetric,
-  GetAllAssistantConversation,
 } from "@/rapida/clients/talk";
 export { WebTalk } from '@/rapida/clients/webrtc';
 export {

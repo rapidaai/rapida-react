@@ -1176,7 +1176,6 @@ export function UpdateAnalysis(
   req.setEndpointversion(endpointversion);
   req.setName(name);
   req.setExecutionpriority(executionpriority);
-  console.dir(parameters);
   parameters.forEach((k) => {
     req.getEndpointparametersMap().set(k.key, k.value);
   });
