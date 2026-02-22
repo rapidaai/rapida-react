@@ -450,14 +450,8 @@ export namespace ConversationInterruption {
 }
 
 export class ConversationDisconnection extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
   getType(): ConversationDisconnection.DisconnectionTypeMap[keyof ConversationDisconnection.DisconnectionTypeMap];
   setType(value: ConversationDisconnection.DisconnectionTypeMap[keyof ConversationDisconnection.DisconnectionTypeMap]): void;
-
-  getReason(): string;
-  setReason(value: string): void;
 
   hasTime(): boolean;
   clearTime(): void;
@@ -476,9 +470,7 @@ export class ConversationDisconnection extends jspb.Message {
 
 export namespace ConversationDisconnection {
   export type AsObject = {
-    id: string,
     type: ConversationDisconnection.DisconnectionTypeMap[keyof ConversationDisconnection.DisconnectionTypeMap],
-    reason: string,
     time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
 
@@ -653,6 +645,11 @@ export class AssistantTalkRequest extends jspb.Message {
   getMetric(): ConversationMetric | undefined;
   setMetric(value?: ConversationMetric): void;
 
+  hasDisconnection(): boolean;
+  clearDisconnection(): void;
+  getDisconnection(): ConversationDisconnection | undefined;
+  setDisconnection(value?: ConversationDisconnection): void;
+
   getRequestCase(): AssistantTalkRequest.RequestCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantTalkRequest.AsObject;
@@ -671,6 +668,7 @@ export namespace AssistantTalkRequest {
     message?: ConversationUserMessage.AsObject,
     metadata?: ConversationMetadata.AsObject,
     metric?: ConversationMetric.AsObject,
+    disconnection?: ConversationDisconnection.AsObject,
   }
 
   export enum RequestCase {
@@ -680,6 +678,7 @@ export namespace AssistantTalkRequest {
     MESSAGE = 3,
     METADATA = 4,
     METRIC = 5,
+    DISCONNECTION = 6,
   }
 }
 

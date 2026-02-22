@@ -7938,7 +7938,8 @@ proto.AssistantConversationRecording.prototype.toObject = function(opt_includeIn
  */
 proto.AssistantConversationRecording.toObject = function(includeInstance, msg) {
   var f, obj = {
-    recordingurl: jspb.Message.getFieldWithDefault(msg, 1, "")
+    id: jspb.Message.getFieldWithDefault(msg, 1, "0"),
+    recordingurl: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -7976,6 +7977,10 @@ proto.AssistantConversationRecording.deserializeBinaryFromReader = function(msg,
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setId(value);
+      break;
+    case 2:
       var value = /** @type {string} */ (reader.readString());
       msg.setRecordingurl(value);
       break;
@@ -8008,10 +8013,17 @@ proto.AssistantConversationRecording.prototype.serializeBinary = function() {
  */
 proto.AssistantConversationRecording.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
+  f = message.getId();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      1,
+      f
+    );
+  }
   f = message.getRecordingurl();
   if (f.length > 0) {
     writer.writeString(
-      1,
+      2,
       f
     );
   }
@@ -8019,11 +8031,29 @@ proto.AssistantConversationRecording.serializeBinaryToWriter = function(message,
 
 
 /**
- * optional string recordingUrl = 1;
+ * optional uint64 id = 1;
+ * @return {string}
+ */
+proto.AssistantConversationRecording.prototype.getId = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.AssistantConversationRecording} returns this
+ */
+proto.AssistantConversationRecording.prototype.setId = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 1, value);
+};
+
+
+/**
+ * optional string recordingUrl = 2;
  * @return {string}
  */
 proto.AssistantConversationRecording.prototype.getRecordingurl = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
 };
 
 
@@ -8032,7 +8062,7 @@ proto.AssistantConversationRecording.prototype.getRecordingurl = function() {
  * @return {!proto.AssistantConversationRecording} returns this
  */
 proto.AssistantConversationRecording.prototype.setRecordingurl = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
+  return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 

@@ -107,6 +107,19 @@ export class WebRTCPeerManager {
   close(): void {
     try {
       if (this.peerConnection) {
+        // Detach event handlers BEFORE closing so the "closed" state change
+        // does not fire onDisconnected — callers decide whether to propagate
+        // the disconnect (e.g. disconnectAudioOnly keeps the session alive).
+        this.peerConnection.onconnectionstatechange = null;
+        this.peerConnection.ontrack = null;
+        this.peerConnection.onicecandidate = null;
+
+        // Stop all sender tracks so the browser releases the microphone
+        // indicator. RTCPeerConnection.close() alone does not guarantee
+        // that tracks are stopped in every browser.
+        this.peerConnection.getSenders().forEach(sender => {
+          try { sender.track?.stop(); } catch { /* best-effort */ }
+        });
         this.peerConnection.close();
       }
     } catch (error) {
@@ -203,18 +216,17 @@ export class WebRTCPeerManager {
   private setCodecPreferences(transceiver: RTCRtpTransceiver): void {
     if (!transceiver.setCodecPreferences) return;
     try {
-      const capabilities = RTCRtpReceiver.getCapabilities("audio");
-      if (!capabilities?.codecs) return;
+      // Use sender capabilities for send-side codec preference ordering
+      const senderCaps = RTCRtpSender.getCapabilities("audio");
+      const receiverCaps = RTCRtpReceiver.getCapabilities("audio");
+      const codecs = senderCaps?.codecs ?? receiverCaps?.codecs;
+      if (!codecs) return;
 
       const mimeTypeLower = (c: RTCRtpCodec) => c.mimeType.toLowerCase();
-      const opus = capabilities.codecs.filter(c => mimeTypeLower(c) === "audio/opus");
-      const pcmu = capabilities.codecs.filter(c => mimeTypeLower(c) === "audio/pcmu");
-      const pcma = capabilities.codecs.filter(c => mimeTypeLower(c) === "audio/pcma");
-      const others = capabilities.codecs.filter(c => {
-        const mime = mimeTypeLower(c);
-        return mime !== "audio/opus" && mime !== "audio/pcmu" && mime !== "audio/pcma";
-      });
-      transceiver.setCodecPreferences([...opus, ...pcmu, ...pcma, ...others]);
+      // Prefer Opus with specific parameters for mono voice
+      const opus = codecs.filter(c => mimeTypeLower(c) === "audio/opus");
+      const others = codecs.filter(c => mimeTypeLower(c) !== "audio/opus");
+      transceiver.setCodecPreferences([...opus, ...others]);
     } catch (error) {
       console.warn("Failed to set codec preferences", error);
     }

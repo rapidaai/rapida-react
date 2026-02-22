@@ -3713,9 +3713,7 @@ proto.talk_api.ConversationDisconnection.prototype.toObject = function(opt_inclu
  */
 proto.talk_api.ConversationDisconnection.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, ""),
     type: jspb.Message.getFieldWithDefault(msg, 2, 0),
-    reason: jspb.Message.getFieldWithDefault(msg, 3, ""),
     time: (f = msg.getTime()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
   };
 
@@ -3753,19 +3751,11 @@ proto.talk_api.ConversationDisconnection.deserializeBinaryFromReader = function(
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setId(value);
-      break;
     case 2:
       var value = /** @type {!proto.talk_api.ConversationDisconnection.DisconnectionType} */ (reader.readEnum());
       msg.setType(value);
       break;
     case 3:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setReason(value);
-      break;
-    case 4:
       var value = new google_protobuf_timestamp_pb.Timestamp;
       reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
       msg.setTime(value);
@@ -3799,13 +3789,6 @@ proto.talk_api.ConversationDisconnection.prototype.serializeBinary = function() 
  */
 proto.talk_api.ConversationDisconnection.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getId();
-  if (f.length > 0) {
-    writer.writeString(
-      1,
-      f
-    );
-  }
   f = message.getType();
   if (f !== 0.0) {
     writer.writeEnum(
@@ -3813,17 +3796,10 @@ proto.talk_api.ConversationDisconnection.serializeBinaryToWriter = function(mess
       f
     );
   }
-  f = message.getReason();
-  if (f.length > 0) {
-    writer.writeString(
-      3,
-      f
-    );
-  }
   f = message.getTime();
   if (f != null) {
     writer.writeMessage(
-      4,
+      3,
       f,
       google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
     );
@@ -3839,24 +3815,6 @@ proto.talk_api.ConversationDisconnection.DisconnectionType = {
   DISCONNECTION_TYPE_TOOL: 1,
   DISCONNECTION_TYPE_USER: 2
 };
-
-/**
- * optional string id = 1;
- * @return {string}
- */
-proto.talk_api.ConversationDisconnection.prototype.getId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.talk_api.ConversationDisconnection} returns this
- */
-proto.talk_api.ConversationDisconnection.prototype.setId = function(value) {
-  return jspb.Message.setProto3StringField(this, 1, value);
-};
-
 
 /**
  * optional DisconnectionType type = 2;
@@ -3877,30 +3835,12 @@ proto.talk_api.ConversationDisconnection.prototype.setType = function(value) {
 
 
 /**
- * optional string reason = 3;
- * @return {string}
- */
-proto.talk_api.ConversationDisconnection.prototype.getReason = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.talk_api.ConversationDisconnection} returns this
- */
-proto.talk_api.ConversationDisconnection.prototype.setReason = function(value) {
-  return jspb.Message.setProto3StringField(this, 3, value);
-};
-
-
-/**
- * optional google.protobuf.Timestamp time = 4;
+ * optional google.protobuf.Timestamp time = 3;
  * @return {?proto.google.protobuf.Timestamp}
  */
 proto.talk_api.ConversationDisconnection.prototype.getTime = function() {
   return /** @type{?proto.google.protobuf.Timestamp} */ (
-    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 4));
+    jspb.Message.getWrapperField(this, google_protobuf_timestamp_pb.Timestamp, 3));
 };
 
 
@@ -3909,7 +3849,7 @@ proto.talk_api.ConversationDisconnection.prototype.getTime = function() {
  * @return {!proto.talk_api.ConversationDisconnection} returns this
 */
 proto.talk_api.ConversationDisconnection.prototype.setTime = function(value) {
-  return jspb.Message.setWrapperField(this, 4, value);
+  return jspb.Message.setWrapperField(this, 3, value);
 };
 
 
@@ -3927,7 +3867,7 @@ proto.talk_api.ConversationDisconnection.prototype.clearTime = function() {
  * @return {boolean}
  */
 proto.talk_api.ConversationDisconnection.prototype.hasTime = function() {
-  return jspb.Message.getField(this, 4) != null;
+  return jspb.Message.getField(this, 3) != null;
 };
 
 
@@ -4844,7 +4784,7 @@ proto.talk_api.ConversationModeChange.prototype.hasTime = function() {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.talk_api.AssistantTalkRequest.oneofGroups_ = [[1,2,3,4,5]];
+proto.talk_api.AssistantTalkRequest.oneofGroups_ = [[1,2,3,4,5,6]];
 
 /**
  * @enum {number}
@@ -4855,7 +4795,8 @@ proto.talk_api.AssistantTalkRequest.RequestCase = {
   CONFIGURATION: 2,
   MESSAGE: 3,
   METADATA: 4,
-  METRIC: 5
+  METRIC: 5,
+  DISCONNECTION: 6
 };
 
 /**
@@ -4900,7 +4841,8 @@ proto.talk_api.AssistantTalkRequest.toObject = function(includeInstance, msg) {
     configuration: (f = msg.getConfiguration()) && proto.talk_api.ConversationConfiguration.toObject(includeInstance, f),
     message: (f = msg.getMessage()) && proto.talk_api.ConversationUserMessage.toObject(includeInstance, f),
     metadata: (f = msg.getMetadata()) && proto.talk_api.ConversationMetadata.toObject(includeInstance, f),
-    metric: (f = msg.getMetric()) && proto.talk_api.ConversationMetric.toObject(includeInstance, f)
+    metric: (f = msg.getMetric()) && proto.talk_api.ConversationMetric.toObject(includeInstance, f),
+    disconnection: (f = msg.getDisconnection()) && proto.talk_api.ConversationDisconnection.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -4961,6 +4903,11 @@ proto.talk_api.AssistantTalkRequest.deserializeBinaryFromReader = function(msg, 
       var value = new proto.talk_api.ConversationMetric;
       reader.readMessage(value,proto.talk_api.ConversationMetric.deserializeBinaryFromReader);
       msg.setMetric(value);
+      break;
+    case 6:
+      var value = new proto.talk_api.ConversationDisconnection;
+      reader.readMessage(value,proto.talk_api.ConversationDisconnection.deserializeBinaryFromReader);
+      msg.setDisconnection(value);
       break;
     default:
       reader.skipField();
@@ -5029,6 +4976,14 @@ proto.talk_api.AssistantTalkRequest.serializeBinaryToWriter = function(message, 
       5,
       f,
       proto.talk_api.ConversationMetric.serializeBinaryToWriter
+    );
+  }
+  f = message.getDisconnection();
+  if (f != null) {
+    writer.writeMessage(
+      6,
+      f,
+      proto.talk_api.ConversationDisconnection.serializeBinaryToWriter
     );
   }
 };
@@ -5216,6 +5171,43 @@ proto.talk_api.AssistantTalkRequest.prototype.clearMetric = function() {
  */
 proto.talk_api.AssistantTalkRequest.prototype.hasMetric = function() {
   return jspb.Message.getField(this, 5) != null;
+};
+
+
+/**
+ * optional ConversationDisconnection disconnection = 6;
+ * @return {?proto.talk_api.ConversationDisconnection}
+ */
+proto.talk_api.AssistantTalkRequest.prototype.getDisconnection = function() {
+  return /** @type{?proto.talk_api.ConversationDisconnection} */ (
+    jspb.Message.getWrapperField(this, proto.talk_api.ConversationDisconnection, 6));
+};
+
+
+/**
+ * @param {?proto.talk_api.ConversationDisconnection|undefined} value
+ * @return {!proto.talk_api.AssistantTalkRequest} returns this
+*/
+proto.talk_api.AssistantTalkRequest.prototype.setDisconnection = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 6, proto.talk_api.AssistantTalkRequest.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.talk_api.AssistantTalkRequest} returns this
+ */
+proto.talk_api.AssistantTalkRequest.prototype.clearDisconnection = function() {
+  return this.setDisconnection(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.talk_api.AssistantTalkRequest.prototype.hasDisconnection = function() {
+  return jspb.Message.getField(this, 6) != null;
 };
 
 

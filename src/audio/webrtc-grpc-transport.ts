@@ -157,7 +157,8 @@ export class WebRTCGrpcTransport {
   async disconnectAudioOnly(): Promise<void> {
     this.peer.close();
     await this.audio.disconnectAudio();
-    this.callbacks.onConnectionStateChange?.("disconnected");
+    // Don't fire "disconnected" — the gRPC session is still alive.
+    // This is a transport-layer change only (audio → text).
   }
 
   /**
@@ -174,7 +175,8 @@ export class WebRTCGrpcTransport {
 
     try {
       await this.audio.setupLocalMedia();
-      this.callbacks.onConnectionStateChange?.("connecting");
+      // Don't fire "connecting" — the session is already connected.
+      // Audio reconnect is a transport-layer change, not a session-level one.
     } catch (error) {
       console.error("[WebRTCTransport] failed to reconnect audio", error);
       this.callbacks.onConnectionStateChange?.("failed");

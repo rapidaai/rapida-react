@@ -113,8 +113,12 @@ export class GrpcSignalingManager {
   /** Close the gRPC stream */
   close(): void {
     if (this.grpcStream) {
-      try { this.grpcStream.end(); } catch { }
-      this.grpcStream = null;
+      const stream = this.grpcStream;
+      this.grpcStream = null; // Clear reference first to prevent double-close
+      // Use cancel() which is safe even when the underlying WebSocket is
+      // already in CLOSING or CLOSED state. Falling back to end() if cancel
+      // is somehow unavailable.
+      try { stream.cancel(); } catch { try { stream.end(); } catch { } }
     }
     this.initializationSent = false;
     this.sessionId = null;

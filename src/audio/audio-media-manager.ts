@@ -91,8 +91,8 @@ export class AudioMediaManager {
       sampleRate: { ideal: OPUS_SAMPLE_RATE },
       channelCount: { ideal: 1 },
       echoCancellation: true,
-      noiseSuppression: false,
-      autoGainControl: false,
+      noiseSuppression: true,
+      autoGainControl: true,
     };
 
     if (this.agentConfig.inputOptions.device) {
@@ -105,11 +105,11 @@ export class AudioMediaManager {
         // @ts-ignore Chrome-specific
         googEchoCancellation: true,
         // @ts-ignore
-        googAutoGainControl: false,
+        googAutoGainControl: true,
         // @ts-ignore
-        googNoiseSuppression: false,
+        googNoiseSuppression: true,
         // @ts-ignore
-        googHighpassFilter: false,
+        googHighpassFilter: true,
       };
     }
     return base;
@@ -279,13 +279,26 @@ export class AudioMediaManager {
   /** Disconnect audio (for text mode) - stops local media but keeps gRPC stream */
   async disconnectAudio(): Promise<void> {
     try {
+      // Stop all microphone tracks so the browser releases the mic indicator
       this.localStream?.getTracks().forEach(t => t.stop());
       this.localStream = null;
+
+      // Close the AudioContext that holds a MediaStreamSource reference to the
+      // microphone.  Without this, browsers (especially Chrome) keep the mic
+      // indicator active even after tracks have been stopped.
+      if (this.audioContext && this.audioContext.state !== "closed") {
+        await this.audioContext.close();
+      }
+      this.audioContext = null;
+      this._inputAnalyser = null;
+      this._outputAnalyser = null;
 
       if (this.audioElement) {
         this.audioElement.pause();
         this.audioElement.srcObject = null;
       }
+
+      this.remoteStream = null;
     } catch (error) {
       console.error("Failed to disconnect audio", error);
     }
@@ -294,16 +307,8 @@ export class AudioMediaManager {
   /** Full cleanup - closes audio context and clears all resources */
   async close(): Promise<void> {
     try {
+      // disconnectAudio() already handles AudioContext, analysers, and remoteStream
       await this.disconnectAudio();
-
-      // Clean up audio context and analysers
-      if (this.audioContext?.state !== "closed") {
-        await this.audioContext?.close();
-      }
-      this.audioContext = null;
-      this._inputAnalyser = null;
-      this._outputAnalyser = null;
-      this.remoteStream = null;
     } catch (error) {
       console.error("Error during audio cleanup", error);
     }

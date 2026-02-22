@@ -72,10 +72,11 @@ export function observeAgentInputMediaDeviceChange(
  */
 export function observeAgentConnectionState(
   agent: VoiceAgent
-): Observable<{ isConnected: boolean }> {
+): Observable<{ isConnected: boolean; isConnecting: boolean }> {
   return agentEventSelector(agent, AgentEvent.ConnectionStateEvent).pipe(
     map(([state]: [ConnectionState]) => ({
       isConnected: state === ConnectionState.Connected,
+      isConnecting: state === ConnectionState.Connecting,
     }))
   );
 }

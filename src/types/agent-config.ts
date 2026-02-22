@@ -228,4 +228,16 @@ export class AgentConfig {
     this.arguments?.set(k, StringToAny(value));
     return this;
   }
+
+  /**
+   * Set the user identifier for the conversation.
+   * @param id - Unique user identifier
+   * @param name - Optional display name
+   * @returns this for chaining
+   */
+  setUserIdentifier(id: string, name?: string): this {
+    this.userIdentifier = new UserIdentifier(id, name);
+    return this;
+  }
+
 }

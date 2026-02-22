@@ -42,6 +42,7 @@ describe('SDK Exports', () => {
     const module = await import('@/rapida/types/connection-state');
     expect(module.ConnectionState).toBeDefined();
     expect(module.ConnectionState.Connected).toBe('connected');
+    expect(module.ConnectionState.Connecting).toBe('connecting');
     expect(module.ConnectionState.Disconnected).toBe('disconnected');
   });
 

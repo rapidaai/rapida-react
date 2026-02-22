@@ -272,6 +272,11 @@ export class WebTalkRequest extends jspb.Message {
   getMetric(): talk_api_pb.ConversationMetric | undefined;
   setMetric(value?: talk_api_pb.ConversationMetric): void;
 
+  hasDisconnection(): boolean;
+  clearDisconnection(): void;
+  getDisconnection(): talk_api_pb.ConversationDisconnection | undefined;
+  setDisconnection(value?: talk_api_pb.ConversationDisconnection): void;
+
   getRequestCase(): WebTalkRequest.RequestCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): WebTalkRequest.AsObject;
@@ -291,6 +296,7 @@ export namespace WebTalkRequest {
     signaling?: ClientSignaling.AsObject,
     metadata?: talk_api_pb.ConversationMetadata.AsObject,
     metric?: talk_api_pb.ConversationMetric.AsObject,
+    disconnection?: talk_api_pb.ConversationDisconnection.AsObject,
   }
 
   export enum RequestCase {
@@ -301,6 +307,7 @@ export namespace WebTalkRequest {
     SIGNALING = 4,
     METADATA = 5,
     METRIC = 6,
+    DISCONNECTION = 7,
   }
 }
 
@@ -371,6 +378,11 @@ export class WebTalkResponse extends jspb.Message {
   getMetric(): talk_api_pb.ConversationMetric | undefined;
   setMetric(value?: talk_api_pb.ConversationMetric): void;
 
+  hasDisconnection(): boolean;
+  clearDisconnection(): void;
+  getDisconnection(): talk_api_pb.ConversationDisconnection | undefined;
+  setDisconnection(value?: talk_api_pb.ConversationDisconnection): void;
+
   getDataCase(): WebTalkResponse.DataCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): WebTalkResponse.AsObject;
@@ -398,6 +410,7 @@ export namespace WebTalkResponse {
     signaling?: ServerSignaling.AsObject,
     metadata?: talk_api_pb.ConversationMetadata.AsObject,
     metric?: talk_api_pb.ConversationMetric.AsObject,
+    disconnection?: talk_api_pb.ConversationDisconnection.AsObject,
   }
 
   export enum DataCase {
@@ -414,6 +427,7 @@ export namespace WebTalkResponse {
     SIGNALING = 17,
     METADATA = 19,
     METRIC = 20,
+    DISCONNECTION = 21,
   }
 }
 

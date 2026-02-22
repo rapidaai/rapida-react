@@ -28,14 +28,19 @@ describe('ConnectionState enum', () => {
     expect(ConnectionState.Disconnected).toBe('disconnected');
   });
 
+  it('should have Connecting state', () => {
+    expect(ConnectionState.Connecting).toBe('connecting');
+  });
+
   it('should have Connected state', () => {
     expect(ConnectionState.Connected).toBe('connected');
   });
 
-  it('should only have two values', () => {
+  it('should only have three values', () => {
     const values = Object.values(ConnectionState);
-    expect(values).toHaveLength(2);
+    expect(values).toHaveLength(3);
     expect(values).toContain('disconnected');
+    expect(values).toContain('connecting');
     expect(values).toContain('connected');
   });
 });

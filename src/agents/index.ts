@@ -357,7 +357,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    * and then call this to update state.
    */
   protected async disconnectAgent(): Promise<void> {
-    if (this.connectionState !== ConnectionState.Connected) {
+    if (this.connectionState === ConnectionState.Disconnected) {
       return;
     }
     this._setAndEmitConnectionState(ConnectionState.Disconnected);

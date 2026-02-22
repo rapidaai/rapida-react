@@ -50,6 +50,7 @@ export class VoiceAgent extends Agent {
   private connectionConfig: ConnectionConfig;
   private _isMuted: boolean = false;
   private _connectPromise: Promise<void> | null = null;
+  private _disconnectRequested: boolean = false;
 
   private inputFrequencyData?: Uint8Array;
   private outputFrequencyData?: Uint8Array;
@@ -81,12 +82,22 @@ export class VoiceAgent extends Agent {
       onConnectionStateChange: (state) => {
         console.log(`${LOG_PREFIX} callback -> onConnectionStateChange`, state);
         if (state === "connected") {
-          this.connectionState = ConnectionState.Connected;
-          this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Connected);
+          // Do not mark as Connected here — wait for onInitialization
+          // (the server's ConversationInitialization response) to confirm
+          // the conversation is truly established.
+          console.log(`${LOG_PREFIX} transport connected, waiting for conversation initialization`);
         } else if (state === "disconnected" || state === "closed" || state === "failed") {
-          this.connectionState = ConnectionState.Disconnected;
-          this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Disconnected);
-          this.switchToTextModeOnDisconnect();
+          // Only mark as disconnected if the gRPC session is also gone.
+          // When switching from audio → text the WebRTC peer fires
+          // "disconnected"/"closed", but the gRPC stream is still alive.
+          if (this.webrtcTransport?.isGrpcConnected) {
+            console.log(`${LOG_PREFIX} WebRTC peer ${state} but gRPC still alive — staying connected`);
+            this.switchToTextModeOnDisconnect();
+          } else {
+            this.connectionState = ConnectionState.Disconnected;
+            this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Disconnected);
+            this.switchToTextModeOnDisconnect();
+          }
         }
       },
       onConnected: async () => {
@@ -131,16 +142,30 @@ export class VoiceAgent extends Agent {
         if (config?.assistantconversationid) {
           this.changeConversation(String(config.assistantconversationid));
         }
+        // Mark as connected once the server acknowledges the conversation
+        // via ConversationInitialization response.
+        if (this.connectionState !== ConnectionState.Connected) {
+          this.connectionState = ConnectionState.Connected;
+          this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Connected);
+        }
       },
     };
   }
 
   /**
-   * disconnecting the agent and voice if it is connected
+   * disconnecting the agent and voice if it is connected.
+   * Safe to call while a connection attempt is still in progress —
+   * signals the in-flight connect to abort and tears everything down.
    */
   public disconnect = async () => {
+    // Signal any in-flight connect() to abort after connectDevice settles.
+    this._disconnectRequested = true;
+
     await this.disconnectAgent();
     await this.disconnectAudio();
+
+    // Reset the flag so a future connect() is not affected.
+    this._disconnectRequested = false;
   };
 
   /**
@@ -420,9 +445,20 @@ export class VoiceAgent extends Agent {
       return;
     }
 
+    this._disconnectRequested = false;
+
     this._connectPromise = (async () => {
       try {
+        // Notify client that connection is being established
+        this.connectionState = ConnectionState.Connecting;
+        this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Connecting);
         await this.connectDevice();
+
+        // If disconnect() was called while we were connecting,
+        // tear down the transport we just created instead of keeping it.
+        if (this._disconnectRequested) {
+          await this.disconnectAudio();
+        }
       } catch (err) {
         this.emit(AgentEvent.ErrorEvent, "client", `Connection failed: ${err}`);
       } finally {
@@ -594,6 +630,11 @@ export class VoiceAgent extends Agent {
     this.agentConfig.inputOptions.channel = input;
     this.agentConfig.outputOptions.channel = input;
 
+    // Track whether a fresh connection was just created.
+    // If so, ConversationInitialization already carried the stream mode
+    // — no need to send a redundant ConversationConfiguration.
+    const wasConnected = this.webrtcTransport?.isGrpcConnected ?? false;
+
     // Ensure the session exists
     await this.ensureConnected();
 
@@ -604,8 +645,12 @@ export class VoiceAgent extends Agent {
       await this.webrtcTransport?.disconnectAudioOnly();
     }
 
-    // Tell the server which mode we're in
-    this.webrtcTransport?.sendConversationConfiguration();
+    // Only send ConversationConfiguration for runtime mode switches.
+    // On a fresh connection the ConversationInitialization message
+    // already includes the stream mode, so sending it again is redundant.
+    if (wasConnected) {
+      this.webrtcTransport?.sendConversationConfiguration();
+    }
 
     this.emit(AgentEvent.InputChannelChangeEvent, input);
   };

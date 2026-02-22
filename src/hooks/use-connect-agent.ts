@@ -26,6 +26,7 @@ import * as React from "react";
 import { VoiceAgent } from "@/rapida/agents/voice-agent";
 import { useObservableState } from "@/rapida/hooks/use-observable-state";
 import { observeAgentConnectionState } from "@/rapida/hooks/observables/voice-agent";
+import { ConnectionState } from "@/rapida/types/connection-state";
 
 /**
  * Custom hook for managing agent connection in a voice system.
@@ -56,10 +57,11 @@ export function useConnectAgent(agent: VoiceAgent) {
   );
 
   // Subscribe to the observable and manage component state
-  const { isConnected } = useObservableState(observable, {
+  const { isConnected, isConnecting } = useObservableState(observable, {
     isConnected: agent?.isConnected ?? false, // Default connection state
+    isConnecting: agent?.state === ConnectionState.Connecting,
   });
 
   // Return the connection handlers and current connection state
-  return { handleConnectAgent, handleDisconnectAgent, isConnected };
+  return { handleConnectAgent, handleDisconnectAgent, isConnected, isConnecting };
 }

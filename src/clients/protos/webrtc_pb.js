@@ -1796,7 +1796,7 @@ proto.talk_api.WebRTCConfig.prototype.setSamplerate = function(value) {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.talk_api.WebTalkRequest.oneofGroups_ = [[1,2,3,4,5,6]];
+proto.talk_api.WebTalkRequest.oneofGroups_ = [[1,2,3,4,5,6,7]];
 
 /**
  * @enum {number}
@@ -1808,7 +1808,8 @@ proto.talk_api.WebTalkRequest.RequestCase = {
   MESSAGE: 3,
   SIGNALING: 4,
   METADATA: 5,
-  METRIC: 6
+  METRIC: 6,
+  DISCONNECTION: 7
 };
 
 /**
@@ -1854,7 +1855,8 @@ proto.talk_api.WebTalkRequest.toObject = function(includeInstance, msg) {
     message: (f = msg.getMessage()) && talk$api_pb.ConversationUserMessage.toObject(includeInstance, f),
     signaling: (f = msg.getSignaling()) && proto.talk_api.ClientSignaling.toObject(includeInstance, f),
     metadata: (f = msg.getMetadata()) && talk$api_pb.ConversationMetadata.toObject(includeInstance, f),
-    metric: (f = msg.getMetric()) && talk$api_pb.ConversationMetric.toObject(includeInstance, f)
+    metric: (f = msg.getMetric()) && talk$api_pb.ConversationMetric.toObject(includeInstance, f),
+    disconnection: (f = msg.getDisconnection()) && talk$api_pb.ConversationDisconnection.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1920,6 +1922,11 @@ proto.talk_api.WebTalkRequest.deserializeBinaryFromReader = function(msg, reader
       var value = new talk$api_pb.ConversationMetric;
       reader.readMessage(value,talk$api_pb.ConversationMetric.deserializeBinaryFromReader);
       msg.setMetric(value);
+      break;
+    case 7:
+      var value = new talk$api_pb.ConversationDisconnection;
+      reader.readMessage(value,talk$api_pb.ConversationDisconnection.deserializeBinaryFromReader);
+      msg.setDisconnection(value);
       break;
     default:
       reader.skipField();
@@ -1996,6 +2003,14 @@ proto.talk_api.WebTalkRequest.serializeBinaryToWriter = function(message, writer
       6,
       f,
       talk$api_pb.ConversationMetric.serializeBinaryToWriter
+    );
+  }
+  f = message.getDisconnection();
+  if (f != null) {
+    writer.writeMessage(
+      7,
+      f,
+      talk$api_pb.ConversationDisconnection.serializeBinaryToWriter
     );
   }
 };
@@ -2223,6 +2238,43 @@ proto.talk_api.WebTalkRequest.prototype.hasMetric = function() {
 };
 
 
+/**
+ * optional ConversationDisconnection disconnection = 7;
+ * @return {?proto.talk_api.ConversationDisconnection}
+ */
+proto.talk_api.WebTalkRequest.prototype.getDisconnection = function() {
+  return /** @type{?proto.talk_api.ConversationDisconnection} */ (
+    jspb.Message.getWrapperField(this, talk$api_pb.ConversationDisconnection, 7));
+};
+
+
+/**
+ * @param {?proto.talk_api.ConversationDisconnection|undefined} value
+ * @return {!proto.talk_api.WebTalkRequest} returns this
+*/
+proto.talk_api.WebTalkRequest.prototype.setDisconnection = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 7, proto.talk_api.WebTalkRequest.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.talk_api.WebTalkRequest} returns this
+ */
+proto.talk_api.WebTalkRequest.prototype.clearDisconnection = function() {
+  return this.setDisconnection(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.talk_api.WebTalkRequest.prototype.hasDisconnection = function() {
+  return jspb.Message.getField(this, 7) != null;
+};
+
+
 
 /**
  * Oneof group definitions for this message. Each group defines the field
@@ -2232,7 +2284,7 @@ proto.talk_api.WebTalkRequest.prototype.hasMetric = function() {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.talk_api.WebTalkResponse.oneofGroups_ = [[8,9,10,11,12,13,14,16,15,17,19,20]];
+proto.talk_api.WebTalkResponse.oneofGroups_ = [[8,9,10,11,12,13,14,16,15,17,19,20,21]];
 
 /**
  * @enum {number}
@@ -2250,7 +2302,8 @@ proto.talk_api.WebTalkResponse.DataCase = {
   ERROR: 15,
   SIGNALING: 17,
   METADATA: 19,
-  METRIC: 20
+  METRIC: 20,
+  DISCONNECTION: 21
 };
 
 /**
@@ -2304,7 +2357,8 @@ proto.talk_api.WebTalkResponse.toObject = function(includeInstance, msg) {
     error: (f = msg.getError()) && talk$api_pb.ConversationError.toObject(includeInstance, f),
     signaling: (f = msg.getSignaling()) && proto.talk_api.ServerSignaling.toObject(includeInstance, f),
     metadata: (f = msg.getMetadata()) && talk$api_pb.ConversationMetadata.toObject(includeInstance, f),
-    metric: (f = msg.getMetric()) && talk$api_pb.ConversationMetric.toObject(includeInstance, f)
+    metric: (f = msg.getMetric()) && talk$api_pb.ConversationMetric.toObject(includeInstance, f),
+    disconnection: (f = msg.getDisconnection()) && talk$api_pb.ConversationDisconnection.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -2408,6 +2462,11 @@ proto.talk_api.WebTalkResponse.deserializeBinaryFromReader = function(msg, reade
       var value = new talk$api_pb.ConversationMetric;
       reader.readMessage(value,talk$api_pb.ConversationMetric.deserializeBinaryFromReader);
       msg.setMetric(value);
+      break;
+    case 21:
+      var value = new talk$api_pb.ConversationDisconnection;
+      reader.readMessage(value,talk$api_pb.ConversationDisconnection.deserializeBinaryFromReader);
+      msg.setDisconnection(value);
       break;
     default:
       reader.skipField();
@@ -2546,6 +2605,14 @@ proto.talk_api.WebTalkResponse.serializeBinaryToWriter = function(message, write
       20,
       f,
       talk$api_pb.ConversationMetric.serializeBinaryToWriter
+    );
+  }
+  f = message.getDisconnection();
+  if (f != null) {
+    writer.writeMessage(
+      21,
+      f,
+      talk$api_pb.ConversationDisconnection.serializeBinaryToWriter
     );
   }
 };
@@ -3028,6 +3095,43 @@ proto.talk_api.WebTalkResponse.prototype.clearMetric = function() {
  */
 proto.talk_api.WebTalkResponse.prototype.hasMetric = function() {
   return jspb.Message.getField(this, 20) != null;
+};
+
+
+/**
+ * optional ConversationDisconnection disconnection = 21;
+ * @return {?proto.talk_api.ConversationDisconnection}
+ */
+proto.talk_api.WebTalkResponse.prototype.getDisconnection = function() {
+  return /** @type{?proto.talk_api.ConversationDisconnection} */ (
+    jspb.Message.getWrapperField(this, talk$api_pb.ConversationDisconnection, 21));
+};
+
+
+/**
+ * @param {?proto.talk_api.ConversationDisconnection|undefined} value
+ * @return {!proto.talk_api.WebTalkResponse} returns this
+*/
+proto.talk_api.WebTalkResponse.prototype.setDisconnection = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 21, proto.talk_api.WebTalkResponse.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.talk_api.WebTalkResponse} returns this
+ */
+proto.talk_api.WebTalkResponse.prototype.clearDisconnection = function() {
+  return this.setDisconnection(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.talk_api.WebTalkResponse.prototype.hasDisconnection = function() {
+  return jspb.Message.getField(this, 21) != null;
 };
 
 
