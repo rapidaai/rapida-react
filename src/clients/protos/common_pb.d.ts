@@ -1001,6 +1001,9 @@ export namespace AssistantConversationContext {
 }
 
 export class AssistantConversationRecording extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
   getRecordingurl(): string;
   setRecordingurl(value: string): void;
 
@@ -1016,6 +1019,7 @@ export class AssistantConversationRecording extends jspb.Message {
 
 export namespace AssistantConversationRecording {
   export type AsObject = {
+    id: string,
     recordingurl: string,
   }
 }

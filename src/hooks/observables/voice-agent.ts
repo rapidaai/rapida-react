@@ -27,11 +27,12 @@ import { VoiceAgent } from "@/rapida/agents/voice-agent";
 import { AgentEvent } from "@/rapida/types/agent-event";
 import { ConnectionState } from "@/rapida/types/connection-state";
 import {
-  AssistantTalkOutput, ConversationConfiguration,
+  ConversationConfiguration,
   ConversationInterruption,
   ConversationUserMessage,
   ConversationAssistantMessage,
 } from "@/rapida/clients/protos/talk-api_pb";
+import { WebTalkResponse } from "@/rapida/clients/protos/webrtc_pb";
 /**
  * Utility function to observe a specific agent event.
  * @param agent The voice agent instance.
@@ -71,11 +72,26 @@ export function observeAgentInputMediaDeviceChange(
  */
 export function observeAgentConnectionState(
   agent: VoiceAgent
-): Observable<{ isConnected: boolean }> {
+): Observable<{ isConnected: boolean; isConnecting: boolean }> {
   return agentEventSelector(agent, AgentEvent.ConnectionStateEvent).pipe(
     map(([state]: [ConnectionState]) => ({
       isConnected: state === ConnectionState.Connected,
+      isConnecting: state === ConnectionState.Connecting,
     }))
+  );
+}
+
+/**
+ * Observes mute state changes for the agent.
+ */
+export function observeAgentMuteState(
+  agent: VoiceAgent
+): Observable<{ isMuted: boolean }> {
+  return agentEventSelector(agent, AgentEvent.MuteStateEvent).pipe(
+    map(([isMuted]: [boolean]) => ({
+      isMuted,
+    })),
+    startWith({ isMuted: agent.isMuted })
   );
 }
 
@@ -83,7 +99,7 @@ export function observeAgentConnectionState(
  * Observes server events from the agent.
  */
 export function observeAgentServerEvents(agent: VoiceAgent): Observable<{
-  eventType?: AssistantTalkOutput.DataCase;
+  eventType?: WebTalkResponse.DataCase;
   argument?:
   | ConversationConfiguration
   | ConversationInterruption

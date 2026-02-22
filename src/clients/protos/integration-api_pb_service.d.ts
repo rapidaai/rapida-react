@@ -59,7 +59,7 @@ type OpenAiServiceChat = {
 type OpenAiServiceStreamChat = {
   readonly methodName: string;
   readonly service: typeof OpenAiService;
-  readonly requestStream: false;
+  readonly requestStream: true;
   readonly responseStream: true;
   readonly requestType: typeof integration_api_pb.ChatRequest;
   readonly responseType: typeof integration_api_pb.ChatResponse;
@@ -113,7 +113,7 @@ type AzureServiceChat = {
 type AzureServiceStreamChat = {
   readonly methodName: string;
   readonly service: typeof AzureService;
-  readonly requestStream: false;
+  readonly requestStream: true;
   readonly responseStream: true;
   readonly requestType: typeof integration_api_pb.ChatRequest;
   readonly responseType: typeof integration_api_pb.ChatResponse;
@@ -167,7 +167,7 @@ type GeminiServiceChat = {
 type GeminiServiceStreamChat = {
   readonly methodName: string;
   readonly service: typeof GeminiService;
-  readonly requestStream: false;
+  readonly requestStream: true;
   readonly responseStream: true;
   readonly requestType: typeof integration_api_pb.ChatRequest;
   readonly responseType: typeof integration_api_pb.ChatResponse;
@@ -211,7 +211,7 @@ type VertexAiServiceChat = {
 type VertexAiServiceStreamChat = {
   readonly methodName: string;
   readonly service: typeof VertexAiService;
-  readonly requestStream: false;
+  readonly requestStream: true;
   readonly responseStream: true;
   readonly requestType: typeof integration_api_pb.ChatRequest;
   readonly responseType: typeof integration_api_pb.ChatResponse;
@@ -246,7 +246,7 @@ type ReplicateServiceChat = {
 type ReplicateServiceStreamChat = {
   readonly methodName: string;
   readonly service: typeof ReplicateService;
-  readonly requestStream: false;
+  readonly requestStream: true;
   readonly responseStream: true;
   readonly requestType: typeof integration_api_pb.ChatRequest;
   readonly responseType: typeof integration_api_pb.ChatResponse;
@@ -280,7 +280,7 @@ type AnthropicServiceChat = {
 type AnthropicServiceStreamChat = {
   readonly methodName: string;
   readonly service: typeof AnthropicService;
-  readonly requestStream: false;
+  readonly requestStream: true;
   readonly responseStream: true;
   readonly requestType: typeof integration_api_pb.ChatRequest;
   readonly responseType: typeof integration_api_pb.ChatResponse;
@@ -332,7 +332,7 @@ type CohereServiceChat = {
 type CohereServiceStreamChat = {
   readonly methodName: string;
   readonly service: typeof CohereService;
-  readonly requestStream: false;
+  readonly requestStream: true;
   readonly responseStream: true;
   readonly requestType: typeof integration_api_pb.ChatRequest;
   readonly responseType: typeof integration_api_pb.ChatResponse;
@@ -392,7 +392,7 @@ type MistralServiceChat = {
 type MistralServiceStreamChat = {
   readonly methodName: string;
   readonly service: typeof MistralService;
-  readonly requestStream: false;
+  readonly requestStream: true;
   readonly responseStream: true;
   readonly requestType: typeof integration_api_pb.ChatRequest;
   readonly responseType: typeof integration_api_pb.ChatResponse;
@@ -583,7 +583,7 @@ export class OpenAiServiceClient {
     requestMessage: integration_api_pb.ChatRequest,
     callback: (error: ServiceError|null, responseMessage: integration_api_pb.ChatResponse|null) => void
   ): UnaryResponse;
-  streamChat(requestMessage: integration_api_pb.ChatRequest, metadata?: grpc.Metadata): ResponseStream<integration_api_pb.ChatResponse>;
+  streamChat(metadata?: grpc.Metadata): BidirectionalStream<integration_api_pb.ChatRequest, integration_api_pb.ChatResponse>;
   verifyCredential(
     requestMessage: integration_api_pb.VerifyCredentialRequest,
     metadata: grpc.Metadata,
@@ -626,7 +626,7 @@ export class AzureServiceClient {
     requestMessage: integration_api_pb.ChatRequest,
     callback: (error: ServiceError|null, responseMessage: integration_api_pb.ChatResponse|null) => void
   ): UnaryResponse;
-  streamChat(requestMessage: integration_api_pb.ChatRequest, metadata?: grpc.Metadata): ResponseStream<integration_api_pb.ChatResponse>;
+  streamChat(metadata?: grpc.Metadata): BidirectionalStream<integration_api_pb.ChatRequest, integration_api_pb.ChatResponse>;
   verifyCredential(
     requestMessage: integration_api_pb.VerifyCredentialRequest,
     metadata: grpc.Metadata,
@@ -669,7 +669,7 @@ export class GeminiServiceClient {
     requestMessage: integration_api_pb.ChatRequest,
     callback: (error: ServiceError|null, responseMessage: integration_api_pb.ChatResponse|null) => void
   ): UnaryResponse;
-  streamChat(requestMessage: integration_api_pb.ChatRequest, metadata?: grpc.Metadata): ResponseStream<integration_api_pb.ChatResponse>;
+  streamChat(metadata?: grpc.Metadata): BidirectionalStream<integration_api_pb.ChatRequest, integration_api_pb.ChatResponse>;
   verifyCredential(
     requestMessage: integration_api_pb.VerifyCredentialRequest,
     metadata: grpc.Metadata,
@@ -703,7 +703,7 @@ export class VertexAiServiceClient {
     requestMessage: integration_api_pb.ChatRequest,
     callback: (error: ServiceError|null, responseMessage: integration_api_pb.ChatResponse|null) => void
   ): UnaryResponse;
-  streamChat(requestMessage: integration_api_pb.ChatRequest, metadata?: grpc.Metadata): ResponseStream<integration_api_pb.ChatResponse>;
+  streamChat(metadata?: grpc.Metadata): BidirectionalStream<integration_api_pb.ChatRequest, integration_api_pb.ChatResponse>;
   verifyCredential(
     requestMessage: integration_api_pb.VerifyCredentialRequest,
     metadata: grpc.Metadata,
@@ -728,7 +728,7 @@ export class ReplicateServiceClient {
     requestMessage: integration_api_pb.ChatRequest,
     callback: (error: ServiceError|null, responseMessage: integration_api_pb.ChatResponse|null) => void
   ): UnaryResponse;
-  streamChat(requestMessage: integration_api_pb.ChatRequest, metadata?: grpc.Metadata): ResponseStream<integration_api_pb.ChatResponse>;
+  streamChat(metadata?: grpc.Metadata): BidirectionalStream<integration_api_pb.ChatRequest, integration_api_pb.ChatResponse>;
   verifyCredential(
     requestMessage: integration_api_pb.VerifyCredentialRequest,
     metadata: grpc.Metadata,
@@ -753,7 +753,7 @@ export class AnthropicServiceClient {
     requestMessage: integration_api_pb.ChatRequest,
     callback: (error: ServiceError|null, responseMessage: integration_api_pb.ChatResponse|null) => void
   ): UnaryResponse;
-  streamChat(requestMessage: integration_api_pb.ChatRequest, metadata?: grpc.Metadata): ResponseStream<integration_api_pb.ChatResponse>;
+  streamChat(metadata?: grpc.Metadata): BidirectionalStream<integration_api_pb.ChatRequest, integration_api_pb.ChatResponse>;
   verifyCredential(
     requestMessage: integration_api_pb.VerifyCredentialRequest,
     metadata: grpc.Metadata,
@@ -796,7 +796,7 @@ export class CohereServiceClient {
     requestMessage: integration_api_pb.ChatRequest,
     callback: (error: ServiceError|null, responseMessage: integration_api_pb.ChatResponse|null) => void
   ): UnaryResponse;
-  streamChat(requestMessage: integration_api_pb.ChatRequest, metadata?: grpc.Metadata): ResponseStream<integration_api_pb.ChatResponse>;
+  streamChat(metadata?: grpc.Metadata): BidirectionalStream<integration_api_pb.ChatRequest, integration_api_pb.ChatResponse>;
   verifyCredential(
     requestMessage: integration_api_pb.VerifyCredentialRequest,
     metadata: grpc.Metadata,
@@ -845,7 +845,7 @@ export class MistralServiceClient {
     requestMessage: integration_api_pb.ChatRequest,
     callback: (error: ServiceError|null, responseMessage: integration_api_pb.ChatResponse|null) => void
   ): UnaryResponse;
-  streamChat(requestMessage: integration_api_pb.ChatRequest, metadata?: grpc.Metadata): ResponseStream<integration_api_pb.ChatResponse>;
+  streamChat(metadata?: grpc.Metadata): BidirectionalStream<integration_api_pb.ChatRequest, integration_api_pb.ChatResponse>;
   verifyCredential(
     requestMessage: integration_api_pb.VerifyCredentialRequest,
     metadata: grpc.Metadata,

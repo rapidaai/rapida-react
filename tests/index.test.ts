@@ -16,14 +16,18 @@ describe('SDK Exports', () => {
     expect(module.Agent).toBeDefined();
   });
 
-  it('should export Input class', async () => {
-    const module = await import('@/rapida/audio/input');
-    expect(module.Input).toBeDefined();
+  // The SDK no longer exposes standalone Input/Output modules under
+  // `@/rapida/audio`.  Input and output behaviour is represented by the
+  // `InputOptions`/`OutputOptions` classes exported from the agent-config
+  // package; the following tests assert their presence indirectly.
+  it('should export InputOptions via agent-config', async () => {
+    const module = await import('@/rapida/types/agent-config');
+    expect(module.InputOptions).toBeDefined();
   });
 
-  it('should export Output class', async () => {
-    const module = await import('@/rapida/audio/output');
-    expect(module.Output).toBeDefined();
+  it('should export OutputOptions via agent-config', async () => {
+    const module = await import('@/rapida/types/agent-config');
+    expect(module.OutputOptions).toBeDefined();
   });
 
   it('should export DeviceManager', async () => {
@@ -42,6 +46,7 @@ describe('SDK Exports', () => {
     const module = await import('@/rapida/types/connection-state');
     expect(module.ConnectionState).toBeDefined();
     expect(module.ConnectionState.Connected).toBe('connected');
+    expect(module.ConnectionState.Connecting).toBe('connecting');
     expect(module.ConnectionState.Disconnected).toBe('disconnected');
   });
 
@@ -89,21 +94,18 @@ describe('SDK Exports', () => {
 });
 
 describe('SDK Type Definitions', () => {
-  it('should have RecorderOptions interface', async () => {
-    // This test verifies the type exists by using it
-    const options: import('@/rapida/types/agent-config').RecorderOptions = {
-      format: 'pcm',
-      sampleRate: 16000,
-    };
-    expect(options.format).toBe('pcm');
+  it('should have InputOptions class', async () => {
+    const { InputOptions } = await import('@/rapida/types/agent-config');
+    const { Channel } = await import('@/rapida/types/channel');
+    const options = new InputOptions([Channel.Audio]);
+    expect(options.channel).toBe(Channel.Audio);
   });
 
-  it('should have PlayerOptions interface', async () => {
-    const options: import('@/rapida/types/agent-config').PlayerOptions = {
-      format: 'pcm',
-      sampleRate: 24000,
-    };
-    expect(options.format).toBe('pcm');
+  it('should have OutputOptions class', async () => {
+    const { OutputOptions } = await import('@/rapida/types/agent-config');
+    const { Channel } = await import('@/rapida/types/channel');
+    const options = new OutputOptions([Channel.Audio]);
+    expect(options.channel).toBe(Channel.Audio);
   });
 
   it('should have Message interface', async () => {

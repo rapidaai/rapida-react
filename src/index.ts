@@ -23,16 +23,17 @@
  *
  */
 export { VoiceAgent } from "@/rapida/agents/voice-agent";
-// export {
-//   // toTextContent,
-//   // toContentText,
-//   toStreamAudioContent,
-// } from "@/rapida/utils/rapida_content";
+export {
+  WebRTCGrpcTransport,
+  supportsWebRTCGrpcTransport,
+  type WebRTCGrpcTransportConfig,
+} from "@/rapida/audio/webrtc-grpc-transport";
 export { useMessageFeedback } from "@/rapida/hooks/use-message-feedback";
 export { useConversationFeedback } from "@/rapida/hooks/use-conversation-feedback";
 export { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
 export { useInputModeToggleAgent } from "@/rapida/hooks/use-input-mode-toggle-agent";
 export { useSelectInputDeviceAgent } from "@/rapida/hooks/use-select-input-device-agent";
+export { useMuteAgent } from "@/rapida/hooks/use-mute-agent";
 export { ConnectionState } from "@/rapida/types/connection-state";
 export { Channel } from "@/rapida/types/channel";
 export { MediaDeviceFailure } from "@/rapida/types/device-failure";
@@ -40,6 +41,7 @@ export {
   InputOptions,
   OutputOptions,
   AgentConfig,
+  UserIdentifier,
 } from "@/rapida/types/agent-config";
 export { AgentCallback } from "@/rapida/types/agent-callback";
 export { Message, MessageRole, MessageStatus } from "@/rapida/types/message";
@@ -184,6 +186,7 @@ export {
   CreateConversationMetric,
   GetAllAssistantConversation,
 } from "@/rapida/clients/talk";
+export { WebTalk } from '@/rapida/clients/webrtc';
 export {
   CreateKnowledge,
   GetKnowledgeBase,
@@ -287,13 +290,17 @@ export {
   GetCredentialResponse,
 } from "@/rapida/clients/protos/vault-api_pb";
 export {
-  AssistantTalkInput,
-  AssistantTalkOutput,
+  AssistantTalkRequest,
+  AssistantTalkResponse,
   CreateMessageMetricRequest,
   CreateMessageMetricResponse,
   CreateConversationMetricRequest,
   CreateConversationMetricResponse,
 } from "@/rapida/clients/protos/talk-api_pb";
+export {
+  WebTalkRequest,
+  WebTalkResponse,
+} from "@/rapida/clients/protos/webrtc_pb";
 export {
   AssistantAnalysis,
   CreateAssistantAnalysisRequest,

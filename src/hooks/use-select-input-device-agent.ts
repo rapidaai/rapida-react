@@ -92,6 +92,23 @@ export function useSelectInputDeviceAgent({
       [voiceAgent.inputMediaDevice]
     );
 
+  // Set the first device as active when devices are loaded and no device is selected
+  React.useEffect(() => {
+    if (devices.length > 0 && !currentDeviceId) {
+      // Check if voiceAgent has a device set, use that; otherwise use the first device
+      const agentDevice = voiceAgent?.inputMediaDevice;
+      if (agentDevice) {
+        setCurrentDeviceId(agentDevice);
+      } else {
+        // Use the first available device
+        const firstDevice = devices[0];
+        if (firstDevice?.deviceId) {
+          setCurrentDeviceId(firstDevice.deviceId);
+        }
+      }
+    }
+  }, [devices, currentDeviceId, voiceAgent]);
+
   React.useEffect(() => {
     const listener = activeDeviceObservable.subscribe((deviceId) => {
       if (deviceId && deviceId !== currentDeviceId) {
@@ -101,7 +118,7 @@ export function useSelectInputDeviceAgent({
     return () => {
       listener?.unsubscribe();
     };
-  }, [activeDeviceObservable]);
+  }, [activeDeviceObservable, currentDeviceId]);
 
   return {
     devices,

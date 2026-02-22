@@ -27,7 +27,8 @@ import {
   ConversationAssistantMessage as CAMessage,
   ConversationConfiguration,
   ConversationInterruption,
-  ConversationDirective
+  ConversationDirective,
+  ConversationInitialization
 } from "@/rapida/clients/protos/talk-api_pb";
 
 import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
@@ -83,31 +84,37 @@ export interface ConversationMessage
 
 
 /**
- * Callbacks for agent
+ * Callbacks for agent events
  */
 export interface AgentCallback {
-  // this will be called when assistant get changed // also this will be the first call when assistant connection established
-  onConfiguration?: (
-    args: ConversationConfiguration.AsObject | undefined
-  ) => void;
 
-  // interrupted // // vad // word // there might be two kind of interruption
-  onInterrupt?: (
-    args: ConversationInterruption.AsObject | undefined
-  ) => void;
+  onInitialization?: (args: ConversationInitialization.AsObject | undefined) => void;
 
-  // generation
+  /** Called when configuration is received (conversation ID, etc.) */
+  onConfiguration?: (args: ConversationConfiguration.AsObject | undefined) => void;
+
+  /** Called on interruption */
+  onInterrupt?: (args: ConversationInterruption.AsObject | undefined) => void;
+
+  /** Called when assistant message is received */
   onAssistantMessage?: (args: ConversationAssistantMessage | undefined) => void;
 
-  // user
+  /** Called when user message is received */
   onUserMessage?: (args: ConversationUserMessage | undefined) => void;
 
-  //
-  onAction?: (
-    arg?:
-      | ConversationDirective.AsObject
-  ) => void;
+  /** Called when directive/action is received */
+  onDirective?: (arg?: ConversationDirective.AsObject) => void;
 
+  /** Called when connection state changes */
+  onConnectionStateChange?: (state: RTCPeerConnectionState) => void;
 
+  /** Called when fully connected */
+  onConnected?: () => void;
+
+  /** Called when disconnected */
+  onDisconnected?: () => void;
+
+  /** Called on error */
+  onError?: (error: Error) => void;
 
 }

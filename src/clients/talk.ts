@@ -37,12 +37,11 @@ import {
 } from "@/rapida/clients";
 import { BidirectionalStream, ServiceError } from "@/rapida/clients/types";
 import { Criteria, Paginate } from "@/rapida/clients/protos/common_pb";
-import { TalkServiceClient } from "@/rapida/clients/protos/talk-api_pb_service";
 import {
   CreateConversationMetricResponse,
   CreateConversationMetricRequest,
-  AssistantTalkInput,
-  AssistantTalkOutput,
+  AssistantTalkRequest,
+  AssistantTalkResponse,
 } from "./protos/talk-api_pb";
 import {
   CreateMessageMetricResponse,
@@ -59,7 +58,7 @@ import { ConnectionConfig } from "@/rapida/types/connection-config";
 export function AssistantTalk(
   connectionConfig: ConnectionConfig,
   authHeader?: UserAuthInfo | ClientAuthInfo
-): BidirectionalStream<AssistantTalkInput, AssistantTalkOutput> {
+): BidirectionalStream<AssistantTalkRequest, AssistantTalkResponse> {
   return connectionConfig.streamClient.assistantTalk(
     WithAuthContext(connectionConfig.auth || authHeader)
   );

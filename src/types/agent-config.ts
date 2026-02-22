@@ -22,148 +22,116 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-import { AssistantDefinition } from "@/rapida/clients/protos/common_pb";
-import { AudioConfig, StreamConfig } from "@/rapida/clients/protos/talk-api_pb";
+import { AssistantDefinition, User } from "@/rapida/clients/protos/common_pb";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
 import { Channel } from "@/rapida/types/channel";
+// For constructing default stream options
+import {
+  StreamConfig,
+  AudioConfig,
+  TextConfig,
+} from "@/rapida/clients/protos/talk-api_pb";
 
 /**
- *
- */
-export interface PlayerOptions {
-  format: "pcm" | "ulaw";
-  sampleRate: number;
-  device?: string;
-}
-
-/**
- *
- */
-export interface RecorderOptions {
-  format: "pcm" | "ulaw";
-  sampleRate: number;
-  device?: string;
-}
-
-/**
- *
+ * Input options for the agent (microphone/recording settings)
  */
 export class InputOptions {
-  /**
-   * enable channels
-   */
-
+  /** Enabled channels for input */
   channels: Channel[] = [Channel.Audio, Channel.Text];
 
-  /**
-   * sample rate for player
-   */
-  recorderOptions: RecorderOptions = {
-    format: "pcm",
-    sampleRate: 16000,
-  };
-  get recorderOption(): RecorderOptions {
-    return this.recorderOptions;
-  }
-
-  /**
-   * channel for providing output
-   */
+  /** Default input channel */
   channel: Channel = Channel.Audio;
-  get defaultChannel(): Channel {
-    return this.channel;
-  }
 
+  /** Input device ID (microphone) */
+  device?: string;
+
+  /** ICE servers for WebRTC (STUN/TURN) */
+  iceServers?: RTCIceServer[];
 
   /**
-   * stream config
-   * define audio codacs and sample rate. these will be directly translated to stt 
+   * Returns a default stream configuration based on the currently selected
+   * channel.  This mirrors the protobuf `StreamConfig` type used by the
+   * backend so consumers can easily build conversation initialization
+   * payloads.
    */
   get defaultInputStreamOption(): StreamConfig {
-    const inputStreamConfig = new StreamConfig()
-    if (this.channel == Channel.Audio) {
-      // only send when audio is enabled
-      const inputAudioConfig = new AudioConfig()
-      inputAudioConfig.setChannels(1)
-      inputAudioConfig.setAudioformat(AudioConfig.AudioFormat.LINEAR16)
-      inputAudioConfig.setSamplerate(this.recorderOptions.sampleRate)
-      inputStreamConfig.setAudio(inputAudioConfig)
+    const cfg = new StreamConfig();
+    if (this.channel === Channel.Audio) {
+      const audio = new AudioConfig();
+      // additional defaults (samplerate, audioformat, channels) may be set by
+      // caller after obtaining the config if desired.
+      cfg.setAudio(audio);
+    } else if (this.channel === Channel.Text) {
+      const text = new TextConfig();
+      cfg.setText(text);
     }
-    return inputStreamConfig
+    return cfg;
   }
 
-  /**
-   *
-   * @param channels
-   * @param channel
-   * @param deviceId
-   */
-  constructor(channels: Channel[], channel?: Channel, deviceId?: string) {
+  constructor(
+    channels: Channel[],
+    channel?: Channel,
+    deviceId?: string,
+    iceServers?: RTCIceServer[]
+  ) {
     this.channels = channels;
     if (channel) this.channel = channel;
-    if (deviceId) this.recorderOptions.device = deviceId;
+    if (deviceId) this.device = deviceId;
+    this.iceServers = iceServers;
   }
-
 
 }
 
 /**
- *
+ * Output options for the agent (speaker/playback settings)
  */
 export class OutputOptions {
-  /**
-   * enable channels
-   */
-
+  /** Enabled channels for output */
   channels: Channel[] = [Channel.Audio, Channel.Text];
 
-  /**
-   * sample rate for player
-   */
-  protected playerOptions: PlayerOptions = {
-    format: "pcm",
-    sampleRate: 16000,
-  };
-
-  get playerOption(): PlayerOptions {
-    return this.playerOptions;
-  }
-
-  /**
-   * channel for providing output
-   */
+  /** Default output channel */
   channel: Channel = Channel.Audio;
 
+  /** Output device ID (speaker) */
+  device?: string;
+
   /**
-   *
-   * @param channels
-   * @param channel
-   * @param deviceId
+   * Default stream configuration for output.  Returns a protobuf-style
+   * `StreamConfig` instance matching the current channel.
    */
+  get defaultOutputStreamOption(): StreamConfig {
+    const cfg = new StreamConfig();
+    if (this.channel === Channel.Audio) {
+      const audio = new AudioConfig();
+      cfg.setAudio(audio);
+    } else if (this.channel === Channel.Text) {
+      const text = new TextConfig();
+      cfg.setText(text);
+    }
+    return cfg;
+  }
+
   constructor(channels: Channel[], channel?: Channel, deviceId?: string) {
     this.channels = channels;
     if (channel) this.channel = channel;
-    if (deviceId) this.playerOption.device = deviceId;
+    if (deviceId) this.device = deviceId;
   }
+}
 
-  /**
-   * stream config
-   * define audio codacs and sample rate. these will be directly translated to tts 
-   */
-  get defaultOutputStreamOption(): StreamConfig {
-    const inputStreamConfig = new StreamConfig()
-    if (this.channel == Channel.Audio) {
-      const inputAudioConfig = new AudioConfig()
-      inputAudioConfig.setChannels(1)
-      inputAudioConfig.setAudioformat(AudioConfig.AudioFormat.LINEAR16)
-      inputAudioConfig.setSamplerate(this.playerOption.sampleRate)
-      inputStreamConfig.setAudio(inputAudioConfig)
-    }
-    return inputStreamConfig
+export class UserIdentifier {
+  /** User identifier type */
+  id: string;
+
+  // name of user identifier
+  name?: string;
+
+
+  constructor(id: string, name?: string) {
+    this.id = id;
+    this.name = name;
+
   }
-
-
 }
 /**
  * Represents the configuration settings for an agent.
@@ -205,6 +173,12 @@ export class AgentConfig {
    */
   outputOptions: OutputOptions;
 
+
+  /**
+   * user identifier for conversation
+   */
+  userIdentifier?: UserIdentifier;
+
   /**
    * Initializes a new instance of `AgentConfig`.
    *
@@ -222,7 +196,8 @@ export class AgentConfig {
     version?: string,
     argument?: Map<string, google_protobuf_any_pb.Any>,
     options?: Map<string, google_protobuf_any_pb.Any>,
-    metadata?: Map<string, google_protobuf_any_pb.Any>
+    metadata?: Map<string, google_protobuf_any_pb.Any>,
+    userIdentifier?: UserIdentifier,
   ) {
     this.id = id;
     this.version = version;
@@ -231,6 +206,7 @@ export class AgentConfig {
     this.metadata = metadata;
     this.inputOptions = inputOptions;
     this.outputOptions = outputOptions;
+    this.userIdentifier = userIdentifier;
   }
 
   /**
@@ -294,4 +270,16 @@ export class AgentConfig {
     this.arguments?.set(k, StringToAny(value));
     return this;
   }
+
+  /**
+   * Set the user identifier for the conversation.
+   * @param id - Unique user identifier
+   * @param name - Optional display name
+   * @returns this for chaining
+   */
+  setUserIdentifier(id: string, name?: string): this {
+    this.userIdentifier = new UserIdentifier(id, name);
+    return this;
+  }
+
 }

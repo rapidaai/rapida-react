@@ -26,6 +26,9 @@ export enum ConnectionState {
   // when connection is disconnect or at initial state
   Disconnected = "disconnected",
 
+  // connection is being established
+  Connecting = "connecting",
+
   // connected voice agent state
   Connected = "connected",
 }

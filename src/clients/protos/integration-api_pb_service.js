@@ -166,7 +166,7 @@ OpenAiService.Chat = {
 OpenAiService.StreamChat = {
   methodName: "StreamChat",
   service: OpenAiService,
-  requestStream: false,
+  requestStream: true,
   responseStream: true,
   requestType: integration_api_pb.ChatRequest,
   responseType: integration_api_pb.ChatResponse
@@ -259,37 +259,43 @@ OpenAiServiceClient.prototype.chat = function chat(requestMessage, metadata, cal
   };
 };
 
-OpenAiServiceClient.prototype.streamChat = function streamChat(requestMessage, metadata) {
+OpenAiServiceClient.prototype.streamChat = function streamChat(metadata) {
   var listeners = {
     data: [],
     end: [],
     status: []
   };
-  var client = grpc.invoke(OpenAiService.StreamChat, {
-    request: requestMessage,
+  var client = grpc.client(OpenAiService.StreamChat, {
     host: this.serviceHost,
     metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onMessage: function (responseMessage) {
-      listeners.data.forEach(function (handler) {
-        handler(responseMessage);
-      });
-    },
-    onEnd: function (status, statusMessage, trailers) {
-      listeners.status.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners.end.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners = null;
-    }
+    transport: this.options.transport
   });
+  client.onEnd(function (status, statusMessage, trailers) {
+    listeners.status.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners.end.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners = null;
+  });
+  client.onMessage(function (message) {
+    listeners.data.forEach(function (handler) {
+      handler(message);
+    })
+  });
+  client.start(metadata);
   return {
     on: function (type, handler) {
       listeners[type].push(handler);
       return this;
+    },
+    write: function (requestMessage) {
+      client.send(requestMessage);
+      return this;
+    },
+    end: function () {
+      client.finishSend();
     },
     cancel: function () {
       listeners = null;
@@ -389,7 +395,7 @@ AzureService.Chat = {
 AzureService.StreamChat = {
   methodName: "StreamChat",
   service: AzureService,
-  requestStream: false,
+  requestStream: true,
   responseStream: true,
   requestType: integration_api_pb.ChatRequest,
   responseType: integration_api_pb.ChatResponse
@@ -482,37 +488,43 @@ AzureServiceClient.prototype.chat = function chat(requestMessage, metadata, call
   };
 };
 
-AzureServiceClient.prototype.streamChat = function streamChat(requestMessage, metadata) {
+AzureServiceClient.prototype.streamChat = function streamChat(metadata) {
   var listeners = {
     data: [],
     end: [],
     status: []
   };
-  var client = grpc.invoke(AzureService.StreamChat, {
-    request: requestMessage,
+  var client = grpc.client(AzureService.StreamChat, {
     host: this.serviceHost,
     metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onMessage: function (responseMessage) {
-      listeners.data.forEach(function (handler) {
-        handler(responseMessage);
-      });
-    },
-    onEnd: function (status, statusMessage, trailers) {
-      listeners.status.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners.end.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners = null;
-    }
+    transport: this.options.transport
   });
+  client.onEnd(function (status, statusMessage, trailers) {
+    listeners.status.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners.end.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners = null;
+  });
+  client.onMessage(function (message) {
+    listeners.data.forEach(function (handler) {
+      handler(message);
+    })
+  });
+  client.start(metadata);
   return {
     on: function (type, handler) {
       listeners[type].push(handler);
       return this;
+    },
+    write: function (requestMessage) {
+      client.send(requestMessage);
+      return this;
+    },
+    end: function () {
+      client.finishSend();
     },
     cancel: function () {
       listeners = null;
@@ -612,7 +624,7 @@ GeminiService.Chat = {
 GeminiService.StreamChat = {
   methodName: "StreamChat",
   service: GeminiService,
-  requestStream: false,
+  requestStream: true,
   responseStream: true,
   requestType: integration_api_pb.ChatRequest,
   responseType: integration_api_pb.ChatResponse
@@ -696,37 +708,43 @@ GeminiServiceClient.prototype.chat = function chat(requestMessage, metadata, cal
   };
 };
 
-GeminiServiceClient.prototype.streamChat = function streamChat(requestMessage, metadata) {
+GeminiServiceClient.prototype.streamChat = function streamChat(metadata) {
   var listeners = {
     data: [],
     end: [],
     status: []
   };
-  var client = grpc.invoke(GeminiService.StreamChat, {
-    request: requestMessage,
+  var client = grpc.client(GeminiService.StreamChat, {
     host: this.serviceHost,
     metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onMessage: function (responseMessage) {
-      listeners.data.forEach(function (handler) {
-        handler(responseMessage);
-      });
-    },
-    onEnd: function (status, statusMessage, trailers) {
-      listeners.status.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners.end.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners = null;
-    }
+    transport: this.options.transport
   });
+  client.onEnd(function (status, statusMessage, trailers) {
+    listeners.status.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners.end.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners = null;
+  });
+  client.onMessage(function (message) {
+    listeners.data.forEach(function (handler) {
+      handler(message);
+    })
+  });
+  client.start(metadata);
   return {
     on: function (type, handler) {
       listeners[type].push(handler);
       return this;
+    },
+    write: function (requestMessage) {
+      client.send(requestMessage);
+      return this;
+    },
+    end: function () {
+      client.finishSend();
     },
     cancel: function () {
       listeners = null;
@@ -795,7 +813,7 @@ VertexAiService.Chat = {
 VertexAiService.StreamChat = {
   methodName: "StreamChat",
   service: VertexAiService,
-  requestStream: false,
+  requestStream: true,
   responseStream: true,
   requestType: integration_api_pb.ChatRequest,
   responseType: integration_api_pb.ChatResponse
@@ -879,37 +897,43 @@ VertexAiServiceClient.prototype.chat = function chat(requestMessage, metadata, c
   };
 };
 
-VertexAiServiceClient.prototype.streamChat = function streamChat(requestMessage, metadata) {
+VertexAiServiceClient.prototype.streamChat = function streamChat(metadata) {
   var listeners = {
     data: [],
     end: [],
     status: []
   };
-  var client = grpc.invoke(VertexAiService.StreamChat, {
-    request: requestMessage,
+  var client = grpc.client(VertexAiService.StreamChat, {
     host: this.serviceHost,
     metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onMessage: function (responseMessage) {
-      listeners.data.forEach(function (handler) {
-        handler(responseMessage);
-      });
-    },
-    onEnd: function (status, statusMessage, trailers) {
-      listeners.status.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners.end.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners = null;
-    }
+    transport: this.options.transport
   });
+  client.onEnd(function (status, statusMessage, trailers) {
+    listeners.status.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners.end.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners = null;
+  });
+  client.onMessage(function (message) {
+    listeners.data.forEach(function (handler) {
+      handler(message);
+    })
+  });
+  client.start(metadata);
   return {
     on: function (type, handler) {
       listeners[type].push(handler);
       return this;
+    },
+    write: function (requestMessage) {
+      client.send(requestMessage);
+      return this;
+    },
+    end: function () {
+      client.finishSend();
     },
     cancel: function () {
       listeners = null;
@@ -969,7 +993,7 @@ ReplicateService.Chat = {
 ReplicateService.StreamChat = {
   methodName: "StreamChat",
   service: ReplicateService,
-  requestStream: false,
+  requestStream: true,
   responseStream: true,
   requestType: integration_api_pb.ChatRequest,
   responseType: integration_api_pb.ChatResponse
@@ -1022,37 +1046,43 @@ ReplicateServiceClient.prototype.chat = function chat(requestMessage, metadata, 
   };
 };
 
-ReplicateServiceClient.prototype.streamChat = function streamChat(requestMessage, metadata) {
+ReplicateServiceClient.prototype.streamChat = function streamChat(metadata) {
   var listeners = {
     data: [],
     end: [],
     status: []
   };
-  var client = grpc.invoke(ReplicateService.StreamChat, {
-    request: requestMessage,
+  var client = grpc.client(ReplicateService.StreamChat, {
     host: this.serviceHost,
     metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onMessage: function (responseMessage) {
-      listeners.data.forEach(function (handler) {
-        handler(responseMessage);
-      });
-    },
-    onEnd: function (status, statusMessage, trailers) {
-      listeners.status.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners.end.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners = null;
-    }
+    transport: this.options.transport
   });
+  client.onEnd(function (status, statusMessage, trailers) {
+    listeners.status.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners.end.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners = null;
+  });
+  client.onMessage(function (message) {
+    listeners.data.forEach(function (handler) {
+      handler(message);
+    })
+  });
+  client.start(metadata);
   return {
     on: function (type, handler) {
       listeners[type].push(handler);
       return this;
+    },
+    write: function (requestMessage) {
+      client.send(requestMessage);
+      return this;
+    },
+    end: function () {
+      client.finishSend();
     },
     cancel: function () {
       listeners = null;
@@ -1112,7 +1142,7 @@ AnthropicService.Chat = {
 AnthropicService.StreamChat = {
   methodName: "StreamChat",
   service: AnthropicService,
-  requestStream: false,
+  requestStream: true,
   responseStream: true,
   requestType: integration_api_pb.ChatRequest,
   responseType: integration_api_pb.ChatResponse
@@ -1165,37 +1195,43 @@ AnthropicServiceClient.prototype.chat = function chat(requestMessage, metadata, 
   };
 };
 
-AnthropicServiceClient.prototype.streamChat = function streamChat(requestMessage, metadata) {
+AnthropicServiceClient.prototype.streamChat = function streamChat(metadata) {
   var listeners = {
     data: [],
     end: [],
     status: []
   };
-  var client = grpc.invoke(AnthropicService.StreamChat, {
-    request: requestMessage,
+  var client = grpc.client(AnthropicService.StreamChat, {
     host: this.serviceHost,
     metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onMessage: function (responseMessage) {
-      listeners.data.forEach(function (handler) {
-        handler(responseMessage);
-      });
-    },
-    onEnd: function (status, statusMessage, trailers) {
-      listeners.status.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners.end.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners = null;
-    }
+    transport: this.options.transport
   });
+  client.onEnd(function (status, statusMessage, trailers) {
+    listeners.status.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners.end.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners = null;
+  });
+  client.onMessage(function (message) {
+    listeners.data.forEach(function (handler) {
+      handler(message);
+    })
+  });
+  client.start(metadata);
   return {
     on: function (type, handler) {
       listeners[type].push(handler);
       return this;
+    },
+    write: function (requestMessage) {
+      client.send(requestMessage);
+      return this;
+    },
+    end: function () {
+      client.finishSend();
     },
     cancel: function () {
       listeners = null;
@@ -1273,7 +1309,7 @@ CohereService.Chat = {
 CohereService.StreamChat = {
   methodName: "StreamChat",
   service: CohereService,
-  requestStream: false,
+  requestStream: true,
   responseStream: true,
   requestType: integration_api_pb.ChatRequest,
   responseType: integration_api_pb.ChatResponse
@@ -1388,37 +1424,43 @@ CohereServiceClient.prototype.chat = function chat(requestMessage, metadata, cal
   };
 };
 
-CohereServiceClient.prototype.streamChat = function streamChat(requestMessage, metadata) {
+CohereServiceClient.prototype.streamChat = function streamChat(metadata) {
   var listeners = {
     data: [],
     end: [],
     status: []
   };
-  var client = grpc.invoke(CohereService.StreamChat, {
-    request: requestMessage,
+  var client = grpc.client(CohereService.StreamChat, {
     host: this.serviceHost,
     metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onMessage: function (responseMessage) {
-      listeners.data.forEach(function (handler) {
-        handler(responseMessage);
-      });
-    },
-    onEnd: function (status, statusMessage, trailers) {
-      listeners.status.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners.end.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners = null;
-    }
+    transport: this.options.transport
   });
+  client.onEnd(function (status, statusMessage, trailers) {
+    listeners.status.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners.end.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners = null;
+  });
+  client.onMessage(function (message) {
+    listeners.data.forEach(function (handler) {
+      handler(message);
+    })
+  });
+  client.start(metadata);
   return {
     on: function (type, handler) {
       listeners[type].push(handler);
       return this;
+    },
+    write: function (requestMessage) {
+      client.send(requestMessage);
+      return this;
+    },
+    end: function () {
+      client.finishSend();
     },
     cancel: function () {
       listeners = null;
@@ -1573,7 +1615,7 @@ MistralService.Chat = {
 MistralService.StreamChat = {
   methodName: "StreamChat",
   service: MistralService,
-  requestStream: false,
+  requestStream: true,
   responseStream: true,
   requestType: integration_api_pb.ChatRequest,
   responseType: integration_api_pb.ChatResponse
@@ -1626,37 +1668,43 @@ MistralServiceClient.prototype.chat = function chat(requestMessage, metadata, ca
   };
 };
 
-MistralServiceClient.prototype.streamChat = function streamChat(requestMessage, metadata) {
+MistralServiceClient.prototype.streamChat = function streamChat(metadata) {
   var listeners = {
     data: [],
     end: [],
     status: []
   };
-  var client = grpc.invoke(MistralService.StreamChat, {
-    request: requestMessage,
+  var client = grpc.client(MistralService.StreamChat, {
     host: this.serviceHost,
     metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onMessage: function (responseMessage) {
-      listeners.data.forEach(function (handler) {
-        handler(responseMessage);
-      });
-    },
-    onEnd: function (status, statusMessage, trailers) {
-      listeners.status.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners.end.forEach(function (handler) {
-        handler({ code: status, details: statusMessage, metadata: trailers });
-      });
-      listeners = null;
-    }
+    transport: this.options.transport
   });
+  client.onEnd(function (status, statusMessage, trailers) {
+    listeners.status.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners.end.forEach(function (handler) {
+      handler({ code: status, details: statusMessage, metadata: trailers });
+    });
+    listeners = null;
+  });
+  client.onMessage(function (message) {
+    listeners.data.forEach(function (handler) {
+      handler(message);
+    })
+  });
+  client.start(metadata);
   return {
     on: function (type, handler) {
       listeners[type].push(handler);
       return this;
+    },
+    write: function (requestMessage) {
+      client.send(requestMessage);
+      return this;
+    },
+    end: function () {
+      client.finishSend();
     },
     cancel: function () {
       listeners = null;

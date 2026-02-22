@@ -34,6 +34,9 @@ export enum AgentEvent {
   InputChannelChangeEvent = "onInputChannelChangeEvent",
   OutputChannelChangeEvent = "onOutputChannelChangeEvent",
 
+  // mute state event
+  MuteStateEvent = "onMuteStateEvent",
+
   // rapida assistant event triggered by rapida
   ConversationEvent = "onConversationEvent",
 

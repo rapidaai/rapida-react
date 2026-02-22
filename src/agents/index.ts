@@ -23,15 +23,14 @@
  *
  */
 
+import { WebTalkRequest, WebTalkResponse } from "@/rapida/clients/protos/webrtc_pb";
 import { AgentConfig } from "@/rapida/types/agent-config";
 import { AgentCallback } from "@/rapida/types/agent-callback";
 import {
-  AssistantTalkInput,
-  AssistantTalkOutput,
-  AudioConfig,
-  StreamConfig,
   CreateConversationMetricRequest,
   CreateMessageMetricRequest,
+  ConversationInitialization,
+  WebIdentity,
 } from "@/rapida/clients/protos/talk-api_pb";
 import { ConnectionConfig } from "@/rapida/types/connection-config";
 import { ConnectionState } from "@/rapida/types/connection-state";
@@ -44,7 +43,6 @@ import {
 import { Message as LocalMessage, MessageRole } from "@/rapida/types/message";
 import { AgentEvent } from "@/rapida/types/agent-event";
 import {
-  AssistantTalk,
   CreateConversationMetric,
   CreateMessageMetric,
 } from "@/rapida/clients/talk";
@@ -55,48 +53,93 @@ import {
 } from "@/rapida/clients/protos/assistant-api_pb";
 import { GetAssistant } from "@/rapida/clients/assistant";
 
-import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
+import { StreamMode, StreamModeMap } from '../clients/protos/talk-api_pb';
 import {
   ConversationConfiguration,
-  ConversationUserMessage,
 } from '../clients/protos/talk-api_pb';
+import { Channel } from "../types/channel";
+
+// ---------------------------------------------------------------------------
+// Logging helpers
+// ---------------------------------------------------------------------------
+
+/** Human-readable summary of a WebTalkRequest for logging */
+export function describeRequest(req: WebTalkRequest): string {
+  if (req.hasInitialization()) return "Initialization";
+  if (req.hasConfiguration()) return "Configuration";
+  if (req.hasMessage()) return `Text("${req.getMessage()?.getText()?.substring(0, 80) ?? ""}")`;
+  if (req.hasSignaling()) return "Signaling";
+  return "Unknown";
+}
+
+/** Human-readable summary of a WebTalkResponse for logging */
+export function describeResponse(res: WebTalkResponse): string {
+  const parts: string[] = [];
+  if (res.hasInitialization()) parts.push("Initialization");
+  if (res.hasConfiguration()) parts.push("Configuration");
+  if (res.hasAssistant()) parts.push(`Assistant("${res.getAssistant()?.getText()?.substring(0, 80) ?? ""}"`);
+  if (res.hasUser()) parts.push(`User("${res.getUser()?.getText()?.substring(0, 80) ?? ""}"`);
+  if (res.hasInterruption()) parts.push("Interruption");
+  if (res.hasDirective()) parts.push("Directive");
+  if (res.hasSignaling()) parts.push("Signaling");
+  return parts.length > 0 ? parts.join(" + ") : "Empty";
+}
+
+// ---------------------------------------------------------------------------
+// Shared message builders
+// ---------------------------------------------------------------------------
+
+/** Resolve Channel enum → StreamMode proto value */
+export function resolveStreamMode(channel: Channel): StreamModeMap[keyof StreamModeMap] {
+  return channel === Channel.Audio
+    ? StreamMode.STREAM_MODE_AUDIO
+    : channel === Channel.Text
+      ? StreamMode.STREAM_MODE_TEXT
+      : StreamMode.STREAM_MODE_BOTH;
+}
+
 /**
- * Rapida Agent SDK
- *
- * The Agent class provides a high-level interface for interacting with Rapida AI assistants.
- * It manages bidirectional communication, handles connection states, and provides utilities
- * for metrics, feedback, and dynamic agent switching.
- *
- * Key Features:
- * - Bidirectional streaming communication with assistants
- * - Real-time connection state management
- * - Message and conversation metrics
- * - Dynamic agent switching during conversations
- * - Event-driven architecture with typed events
- *
- * @example
- * ```typescript
- * const agent = new MyAgent(connectionConfig, agentConfig);
- *
- * // Listen for events
- * agent.on(AgentEvent.Initialized, (assistant) => {
- *   console.log('Agent initialized:', assistant.getName());
- * });
- *
- * agent.on(AgentEvent.ConnectionChanged, (state) => {
- *   console.log('Connection state:', state);
- * });
- *
- * // Connect and start conversation
- * await agent.connect();
- *
- * // Switch to a different agent during conversation
- * await agent.switchAgent({
- *   agentId: 'new-agent-id',
- *   version: 'v2.0',
- *   options: new Map([['temperature', createAnyValue('0.7')]])
- * });
- * ```
+ * Build the ConversationInitialization WebTalkRequest.
+ * This is the single source of truth for the initialization proto — used by
+ * GrpcSignalingManager for all connection modes (audio and text-only).
+ */
+export function buildInitializationRequest(agentConfig: AgentConfig, conversationId?: string): WebTalkRequest {
+  const request = new WebTalkRequest();
+  const init = new ConversationInitialization();
+
+  if (conversationId) {
+    init.setAssistantconversationid(conversationId);
+  }
+  init.setAssistant(agentConfig.definition);
+  agentConfig.options?.forEach((v, k) => init.getOptionsMap().set(k, v));
+  agentConfig.metadata?.forEach((v, k) => init.getMetadataMap().set(k, v));
+  agentConfig.arguments?.forEach((v, k) => init.getArgsMap().set(k, v));
+  init.setStreammode(resolveStreamMode(agentConfig.inputOptions.channel));
+
+  if (agentConfig.userIdentifier) {
+    // later we want to profile the user properly, but for now we just need a unique ID to correlate conversations
+    const identity = new WebIdentity();
+    identity.setUserid(agentConfig.userIdentifier.id);
+    init.setWeb(identity)
+  }
+  request.setInitialization(init);
+  return request;
+}
+
+/**
+ * Build a ConversationConfiguration WebTalkRequest for mode switching.
+ */
+export function buildConfigurationRequest(channel: Channel): WebTalkRequest {
+  const request = new WebTalkRequest();
+  const config = new ConversationConfiguration();
+  config.setStreammode(resolveStreamMode(channel));
+  request.setConfiguration(config);
+  return request;
+}
+
+/**
+ * Base Agent class for interacting with Rapida AI assistants.
+ * Manages bidirectional communication, connection states, metrics, and events.
  */
 export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCallback>) {
   // Connection and State Management
@@ -105,10 +148,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
   // conversation id
   private _conversationId?: string;
 
-  // connection
-  protected talkingConnection?: any;
-
-  // // Agent Configuration
+  // Agent Configuration
   protected agentConfig: AgentConfig;
 
   // callbacks can have multiple callback
@@ -122,24 +162,9 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
 
   /**
    * Creates a new Agent instance
-   *
-   * @param connection - Connection configuration for the assistant
-   * @param agentConfig - Initial agent configuration
-   *
-   * @example
-   * ```typescript
-   * const connectionConfig = new AssistantConnectionConfig({
-   *   endpoint: 'https://api.rapida.ai',
-   *   auth: { apiKey: 'your-api-key' }
-   * });
-   *
-   * const agentConfig = new AgentConfig({
-   *   id: 'assistant-id',
-   *   definition: assistantDefinition
-   * });
-   *
-   * const agent = new MyAgent(connectionConfig, agentConfig);
-   * ```
+   * @param connection - Connection configuration
+   * @param agentConfig - Agent configuration
+   * @param agentCallback - Optional callback handler
    */
   protected constructor(
     connection: ConnectionConfig,
@@ -190,83 +215,20 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
     return this.agentConfig;
   }
   /**
-   * Switches to a different agent during an active conversation
-   *
-   * This method allows dynamic agent switching without losing conversation context.
-   * The new agent will receive the conversation history and continue from where
-   * the previous agent left off.
+   * Switches to a different agent during an active conversation.
+   * Subclasses override this to send the configuration through their transport.
    *
    * @param config - Configuration for the new agent
-   * @throws {Error} If agent is not connected or switch fails
-   *
-   * @example
-   * ```typescript
-   * // Switch to a specialized agent for technical queries
-   * await agent.switchAgent({
-   *   agentId: 'technical-support-agent',
-   *   version: 'v1.2',
-   *   options: new Map([
-   *     ['specialization', createAnyValue('technical')],
-   *     ['expertise_level', createAnyValue('advanced')]
-   *   ])
-   * });
-   *
-   * // Switch to a different language agent
-   * await agent.switchAgent({
-   *   agentId: 'multilingual-agent',
-   *   metadata: new Map([
-   *     ['language', createAnyValue('spanish')],
-   *     ['region', createAnyValue('es-ES')]
-   *   ])
-   * });
-   * ```
+   * @throws {Error} If agent is not connected
    */
-  public async switchAgent(config: AgentConfig): Promise<void> {
-    if (!this.isConnected) {
-      throw new Error("Cannot switch agent: not connected");
-    }
-
-    if (!this.talkingConnection) {
-      throw new Error("No active connection available for agent switch");
-    }
-
-    // Update agent config
-    this.agentConfig = config;
-
-
-    const switchRequest = this._createAssistantConfigureRequest(
-      this.agentConfig.definition,
-      this.agentConfig.inputOptions.defaultInputStreamOption,
-      this.agentConfig.outputOptions.defaultOutputStreamOption,
-      this.agentConfig.arguments,
-      this.agentConfig.metadata,
-      this.agentConfig.options
-    );
-
-    await this.talkingConnection.write(switchRequest);
+  public async switchAgent(_config: AgentConfig): Promise<void> {
+    throw new Error("switchAgent must be implemented by subclass");
   }
 
   /**
    * Creates metrics for a specific message
-   *
-   * @param messageId - ID of the message to create metrics for
+   * @param messageId - ID of the message
    * @param metrics - Array of metric objects
-   *
-   * @example
-   * ```typescript
-   * agent.createMessageMetric('msg-123', [
-   *   {
-   *     name: 'user_satisfaction',
-   *     description: 'User satisfaction rating',
-   *     value: '4.5'
-   *   },
-   *   {
-   *     name: 'response_time',
-   *     description: 'Time taken to respond',
-   *     value: '1.2'
-   *   }
-   * ]);
-   * ```
    */
   public createMessageMetric(
     messageId: string,
@@ -301,31 +263,14 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
         this._updateMessageFeedback(messageId, feedback);
         this.emit(AgentEvent.FeedbackEvent, "message", feedback);
       })
-      .catch((error) => {
-        console.error("Failed to create message metric:", error);
+      .catch(() => {
+        // Metric creation failure is non-critical
       });
   }
 
   /**
    * Creates metrics for the entire conversation
-   *
    * @param metrics - Array of metric objects
-   *
-   * @example
-   * ```typescript
-   * agent.createConversationMetric([
-   *   {
-   *     name: 'conversation_length',
-   *     description: 'Total messages in conversation',
-   *     value: '15'
-   *   },
-   *   {
-   *     name: 'resolution_status',
-   *     description: 'Whether the issue was resolved',
-   *     value: 'resolved'
-   *   }
-   * ]);
-   * ```
    */
   public createConversationMetric(
     metrics: Array<{
@@ -352,8 +297,8 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
       req.addMetrics(_m);
     }
 
-    CreateConversationMetric(this._connectionConfig, req).catch((error) => {
-      console.error("Failed to create conversation metric:", error);
+    CreateConversationMetric(this._connectionConfig, req).catch(() => {
+      // Metric creation failure is non-critical
     });
   }
 
@@ -373,57 +318,7 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
 
   // Protected Methods
 
-  /**
-   * Creates an assistant messaging request with the given role and contents
-   *
-   * @param role - Message role (user, assistant, system)
-   * @param contents - Message contents
-   * @returns Configured messaging request
-   */
-  protected createAssistantTextMessage(
-    content: string
-  ): AssistantTalkInput {
-    const request = new AssistantTalkInput();
-    const userMessage = new ConversationUserMessage();
-    userMessage.setText(content);
-    request.setMessage(userMessage);
-    return request;
-  }
 
-  /**
-   *
-   * @param content
-   * @returns
-   */
-  protected createAssistantAudioMessage(
-    content: Uint8Array | string
-  ): AssistantTalkInput {
-    const request = new AssistantTalkInput();
-    const userMessage = new ConversationUserMessage();
-    userMessage.setAudio(content);
-    request.setMessage(userMessage);
-    return request;
-  }
-
-  /**
-   * Override this method to handle incoming messages from the assistant
-   *
-   * @param response - Response from the assistant
-   *
-   * @example
-   * ```typescript
-   * protected onReceive(response: AssistantMessagingResponse) {
-   *   if (response.hasMessage()) {
-   *     console.log('Received message:', response.getMessage()?.getContentsList());
-   *   }
-   * }
-   * ```
-   */
-  protected onRecieve = async (_: AssistantTalkOutput) => {
-    console.warn(
-      "No receive method implemented. Override onReceive() in your Agent subclass."
-    );
-  };
 
   // Private Methods
 
@@ -432,47 +327,6 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
    */
   public async getAssistant(): Promise<GetAssistantResponse> {
     return this._fetchAssistant(this.agentConfig.id, this.agentConfig.version);
-  }
-
-  /**
-   * Creates an assistant configuration request
-   */
-  private _createAssistantConfigureRequest(
-    definition: AssistantDefinition,
-    inputStreamConfig: StreamConfig,
-    outputStreamConfig: StreamConfig,
-    args?: Map<string, google_protobuf_any_pb.Any>,
-    metadatas?: Map<string, google_protobuf_any_pb.Any>,
-    options?: Map<string, google_protobuf_any_pb.Any>,
-  ): AssistantTalkInput {
-    const request = new AssistantTalkInput();
-    const assistantConfiguration = new ConversationConfiguration();
-
-    if (this._conversationId) {
-      assistantConfiguration.setAssistantconversationid(this._conversationId);
-    }
-
-    assistantConfiguration.setAssistant(definition);
-
-    // Set options
-    options?.forEach((v, k) => {
-      assistantConfiguration.getOptionsMap().set(k, v);
-    });
-
-    // Set metadata
-    metadatas?.forEach((v, k) => {
-      assistantConfiguration.getMetadataMap().set(k, v);
-    });
-
-    // Set arguments
-    args?.forEach((v, k) => {
-      assistantConfiguration.getArgsMap().set(k, v);
-    });
-
-    assistantConfiguration.setOutputconfig(outputStreamConfig)
-    assistantConfiguration.setInputconfig(inputStreamConfig)
-    request.setConfiguration(assistantConfiguration);
-    return request;
   }
 
   /**
@@ -498,72 +352,16 @@ export class Agent extends (EventEmitter as new () => TypedEmitter<AgentEventCal
   };
 
   /**
-   * Establishes connection to the assistant
-   */
-  protected async connectAgent(): Promise<void> {
-    if (this.connectionState === ConnectionState.Connected) {
-      return;
-    }
-    try {
-      this.talkingConnection = AssistantTalk(this._connectionConfig);
-      this.talkingConnection.on("data", this.onRecieve);
-      this.talkingConnection.on("end", this._onEnd);
-      this.talkingConnection.on("status", this._onStatusChange);
-
-      // Send initial configuration
-      await this.talkingConnection.write(
-        this._createAssistantConfigureRequest(
-          this.agentConfig.definition,
-          this.agentConfig.inputOptions.defaultInputStreamOption,
-          this.agentConfig.outputOptions.defaultOutputStreamOption,
-          this.agentConfig.arguments,
-          this.agentConfig.metadata,
-          this.agentConfig.options
-        )
-      );
-
-      this._setAndEmitConnectionState(ConnectionState.Connected);
-    } catch (err) {
-      const error = new Error(
-        `Failed to connect to talking server: ${err instanceof Error ? err.message : String(err)
-        }`
-      );
-      console.error(error.message);
-      this.emit(AgentEvent.ErrorEvent, "server", error.message);
-
-      // Return the error for calling code to catch
-      return Promise.reject(error);
-    }
-  }
-
-  /**
-   * Disconnects from the assistant
+   * Disconnects from the assistant.
+   * Subclasses should override `disconnect()` to tear down their transport
+   * and then call this to update state.
    */
   protected async disconnectAgent(): Promise<void> {
-    if (this.connectionState !== ConnectionState.Connected) {
+    if (this.connectionState === ConnectionState.Disconnected) {
       return;
     }
-
-    try {
-      await this.talkingConnection?.end();
-    } catch (error) {
-      console.error("Error ending talking connection:", error);
-    }
-  }
-
-  /**
-   * Handles connection end events
-   */
-  private _onEnd = (): void => {
     this._setAndEmitConnectionState(ConnectionState.Disconnected);
-  };
-
-  /**
-   * Handles connection status changes
-   */
-  private _onStatusChange = (status: any): void => {
-    console.log("Connection status changed:", status);
-  };
+  }
 
   /**
    * Fetches assistant data for a specific agent ID and version
