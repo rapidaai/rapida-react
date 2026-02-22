@@ -5,6 +5,15 @@
  * that are not available in the Node.js/jsdom environment.
  */
 
+// Ensure protobuf-generated code has a `proto` root object
+// which the Google JS protoc output expects when running in Node.
+// Without this, importing any _pb.js file throws ReferenceError: proto is not defined.
+// We define it globally before anything else is loaded.
+if (typeof global.proto === 'undefined') {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  (global as any).proto = {};
+}
+
 // Mock AudioContext
 class MockAudioContext {
   sampleRate = 48000;

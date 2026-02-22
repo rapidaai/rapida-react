@@ -26,6 +26,12 @@ import { AssistantDefinition, User } from "@/rapida/clients/protos/common_pb";
 import * as google_protobuf_any_pb from "google-protobuf/google/protobuf/any_pb";
 import { StringArrayToAny, StringToAny } from "@/rapida/utils/rapida_value";
 import { Channel } from "@/rapida/types/channel";
+// For constructing default stream options
+import {
+  StreamConfig,
+  AudioConfig,
+  TextConfig,
+} from "@/rapida/clients/protos/talk-api_pb";
 
 /**
  * Input options for the agent (microphone/recording settings)
@@ -42,6 +48,26 @@ export class InputOptions {
 
   /** ICE servers for WebRTC (STUN/TURN) */
   iceServers?: RTCIceServer[];
+
+  /**
+   * Returns a default stream configuration based on the currently selected
+   * channel.  This mirrors the protobuf `StreamConfig` type used by the
+   * backend so consumers can easily build conversation initialization
+   * payloads.
+   */
+  get defaultInputStreamOption(): StreamConfig {
+    const cfg = new StreamConfig();
+    if (this.channel === Channel.Audio) {
+      const audio = new AudioConfig();
+      // additional defaults (samplerate, audioformat, channels) may be set by
+      // caller after obtaining the config if desired.
+      cfg.setAudio(audio);
+    } else if (this.channel === Channel.Text) {
+      const text = new TextConfig();
+      cfg.setText(text);
+    }
+    return cfg;
+  }
 
   constructor(
     channels: Channel[],
@@ -69,6 +95,22 @@ export class OutputOptions {
 
   /** Output device ID (speaker) */
   device?: string;
+
+  /**
+   * Default stream configuration for output.  Returns a protobuf-style
+   * `StreamConfig` instance matching the current channel.
+   */
+  get defaultOutputStreamOption(): StreamConfig {
+    const cfg = new StreamConfig();
+    if (this.channel === Channel.Audio) {
+      const audio = new AudioConfig();
+      cfg.setAudio(audio);
+    } else if (this.channel === Channel.Text) {
+      const text = new TextConfig();
+      cfg.setText(text);
+    }
+    return cfg;
+  }
 
   constructor(channels: Channel[], channel?: Channel, deviceId?: string) {
     this.channels = channels;

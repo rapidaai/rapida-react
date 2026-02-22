@@ -29,6 +29,10 @@ describe('InputOptions', () => {
   it('should return stream config for audio channel', () => {
     inputOptions.channel = Channel.Audio;
 
+    const streamConfig = inputOptions.defaultInputStreamOption;
+    expect(streamConfig).toBeDefined();
+    // audio channel should provide an AudioConfig
+    expect(streamConfig.getAudio()).toBeDefined();
   });
 
   it('should handle text channel stream config', () => {
@@ -38,6 +42,8 @@ describe('InputOptions', () => {
 
     expect(streamConfig).toBeDefined();
     // For text channel, audio config should not be set
+    expect(streamConfig.getAudio()).toBeUndefined();
+    expect(streamConfig.getText()).toBeDefined();
   });
 });
 

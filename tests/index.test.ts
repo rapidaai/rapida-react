@@ -16,14 +16,18 @@ describe('SDK Exports', () => {
     expect(module.Agent).toBeDefined();
   });
 
-  it('should export Input class', async () => {
-    const module = await import('@/rapida/audio/input');
-    expect(module.Input).toBeDefined();
+  // The SDK no longer exposes standalone Input/Output modules under
+  // `@/rapida/audio`.  Input and output behaviour is represented by the
+  // `InputOptions`/`OutputOptions` classes exported from the agent-config
+  // package; the following tests assert their presence indirectly.
+  it('should export InputOptions via agent-config', async () => {
+    const module = await import('@/rapida/types/agent-config');
+    expect(module.InputOptions).toBeDefined();
   });
 
-  it('should export Output class', async () => {
-    const module = await import('@/rapida/audio/output');
-    expect(module.Output).toBeDefined();
+  it('should export OutputOptions via agent-config', async () => {
+    const module = await import('@/rapida/types/agent-config');
+    expect(module.OutputOptions).toBeDefined();
   });
 
   it('should export DeviceManager', async () => {
