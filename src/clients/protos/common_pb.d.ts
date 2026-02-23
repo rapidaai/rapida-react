@@ -1004,8 +1004,11 @@ export class AssistantConversationRecording extends jspb.Message {
   getId(): string;
   setId(value: string): void;
 
-  getRecordingurl(): string;
-  setRecordingurl(value: string): void;
+  getAssistantrecordingurl(): string;
+  setAssistantrecordingurl(value: string): void;
+
+  getUserrecordingurl(): string;
+  setUserrecordingurl(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantConversationRecording.AsObject;
@@ -1020,7 +1023,8 @@ export class AssistantConversationRecording extends jspb.Message {
 export namespace AssistantConversationRecording {
   export type AsObject = {
     id: string,
-    recordingurl: string,
+    assistantrecordingurl: string,
+    userrecordingurl: string,
   }
 }
 
