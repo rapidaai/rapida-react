@@ -23,10 +23,19 @@
  */
 
 import { AgentConfig } from "@/rapida/types/agent-config";
-import { isChrome } from "@/rapida/utils";
+import { isChrome, isEdge, isWindows, isFirefox, isSinkIdSupported } from "@/rapida/utils";
 
 /** Sample rate for Opus */
 const OPUS_SAMPLE_RATE = 48000;
+
+/**
+ * Get the appropriate AudioContext class for the current browser.
+ * Handles vendor-prefixed versions for older browsers.
+ */
+function getAudioContextClass(): typeof AudioContext | null {
+  if (typeof window === "undefined") return null;
+  return (window as any).AudioContext || (window as any).webkitAudioContext || null;
+}
 
 /**
  * AudioMediaManager — Owns local/remote media and playback
@@ -59,7 +68,22 @@ export class AudioMediaManager {
   /** Capture the local microphone stream */
   async setupLocalMedia(): Promise<void> {
     const constraints = this.getAudioConstraints();
-    this.localStream = await navigator.mediaDevices.getUserMedia({ audio: constraints, video: false });
+
+    try {
+      this.localStream = await navigator.mediaDevices.getUserMedia({ audio: constraints, video: false });
+    } catch (error: any) {
+      // On Windows, some browsers may fail with specific constraints
+      // Try with simplified constraints as fallback
+      if (isWindows() && error?.name === "OverconstrainedError") {
+        console.warn("[AudioMediaManager] Retrying with simplified audio constraints for Windows");
+        this.localStream = await navigator.mediaDevices.getUserMedia({
+          audio: this.getSimplifiedAudioConstraints(),
+          video: false,
+        });
+      } else {
+        throw error;
+      }
+    }
 
     const track = this.localStream.getAudioTracks()[0];
     if (track) {
@@ -72,17 +96,69 @@ export class AudioMediaManager {
       }
     }
 
-    // Audio context for visualization
-    this.audioContext = new AudioContext();
-    if (this.audioContext.state === "suspended") {
-      await this.audioContext.resume();
+    // Audio context for visualization - use vendor-prefixed version if needed
+    await this.setupAudioContext();
+
+    if (this.audioContext && this.localStream) {
+      const source = this.audioContext.createMediaStreamSource(this.localStream);
+      this._inputAnalyser = this.audioContext.createAnalyser();
+      this._inputAnalyser.fftSize = 1024;
+      this._inputAnalyser.smoothingTimeConstant = 0.4;
+      source.connect(this._inputAnalyser);
+    }
+  }
+
+  /**
+   * Setup AudioContext with proper handling for different browsers.
+   * Windows browsers (especially Edge) may need special handling.
+   */
+  private async setupAudioContext(): Promise<void> {
+    const AudioContextClass = getAudioContextClass();
+    if (!AudioContextClass) {
+      console.warn("[AudioMediaManager] AudioContext not available in this browser");
+      return;
     }
 
-    const source = this.audioContext.createMediaStreamSource(this.localStream);
-    this._inputAnalyser = this.audioContext.createAnalyser();
-    this._inputAnalyser.fftSize = 1024;
-    this._inputAnalyser.smoothingTimeConstant = 0.4;
-    source.connect(this._inputAnalyser);
+    try {
+      // Create AudioContext with explicit sample rate for Windows compatibility
+      const options: AudioContextOptions = {};
+
+      // On Windows, specify sample rate explicitly to avoid potential issues
+      if (isWindows()) {
+        options.sampleRate = OPUS_SAMPLE_RATE;
+      }
+
+      this.audioContext = new AudioContextClass(options);
+
+      // Handle suspended state (common due to autoplay policies)
+      if (this.audioContext.state === "suspended") {
+        try {
+          await this.audioContext.resume();
+        } catch (resumeError) {
+          console.debug("[AudioMediaManager] Initial AudioContext resume failed, will retry on user interaction", resumeError);
+        }
+      }
+    } catch (error) {
+      console.error("[AudioMediaManager] Failed to create AudioContext:", error);
+      // Don't throw - audio context is optional (for visualization)
+      this.audioContext = null;
+    }
+  }
+
+  /** Simplified audio constraints for Windows fallback */
+  private getSimplifiedAudioConstraints(): MediaTrackConstraints {
+    const base: MediaTrackConstraints = {
+      echoCancellation: true,
+      noiseSuppression: true,
+      autoGainControl: true,
+    };
+
+    if (this.agentConfig.inputOptions.device) {
+      // Use 'ideal' instead of 'exact' for better Windows compatibility
+      base.deviceId = { ideal: this.agentConfig.inputOptions.device };
+    }
+
+    return base;
   }
 
   /** Build MediaTrackConstraints for getUserMedia */
@@ -96,13 +172,20 @@ export class AudioMediaManager {
     };
 
     if (this.agentConfig.inputOptions.device) {
-      base.deviceId = { exact: this.agentConfig.inputOptions.device };
+      // On Windows, use 'ideal' instead of 'exact' for better compatibility
+      // as some drivers may not support exact device selection
+      if (isWindows()) {
+        base.deviceId = { ideal: this.agentConfig.inputOptions.device };
+      } else {
+        base.deviceId = { exact: this.agentConfig.inputOptions.device };
+      }
     }
 
-    if (isChrome()) {
+    // Chrome and Edge (Chromium-based) support additional constraints
+    if (isChrome() || isEdge()) {
       return {
         ...base,
-        // @ts-ignore Chrome-specific
+        // @ts-ignore Chrome/Edge-specific
         googEchoCancellation: true,
         // @ts-ignore
         googAutoGainControl: true,
@@ -112,6 +195,13 @@ export class AudioMediaManager {
         googHighpassFilter: true,
       };
     }
+
+    // Firefox on Windows may need different handling
+    if (isFirefox() && isWindows()) {
+      // Firefox doesn't support sampleRate constraint well on Windows
+      delete base.sampleRate;
+    }
+
     return base;
   }
 
@@ -125,21 +215,83 @@ export class AudioMediaManager {
     if (this.audioElement?.srcObject === stream) return;
 
     if (!this.audioElement) {
-      this.audioElement = new Audio();
-      this.audioElement.autoplay = true;
-
-      if (this.agentConfig.outputOptions.device && "setSinkId" in this.audioElement) {
-        try {
-          await (this.audioElement as any).setSinkId(this.agentConfig.outputOptions.device);
-        } catch { }
-      }
+      this.audioElement = this.createAudioElement();
+      await this.setOutputDeviceOnElement(this.audioElement, this.agentConfig.outputOptions.device);
     }
 
     this.audioElement.srcObject = stream;
     this.audioElement.volume = this._volume;
 
     // Setup output analyser for remote audio visualization
+    await this.setupOutputAnalyser(stream);
+
+    // Start playback
+    await this.startPlayback();
+  }
+
+  /**
+   * Create and configure the audio element for playback.
+   * Handles Windows-specific settings.
+   */
+  private createAudioElement(): HTMLAudioElement {
+    const audio = new Audio();
+    audio.autoplay = true;
+
+    // On Windows, ensure proper audio handling
+    if (isWindows()) {
+      // Prevent potential audio glitches on Windows
+      audio.preservesPitch = false;
+
+      // Add event listeners for Windows-specific audio issues
+      audio.addEventListener("stalled", () => {
+        console.debug("[AudioMediaManager] Audio stalled, attempting recovery");
+        this.recoverAudioPlayback();
+      });
+
+      audio.addEventListener("waiting", () => {
+        console.debug("[AudioMediaManager] Audio waiting for data");
+      });
+    }
+
+    return audio;
+  }
+
+  /**
+   * Set the output device on an audio element.
+   * Handles browsers that don't support setSinkId.
+   */
+  private async setOutputDeviceOnElement(element: HTMLAudioElement, deviceId?: string): Promise<void> {
+    if (!deviceId) return;
+
+    if (!isSinkIdSupported()) {
+      console.warn("[AudioMediaManager] setSinkId not supported in this browser - using default output device");
+      return;
+    }
+
     try {
+      await (element as any).setSinkId(deviceId);
+    } catch (error: any) {
+      if (error?.name === "NotFoundError") {
+        console.warn(`[AudioMediaManager] Output device ${deviceId} not found, using default`);
+      } else if (error?.name === "NotAllowedError") {
+        console.warn("[AudioMediaManager] Permission denied for output device selection");
+      } else {
+        console.warn("[AudioMediaManager] Failed to set output device:", error);
+      }
+      // Don't throw - fallback to default device
+    }
+  }
+
+  /**
+   * Setup output analyser for remote audio visualization.
+   */
+  private async setupOutputAnalyser(stream: MediaStream): Promise<void> {
+    try {
+      // Ensure AudioContext exists for visualization
+      if (!this.audioContext) {
+        await this.setupAudioContext();
+      }
+
       if (this.audioContext && !this._outputAnalyser) {
         const remoteSource = this.audioContext.createMediaStreamSource(stream);
         this._outputAnalyser = this.audioContext.createAnalyser();
@@ -148,13 +300,44 @@ export class AudioMediaManager {
         remoteSource.connect(this._outputAnalyser);
       }
     } catch (error) {
-      console.debug("Failed to setup output analyser", error);
+      console.debug("[AudioMediaManager] Failed to setup output analyser", error);
+      // Non-critical - visualization won't work but audio will still play
     }
+  }
+
+  /**
+   * Start audio playback with proper error handling.
+   */
+  private async startPlayback(): Promise<void> {
+    if (!this.audioElement) return;
 
     try {
       await this.audioElement.play();
-    } catch {
-      this.setupUserInteractionHandler();
+    } catch (error: any) {
+      if (error?.name === "NotAllowedError") {
+        // Autoplay blocked - setup user interaction handler
+        console.debug("[AudioMediaManager] Autoplay blocked, waiting for user interaction");
+        this.setupUserInteractionHandler();
+      } else {
+        console.error("[AudioMediaManager] Failed to start playback:", error);
+        this.setupUserInteractionHandler();
+      }
+    }
+  }
+
+  /**
+   * Attempt to recover audio playback after a stall (common on Windows).
+   */
+  private async recoverAudioPlayback(): Promise<void> {
+    if (!this.audioElement || !this.remoteStream) return;
+
+    try {
+      // Reconnect the stream
+      this.audioElement.srcObject = null;
+      this.audioElement.srcObject = this.remoteStream;
+      await this.audioElement.play();
+    } catch (error) {
+      console.debug("[AudioMediaManager] Audio recovery failed:", error);
     }
   }
 
@@ -170,6 +353,37 @@ export class AudioMediaManager {
     } catch (error) {
       console.error("Failed to resume audio", error);
       throw error;
+    }
+  }
+
+  /**
+   * Interrupt audio output — immediately silence stale assistant audio.
+   *
+   * The server clears its output buffer and stops sending new frames,
+   * but frames already in the WebRTC jitter buffer / audio pipeline will
+   * keep playing for a noticeable moment.  By briefly pausing the
+   * HTMLAudioElement we flush the browser's internal audio buffer so the
+   * user hears silence right away instead of trailing assistant speech.
+   */
+  async interruptPlayback(): Promise<void> {
+    if (!this.audioElement) return;
+
+    try {
+      // Pause playback to flush the browser's internal audio buffer.
+      this.audioElement.pause();
+
+      // Detach and re-attach the stream to discard any buffered frames.
+      const stream = this.audioElement.srcObject;
+      this.audioElement.srcObject = null;
+      this.audioElement.srcObject = stream;
+
+      // Resume immediately — new frames from the server (post-interruption)
+      // will play as soon as they arrive.
+      await this.audioElement.play();
+    } catch (error) {
+      // play() may throw NotAllowedError if autoplay policy blocks it;
+      // non-fatal since the next server audio will trigger playback anyway.
+      console.debug("[AudioMediaManager] interruptPlayback recovery play failed", error);
     }
   }
 
@@ -215,10 +429,23 @@ export class AudioMediaManager {
     this.agentConfig.inputOptions.device = deviceId;
     this.localStream?.getTracks().forEach(t => t.stop());
 
-    this.localStream = await navigator.mediaDevices.getUserMedia({
-      audio: this.getAudioConstraints(),
-      video: false,
-    });
+    try {
+      this.localStream = await navigator.mediaDevices.getUserMedia({
+        audio: this.getAudioConstraints(),
+        video: false,
+      });
+    } catch (error: any) {
+      // On Windows, retry with simplified constraints if device selection fails
+      if (isWindows() && (error?.name === "OverconstrainedError" || error?.name === "NotFoundError")) {
+        console.warn("[AudioMediaManager] Device selection failed, retrying with simplified constraints");
+        this.localStream = await navigator.mediaDevices.getUserMedia({
+          audio: this.getSimplifiedAudioConstraints(),
+          video: false,
+        });
+      } else {
+        throw error;
+      }
+    }
 
     // Reconnect analyser (disconnect old source first to avoid leaking audio nodes)
     if (this.audioContext && this._inputAnalyser) {
@@ -234,9 +461,10 @@ export class AudioMediaManager {
   /** Switch the output (speaker) device */
   async setOutputDevice(deviceId: string): Promise<void> {
     this.agentConfig.outputOptions.device = deviceId;
-    if (this.audioElement && "setSinkId" in this.audioElement) {
-      await (this.audioElement as any).setSinkId(deviceId);
-    }
+
+    if (!this.audioElement) return;
+
+    await this.setOutputDeviceOnElement(this.audioElement, deviceId);
   }
 
   // ---------------------------------------------------------------------------

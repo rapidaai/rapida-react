@@ -14,6 +14,9 @@ import { mockMediaDevices, MockMediaStream } from '../setup';
 jest.mock('@/rapida/utils', () => ({
   isSafari: jest.fn().mockReturnValue(false),
   isMobile: jest.fn().mockReturnValue(false),
+  isWindows: jest.fn().mockReturnValue(false),
+  isFirefox: jest.fn().mockReturnValue(false),
+  isSinkIdSupported: jest.fn().mockReturnValue(true),
 }));
 
 jest.mock('@/rapida/constants', () => ({

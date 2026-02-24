@@ -135,7 +135,7 @@ export class MessageProtocolHandler {
           const sdp = sdpMsg.getSdp();
 
           if (sdpType === WebRTCSDP.SDPType.OFFER) {
-            console.log("[Protocol] Handling SDP OFFER");
+            // console.log("[Protocol] Handling SDP OFFER");
             await this.peer.handleOffer(sdp, this.audio.mediaStream);
             const answerSdp = this.peer.getLocalSDP();
             if (answerSdp) {
@@ -144,7 +144,7 @@ export class MessageProtocolHandler {
               console.error("No local SDP after creating answer");
             }
           } else if (sdpType === WebRTCSDP.SDPType.ANSWER) {
-            console.log("[Protocol] Handling SDP ANSWER");
+            // console.log("[Protocol] Handling SDP ANSWER");
             await this.peer.handleAnswer(sdp);
           }
         } catch (error) {

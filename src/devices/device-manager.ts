@@ -23,7 +23,7 @@
  *
  */
 import { DEFAULT_DEVICE_ID } from "@/rapida/constants";
-import { isSafari, isMobile } from "@/rapida/utils";
+import { isSafari, isMobile, isWindows, isFirefox, isSinkIdSupported } from "@/rapida/utils";
 
 export class DeviceManager {
   private static instance?: DeviceManager;
@@ -46,6 +46,15 @@ export class DeviceManager {
     if (!navigator.mediaDevices) {
       console.warn("MediaDevices API not available in this browser or context");
       return [];
+    }
+
+    // Special handling for audiooutput on Windows with Firefox (not supported)
+    if (kind === "audiooutput" && isWindows() && isFirefox()) {
+      console.warn("[DeviceManager] audiooutput enumeration not fully supported in Firefox on Windows");
+      // Firefox on Windows doesn't support setSinkId, so output device selection is limited
+      if (!isSinkIdSupported()) {
+        return [];
+      }
     }
 
     // Wait for any pending media permission requests
@@ -72,6 +81,11 @@ export class DeviceManager {
     } catch (error) {
       console.error("Failed to enumerate devices:", error);
       return [];
+    }
+
+    // Windows-specific: Filter out phantom/virtual devices that may cause issues
+    if (isWindows()) {
+      devices = this.filterWindowsDevices(devices);
     }
 
     // Determine if we need to request permissions
@@ -313,5 +327,36 @@ export class DeviceManager {
     return kind
       ? DeviceManager.userMediaPromiseMap.has(kind)
       : DeviceManager.userMediaPromiseMap.size > 0;
+  }
+
+  /**
+   * Filter out problematic devices on Windows.
+   * Windows can sometimes report virtual/phantom devices that don't work properly.
+   */
+  private filterWindowsDevices(devices: MediaDeviceInfo[]): MediaDeviceInfo[] {
+    // Known problematic device patterns on Windows
+    const problematicPatterns = [
+      /^communications$/i,  // Windows "Communications" virtual device
+      /stereo mix/i,        // Stereo Mix (loopback) often causes issues
+      /what u hear/i,       // Similar loopback device
+    ];
+
+    return devices.filter((device) => {
+      // Keep devices without labels (permissions not granted yet)
+      if (!device.label) return true;
+      
+      // Filter out known problematic devices
+      return !problematicPatterns.some((pattern) =>
+        pattern.test(device.label)
+      );
+    });
+  }
+
+  /**
+   * Check if output device selection is supported in the current browser.
+   * This is useful for UI to conditionally show output device selector.
+   */
+  static isOutputDeviceSelectionSupported(): boolean {
+    return isSinkIdSupported();
   }
 }

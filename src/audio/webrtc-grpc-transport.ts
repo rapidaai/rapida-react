@@ -133,7 +133,7 @@ export class WebRTCGrpcTransport {
       }
       await this.signaling.connect();
       this.signaling.sendConversationInitialization();
-      console.log(`[WebRTCTransport] connected (${textOnly ? "text-only" : "audio"} mode)`);
+      // console.log(`[WebRTCTransport] connected (${textOnly ? "text-only" : "audio"} mode)`);
 
       // In text-only mode there is no WebRTC peer whose
       // `onconnectionstatechange` would fire "connected".
@@ -214,7 +214,7 @@ export class WebRTCGrpcTransport {
   // Audio controls (delegated to audio & peer managers)
   // ---------------------------------------------------------------------------
 
-  interruptAudio(): void { /* No-op: server-side handles interruption */ }
+  interruptAudio(): void { this.audio.interruptPlayback(); }
   resumeAudio(): Promise<void> { return this.audio.resumeAudio(); }
 
   setMuted(muted: boolean): void {

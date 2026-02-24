@@ -28,6 +28,19 @@ export {
   supportsWebRTCGrpcTransport,
   type WebRTCGrpcTransportConfig,
 } from "@/rapida/audio/webrtc-grpc-transport";
+export {
+  isIosDevice,
+  isAndroidDevice,
+  isWindowsDevice,
+  hasKnownAudioIssues,
+  getRecommendedAudioSettings,
+} from "@/rapida/audio/compatibility";
+export {
+  isWindows,
+  isLinux,
+  isSinkIdSupported,
+  hasFullWebRTCAudioSupport,
+} from "@/rapida/utils";
 export { useMessageFeedback } from "@/rapida/hooks/use-message-feedback";
 export { useConversationFeedback } from "@/rapida/hooks/use-conversation-feedback";
 export { useConnectAgent } from "@/rapida/hooks/use-connect-agent";
@@ -545,6 +558,7 @@ export {
   GetAllKnowledgeDocumentResponse,
   CreateKnowledgeDocumentRequest,
   CreateKnowledgeDocumentResponse,
+  DocumentContent,
   KnowledgeDocumentSegment,
   GetAllKnowledgeDocumentSegmentRequest,
   GetAllKnowledgeDocumentSegmentResponse,

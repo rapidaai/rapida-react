@@ -40,3 +40,63 @@ export function isIosDevice() {
 export function isAndroidDevice() {
   return /android/i.test(navigator.userAgent);
 }
+
+export function isWindowsDevice() {
+  if (typeof navigator === "undefined") return false;
+  return /win(dows|32|64|nt)/i.test(navigator.userAgent) ||
+    navigator.platform?.toLowerCase().includes("win");
+}
+
+/**
+ * Check if the current browser/OS combination has known audio issues.
+ * This can be used to provide appropriate warnings or fallbacks.
+ */
+export function hasKnownAudioIssues(): { hasIssues: boolean; issues: string[] } {
+  const issues: string[] = [];
+
+  if (isWindowsDevice()) {
+    // Check for Firefox on Windows (limited setSinkId support)
+    if (/firefox/i.test(navigator.userAgent)) {
+      issues.push("Firefox on Windows has limited audio output device selection support");
+    }
+
+    // Check for older Edge (EdgeHTML, not Chromium)
+    if (/edge\//i.test(navigator.userAgent) && !/edg\//i.test(navigator.userAgent)) {
+      issues.push("Legacy Edge has limited WebRTC audio support");
+    }
+  }
+
+  return {
+    hasIssues: issues.length > 0,
+    issues,
+  };
+}
+
+/**
+ * Get recommended audio settings for the current platform.
+ */
+export function getRecommendedAudioSettings(): {
+  sampleRate: number;
+  channelCount: number;
+  echoCancellation: boolean;
+  noiseSuppression: boolean;
+  autoGainControl: boolean;
+} {
+  const settings = {
+    sampleRate: 48000,
+    channelCount: 1,
+    echoCancellation: true,
+    noiseSuppression: true,
+    autoGainControl: true,
+  };
+
+  // Windows-specific adjustments
+  if (isWindowsDevice()) {
+    // Some Windows audio drivers work better with 44100Hz
+    if (/firefox/i.test(navigator.userAgent)) {
+      settings.sampleRate = 44100;
+    }
+  }
+
+  return settings;
+}

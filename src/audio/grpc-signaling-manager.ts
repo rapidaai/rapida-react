@@ -82,7 +82,7 @@ export class GrpcSignalingManager {
         this.grpcStream = WebTalk(this.connectionConfig);
 
         this.grpcStream.on("data", (response: WebTalkResponse) => {
-          console.log(`${LOG_PREFIX} ← IN  | ${describeResponse(response)}`);
+          // console.log(`${LOG_PREFIX} ← IN  | ${describeResponse(response)}`);
           this.onMessage(response);
         });
 
@@ -141,7 +141,7 @@ export class GrpcSignalingManager {
 
     try {
       const request = buildInitializationRequest(this.agentConfig, this.conversationId ?? undefined);
-      console.log(`${LOG_PREFIX} → OUT | ${describeRequest(request)}`);
+      // console.log(`${LOG_PREFIX} → OUT | ${describeRequest(request)}`);
       this.grpcStream.write(request);
       this.initializationSent = true;
     } catch (error) {
@@ -160,7 +160,7 @@ export class GrpcSignalingManager {
 
     try {
       const request = buildConfigurationRequest(this.agentConfig.inputOptions.channel);
-      console.log(`${LOG_PREFIX} → OUT | ${describeRequest(request)}`);
+      // console.log(`${LOG_PREFIX} → OUT | ${describeRequest(request)}`);
       this.grpcStream.write(request);
     } catch (error) {
       console.error(`${LOG_PREFIX} Failed to send configuration`, error);
@@ -177,7 +177,7 @@ export class GrpcSignalingManager {
     this.ensureInitializationSent();
 
     try {
-      console.log(`${LOG_PREFIX} → OUT | Text("${text.substring(0, 80)}")`);
+      // console.log(`${LOG_PREFIX} → OUT | Text("${text.substring(0, 80)}")`);
       const request = new WebTalkRequest();
       const userMessage = new ConversationUserMessage();
       userMessage.setText(text);
@@ -195,7 +195,7 @@ export class GrpcSignalingManager {
     if (!this.grpcStream) return;
 
     try {
-      console.log(`${LOG_PREFIX} → OUT | Signaling(SDP Answer)`);
+      // console.log(`${LOG_PREFIX} → OUT | Signaling(SDP Answer)`);
       const request = new WebTalkRequest();
       const signaling = new ClientSignaling();
       if (this.sessionId) signaling.setSessionid(this.sessionId);
@@ -218,7 +218,7 @@ export class GrpcSignalingManager {
     if (!this.grpcStream) return;
 
     try {
-      console.log(`${LOG_PREFIX} → OUT | Signaling(ICE ${candidate.candidate?.substring(0, 50) ?? ""})`);
+      // console.log(`${LOG_PREFIX} → OUT | Signaling(ICE ${candidate.candidate?.substring(0, 50) ?? ""})`);
       const request = new WebTalkRequest();
       const signaling = new ClientSignaling();
       if (this.sessionId) signaling.setSessionid(this.sessionId);

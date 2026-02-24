@@ -56,6 +56,39 @@ export function isIOS(): boolean {
   return getBrowser()?.os === "iOS";
 }
 
+export function isWindows(): boolean {
+  return getBrowser()?.os === "Windows";
+}
+
+export function isLinux(): boolean {
+  return getBrowser()?.os === "Linux";
+}
+
+/**
+ * Check if setSinkId is supported by the browser.
+ * This is required for audio output device selection.
+ * Firefox on Windows and some older browsers don't support it.
+ */
+export function isSinkIdSupported(): boolean {
+  if (typeof HTMLAudioElement === "undefined") {
+    return false;
+  }
+  const audio = document.createElement("audio");
+  return "setSinkId" in audio;
+}
+
+/**
+ * Check if the browser has full WebRTC audio support.
+ * Some browsers have partial support that can cause issues.
+ */
+export function hasFullWebRTCAudioSupport(): boolean {
+  return (
+    typeof RTCPeerConnection !== "undefined" &&
+    typeof navigator.mediaDevices?.getUserMedia === "function" &&
+    typeof AudioContext !== "undefined"
+  );
+}
+
 export function toDate(timestamp: Timestamp): Date {
   // Extract seconds and nanos from gRPC Timestamp
   const seconds = timestamp.getSeconds();

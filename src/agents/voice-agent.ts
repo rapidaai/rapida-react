@@ -80,18 +80,18 @@ export class VoiceAgent extends Agent {
   private buildTransportCallbacks(): AgentCallback {
     return {
       onConnectionStateChange: (state) => {
-        console.log(`${LOG_PREFIX} callback -> onConnectionStateChange`, state);
+        // console.log(`${LOG_PREFIX} callback -> onConnectionStateChange`, state);
         if (state === "connected") {
           // Do not mark as Connected here — wait for onInitialization
           // (the server's ConversationInitialization response) to confirm
           // the conversation is truly established.
-          console.log(`${LOG_PREFIX} transport connected, waiting for conversation initialization`);
+          // console.log(`${LOG_PREFIX} transport connected, waiting for conversation initialization`);
         } else if (state === "disconnected" || state === "closed" || state === "failed") {
           // Only mark as disconnected if the gRPC session is also gone.
           // When switching from audio → text the WebRTC peer fires
           // "disconnected"/"closed", but the gRPC stream is still alive.
           if (this.webrtcTransport?.isGrpcConnected) {
-            console.log(`${LOG_PREFIX} WebRTC peer ${state} but gRPC still alive — staying connected`);
+            // console.log(`${LOG_PREFIX} WebRTC peer ${state} but gRPC still alive — staying connected`);
             this.switchToTextModeOnDisconnect();
           } else {
             this.connectionState = ConnectionState.Disconnected;
@@ -108,37 +108,46 @@ export class VoiceAgent extends Agent {
         }
       },
       onDisconnected: () => {
-        console.log(`${LOG_PREFIX} callback -> onDisconnected`);
+        // console.log(`${LOG_PREFIX} callback -> onDisconnected`);
         this.switchToTextModeOnDisconnect();
       },
       onError: (error) => {
-        console.log(`${LOG_PREFIX} callback -> onError`, error);
+        // console.log(`${LOG_PREFIX} callback -> onError`, error);
         this.emit(AgentEvent.ErrorEvent, "client", error.message || String(error));
       },
       onAssistantMessage: (message) => {
-        console.log(`${LOG_PREFIX} callback -> onAssistantMessage`, message);
+        // console.log(`${LOG_PREFIX} callback -> onAssistantMessage`, message);
         if (message)
           this._handleAssistantText(message.messageText, message.id, message.completed ?? true);
       },
       onUserMessage: (message) => {
-        console.log(`${LOG_PREFIX} callback -> onUserMessage`, message);
+        // console.log(`${LOG_PREFIX} callback -> onUserMessage`, message);
         if (message?.messageText) {
           this._handleUserTranscription(message.messageText, message.id, message.completed ?? true);
         }
       },
-      onInterrupt: () => {
-        console.log(`${LOG_PREFIX} callback -> onInterrupt`);
+      onInterrupt: (_interruption) => {
+        // console.log(`${LOG_PREFIX} callback -> onInterrupt`, _interruption);
         this.interruptAudio();
+
+        // Mark any pending assistant message as complete (it was cut short).
+        if (this.agentMessages.length > 0) {
+          const last = this.agentMessages[this.agentMessages.length - 1];
+          if (last.role === MessageRole.System && last.status === MessageStatus.Pending) {
+            last.status = MessageStatus.Complete;
+          }
+        }
+
       },
 
       onDirective: (directive) => {
-        console.log(`${LOG_PREFIX} callback -> onDirective`, directive);
+        // console.log(`${LOG_PREFIX} callback -> onDirective`, directive);
         if (directive && directive.type === ConversationDirective.DirectiveType.END_CONVERSATION) {
           this.disconnect();
         }
       },
       onInitialization: (config) => {
-        console.log(`${LOG_PREFIX} callback -> onInitialization`, config);
+        // console.log(`${LOG_PREFIX} callback -> onInitialization`, config);
         if (config?.assistantconversationid) {
           this.changeConversation(String(config.assistantconversationid));
         }
@@ -241,7 +250,7 @@ export class VoiceAgent extends Agent {
   private _handleAssistantText(text?: string, messageId?: string, completed: boolean = true) {
     const id = messageId || `msg_${Date.now()}`;
     const now = new Date();
-    console.log(`${LOG_PREFIX} Handling Assistant Text`, text, completed);
+    // console.log(`${LOG_PREFIX} Handling Assistant Text`, text, completed);
     if (completed) {
       // Complete message
       if (this.agentMessages.length > 0) {
