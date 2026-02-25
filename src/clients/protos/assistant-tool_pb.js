@@ -3718,11 +3718,9 @@ proto.assistant_api.AssistantToolLog.toObject = function(includeInstance, msg) {
     assistantconversationid: jspb.Message.getFieldWithDefault(msg, 11, "0"),
     assistantconversationmessageid: jspb.Message.getFieldWithDefault(msg, 12, ""),
     assetprefix: jspb.Message.getFieldWithDefault(msg, 14, ""),
-    executionmethod: jspb.Message.getFieldWithDefault(msg, 15, ""),
     timetaken: jspb.Message.getFieldWithDefault(msg, 16, "0"),
-    assistanttoolid: jspb.Message.getFieldWithDefault(msg, 13, "0"),
     assistanttoolname: jspb.Message.getFieldWithDefault(msg, 17, ""),
-    assistanttool: (f = msg.getAssistanttool()) && proto.assistant_api.AssistantTool.toObject(includeInstance, f)
+    toolcallid: jspb.Message.getFieldWithDefault(msg, 19, "")
   };
 
   if (includeInstance) {
@@ -3816,26 +3814,17 @@ proto.assistant_api.AssistantToolLog.deserializeBinaryFromReader = function(msg,
       var value = /** @type {string} */ (reader.readString());
       msg.setAssetprefix(value);
       break;
-    case 15:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setExecutionmethod(value);
-      break;
     case 16:
       var value = /** @type {string} */ (reader.readUint64String());
       msg.setTimetaken(value);
-      break;
-    case 13:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setAssistanttoolid(value);
       break;
     case 17:
       var value = /** @type {string} */ (reader.readString());
       msg.setAssistanttoolname(value);
       break;
-    case 18:
-      var value = new proto.assistant_api.AssistantTool;
-      reader.readMessage(value,proto.assistant_api.AssistantTool.deserializeBinaryFromReader);
-      msg.setAssistanttool(value);
+    case 19:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setToolcallid(value);
       break;
     default:
       reader.skipField();
@@ -3962,24 +3951,10 @@ proto.assistant_api.AssistantToolLog.serializeBinaryToWriter = function(message,
       f
     );
   }
-  f = message.getExecutionmethod();
-  if (f.length > 0) {
-    writer.writeString(
-      15,
-      f
-    );
-  }
   f = message.getTimetaken();
   if (parseInt(f, 10) !== 0) {
     writer.writeUint64String(
       16,
-      f
-    );
-  }
-  f = message.getAssistanttoolid();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      13,
       f
     );
   }
@@ -3990,12 +3965,11 @@ proto.assistant_api.AssistantToolLog.serializeBinaryToWriter = function(message,
       f
     );
   }
-  f = message.getAssistanttool();
-  if (f != null) {
-    writer.writeMessage(
-      18,
-      f,
-      proto.assistant_api.AssistantTool.serializeBinaryToWriter
+  f = message.getToolcallid();
+  if (f.length > 0) {
+    writer.writeString(
+      19,
+      f
     );
   }
 };
@@ -4331,24 +4305,6 @@ proto.assistant_api.AssistantToolLog.prototype.setAssetprefix = function(value) 
 
 
 /**
- * optional string executionMethod = 15;
- * @return {string}
- */
-proto.assistant_api.AssistantToolLog.prototype.getExecutionmethod = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantToolLog} returns this
- */
-proto.assistant_api.AssistantToolLog.prototype.setExecutionmethod = function(value) {
-  return jspb.Message.setProto3StringField(this, 15, value);
-};
-
-
-/**
  * optional uint64 timeTaken = 16;
  * @return {string}
  */
@@ -4363,24 +4319,6 @@ proto.assistant_api.AssistantToolLog.prototype.getTimetaken = function() {
  */
 proto.assistant_api.AssistantToolLog.prototype.setTimetaken = function(value) {
   return jspb.Message.setProto3StringIntField(this, 16, value);
-};
-
-
-/**
- * optional uint64 assistantToolId = 13;
- * @return {string}
- */
-proto.assistant_api.AssistantToolLog.prototype.getAssistanttoolid = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, "0"));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantToolLog} returns this
- */
-proto.assistant_api.AssistantToolLog.prototype.setAssistanttoolid = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 13, value);
 };
 
 
@@ -4403,39 +4341,20 @@ proto.assistant_api.AssistantToolLog.prototype.setAssistanttoolname = function(v
 
 
 /**
- * optional AssistantTool assistantTool = 18;
- * @return {?proto.assistant_api.AssistantTool}
+ * optional string toolCallId = 19;
+ * @return {string}
  */
-proto.assistant_api.AssistantToolLog.prototype.getAssistanttool = function() {
-  return /** @type{?proto.assistant_api.AssistantTool} */ (
-    jspb.Message.getWrapperField(this, proto.assistant_api.AssistantTool, 18));
+proto.assistant_api.AssistantToolLog.prototype.getToolcallid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 19, ""));
 };
 
 
 /**
- * @param {?proto.assistant_api.AssistantTool|undefined} value
- * @return {!proto.assistant_api.AssistantToolLog} returns this
-*/
-proto.assistant_api.AssistantToolLog.prototype.setAssistanttool = function(value) {
-  return jspb.Message.setWrapperField(this, 18, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
+ * @param {string} value
  * @return {!proto.assistant_api.AssistantToolLog} returns this
  */
-proto.assistant_api.AssistantToolLog.prototype.clearAssistanttool = function() {
-  return this.setAssistanttool(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.assistant_api.AssistantToolLog.prototype.hasAssistanttool = function() {
-  return jspb.Message.getField(this, 18) != null;
+proto.assistant_api.AssistantToolLog.prototype.setToolcallid = function(value) {
+  return jspb.Message.setProto3StringField(this, 19, value);
 };
 
 

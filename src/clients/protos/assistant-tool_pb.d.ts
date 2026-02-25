@@ -510,22 +510,14 @@ export class AssistantToolLog extends jspb.Message {
   getAssetprefix(): string;
   setAssetprefix(value: string): void;
 
-  getExecutionmethod(): string;
-  setExecutionmethod(value: string): void;
-
   getTimetaken(): string;
   setTimetaken(value: string): void;
-
-  getAssistanttoolid(): string;
-  setAssistanttoolid(value: string): void;
 
   getAssistanttoolname(): string;
   setAssistanttoolname(value: string): void;
 
-  hasAssistanttool(): boolean;
-  clearAssistanttool(): void;
-  getAssistanttool(): AssistantTool | undefined;
-  setAssistanttool(value?: AssistantTool): void;
+  getToolcallid(): string;
+  setToolcallid(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantToolLog.AsObject;
@@ -552,11 +544,9 @@ export namespace AssistantToolLog {
     assistantconversationid: string,
     assistantconversationmessageid: string,
     assetprefix: string,
-    executionmethod: string,
     timetaken: string,
-    assistanttoolid: string,
     assistanttoolname: string,
-    assistanttool?: AssistantTool.AsObject,
+    toolcallid: string,
   }
 }
 
