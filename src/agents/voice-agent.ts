@@ -670,9 +670,13 @@ export class VoiceAgent extends Agent {
    */
   public getInputByteFrequencyData = (): Uint8Array | undefined => {
     const analyser = this.webrtcTransport?.inputAnalyserNode;
+    if (!analyser) return undefined;
 
     if (analyser) {
-      this.inputFrequencyData = new Uint8Array(analyser.frequencyBinCount);
+      const size = analyser.frequencyBinCount;
+      if (!this.inputFrequencyData || this.inputFrequencyData.length !== size) {
+        this.inputFrequencyData = new Uint8Array(size);
+      }
       (analyser.getByteFrequencyData as (array: Uint8Array) => void)(
         this.inputFrequencyData
       );
@@ -686,9 +690,13 @@ export class VoiceAgent extends Agent {
    */
   public getOutputByteFrequencyData = (): Uint8Array | undefined => {
     const analyser = this.webrtcTransport?.outputAnalyserNode;
+    if (!analyser) return undefined;
 
     if (analyser) {
-      this.outputFrequencyData = new Uint8Array(analyser.frequencyBinCount);
+      const size = analyser.frequencyBinCount;
+      if (!this.outputFrequencyData || this.outputFrequencyData.length !== size) {
+        this.outputFrequencyData = new Uint8Array(size);
+      }
       (analyser.getByteFrequencyData as (array: Uint8Array) => void)(
         this.outputFrequencyData
       );

@@ -58,6 +58,8 @@ export class AudioMediaManager {
   private _outputAnalyser: AnalyserNode | null = null;
   private isMuted = false;
   private _volume = 1;
+  // Prevents registering duplicate click/touchstart autoplay-recovery listeners
+  private _userInteractionHandlerRegistered = false;
 
   constructor(private agentConfig: AgentConfig) { }
 
@@ -72,10 +74,12 @@ export class AudioMediaManager {
     try {
       this.localStream = await navigator.mediaDevices.getUserMedia({ audio: constraints, video: false });
     } catch (error: any) {
-      // On Windows, some browsers may fail with specific constraints
-      // Try with simplified constraints as fallback
-      if (isWindows() && error?.name === "OverconstrainedError") {
-        console.warn("[AudioMediaManager] Retrying with simplified audio constraints for Windows");
+      // OverconstrainedError can occur on any platform when an 'exact' deviceId
+      // constraint cannot be satisfied (e.g. the device was unplugged).
+      // Retry with simplified constraints so the call degrades gracefully
+      // to the default device rather than failing completely.
+      if (error?.name === "OverconstrainedError") {
+        console.warn("[AudioMediaManager] Retrying with simplified audio constraints after OverconstrainedError");
         this.localStream = await navigator.mediaDevices.getUserMedia({
           audio: this.getSimplifiedAudioConstraints(),
           video: false,
@@ -120,15 +124,8 @@ export class AudioMediaManager {
     }
 
     try {
-      // Create AudioContext with explicit sample rate for Windows compatibility
-      const options: AudioContextOptions = {};
-
-      // On Windows, specify sample rate explicitly to avoid potential issues
-      if (isWindows()) {
-        options.sampleRate = OPUS_SAMPLE_RATE;
-      }
-
-      this.audioContext = new AudioContextClass(options);
+      // No sampleRate option — browser picks native system rate (avoids WASAPI conflict on Windows)
+      this.audioContext = new AudioContextClass();
 
       // Handle suspended state (common due to autoplay policies)
       if (this.audioContext.state === "suspended") {
@@ -181,6 +178,12 @@ export class AudioMediaManager {
       }
     }
 
+    // On Windows, remove sampleRate constraint — WebRTC handles resampling internally,
+    // and forcing 48kHz can conflict with WASAPI on 44100Hz audio hardware
+    if (isWindows()) {
+      delete base.sampleRate;
+    }
+
     // Chrome and Edge (Chromium-based) support additional constraints
     if (isChrome() || isEdge()) {
       return {
@@ -194,12 +197,6 @@ export class AudioMediaManager {
         // @ts-ignore
         googHighpassFilter: true,
       };
-    }
-
-    // Firefox on Windows may need different handling
-    if (isFirefox() && isWindows()) {
-      // Firefox doesn't support sampleRate constraint well on Windows
-      delete base.sampleRate;
     }
 
     return base;
@@ -315,12 +312,13 @@ export class AudioMediaManager {
       await this.audioElement.play();
     } catch (error: any) {
       if (error?.name === "NotAllowedError") {
-        // Autoplay blocked - setup user interaction handler
+        // Autoplay policy blocked playback — wait for a user gesture to resume.
         console.debug("[AudioMediaManager] Autoplay blocked, waiting for user interaction");
         this.setupUserInteractionHandler();
-      } else {
+      } else if (error?.name !== "AbortError") {
+        // AbortError is a transient race (srcObject reassignment); ignore it.
+        // Any other error is unexpected and worth logging.
         console.error("[AudioMediaManager] Failed to start playback:", error);
-        this.setupUserInteractionHandler();
       }
     }
   }
@@ -331,11 +329,23 @@ export class AudioMediaManager {
   private async recoverAudioPlayback(): Promise<void> {
     if (!this.audioElement || !this.remoteStream) return;
 
+    const el = this.audioElement;
     try {
-      // Reconnect the stream
-      this.audioElement.srcObject = null;
-      this.audioElement.srcObject = this.remoteStream;
-      await this.audioElement.play();
+      el.pause();
+      el.srcObject = null;
+      el.srcObject = this.remoteStream;
+
+      // Same canplay-wait as interruptPlayback: srcObject reassignment triggers
+      // the load algorithm (which internally pauses), so play() must wait until
+      // the element is ready or AbortError follows.
+      if (el.readyState < 3 /* HAVE_FUTURE_DATA */) {
+        await new Promise<void>((resolve) => {
+          el.addEventListener('canplay', resolve as EventListener, { once: true });
+          setTimeout(resolve, 200);
+        });
+      }
+
+      await el.play();
     } catch (error) {
       console.debug("[AudioMediaManager] Audio recovery failed:", error);
     }
@@ -370,16 +380,29 @@ export class AudioMediaManager {
 
     try {
       // Pause playback to flush the browser's internal audio buffer.
-      this.audioElement.pause();
+      const el = this.audioElement;
+      el.pause();
 
       // Detach and re-attach the stream to discard any buffered frames.
-      const stream = this.audioElement.srcObject;
-      this.audioElement.srcObject = null;
-      this.audioElement.srcObject = stream;
+      const stream = el.srcObject;
+      el.srcObject = null;
+      el.srcObject = stream;
 
-      // Resume immediately — new frames from the server (post-interruption)
-      // will play as soon as they arrive.
-      await this.audioElement.play();
+      // Reassigning srcObject triggers the browser's media load algorithm,
+      // which internally issues a pause step. Calling play() before that
+      // settles produces an AbortError. Wait for canplay so the load is
+      // complete before resuming. 200 ms timeout guards against streams
+      // with no active audio tracks where canplay may never fire.
+      if (el.readyState < 3 /* HAVE_FUTURE_DATA */) {
+        await new Promise<void>((resolve) => {
+          el.addEventListener('canplay', resolve as EventListener, { once: true });
+          setTimeout(resolve, 200);
+        });
+      }
+
+      // Resume — new frames from the server (post-interruption) will play
+      // as soon as they arrive.
+      await el.play();
     } catch (error) {
       // play() may throw NotAllowedError if autoplay policy blocks it;
       // non-fatal since the next server audio will trigger playback anyway.
@@ -408,11 +431,18 @@ export class AudioMediaManager {
 
 
   private setupUserInteractionHandler(): void {
+    // Guard: only one pair of listeners at a time. Without this, every failed
+    // play() call (e.g. on repeated reconnects) stacks up duplicate handlers.
+    if (this._userInteractionHandlerRegistered) return;
+    this._userInteractionHandlerRegistered = true;
+
     const startAudio = async () => {
+      this._userInteractionHandlerRegistered = false;
       try {
         if (this.audioContext?.state === "suspended") await this.audioContext.resume();
         if (this.audioElement?.paused) await this.audioElement.play();
       } catch { }
+      // once:true removes the firing listener; manually remove the other one.
       document.removeEventListener("click", startAudio);
       document.removeEventListener("touchstart", startAudio);
     };
@@ -526,6 +556,8 @@ export class AudioMediaManager {
         this.audioElement.srcObject = null;
       }
 
+      // Allow the user-interaction handler to re-register after a reconnect.
+      this._userInteractionHandlerRegistered = false;
       this.remoteStream = null;
     } catch (error) {
       console.error("Failed to disconnect audio", error);

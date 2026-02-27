@@ -104,17 +104,15 @@ export const useMultibandMicrophoneTrackVolume = (
         const bandStart = Math.floor(totalBins * bandStartRatio);
         const bandEnd = Math.min(Math.floor(totalBins * bandEndRatio), totalBins);
 
-        // Get frequencies for this band
-        const bandSlice = Array.from(frequencies.slice(bandStart, Math.max(bandEnd, bandStart + 1)));
-
-        // Calculate the average energy for this band
-        const bandFrequencies = bandSlice.map((amplitude) => {
-          const numericAmplitude = Number(amplitude);
+        // Get frequencies for this band — direct typed array access avoids intermediate allocations
+        const bandLength = Math.max(bandEnd - bandStart, 1);
+        const bandFrequencies: number[] = new Array(bandLength);
+        for (let j = 0; j < bandLength; j++) {
           // Normalize from 0-255 to 0-1 with enhanced sensitivity
-          const normalized = numericAmplitude / 255;
+          const normalized = (frequencies[bandStart + j] ?? 0) / 255;
           // Apply power curve to enhance visibility of quieter sounds
-          return Math.min(1, Math.max(0, Math.pow(normalized, 0.6) * 1.8));
-        });
+          bandFrequencies[j] = Math.min(1, Math.max(0, Math.pow(normalized, 0.6) * 1.8));
+        }
 
         // Ensure we have a consistent number of samples per band
         const resampledBand = resampleArray(bandFrequencies, 32); // 32 samples per band
@@ -197,29 +195,26 @@ export const useMultibandSpeakerTrackVolume = (
       // Calculate the frequency range we want to analyze
       const startIndex = Math.floor(frequencies.length * loPass);
       const endIndex = Math.floor(frequencies.length * hiPass);
-      const usableFrequencies = Array.from(
-        frequencies.slice(startIndex, endIndex)
-      );
-
-      // Split frequencies into bands
-      const samplesPerBand = Math.floor(usableFrequencies.length / bands);
+      // Split frequencies into bands — access typed array directly to avoid intermediate allocations
+      const usableLength = endIndex - startIndex;
+      const samplesPerBand = Math.floor(usableLength / bands);
       const bandArrays: number[][] = [];
 
       for (let bandIndex = 0; bandIndex < bands; bandIndex++) {
         const bandStart = bandIndex * samplesPerBand;
         const bandEnd =
           bandIndex === bands - 1
-            ? usableFrequencies.length
+            ? usableLength
             : (bandIndex + 1) * samplesPerBand;
 
         // Get frequencies for this band and normalize them
-        const bandFrequencies = usableFrequencies
-          .slice(bandStart, bandEnd)
-          .map((amplitude) => {
-            // Normalize amplitude to 0-1 range
-            const numericAmplitude = Number(amplitude);
-            return Math.min(1, Math.max(0, numericAmplitude));
-          });
+        const bandLength = bandEnd - bandStart;
+        const bandFrequencies: number[] = new Array(bandLength);
+        for (let j = 0; j < bandLength; j++) {
+          // Normalize amplitude from 0-255 to 0-1 range
+          const amplitude = frequencies[startIndex + bandStart + j] ?? 0;
+          bandFrequencies[j] = Math.min(1, Math.max(0, amplitude / 255));
+        }
 
         // Ensure we have a consistent number of samples per band
         const resampledBand = resampleArray(bandFrequencies, 32); // 32 samples per band
@@ -244,6 +239,8 @@ export const useMultibandSpeakerTrackVolume = (
 
     // Helper function to resample array to desired length
     const resampleArray = (arr: number[], newLength: number): number[] => {
+      if (arr.length === 0) return new Array(newLength).fill(0);
+
       const result = new Array(newLength);
       const stepSize = arr.length / newLength;
 
@@ -251,12 +248,14 @@ export const useMultibandSpeakerTrackVolume = (
         const start = Math.floor(i * stepSize);
         const end = Math.floor((i + 1) * stepSize);
         let sum = 0;
+        let count = 0;
 
         for (let j = start; j < end; j++) {
           sum += arr[j] || 0;
+          count++;
         }
 
-        result[i] = sum / (end - start);
+        result[i] = count > 0 ? sum / count : 0;
       }
 
       return result;
@@ -288,6 +287,9 @@ export const useMultiband3DSpeakerTrackVolume = (
   }>({ xNorm: 0, yNorm: 0, zNorm: 0, elapsedTimeSec: 0 });
 
   const startTime = useRef<number>(Date.now());
+  const prevBandsRef = useRef<number[][]>(
+    Array(bands).fill([]).map(() => Array(32).fill(0))
+  );
 
   useEffect(() => {
     const updateVolume = () => {
@@ -296,65 +298,63 @@ export const useMultiband3DSpeakerTrackVolume = (
       // Calculate the frequency range we want to analyze
       const startIndex = Math.floor(frequencies.length * loPass);
       const endIndex = Math.floor(frequencies.length * hiPass);
-      const usableFrequencies = Array.from(
-        frequencies.slice(startIndex, endIndex)
-      );
 
-      // Split frequencies into bands
-      const samplesPerBand = Math.floor(usableFrequencies.length / bands);
+      // Split frequencies into bands — access typed array directly to avoid intermediate allocations
+      const usableLength = endIndex - startIndex;
+      const samplesPerBand = Math.floor(usableLength / bands);
       const bandArrays: number[][] = [];
 
       for (let bandIndex = 0; bandIndex < bands; bandIndex++) {
         const bandStart = bandIndex * samplesPerBand;
         const bandEnd =
           bandIndex === bands - 1
-            ? usableFrequencies.length
+            ? usableLength
             : (bandIndex + 1) * samplesPerBand;
 
         // Get frequencies for this band and normalize them
-        const bandFrequencies = usableFrequencies
-          .slice(bandStart, bandEnd)
-          .map((amplitude) => {
-            // Normalize amplitude to 0-1 range
-            const numericAmplitude = Number(amplitude);
-            return Math.min(1, Math.max(0, numericAmplitude));
-          });
+        const bandLength = bandEnd - bandStart;
+        const bandFrequencies: number[] = new Array(bandLength);
+        for (let j = 0; j < bandLength; j++) {
+          // Normalize amplitude from 0-255 to 0-1 range
+          const amplitude = frequencies[startIndex + bandStart + j] ?? 0;
+          bandFrequencies[j] = Math.min(1, Math.max(0, amplitude / 255));
+        }
 
         // Ensure we have a consistent number of samples per band
         const resampledBand = resampleArray(bandFrequencies, 32); // 32 samples per band
         bandArrays.push(resampledBand);
       }
 
-      // Apply smoothing to prevent jarring transitions
-      setFrequencyBands((prevBands) => {
-        if (prevBands.length !== bands) return bandArrays;
+      // Apply smoothing using ref to avoid nesting setState calls (which causes double re-renders)
+      const prevBands = prevBandsRef.current;
+      const smoothedBands =
+        prevBands.length !== bands
+          ? bandArrays
+          : bandArrays.map((bandFrequencies, bandIndex) => {
+              if (!prevBands[bandIndex]) return bandFrequencies;
+              const smoothingFactor = 0.7;
+              return bandFrequencies.map((freq, i) => {
+                const prevValue = prevBands[bandIndex][i] || 0;
+                return freq * smoothingFactor + prevValue * (1 - smoothingFactor);
+              });
+            });
+      prevBandsRef.current = smoothedBands;
 
-        const smoothedBands = bandArrays.map((bandFrequencies, bandIndex) => {
-          if (!prevBands[bandIndex]) return bandFrequencies;
+      // Calculate spherical coordinates
+      const xNorm = calculateAverageAmplitude(smoothedBands[0]);
+      const yNorm = bands > 1 ? calculateAverageAmplitude(smoothedBands[1]) : 0;
+      const zNorm = bands > 2 ? calculateAverageAmplitude(smoothedBands[2]) : 0;
+      const elapsedTimeSec = (Date.now() - startTime.current) / 1000;
 
-          const smoothingFactor = 0.7;
-          return bandFrequencies.map((freq, i) => {
-            const prevValue = prevBands[bandIndex][i] || 0;
-            return freq * smoothingFactor + prevValue * (1 - smoothingFactor);
-          });
-        });
-
-        // Calculate spherical coordinates
-        const xNorm = calculateAverageAmplitude(smoothedBands[0]);
-        const yNorm =
-          bands > 1 ? calculateAverageAmplitude(smoothedBands[1]) : 0;
-        const zNorm =
-          bands > 2 ? calculateAverageAmplitude(smoothedBands[2]) : 0;
-        const elapsedTimeSec = (Date.now() - startTime.current) / 1000;
-
-        setSphericalData({ xNorm, yNorm, zNorm, elapsedTimeSec });
-
-        return smoothedBands;
-      });
+      // Both setters called at top level so React can batch them into a single re-render
+      setFrequencyBands(smoothedBands);
+      setSphericalData({ xNorm, yNorm, zNorm, elapsedTimeSec });
     };
 
     // Helper function to resample array to desired length
     const resampleArray = (arr: number[], newLength: number): number[] => {
+      if (arr.length === 0) return new Array(newLength).fill(0);
+
       const result = new Array(newLength);
       const stepSize = arr.length / newLength;
 
@@ -362,12 +362,14 @@ export const useMultiband3DSpeakerTrackVolume = (
         const start = Math.floor(i * stepSize);
         const end = Math.floor((i + 1) * stepSize);
         let sum = 0;
+        let count = 0;
 
         for (let j = start; j < end; j++) {
           sum += arr[j] || 0;
+          count++;
         }
 
-        result[i] = sum / (end - start);
+        result[i] = count > 0 ? sum / count : 0;
       }
 
       return result;
