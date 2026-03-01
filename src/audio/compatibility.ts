@@ -26,6 +26,7 @@ export function isIosDevice(): boolean {
   if (typeof navigator === "undefined") return false;
   return (
     /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    /iPad|iPhone|iPod/.test(navigator.platform) ||
     // iPad on iOS 13+ reports as "MacIntel" with touch support
     (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) ||
     (navigator.userAgent.includes("Mac") && "ontouchend" in document)
