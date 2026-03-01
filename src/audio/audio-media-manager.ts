@@ -23,7 +23,7 @@
  */
 
 import { AgentConfig } from "@/rapida/types/agent-config";
-import { isChrome, isEdge, isWindows, isFirefox, isSinkIdSupported } from "@/rapida/utils";
+import { isChrome, isEdge, isWindows, isSinkIdSupported } from "@/rapida/utils";
 
 /** Sample rate for Opus */
 const OPUS_SAMPLE_RATE = 48000;
@@ -69,17 +69,30 @@ export class AudioMediaManager {
 
   /** Capture the local microphone stream */
   async setupLocalMedia(): Promise<void> {
+    // Clean up any existing mic resources before re-capturing.
+    // Without this, a second call (e.g. hot reconnect) would overwrite
+    // localStream while the old tracks keep running and the mic indicator stays on.
+    if (this.localStream) {
+      this.localStream.getTracks().forEach(t => t.stop());
+      this.localStream = null;
+    }
+    if (this._inputAnalyser) {
+      this._inputAnalyser.disconnect();
+      this._inputAnalyser = null;
+    }
+
     const constraints = this.getAudioConstraints();
 
     try {
       this.localStream = await navigator.mediaDevices.getUserMedia({ audio: constraints, video: false });
     } catch (error: any) {
-      // OverconstrainedError can occur on any platform when an 'exact' deviceId
-      // constraint cannot be satisfied (e.g. the device was unplugged).
-      // Retry with simplified constraints so the call degrades gracefully
-      // to the default device rather than failing completely.
-      if (error?.name === "OverconstrainedError") {
-        console.warn("[AudioMediaManager] Retrying with simplified audio constraints after OverconstrainedError");
+      // OverconstrainedError — 'exact' deviceId constraint cannot be satisfied
+      //   (Firefox throws this when the device is gone)
+      // NotFoundError — requested device does not exist
+      //   (Chrome throws this for the same situation)
+      // Both mean: fall back to the default device rather than failing completely.
+      if (error?.name === "OverconstrainedError" || error?.name === "NotFoundError") {
+        console.warn("[AudioMediaManager] Retrying with simplified audio constraints:", error.name);
         this.localStream = await navigator.mediaDevices.getUserMedia({
           audio: this.getSimplifiedAudioConstraints(),
           video: false,
@@ -117,6 +130,11 @@ export class AudioMediaManager {
    * Windows browsers (especially Edge) may need special handling.
    */
   private async setupAudioContext(): Promise<void> {
+    // Re-use an existing running context rather than silently abandoning it.
+    // Callers that need a fresh context (e.g. after close()) must null
+    // this.audioContext themselves (disconnectAudio does this).
+    if (this.audioContext && this.audioContext.state !== "closed") return;
+
     const AudioContextClass = getAudioContextClass();
     if (!AudioContextClass) {
       console.warn("[AudioMediaManager] AudioContext not available in this browser");
@@ -458,6 +476,9 @@ export class AudioMediaManager {
   async setInputDevice(deviceId: string): Promise<void> {
     this.agentConfig.inputOptions.device = deviceId;
     this.localStream?.getTracks().forEach(t => t.stop());
+    // Null immediately so that if getUserMedia throws, getLocalAudioTrack()
+    // returns undefined rather than a stream full of stopped (silent) tracks.
+    this.localStream = null;
 
     try {
       this.localStream = await navigator.mediaDevices.getUserMedia({
@@ -465,9 +486,10 @@ export class AudioMediaManager {
         video: false,
       });
     } catch (error: any) {
-      // On Windows, retry with simplified constraints if device selection fails
-      if (isWindows() && (error?.name === "OverconstrainedError" || error?.name === "NotFoundError")) {
-        console.warn("[AudioMediaManager] Device selection failed, retrying with simplified constraints");
+      // Same cross-platform fallback as setupLocalMedia:
+      // Chrome → NotFoundError, Firefox → OverconstrainedError, for missing 'exact' device.
+      if (error?.name === "OverconstrainedError" || error?.name === "NotFoundError") {
+        console.warn("[AudioMediaManager] Device selection failed, retrying with simplified constraints:", error.name);
         this.localStream = await navigator.mediaDevices.getUserMedia({
           audio: this.getSimplifiedAudioConstraints(),
           video: false,
@@ -478,7 +500,7 @@ export class AudioMediaManager {
     }
 
     // Reconnect analyser (disconnect old source first to avoid leaking audio nodes)
-    if (this.audioContext && this._inputAnalyser) {
+    if (this.audioContext && this._inputAnalyser && this.localStream) {
       this._inputAnalyser.disconnect();
       const source = this.audioContext.createMediaStreamSource(this.localStream);
       this._inputAnalyser = this.audioContext.createAnalyser();

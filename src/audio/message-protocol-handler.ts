@@ -48,6 +48,10 @@ import type { AudioMediaManager } from "./audio-media-manager";
  * This is pure dispatch logic — it holds no state of its own.
  */
 export class MessageProtocolHandler {
+  // Serialization chain ensures signaling messages (CONFIG → OFFER → ICE)
+  // are processed in order even though gRPC callbacks fire without await.
+  private processingChain: Promise<void> = Promise.resolve();
+
   constructor(
     private callbacks: AgentCallback,
     private signaling: GrpcSignalingManager,
@@ -60,6 +64,13 @@ export class MessageProtocolHandler {
   // ---------------------------------------------------------------------------
 
   async handleMessage(response: WebTalkResponse): Promise<void> {
+    this.processingChain = this.processingChain
+      .then(() => this._handleMessage(response))
+      .catch(err => console.error("[Protocol] Message processing error", err));
+    return this.processingChain;
+  }
+
+  private async _handleMessage(response: WebTalkResponse): Promise<void> {
     // Server signaling (SDP, ICE, config, ready, clear, error)
     if (response.hasSignaling()) {
       const sig = response.getSignaling();
@@ -109,6 +120,24 @@ export class MessageProtocolHandler {
       const directive = response.getDirective();
       if (directive) this.callbacks.onDirective?.(directive.toObject());
     }
+
+    // Pipeline conversation event (STT, TTS, LLM, session, etc.)
+    if (response.hasEvent()) {
+      const event = response.getEvent();
+      if (event) this.callbacks.onConversationEvent?.(event.toObject());
+    }
+
+    // Conversation error (server-side error with conversation ID and details)
+    if (response.hasError()) {
+      const error = response.getError();
+      if (error) this.callbacks.onError?.(new Error(error.getMessage()));
+    }
+
+    // Metric (server-side performance/latency data)
+    if (response.hasMetric()) {
+      const metric = response.getMetric();
+      if (metric) this.callbacks.onMetric?.(metric.toObject());
+    }
   }
 
   // ---------------------------------------------------------------------------
@@ -122,9 +151,16 @@ export class MessageProtocolHandler {
     const messageCase = signaling.getMessageCase();
 
     switch (messageCase) {
-      case ServerSignaling.MessageCase.CONFIG:
-        this.peer.setup();
+      case ServerSignaling.MessageCase.CONFIG: {
+        const config = signaling.getConfig();
+        const iceServers = config?.getIceserversList()?.map(srv => ({
+          urls: srv.getUrlsList(),
+          username: srv.getUsername() || undefined,
+          credential: srv.getCredential() || undefined,
+        })) as RTCIceServer[] | undefined;
+        this.peer.setup(iceServers);
         break;
+      }
 
       case ServerSignaling.MessageCase.SDP: {
         try {

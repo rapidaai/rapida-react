@@ -22,23 +22,19 @@
  *  Author: Prashant <prashant@rapida.ai>
  *
  */
-export function isIosDevice() {
+export function isIosDevice(): boolean {
+  if (typeof navigator === "undefined") return false;
   return (
-    [
-      "iPad Simulator",
-      "iPhone Simulator",
-      "iPod Simulator",
-      "iPad",
-      "iPhone",
-      "iPod",
-    ].includes(navigator.platform) ||
-    // iPad on iOS 13 detection
+    /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+    // iPad on iOS 13+ reports as "MacIntel" with touch support
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) ||
     (navigator.userAgent.includes("Mac") && "ontouchend" in document)
   );
 }
 
-export function isAndroidDevice() {
-  return /android/i.test(navigator.userAgent);
+export function isAndroidDevice(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return /Android/i.test(navigator.userAgent);
 }
 
 export function isWindowsDevice() {

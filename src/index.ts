@@ -656,4 +656,7 @@ export {
   ConversationToolCall,
   ConversationToolResult,
   ConversationDirective,
+  ConversationMetric,
+  ConversationEvent,
+  ConversationError,
 } from "@/rapida/clients/protos/talk-api_pb";

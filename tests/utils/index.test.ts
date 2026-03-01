@@ -19,6 +19,7 @@ import {
   isEdge,
   isMacOs,
   isIOS,
+  hasFullWebRTCAudioSupport,
   toDate,
   toHumanReadableDate,
 } from '@/rapida/utils';
@@ -167,5 +168,83 @@ describe('Date Utils', () => {
       expect(result).toContain('2024');
       expect(result).toContain('Jan');
     });
+  });
+});
+
+// ---------------------------------------------------------------------------
+// hasFullWebRTCAudioSupport()
+// ---------------------------------------------------------------------------
+
+describe('hasFullWebRTCAudioSupport()', () => {
+  const originalRTCPeerConnection = (global as any).RTCPeerConnection;
+  const originalAudioContext = (window as any).AudioContext;
+  const originalWebkitAudioContext = (window as any).webkitAudioContext;
+
+  afterEach(() => {
+    // Restore globals modified per-test
+    if (originalRTCPeerConnection !== undefined) {
+      (global as any).RTCPeerConnection = originalRTCPeerConnection;
+    } else {
+      delete (global as any).RTCPeerConnection;
+    }
+    if (originalAudioContext !== undefined) {
+      (window as any).AudioContext = originalAudioContext;
+    } else {
+      delete (window as any).AudioContext;
+    }
+    if (originalWebkitAudioContext !== undefined) {
+      (window as any).webkitAudioContext = originalWebkitAudioContext;
+    } else {
+      delete (window as any).webkitAudioContext;
+    }
+  });
+
+  it('returns false when RTCPeerConnection is not available', () => {
+    delete (global as any).RTCPeerConnection;
+    expect(hasFullWebRTCAudioSupport()).toBe(false);
+  });
+
+  it('returns true when RTCPeerConnection and AudioContext are both available', () => {
+    (global as any).RTCPeerConnection = jest.fn();
+    // AudioContext is set in setup.ts via MockAudioContext
+    expect(hasFullWebRTCAudioSupport()).toBe(true);
+  });
+
+  /**
+   * BUG FIX: Safari < 14.1 only exposes webkitAudioContext, not the
+   * standard AudioContext.  The old check returned false for these browsers,
+   * causing consumers to incorrectly block the SDK.
+   *
+   * The fix adds a webkitAudioContext fallback so the function returns true
+   * on Safari 13 / iOS 14.0 where the SDK actually works.
+   */
+  it('returns true when only webkitAudioContext is available (Safari < 14.1)', () => {
+    (global as any).RTCPeerConnection = jest.fn();
+    delete (window as any).AudioContext;
+    (window as any).webkitAudioContext = jest.fn();
+
+    expect(hasFullWebRTCAudioSupport()).toBe(true);
+  });
+
+  it('returns false when neither AudioContext nor webkitAudioContext is available', () => {
+    (global as any).RTCPeerConnection = jest.fn();
+    // setup.ts defines AudioContext via Object.defineProperty without configurable:true,
+    // so delete fails silently.  Use assignment to undefined instead — the property
+    // was created with writable:true so assignment works.
+    (window as any).AudioContext = undefined;
+    (window as any).webkitAudioContext = undefined;
+
+    expect(hasFullWebRTCAudioSupport()).toBe(false);
+  });
+
+  it('returns false when getUserMedia is not available', () => {
+    (global as any).RTCPeerConnection = jest.fn();
+    const originalGetUserMedia = navigator.mediaDevices.getUserMedia;
+    // @ts-ignore
+    delete navigator.mediaDevices.getUserMedia;
+
+    expect(hasFullWebRTCAudioSupport()).toBe(false);
+
+    (navigator.mediaDevices as any).getUserMedia = originalGetUserMedia;
   });
 });

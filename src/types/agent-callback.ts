@@ -28,7 +28,10 @@ import {
   ConversationConfiguration,
   ConversationInterruption,
   ConversationDirective,
-  ConversationInitialization
+  ConversationInitialization,
+  ConversationEvent,
+  ConversationMetric,
+  ConversationError,
 } from "@/rapida/clients/protos/talk-api_pb";
 
 import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
@@ -105,6 +108,12 @@ export interface AgentCallback {
   /** Called when directive/action is received */
   onDirective?: (arg?: ConversationDirective.AsObject) => void;
 
+  /** Called when a pipeline conversation event is received (STT, TTS, LLM, session, etc.) */
+  onConversationEvent?: (event: ConversationEvent.AsObject) => void;
+
+  /** Called when server-side performance/latency metric data is received */
+  onMetric?: (metric: ConversationMetric.AsObject) => void;
+
   /** Called when connection state changes */
   onConnectionStateChange?: (state: RTCPeerConnectionState) => void;
 
@@ -113,6 +122,9 @@ export interface AgentCallback {
 
   /** Called when disconnected */
   onDisconnected?: () => void;
+
+  /** Called when a server-side conversation error is received (with conversation ID and details) */
+  onConversationError?: (error: ConversationError.AsObject) => void;
 
   /** Called on error */
   onError?: (error: Error) => void;

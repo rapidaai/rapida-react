@@ -28,7 +28,7 @@ import { AgentCallback } from "@/rapida/types/agent-callback";
 // WebRTC Constants
 // ============================================================================
 
-const ICE_SERVERS: RTCIceServer[] = [
+const DEFAULT_ICE_SERVERS: RTCIceServer[] = [
   { urls: "stun:stun.l.google.com:19302" },
   { urls: "stun:stun1.l.google.com:19302" },
 ];
@@ -59,17 +59,22 @@ export class WebRTCPeerManager {
   // Lifecycle
   // ---------------------------------------------------------------------------
 
-  /** Create a new RTCPeerConnection */
-  setup(): void {
-    // Close existing connection before creating a new one to prevent leaks
+  /** Create a new RTCPeerConnection, optionally using server-provided ICE servers */
+  setup(iceServers?: RTCIceServer[]): void {
+    // Close existing connection before creating a new one to prevent leaks.
+    // Detach handlers BEFORE closing so the "closed" state change does not
+    // spuriously fire onDisconnected when the peer is simply being replaced.
     if (this.peerConnection) {
+      this.peerConnection.onconnectionstatechange = null;
+      this.peerConnection.ontrack = null;
+      this.peerConnection.onicecandidate = null;
       try { this.peerConnection.close(); } catch { }
       this.peerConnection = null;
       this._isConnected = false;
     }
 
     this.peerConnection = new RTCPeerConnection({
-      iceServers: ICE_SERVERS,
+      iceServers: iceServers?.length ? iceServers : DEFAULT_ICE_SERVERS,
       iceTransportPolicy: ICE_TRANSPORT_POLICY,
       bundlePolicy: BUNDLE_POLICY,
     });
@@ -81,10 +86,14 @@ export class WebRTCPeerManager {
       this.onRemoteTrack(stream);
     };
 
-    // ICE candidates
+    // ICE candidates — Safari may lack toJSON() on RTCIceCandidate
     this.peerConnection.onicecandidate = (event) => {
       if (event.candidate) {
-        this.onICECandidate(event.candidate.toJSON());
+        const c = event.candidate;
+        const json = typeof c.toJSON === "function"
+          ? c.toJSON()
+          : { candidate: c.candidate, sdpMid: c.sdpMid, sdpMLineIndex: c.sdpMLineIndex };
+        this.onICECandidate(json);
       }
     };
 
@@ -150,7 +159,18 @@ export class WebRTCPeerManager {
 
     const track = localStream?.getAudioTracks()[0];
     const transceivers = this.peerConnection!.getTransceivers();
-    const audioTransceiver = transceivers.find(t => t.receiver.track?.kind === "audio");
+
+    // Safari (pre-14.1) leaves receiver.track null after setRemoteDescription
+    // until the first remote packet arrives, so the receiver-track check alone
+    // is unreliable. Use a cascade of fallbacks:
+    //   1. receiver.track.kind  — Chrome, Firefox, Safari 14.1+
+    //   2. sender.track.kind    — if the sender already has a track attached
+    //   3. transceivers[0]      — voice-only sessions always have exactly one
+    //                             audio m-line, so the first transceiver is it
+    const audioTransceiver =
+      transceivers.find(t => t.receiver.track?.kind === "audio") ??
+      transceivers.find(t => t.sender.track?.kind === "audio") ??
+      transceivers[0];
 
     if (!audioTransceiver) {
       console.warn("No audio transceiver found in offer");
@@ -160,13 +180,21 @@ export class WebRTCPeerManager {
     }
 
     if (track) {
-      // Audio mode — bidirectional
+      // Audio mode — bidirectional.
+      // Set direction first so the answer SDP reflects sendrecv intent.
       audioTransceiver.direction = "sendrecv";
+
+      // replaceTrack must succeed — if it throws, revert direction so the
+      // answer SDP does not falsely advertise a send-capable track, and
+      // re-throw so the caller can surface the failure rather than silently
+      // completing negotiation with no mic audio reaching the server.
       try {
         await audioTransceiver.sender.replaceTrack(track);
       } catch (error) {
-        console.error("Failed to replace audio track", error);
+        audioTransceiver.direction = "recvonly";
+        throw error;
       }
+
       this.setCodecPreferences(audioTransceiver);
     } else {
       // Text-only mode — receive only (no microphone)

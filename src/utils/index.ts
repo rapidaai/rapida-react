@@ -85,7 +85,8 @@ export function hasFullWebRTCAudioSupport(): boolean {
   return (
     typeof RTCPeerConnection !== "undefined" &&
     typeof navigator.mediaDevices?.getUserMedia === "function" &&
-    typeof AudioContext !== "undefined"
+    // Safari uses webkitAudioContext (standard AudioContext was added in Safari 14.1)
+    (typeof AudioContext !== "undefined" || typeof (window as any).webkitAudioContext !== "undefined")
   );
 }
 

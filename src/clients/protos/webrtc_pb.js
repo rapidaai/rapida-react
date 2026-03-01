@@ -2284,7 +2284,7 @@ proto.talk_api.WebTalkRequest.prototype.hasDisconnection = function() {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.talk_api.WebTalkResponse.oneofGroups_ = [[8,9,10,11,12,13,14,16,15,17,19,20,21]];
+proto.talk_api.WebTalkResponse.oneofGroups_ = [[8,9,10,11,12,13,14,16,15,17,19,20,21,22]];
 
 /**
  * @enum {number}
@@ -2303,7 +2303,8 @@ proto.talk_api.WebTalkResponse.DataCase = {
   SIGNALING: 17,
   METADATA: 19,
   METRIC: 20,
-  DISCONNECTION: 21
+  DISCONNECTION: 21,
+  EVENT: 22
 };
 
 /**
@@ -2358,7 +2359,8 @@ proto.talk_api.WebTalkResponse.toObject = function(includeInstance, msg) {
     signaling: (f = msg.getSignaling()) && proto.talk_api.ServerSignaling.toObject(includeInstance, f),
     metadata: (f = msg.getMetadata()) && talk$api_pb.ConversationMetadata.toObject(includeInstance, f),
     metric: (f = msg.getMetric()) && talk$api_pb.ConversationMetric.toObject(includeInstance, f),
-    disconnection: (f = msg.getDisconnection()) && talk$api_pb.ConversationDisconnection.toObject(includeInstance, f)
+    disconnection: (f = msg.getDisconnection()) && talk$api_pb.ConversationDisconnection.toObject(includeInstance, f),
+    event: (f = msg.getEvent()) && talk$api_pb.ConversationEvent.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -2467,6 +2469,11 @@ proto.talk_api.WebTalkResponse.deserializeBinaryFromReader = function(msg, reade
       var value = new talk$api_pb.ConversationDisconnection;
       reader.readMessage(value,talk$api_pb.ConversationDisconnection.deserializeBinaryFromReader);
       msg.setDisconnection(value);
+      break;
+    case 22:
+      var value = new talk$api_pb.ConversationEvent;
+      reader.readMessage(value,talk$api_pb.ConversationEvent.deserializeBinaryFromReader);
+      msg.setEvent(value);
       break;
     default:
       reader.skipField();
@@ -2613,6 +2620,14 @@ proto.talk_api.WebTalkResponse.serializeBinaryToWriter = function(message, write
       21,
       f,
       talk$api_pb.ConversationDisconnection.serializeBinaryToWriter
+    );
+  }
+  f = message.getEvent();
+  if (f != null) {
+    writer.writeMessage(
+      22,
+      f,
+      talk$api_pb.ConversationEvent.serializeBinaryToWriter
     );
   }
 };
@@ -3132,6 +3147,43 @@ proto.talk_api.WebTalkResponse.prototype.clearDisconnection = function() {
  */
 proto.talk_api.WebTalkResponse.prototype.hasDisconnection = function() {
   return jspb.Message.getField(this, 21) != null;
+};
+
+
+/**
+ * optional ConversationEvent event = 22;
+ * @return {?proto.talk_api.ConversationEvent}
+ */
+proto.talk_api.WebTalkResponse.prototype.getEvent = function() {
+  return /** @type{?proto.talk_api.ConversationEvent} */ (
+    jspb.Message.getWrapperField(this, talk$api_pb.ConversationEvent, 22));
+};
+
+
+/**
+ * @param {?proto.talk_api.ConversationEvent|undefined} value
+ * @return {!proto.talk_api.WebTalkResponse} returns this
+*/
+proto.talk_api.WebTalkResponse.prototype.setEvent = function(value) {
+  return jspb.Message.setOneofWrapperField(this, 22, proto.talk_api.WebTalkResponse.oneofGroups_[0], value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.talk_api.WebTalkResponse} returns this
+ */
+proto.talk_api.WebTalkResponse.prototype.clearEvent = function() {
+  return this.setEvent(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.talk_api.WebTalkResponse.prototype.hasEvent = function() {
+  return jspb.Message.getField(this, 22) != null;
 };
 
 

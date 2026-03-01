@@ -146,6 +146,21 @@ export class VoiceAgent extends Agent {
           this.disconnect();
         }
       },
+      onConversationEvent: (event) => {
+        this.agentCallbacks.forEach((cb) => {
+          cb.onConversationEvent?.(event);
+        });
+      },
+      onMetric: (metric) => {
+        this.agentCallbacks.forEach((cb) => {
+          cb.onMetric?.(metric);
+        });
+      },
+      onConversationError: (error) => {
+        this.agentCallbacks.forEach((cb) => {
+          cb.onConversationError?.(error);
+        });
+      },
       onInitialization: (config) => {
         // console.log(`${LOG_PREFIX} callback -> onInitialization`, config);
         if (config?.assistantconversationid) {

@@ -383,6 +383,11 @@ export class WebTalkResponse extends jspb.Message {
   getDisconnection(): talk_api_pb.ConversationDisconnection | undefined;
   setDisconnection(value?: talk_api_pb.ConversationDisconnection): void;
 
+  hasEvent(): boolean;
+  clearEvent(): void;
+  getEvent(): talk_api_pb.ConversationEvent | undefined;
+  setEvent(value?: talk_api_pb.ConversationEvent): void;
+
   getDataCase(): WebTalkResponse.DataCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): WebTalkResponse.AsObject;
@@ -411,6 +416,7 @@ export namespace WebTalkResponse {
     metadata?: talk_api_pb.ConversationMetadata.AsObject,
     metric?: talk_api_pb.ConversationMetric.AsObject,
     disconnection?: talk_api_pb.ConversationDisconnection.AsObject,
+    event?: talk_api_pb.ConversationEvent.AsObject,
   }
 
   export enum DataCase {
@@ -428,6 +434,7 @@ export namespace WebTalkResponse {
     METADATA = 19,
     METRIC = 20,
     DISCONNECTION = 21,
+    EVENT = 22,
   }
 }
 
