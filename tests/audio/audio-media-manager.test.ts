@@ -32,6 +32,8 @@ jest.mock('@/rapida/utils', () => ({
   isWindows: jest.fn().mockReturnValue(false),
   isChrome: jest.fn().mockReturnValue(false),
   isEdge: jest.fn().mockReturnValue(false),
+  isSafari: jest.fn().mockReturnValue(false),
+  isIOS: jest.fn().mockReturnValue(false),
   isSinkIdSupported: jest.fn().mockReturnValue(false),
 }));
 

@@ -23,6 +23,7 @@ import { MockMediaStream } from '../setup';
 function createMockPeerConnection() {
   const pc: any = {
     connectionState: 'new' as RTCPeerConnectionState,
+    iceGatheringState: 'complete' as RTCIceGatheringState,
     localDescription: null as RTCSessionDescription | null,
     onconnectionstatechange: null as any,
     ontrack: null as any,
@@ -37,6 +38,8 @@ function createMockPeerConnection() {
     getTransceivers: jest.fn().mockReturnValue([]),
     getSenders: jest.fn().mockReturnValue([]),
     close: jest.fn(),
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
 
     // Helpers for triggering browser-style events in tests
     _triggerConnectionState(state: RTCPeerConnectionState) {
@@ -140,11 +143,13 @@ describe('WebRTCPeerManager', () => {
       expect(callbacks.onDisconnected).toHaveBeenCalledTimes(1);
     });
 
-    it('forwards ICE candidates to onICECandidate callback', () => {
+    it('does NOT forward ICE candidates individually (uses complete ICE embedded in SDP)', () => {
+      // ICE candidates are gathered inline via waitForIceGathering() and embedded
+      // in the answer SDP rather than trickled — onICECandidate is never called.
       manager.setup();
       const candidate = { candidate: 'candidate:1', sdpMid: '0', sdpMLineIndex: 0, toJSON: () => ({}) } as any;
       mockPCInstances[0]._triggerICECandidate(candidate);
-      expect(onICECandidate).toHaveBeenCalledWith(candidate.toJSON());
+      expect(onICECandidate).not.toHaveBeenCalled();
     });
 
     it('forwards remote tracks to onRemoteTrack callback', () => {
@@ -360,15 +365,11 @@ describe('WebRTCPeerManager', () => {
     });
 
     /**
-     * BUG FIX: If replaceTrack() throws (e.g. the track was stopped before
-     * the SDP exchange completed), the old code left direction = "sendrecv"
-     * which made the answer SDP falsely advertise mic audio. The server would
-     * see a sendrecv m-line with no actual audio.
-     *
-     * After the fix, direction is reverted to "recvonly" and the error is
-     * re-thrown so the caller (MessageProtocolHandler) can surface it.
+     * If replaceTrack() throws (e.g. on older Safari), the implementation
+     * falls back gracefully to recvonly rather than re-throwing. The answer
+     * SDP is still sent so the server can push audio to the client.
      */
-    it('replaceTrack failure: reverts direction to recvonly and re-throws', async () => {
+    it('replaceTrack failure: reverts direction to recvonly and resolves (graceful fallback)', async () => {
       const replaceTrackError = new Error('track ended');
       const transceiver = createMockTransceiver({
         receiverTrackKind: 'audio',
@@ -378,7 +379,8 @@ describe('WebRTCPeerManager', () => {
 
       const stream = new MockMediaStream() as unknown as MediaStream;
 
-      await expect(manager.handleOffer('v=0\r\n', stream)).rejects.toThrow('track ended');
+      // Does NOT re-throw — falls back gracefully
+      await expect(manager.handleOffer('v=0\r\n', stream)).resolves.not.toThrow();
 
       // Direction must have been reverted — answer SDP will show recvonly
       expect(transceiver.direction).toBe('recvonly');
