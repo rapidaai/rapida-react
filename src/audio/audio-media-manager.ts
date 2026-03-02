@@ -23,7 +23,7 @@
  */
 
 import { AgentConfig } from "@/rapida/types/agent-config";
-import { isChrome, isEdge, isWindows, isSinkIdSupported } from "@/rapida/utils";
+import { isChrome, isEdge, isWindows, isSafari, isIOS, isSinkIdSupported } from "@/rapida/utils";
 
 /** Sample rate for Opus */
 const OPUS_SAMPLE_RATE = 48000;
@@ -165,7 +165,7 @@ export class AudioMediaManager {
     const base: MediaTrackConstraints = {
       echoCancellation: true,
       noiseSuppression: true,
-      autoGainControl: true,
+      autoGainControl: false,
     };
 
     if (this.agentConfig.inputOptions.device) {
@@ -183,7 +183,11 @@ export class AudioMediaManager {
       channelCount: { ideal: 1 },
       echoCancellation: true,
       noiseSuppression: true,
-      autoGainControl: true,
+      // Disable AGC for voice AI: when the assistant finishes speaking and the
+      // user starts talking, AGC would abruptly boost the mic gain (it was
+      // suppressed while output was playing), clipping the first syllable and
+      // causing a jarring volume jump. The STT model handles normalization.
+      autoGainControl: false,
     };
 
     if (this.agentConfig.inputOptions.device) {
@@ -197,8 +201,9 @@ export class AudioMediaManager {
     }
 
     // On Windows, remove sampleRate constraint — WebRTC handles resampling internally,
-    // and forcing 48kHz can conflict with WASAPI on 44100Hz audio hardware
-    if (isWindows()) {
+    // and forcing 48kHz can conflict with WASAPI on 44100Hz audio hardware.
+    // On Safari/iOS, sampleRate is not a supported getUserMedia constraint and must be omitted.
+    if (isWindows() || isSafari() || isIOS()) {
       delete base.sampleRate;
     }
 
@@ -208,11 +213,11 @@ export class AudioMediaManager {
         ...base,
         // @ts-ignore Chrome/Edge-specific
         googEchoCancellation: true,
-        // @ts-ignore
-        googAutoGainControl: true,
+        // @ts-ignore AGC disabled — matches autoGainControl: false above
+        googAutoGainControl: false,
         // @ts-ignore
         googNoiseSuppression: true,
-        // @ts-ignore
+        // @ts-ignore removes low-frequency rumble (fan/AC noise)
         googHighpassFilter: true,
       };
     }

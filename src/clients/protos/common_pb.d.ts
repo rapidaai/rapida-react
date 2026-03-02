@@ -661,53 +661,6 @@ export namespace FunctionCall {
   }
 }
 
-export class Telemetry extends jspb.Message {
-  getStagename(): string;
-  setStagename(value: string): void;
-
-  hasStarttime(): boolean;
-  clearStarttime(): void;
-  getStarttime(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setStarttime(value?: google_protobuf_timestamp_pb.Timestamp): void;
-
-  hasEndtime(): boolean;
-  clearEndtime(): void;
-  getEndtime(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setEndtime(value?: google_protobuf_timestamp_pb.Timestamp): void;
-
-  getDuration(): number;
-  setDuration(value: number): void;
-
-  getAttributesMap(): jspb.Map<string, string>;
-  clearAttributesMap(): void;
-  getSpanid(): string;
-  setSpanid(value: string): void;
-
-  getParentid(): string;
-  setParentid(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Telemetry.AsObject;
-  static toObject(includeInstance: boolean, msg: Telemetry): Telemetry.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Telemetry, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Telemetry;
-  static deserializeBinaryFromReader(message: Telemetry, reader: jspb.BinaryReader): Telemetry;
-}
-
-export namespace Telemetry {
-  export type AsObject = {
-    stagename: string,
-    starttime?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-    endtime?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-    duration: number,
-    attributesMap: Array<[string, string]>,
-    spanid: string,
-    parentid: string,
-  }
-}
-
 export class Knowledge extends jspb.Message {
   getId(): string;
   setId(value: string): void;

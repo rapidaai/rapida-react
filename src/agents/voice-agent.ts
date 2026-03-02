@@ -94,6 +94,10 @@ export class VoiceAgent extends Agent {
             // console.log(`${LOG_PREFIX} WebRTC peer ${state} but gRPC still alive — staying connected`);
             this.switchToTextModeOnDisconnect();
           } else {
+            // gRPC stream is gone — null the transport so the next connect()
+            // call creates a fresh one instead of returning early on the
+            // `if (this.webrtcTransport) return` guard.
+            this.webrtcTransport = null;
             this.connectionState = ConnectionState.Disconnected;
             this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Disconnected);
             this.switchToTextModeOnDisconnect();
@@ -664,7 +668,14 @@ export class VoiceAgent extends Agent {
 
     // Add or remove the audio transport
     if (input === Channel.Audio) {
-      await this.webrtcTransport?.reconnectAudio();
+      try {
+        await this.webrtcTransport?.reconnectAudio();
+      } catch (error) {
+        // gRPC stream was lost between ensureConnected and reconnectAudio.
+        // Trigger a full reconnect on the next user action.
+        this.emit(AgentEvent.ErrorEvent, "client", `Audio reconnect failed: ${error}`);
+        this.webrtcTransport = null;
+      }
     } else {
       await this.webrtcTransport?.disconnectAudioOnly();
     }

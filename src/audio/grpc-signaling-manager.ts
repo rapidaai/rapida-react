@@ -87,6 +87,11 @@ export class GrpcSignalingManager {
         });
 
         this.grpcStream.on("end", () => {
+          // Null the stream immediately so isConnected returns false.
+          // Without this, callers checking isConnected after the stream
+          // ends still see true and attempt writes on a dead stream.
+          this.grpcStream = null;
+          this.initializationSent = false;
           this.callbacks.onConnectionStateChange?.("disconnected");
           this.callbacks.onDisconnected?.();
         });

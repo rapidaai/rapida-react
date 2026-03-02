@@ -405,6 +405,142 @@ export namespace GetAllAssistantTelemetryRequest {
   }
 }
 
+export class TelemetryEvent extends jspb.Message {
+  getMessageid(): string;
+  setMessageid(value: string): void;
+
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  getAssistantconversationid(): string;
+  setAssistantconversationid(value: string): void;
+
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  getOrganizationid(): string;
+  setOrganizationid(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  getDataMap(): jspb.Map<string, string>;
+  clearDataMap(): void;
+  hasTime(): boolean;
+  clearTime(): void;
+  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TelemetryEvent.AsObject;
+  static toObject(includeInstance: boolean, msg: TelemetryEvent): TelemetryEvent.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: TelemetryEvent, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TelemetryEvent;
+  static deserializeBinaryFromReader(message: TelemetryEvent, reader: jspb.BinaryReader): TelemetryEvent;
+}
+
+export namespace TelemetryEvent {
+  export type AsObject = {
+    messageid: string,
+    assistantid: string,
+    assistantconversationid: string,
+    projectid: string,
+    organizationid: string,
+    name: string,
+    dataMap: Array<[string, string]>,
+    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
+export class TelemetryMetric extends jspb.Message {
+  getContextid(): string;
+  setContextid(value: string): void;
+
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  getAssistantconversationid(): string;
+  setAssistantconversationid(value: string): void;
+
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  getOrganizationid(): string;
+  setOrganizationid(value: string): void;
+
+  getScope(): string;
+  setScope(value: string): void;
+
+  clearMetricsList(): void;
+  getMetricsList(): Array<common_pb.Metric>;
+  setMetricsList(value: Array<common_pb.Metric>): void;
+  addMetrics(value?: common_pb.Metric, index?: number): common_pb.Metric;
+
+  hasTime(): boolean;
+  clearTime(): void;
+  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TelemetryMetric.AsObject;
+  static toObject(includeInstance: boolean, msg: TelemetryMetric): TelemetryMetric.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: TelemetryMetric, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TelemetryMetric;
+  static deserializeBinaryFromReader(message: TelemetryMetric, reader: jspb.BinaryReader): TelemetryMetric;
+}
+
+export namespace TelemetryMetric {
+  export type AsObject = {
+    contextid: string,
+    assistantid: string,
+    assistantconversationid: string,
+    projectid: string,
+    organizationid: string,
+    scope: string,
+    metricsList: Array<common_pb.Metric.AsObject>,
+    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
+export class TelemetryRecord extends jspb.Message {
+  hasEvent(): boolean;
+  clearEvent(): void;
+  getEvent(): TelemetryEvent | undefined;
+  setEvent(value?: TelemetryEvent): void;
+
+  hasMetric(): boolean;
+  clearMetric(): void;
+  getMetric(): TelemetryMetric | undefined;
+  setMetric(value?: TelemetryMetric): void;
+
+  getRecordCase(): TelemetryRecord.RecordCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): TelemetryRecord.AsObject;
+  static toObject(includeInstance: boolean, msg: TelemetryRecord): TelemetryRecord.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: TelemetryRecord, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): TelemetryRecord;
+  static deserializeBinaryFromReader(message: TelemetryRecord, reader: jspb.BinaryReader): TelemetryRecord;
+}
+
+export namespace TelemetryRecord {
+  export type AsObject = {
+    event?: TelemetryEvent.AsObject,
+    metric?: TelemetryMetric.AsObject,
+  }
+
+  export enum RecordCase {
+    RECORD_NOT_SET = 0,
+    EVENT = 1,
+    METRIC = 2,
+  }
+}
+
 export class GetAllAssistantTelemetryResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
@@ -413,9 +549,9 @@ export class GetAllAssistantTelemetryResponse extends jspb.Message {
   setSuccess(value: boolean): void;
 
   clearDataList(): void;
-  getDataList(): Array<common_pb.Telemetry>;
-  setDataList(value: Array<common_pb.Telemetry>): void;
-  addData(value?: common_pb.Telemetry, index?: number): common_pb.Telemetry;
+  getDataList(): Array<TelemetryRecord>;
+  setDataList(value: Array<TelemetryRecord>): void;
+  addData(value?: TelemetryRecord, index?: number): TelemetryRecord;
 
   hasError(): boolean;
   clearError(): void;
@@ -441,7 +577,7 @@ export namespace GetAllAssistantTelemetryResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    dataList: Array<common_pb.Telemetry.AsObject>,
+    dataList: Array<TelemetryRecord.AsObject>,
     error?: common_pb.Error.AsObject,
     paginated?: common_pb.Paginated.AsObject,
   }

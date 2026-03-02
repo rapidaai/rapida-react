@@ -1,3 +1,4 @@
+import { TelemetryEvent } from './clients/protos/assistant-api_pb';
 /*
  *  Copyright (c) 2024. Rapida
  *
@@ -118,6 +119,7 @@ export {
   getClientInfo,
   WithClientContext,
 } from "@/rapida/clients/index";
+export { TelemetryEvent, TelemetryMetric, TelemetryRecord } from "@/rapida/clients/protos/assistant-api_pb";
 export { GeneralConnect, GetConnectorFiles } from "@/rapida/clients/connect";
 export {
   CreateOrganization,
@@ -418,7 +420,6 @@ export {
   GetAllConversationMessageResponse,
   AssistantConversationRecording,
   AssistantDefinition,
-  Telemetry,
   AssistantConversationTelephonyEvent,
 } from "@/rapida/clients/protos/common_pb";
 export {

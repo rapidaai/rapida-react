@@ -86,15 +86,13 @@ export class WebRTCPeerManager {
       this.onRemoteTrack(stream);
     };
 
-    // ICE candidates — Safari may lack toJSON() on RTCIceCandidate
-    this.peerConnection.onicecandidate = (event) => {
-      if (event.candidate) {
-        const c = event.candidate;
-        const json = typeof c.toJSON === "function"
-          ? c.toJSON()
-          : { candidate: c.candidate, sdpMid: c.sdpMid, sdpMLineIndex: c.sdpMLineIndex };
-        this.onICECandidate(json);
-      }
+    // ICE candidates are NOT sent individually — all candidates are embedded
+    // inline in the answer SDP (complete ICE, not trickle ICE). Trickle ICE
+    // candidates sent before the server receives the answer SDP cause
+    // "InvalidStateError: remote description is not set" on the server.
+    // We capture them via waitForIceGathering() instead.
+    this.peerConnection.onicecandidate = (_event) => {
+      // no-op: candidates are captured via localDescription after gathering
     };
 
     // Connection state
@@ -151,14 +149,20 @@ export class WebRTCPeerManager {
    * In text-only mode `localStream` is null — we still complete the WebRTC
    * negotiation (the server always requires it) but set the transceiver to
    * `recvonly` so no microphone is needed.
+   *
+   * After setLocalDescription we wait for local ICE gathering to complete
+   * so that the answer SDP contains all client candidates inline. This pairs
+   * with the server sending a complete offer (all server candidates inline).
+   * Together they eliminate trickle-ICE timing bugs that cause Safari to fail.
    */
   async handleOffer(sdp: string, localStream: MediaStream | null): Promise<void> {
     if (!this.peerConnection) this.setup();
+    const pc = this.peerConnection!;
 
-    await this.peerConnection!.setRemoteDescription({ type: "offer", sdp });
+    await pc.setRemoteDescription({ type: "offer", sdp });
 
     const track = localStream?.getAudioTracks()[0];
-    const transceivers = this.peerConnection!.getTransceivers();
+    const transceivers = pc.getTransceivers();
 
     // Safari (pre-14.1) leaves receiver.track null after setRemoteDescription
     // until the first remote packet arrives, so the receiver-track check alone
@@ -174,25 +178,25 @@ export class WebRTCPeerManager {
 
     if (!audioTransceiver) {
       console.warn("No audio transceiver found in offer");
-      const answer = await this.peerConnection!.createAnswer();
-      await this.peerConnection!.setLocalDescription(answer);
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+      await this.waitForIceGathering(pc);
       return;
     }
 
     if (track) {
       // Audio mode — bidirectional.
-      // Set direction first so the answer SDP reflects sendrecv intent.
       audioTransceiver.direction = "sendrecv";
 
-      // replaceTrack must succeed — if it throws, revert direction so the
-      // answer SDP does not falsely advertise a send-capable track, and
-      // re-throw so the caller can surface the failure rather than silently
-      // completing negotiation with no mic audio reaching the server.
+      // replaceTrack attaches the mic track to the transceiver's sender.
+      // If it fails (e.g. on older Safari), fall back to recvonly rather
+      // than throwing — the answer is still sent and the server can at least
+      // push audio to the client (user hears the assistant, doesn't send mic).
       try {
         await audioTransceiver.sender.replaceTrack(track);
       } catch (error) {
+        console.warn("[WebRTCPeerManager] replaceTrack failed, falling back to recvonly", error);
         audioTransceiver.direction = "recvonly";
-        throw error;
       }
 
       this.setCodecPreferences(audioTransceiver);
@@ -201,9 +205,37 @@ export class WebRTCPeerManager {
       audioTransceiver.direction = "recvonly";
     }
 
-    // Create and return answer
-    const answer = await this.peerConnection!.createAnswer();
-    await this.peerConnection!.setLocalDescription(answer);
+    const answer = await pc.createAnswer();
+    await pc.setLocalDescription(answer);
+
+    // Wait for local ICE gathering to complete so the answer SDP contains
+    // all client candidates inline. Safari handles the complete SDP reliably;
+    // it often drops or misorders trickle ICE candidates that arrive as
+    // separate addIceCandidate() calls after the offer/answer exchange.
+    await this.waitForIceGathering(pc);
+  }
+
+  /**
+   * Wait for the RTCPeerConnection's ICE gathering to reach "complete".
+   * Resolves immediately if already complete.
+   * Times out after 5 seconds to avoid blocking forever if STUN is unreachable.
+   */
+  private waitForIceGathering(pc: RTCPeerConnection): Promise<void> {
+    if (pc.iceGatheringState === "complete") return Promise.resolve();
+
+    return new Promise<void>((resolve) => {
+      const timeout = setTimeout(resolve, 5000);
+
+      const handler = () => {
+        if (pc.iceGatheringState === "complete") {
+          clearTimeout(timeout);
+          pc.removeEventListener("icegatheringstatechange", handler);
+          resolve();
+        }
+      };
+
+      pc.addEventListener("icegatheringstatechange", handler);
+    });
   }
 
   /** Get local SDP (answer) after handleOffer was called */
