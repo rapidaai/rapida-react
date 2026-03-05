@@ -130,7 +130,10 @@ export class MessageProtocolHandler {
     // Conversation error (server-side error with conversation ID and details)
     if (response.hasError()) {
       const error = response.getError();
-      if (error) this.callbacks.onError?.(new Error(error.getMessage()));
+      if (error) {
+        this.callbacks.onError?.(new Error(error.getMessage()));
+        this.callbacks.onConversationError?.(error.toObject());
+      }
     }
 
     // Metric (server-side performance/latency data)
