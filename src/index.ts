@@ -263,30 +263,7 @@ export {
   GetAllAssistantKnowledgeResponse,
 } from "@/rapida/clients/protos/assistant-knowledge_pb";
 export {
-  BedrockService,
-  OpenAiService,
-  AzureService,
-  ReplicateService,
-  AnthropicService,
-  CohereService,
-  HuggingfaceService,
-  MistralService,
-  StabilityAiService,
-  TogetherAiService,
-  DeepInfraService,
-  VoyageAiService,
-  BedrockServiceClient,
-  OpenAiServiceClient,
-  AzureServiceClient,
-  ReplicateServiceClient,
-  AnthropicServiceClient,
-  CohereServiceClient,
-  HuggingfaceServiceClient,
-  MistralServiceClient,
-  StabilityAiServiceClient,
-  TogetherAiServiceClient,
-  DeepInfraServiceClient,
-  VoyageAiServiceClient,
+  UnifiedProviderService
 } from "@/rapida/clients/protos/integration-api_pb_service";
 export {
   AuditLog,

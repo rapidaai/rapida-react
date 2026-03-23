@@ -11,6 +11,8 @@
 
 import { mockMediaDevices, MockMediaStream } from '../setup';
 
+let lastTransportCallbacks: any = null;
+
 // Mock WebRTC Transport
 const mockWebRTCTransport = {
   close: jest.fn().mockResolvedValue(undefined),
@@ -36,6 +38,7 @@ const mockWebRTCTransport = {
 jest.mock('@/rapida/audio/webrtc-grpc-transport', () => ({
   WebRTCGrpcTransport: {
     create: jest.fn().mockImplementation(async (_config, callbacks, _textOnly) => {
+      lastTransportCallbacks = callbacks;
       // Simulate successful connection by calling onConnectionStateChange
       if (callbacks?.onConnectionStateChange) {
         callbacks.onConnectionStateChange('connected');
@@ -82,7 +85,6 @@ jest.mock('@/rapida/agents/', () => {
     get isConnected() { return this.connectionState === 'connected'; }
 
     disconnectAgent = jest.fn().mockResolvedValue(undefined);
-    switchAgent = jest.fn().mockResolvedValue(undefined);
     changeConversation = jest.fn();
   }
 
@@ -91,9 +93,12 @@ jest.mock('@/rapida/agents/', () => {
 
 import { VoiceAgent } from '@/rapida/agents/voice-agent';
 import { WebRTCGrpcTransport } from '@/rapida/audio/webrtc-grpc-transport';
+import { isAndroidDevice, isIosDevice } from '@/rapida/audio/compatibility';
 import { Channel } from '@/rapida/types/channel';
 import { AgentEvent } from '@/rapida/types/agent-event';
 import { ConnectionState } from '@/rapida/types/connection-state';
+import { MessageRole, MessageStatus } from '@/rapida/types/message';
+import { ConversationDirective } from '@/rapida/clients/protos/talk-api_pb';
 
 describe('VoiceAgent', () => {
   let voiceAgent: VoiceAgent;
@@ -121,6 +126,15 @@ describe('VoiceAgent', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    lastTransportCallbacks = null;
+    mockAgentConfig.inputOptions.channel = Channel.Audio;
+    mockAgentConfig.outputOptions.channel = Channel.Audio;
+    mockAgentConfig.inputOptions.device = undefined;
+    mockAgentConfig.outputOptions.device = undefined;
+    mockWebRTCTransport.isGrpcConnected = true;
+    mockWebRTCTransport.connected = true;
+    mockWebRTCTransport.inputAnalyserNode = null as any;
+    mockWebRTCTransport.outputAnalyserNode = null as any;
     voiceAgent = new VoiceAgent(
       mockConnectionConfig as any,
       mockAgentConfig as any
@@ -455,6 +469,274 @@ describe('VoiceAgent', () => {
       // Without connection, returns undefined
       const data = voiceAgent.getOutputByteFrequencyData();
       expect(data).toBeUndefined();
+    });
+  });
+
+  describe('connection callbacks and events', () => {
+    it('transitions to connected on initialization callback', async () => {
+      const emitSpy = jest.spyOn(voiceAgent, 'emit');
+      await voiceAgent.connect();
+      lastTransportCallbacks.onInitialization?.({ assistantconversationid: 'conv-123' });
+
+      expect(voiceAgent.state).toBe(ConnectionState.Connected);
+      expect(emitSpy).toHaveBeenCalledWith(
+        AgentEvent.ConnectionStateEvent,
+        ConnectionState.Connected,
+      );
+    });
+
+    it('falls back to text mode on disconnected callback while audio channel', async () => {
+      await voiceAgent.connect();
+      const emitSpy = jest.spyOn(voiceAgent, 'emit');
+      lastTransportCallbacks.onDisconnected?.();
+      expect(emitSpy).toHaveBeenCalledWith(AgentEvent.InputChannelChangeEvent, Channel.Text);
+    });
+
+    it('marks pending assistant message complete on interrupt', async () => {
+      await voiceAgent.connect();
+      (voiceAgent as any).agentMessages.push({
+        id: 'sys-1',
+        role: MessageRole.System,
+        messages: ['partial'],
+        time: new Date(),
+        status: MessageStatus.Pending,
+      });
+      lastTransportCallbacks.onInterrupt?.({});
+      expect(mockWebRTCTransport.interruptAudio).toHaveBeenCalled();
+      expect((voiceAgent as any).agentMessages[0].status).toBe(MessageStatus.Complete);
+    });
+
+    it('disconnects on END_CONVERSATION directive', async () => {
+      await voiceAgent.connect();
+      const disconnectSpy = jest.spyOn(voiceAgent, 'disconnect');
+      lastTransportCallbacks.onDirective?.({
+        type: ConversationDirective.DirectiveType.END_CONVERSATION,
+      });
+      expect(disconnectSpy).toHaveBeenCalled();
+    });
+
+    it('routes callback errors to ErrorEvent', async () => {
+      await voiceAgent.connect();
+      const emitSpy = jest.spyOn(voiceAgent, 'emit');
+      lastTransportCallbacks.onError?.(new Error('transport failed'));
+      expect(emitSpy).toHaveBeenCalledWith(AgentEvent.ErrorEvent, 'client', 'transport failed');
+    });
+
+    it('handles assistant and user streaming message callbacks', async () => {
+      const assistantCb = { onAssistantMessage: jest.fn(), onUserMessage: jest.fn() };
+      const agent = new VoiceAgent(
+        mockConnectionConfig as any,
+        mockAgentConfig as any,
+        assistantCb as any,
+      );
+      await agent.connect();
+
+      lastTransportCallbacks.onAssistantMessage?.({
+        id: 'a1',
+        messageText: 'hel',
+        completed: false,
+      });
+      lastTransportCallbacks.onAssistantMessage?.({
+        id: 'a1',
+        messageText: 'lo',
+        completed: false,
+      });
+      lastTransportCallbacks.onAssistantMessage?.({
+        id: 'a1',
+        messageText: 'hello',
+        completed: true,
+      });
+
+      lastTransportCallbacks.onUserMessage?.({
+        id: 'u1',
+        messageText: 'hi',
+        completed: false,
+      });
+      lastTransportCallbacks.onUserMessage?.({
+        id: 'u1',
+        messageText: 'hi there',
+        completed: true,
+      });
+
+      expect(assistantCb.onAssistantMessage).toHaveBeenCalled();
+      expect(assistantCb.onUserMessage).toHaveBeenCalled();
+      expect((agent as any).agentMessages.some((m: any) => m.role === MessageRole.System)).toBe(true);
+      expect((agent as any).agentMessages.some((m: any) => m.role === MessageRole.User)).toBe(true);
+    });
+  });
+
+  describe('mute controls', () => {
+    it('mutes, unmutes and toggles state', async () => {
+      await voiceAgent.connect();
+      const emitSpy = jest.spyOn(voiceAgent, 'emit');
+
+      voiceAgent.mute();
+      expect(voiceAgent.isMuted).toBe(true);
+      expect(mockWebRTCTransport.setMuted).toHaveBeenCalledWith(true);
+
+      voiceAgent.unmute();
+      expect(voiceAgent.isMuted).toBe(false);
+      expect(mockWebRTCTransport.setMuted).toHaveBeenCalledWith(false);
+
+      const afterToggle1 = voiceAgent.toggleMute();
+      const afterToggle2 = voiceAgent.toggleMute();
+      expect(afterToggle1).toBe(true);
+      expect(afterToggle2).toBe(false);
+      expect(emitSpy).toHaveBeenCalledWith(AgentEvent.MuteStateEvent, true);
+      expect(emitSpy).toHaveBeenCalledWith(AgentEvent.MuteStateEvent, false);
+    });
+  });
+
+  describe('switchAgent()', () => {
+    it('throws when not connected', async () => {
+      await expect(
+        voiceAgent.switchAgent({ id: 'new-agent', inputOptions: {}, outputOptions: {} } as any),
+      ).rejects.toThrow('Cannot switch agent: not connected');
+    });
+
+    it('sends configuration when connected', async () => {
+      await voiceAgent.connect();
+      (voiceAgent as any).connectionState = ConnectionState.Connected;
+      await voiceAgent.switchAgent({
+        id: 'new-agent',
+        inputOptions: mockAgentConfig.inputOptions,
+        outputOptions: mockAgentConfig.outputOptions,
+      } as any);
+      expect(mockWebRTCTransport.sendConversationConfiguration).toHaveBeenCalled();
+    });
+
+    it('throws when grpc transport is unavailable', async () => {
+      await voiceAgent.connect();
+      (voiceAgent as any).connectionState = ConnectionState.Connected;
+      mockWebRTCTransport.isGrpcConnected = false;
+      await expect(
+        voiceAgent.switchAgent({ id: 'new-agent', inputOptions: {}, outputOptions: {} } as any),
+      ).rejects.toThrow('No active connection available for agent switch');
+    });
+  });
+
+  describe('device switching fallback and resume', () => {
+    it('falls back to reconnect when setOutputDevice fails', async () => {
+      await voiceAgent.connect();
+      mockWebRTCTransport.setOutputDevice.mockRejectedValueOnce(new Error('no sink'));
+      const connectDeviceSpy = jest.spyOn(voiceAgent as any, 'connectDevice');
+      await voiceAgent.setOutputMediaDevice('out-2');
+      expect(connectDeviceSpy).toHaveBeenCalled();
+    });
+
+    it('falls back to reconnect when setInputDevice fails', async () => {
+      await voiceAgent.connect();
+      mockWebRTCTransport.setInputDevice.mockRejectedValueOnce(new Error('no mic'));
+      const connectDeviceSpy = jest.spyOn(voiceAgent as any, 'connectDevice');
+      await voiceAgent.setInputMediaDevice('in-2');
+      expect(connectDeviceSpy).toHaveBeenCalled();
+    });
+
+    it('resumeAudio no-ops without transport and calls through with transport', async () => {
+      await expect(voiceAgent.resumeAudio()).resolves.not.toThrow();
+      await voiceAgent.connect();
+      await voiceAgent.resumeAudio();
+      expect(mockWebRTCTransport.resumeAudio).toHaveBeenCalled();
+    });
+  });
+
+  describe('send text and channel switching edge cases', () => {
+    it('emits error when grpc disconnects after ensureConnected', async () => {
+      await voiceAgent.connect();
+      mockWebRTCTransport.isGrpcConnected = false;
+      const emitSpy = jest.spyOn(voiceAgent, 'emit');
+      await voiceAgent.onSendText('hello');
+      expect(emitSpy).toHaveBeenCalledWith(
+        AgentEvent.ErrorEvent,
+        'client',
+        'No connection available to send text',
+      );
+    });
+
+    it('emits error and clears transport when reconnectAudio fails', async () => {
+      const textConfig = {
+        ...mockAgentConfig,
+        inputOptions: { ...mockAgentConfig.inputOptions, channel: Channel.Text },
+        outputOptions: { ...mockAgentConfig.outputOptions, channel: Channel.Text },
+      };
+      const agent = new VoiceAgent(mockConnectionConfig as any, textConfig as any);
+      await agent.connect();
+      mockWebRTCTransport.reconnectAudio.mockRejectedValueOnce(new Error('reconnect failed'));
+      const emitSpy = jest.spyOn(agent, 'emit');
+
+      await agent.setInputChannel(Channel.Audio);
+
+      expect(emitSpy).toHaveBeenCalledWith(
+        AgentEvent.ErrorEvent,
+        'client',
+        expect.stringContaining('Audio reconnect failed'),
+      );
+      expect((agent as any).webrtcTransport).toBeNull();
+    });
+  });
+
+  describe('frequency analyser getters and transport getters', () => {
+    it('returns byte frequency data when analysers are available', async () => {
+      await voiceAgent.connect();
+      const inputGet = jest.fn();
+      const outputGet = jest.fn();
+      mockWebRTCTransport.inputAnalyserNode = {
+        frequencyBinCount: 16,
+        getByteFrequencyData: inputGet,
+      } as any;
+      mockWebRTCTransport.outputAnalyserNode = {
+        frequencyBinCount: 32,
+        getByteFrequencyData: outputGet,
+      } as any;
+
+      const input = voiceAgent.getInputByteFrequencyData();
+      const output = voiceAgent.getOutputByteFrequencyData();
+
+      expect(input).toBeInstanceOf(Uint8Array);
+      expect(output).toBeInstanceOf(Uint8Array);
+      expect(input?.length).toBe(16);
+      expect(output?.length).toBe(32);
+      expect(inputGet).toHaveBeenCalled();
+      expect(outputGet).toHaveBeenCalled();
+    });
+
+    it('exposes transport and webrtc connected state', async () => {
+      expect(voiceAgent.transport).toBeNull();
+      expect(voiceAgent.isWebRTCConnected).toBe(false);
+      await voiceAgent.connect();
+      expect(voiceAgent.transport).not.toBeNull();
+      expect(voiceAgent.isWebRTCConnected).toBe(true);
+    });
+  });
+
+  describe('platform-specific audio preparation', () => {
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+
+    it('waits on android before creating transport', async () => {
+      (isAndroidDevice as jest.Mock).mockReturnValue(true);
+      const connectPromise = voiceAgent.connect();
+      await Promise.resolve();
+      jest.advanceTimersByTime(3000);
+      await connectPromise;
+      expect(WebRTCGrpcTransport.create).toHaveBeenCalled();
+    });
+
+    it('selects preferred iOS input device when available', async () => {
+      (isAndroidDevice as jest.Mock).mockReturnValue(false);
+      (isIosDevice as jest.Mock).mockReturnValue(true);
+      (navigator.mediaDevices.enumerateDevices as jest.Mock).mockResolvedValueOnce([
+        { kind: 'audioinput', label: 'Built-in Mic', deviceId: 'mic-1' },
+        { kind: 'audioinput', label: 'AirPod Pro', deviceId: 'airpod-1' },
+      ]);
+
+      await voiceAgent.connect();
+      expect(mockAgentConfig.inputOptions.device).toBe('airpod-1');
     });
   });
 });

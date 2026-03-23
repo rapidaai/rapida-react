@@ -120,3 +120,22 @@ describe('SDK Type Definitions', () => {
     expect(message.id).toBe('test');
   });
 });
+
+describe('Main Entry Point', () => {
+  it('loads src/index.ts and exposes key SDK exports', async () => {
+    const sdk = await import('@/rapida/index');
+
+    expect(sdk.VoiceAgent).toBeDefined();
+    expect(sdk.AgentConfig).toBeDefined();
+    expect(sdk.InputOptions).toBeDefined();
+    expect(sdk.OutputOptions).toBeDefined();
+    expect(sdk.Channel).toBeDefined();
+    expect(sdk.ConnectionState).toBeDefined();
+    expect(sdk.isWindows).toBeDefined();
+    expect(sdk.isLinux).toBeDefined();
+    expect(sdk.hasFullWebRTCAudioSupport).toBeDefined();
+    expect(sdk.getRecommendedAudioSettings).toBeDefined();
+    expect(sdk.CreateMessageMetric).toBeDefined();
+    expect(sdk.GetAssistant).toBeDefined();
+  });
+});

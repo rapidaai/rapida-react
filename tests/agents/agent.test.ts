@@ -24,19 +24,91 @@ jest.mock('@/rapida/clients/protos/talk-api_pb', () => ({
       ACTION: 5,
     },
   },
-  CreateConversationMetricRequest: jest.fn(),
-  CreateMessageMetricRequest: jest.fn(),
+  CreateConversationMetricRequest: jest.fn().mockImplementation(() => ({
+    setAssistantid: jest.fn(),
+    setAssistantconversationid: jest.fn(),
+    addMetrics: jest.fn(),
+  })),
+  CreateMessageMetricRequest: jest.fn().mockImplementation(() => ({
+    setAssistantid: jest.fn(),
+    setAssistantconversationid: jest.fn(),
+    setMessageid: jest.fn(),
+    addMetrics: jest.fn(),
+  })),
+  StreamMode: {
+    STREAM_MODE_AUDIO: 1,
+    STREAM_MODE_TEXT: 2,
+    STREAM_MODE_BOTH: 3,
+  },
+  ConversationInitialization: jest.fn().mockImplementation(() => {
+    const options = new Map();
+    const metadata = new Map();
+    const args = new Map();
+    return {
+      setAssistantconversationid: jest.fn(),
+      setAssistant: jest.fn(),
+      getOptionsMap: jest.fn(() => options),
+      getMetadataMap: jest.fn(() => metadata),
+      getArgsMap: jest.fn(() => args),
+      setStreammode: jest.fn(),
+      setWeb: jest.fn(),
+    };
+  }),
+  ConversationConfiguration: jest.fn().mockImplementation(() => ({
+    setStreammode: jest.fn(),
+  })),
+  WebIdentity: jest.fn().mockImplementation(() => ({
+    setUserid: jest.fn(),
+  })),
+}));
+
+jest.mock('@/rapida/clients/protos/webrtc_pb', () => ({
+  WebTalkRequest: jest.fn().mockImplementation(() => ({
+    hasInitialization: jest.fn().mockReturnValue(false),
+    hasConfiguration: jest.fn().mockReturnValue(false),
+    hasMessage: jest.fn().mockReturnValue(false),
+    hasSignaling: jest.fn().mockReturnValue(false),
+    getMessage: jest.fn(),
+    setInitialization: jest.fn(),
+    setConfiguration: jest.fn(),
+  })),
+  WebTalkResponse: {
+    DataCase: {
+      USER: 2,
+      ASSISTANT: 3,
+    },
+  },
+}));
+
+jest.mock('@/rapida/clients/protos/assistant-api_pb', () => ({
+  GetAssistantRequest: jest.fn().mockImplementation(() => ({
+    setAssistantdefinition: jest.fn(),
+  })),
+  GetAssistantResponse: jest.fn(),
 }));
 
 jest.mock('@/rapida/clients/protos/common_pb', () => ({
-  AssistantDefinition: jest.fn(),
+  AssistantDefinition: jest.fn().mockImplementation(() => {
+    let assistantId = '';
+    let version = '';
+    return {
+      setAssistantid: jest.fn((v: string) => { assistantId = v; }),
+      getAssistantid: jest.fn(() => assistantId),
+      setVersion: jest.fn((v: string) => { version = v; }),
+      getVersion: jest.fn(() => version),
+    };
+  }),
   AudioConfig: {
     AudioFormat: { LINEAR16: 1 },
   },
   StreamConfig: jest.fn().mockImplementation(() => ({
     setAudio: jest.fn(),
   })),
-  Metric: jest.fn(),
+  Metric: jest.fn().mockImplementation(() => ({
+    setName: jest.fn(),
+    setValue: jest.fn(),
+    setDescription: jest.fn(),
+  })),
   AssistantConversationConfiguration: jest.fn(),
   AssistantConversationMessageTextContent: jest.fn().mockImplementation(() => ({
     setContent: jest.fn(),
@@ -69,10 +141,21 @@ jest.mock('@/rapida/types/feedback', () => ({
   getFeedback: jest.fn(),
 }));
 
-import { Agent } from '@/rapida/agents/';
+import {
+  Agent,
+  buildConfigurationRequest,
+  buildInitializationRequest,
+  describeRequest,
+  describeResponse,
+  resolveStreamMode,
+} from '@/rapida/agents/';
 import { ConnectionState } from '@/rapida/types/connection-state';
 import { AgentEvent } from '@/rapida/types/agent-event';
 import { MessageRole, MessageStatus } from '@/rapida/types/message';
+import { CreateConversationMetric, CreateMessageMetric } from '@/rapida/clients/talk';
+import { GetAssistant } from '@/rapida/clients/assistant';
+import { getFeedback } from '@/rapida/types/feedback';
+import { Channel } from '@/rapida/types/channel';
 
 // Create a concrete implementation for testing since Agent may be abstract
 class TestAgent extends Agent {
@@ -88,6 +171,14 @@ class TestAgent extends Agent {
   public getAgentConfig() {
     return this.agentConfig;
   }
+
+  public setConversation(id: string) {
+    this.changeConversation(id);
+  }
+
+  public disconnectBase() {
+    return this.disconnectAgent();
+  }
 }
 
 describe('Agent', () => {
@@ -95,6 +186,7 @@ describe('Agent', () => {
 
   const mockConnectionConfig = {
     endpoint: 'https://api.test.com',
+    onConnectionChange: jest.fn(),
   };
 
   const mockAgentConfig = {
@@ -107,6 +199,10 @@ describe('Agent', () => {
       channel: 'audio',
       playerOption: { sampleRate: 24000, format: 'pcm' },
     },
+    definition: {
+      getAssistantid: () => 'test-agent',
+    },
+    version: 'v1',
   };
 
   beforeEach(() => {
@@ -257,6 +353,170 @@ describe('Agent', () => {
       agent.agentMessages.push(pendingMessage);
 
       expect(agent.agentMessages[0].status).toBe(MessageStatus.Pending);
+    });
+  });
+
+  describe('advanced agent behavior', () => {
+    it('throws on base switchAgent()', async () => {
+      await expect(agent.switchAgent(mockAgentConfig as any)).rejects.toThrow(
+        'switchAgent must be implemented by subclass',
+      );
+    });
+
+    it('registers callback', () => {
+      const cb = { onUserMessage: jest.fn() };
+      agent.registerCallback(cb as any);
+      expect((agent as any).agentCallbacks).toContain(cb);
+    });
+
+    it('disconnectAgent() is idempotent when already disconnected', async () => {
+      await agent.disconnectBase();
+      expect(mockConnectionConfig.onConnectionChange).not.toHaveBeenCalled();
+    });
+
+    it('createMessageMetric throws without active conversation', () => {
+      expect(() =>
+        agent.createMessageMetric('m-1', [{ name: 'n', description: 'd', value: 'good' }]),
+      ).toThrow('Cannot create message metric: no active conversation');
+    });
+
+    it('createConversationMetric throws without active conversation', () => {
+      expect(() =>
+        agent.createConversationMetric([{ name: 'n', description: 'd', value: 'good' }]),
+      ).toThrow('Cannot create conversation metric: no active conversation');
+    });
+
+    it('creates message metric and emits feedback', async () => {
+      (getFeedback as jest.Mock).mockReturnValue('POSITIVE');
+      const feedbackListener = jest.fn();
+      agent.on(AgentEvent.FeedbackEvent, feedbackListener);
+      agent.setConversation('conv-1');
+      agent.agentMessages = [
+        {
+          id: 'msg-1',
+          role: MessageRole.System,
+          messages: ['hello'],
+          time: new Date(),
+          status: MessageStatus.Complete,
+        } as any,
+      ];
+
+      agent.createMessageMetric('msg-1', [
+        { name: 'quality', description: 'score', value: 'good' },
+      ]);
+
+      await Promise.resolve();
+
+      expect(CreateMessageMetric).toHaveBeenCalled();
+      expect(feedbackListener).toHaveBeenCalledWith('message', 'POSITIVE');
+      expect((agent.agentMessages[0] as any).feedback).toBe('POSITIVE');
+    });
+
+    it('handles empty message metrics safely', async () => {
+      agent.setConversation('conv-1');
+      agent.createMessageMetric('msg-1', []);
+      await Promise.resolve();
+      expect(CreateMessageMetric).toHaveBeenCalled();
+    });
+
+    it('creates conversation metric when conversation exists', () => {
+      agent.setConversation('conv-2');
+      agent.createConversationMetric([
+        { name: 'latency', description: 'ms', value: '123' },
+      ]);
+      expect(CreateConversationMetric).toHaveBeenCalled();
+    });
+
+    it('returns assistant from getAssistant()', async () => {
+      const result = await agent.getAssistant();
+      expect(GetAssistant).toHaveBeenCalled();
+      expect(result).toBeDefined();
+    });
+
+    it('changeConversation sets conversation once', () => {
+      agent.setConversation('conv-1');
+      agent.setConversation('conv-2');
+      expect(agent.conversationId).toBe('conv-1');
+    });
+  });
+
+  describe('request/response helpers', () => {
+    it('describeRequest formats known request types', () => {
+      expect(
+        describeRequest({
+          hasInitialization: () => true,
+          hasConfiguration: () => false,
+          hasMessage: () => false,
+          hasSignaling: () => false,
+        } as any),
+      ).toBe('Initialization');
+
+      expect(
+        describeRequest({
+          hasInitialization: () => false,
+          hasConfiguration: () => false,
+          hasMessage: () => true,
+          getMessage: () => ({ getText: () => 'hello world' }),
+          hasSignaling: () => false,
+        } as any),
+      ).toContain('Text(');
+    });
+
+    it('describeResponse formats empty and mixed responses', () => {
+      expect(
+        describeResponse({
+          hasInitialization: () => false,
+          hasConfiguration: () => false,
+          hasAssistant: () => false,
+          hasUser: () => false,
+          hasInterruption: () => false,
+          hasDirective: () => false,
+          hasSignaling: () => false,
+        } as any),
+      ).toBe('Empty');
+
+      const mixed = describeResponse({
+        hasInitialization: () => true,
+        hasConfiguration: () => true,
+        hasAssistant: () => true,
+        getAssistant: () => ({ getText: () => 'assistant text' }),
+        hasUser: () => true,
+        getUser: () => ({ getText: () => 'user text' }),
+        hasInterruption: () => true,
+        hasDirective: () => true,
+        hasSignaling: () => true,
+      } as any);
+
+      expect(mixed).toContain('Initialization');
+      expect(mixed).toContain('Configuration');
+      expect(mixed).toContain('Assistant(');
+      expect(mixed).toContain('User(');
+      expect(mixed).toContain('Interruption');
+      expect(mixed).toContain('Directive');
+      expect(mixed).toContain('Signaling');
+    });
+
+    it('resolveStreamMode maps channels', () => {
+      expect(resolveStreamMode(Channel.Audio)).toBeDefined();
+      expect(resolveStreamMode(Channel.Text)).toBeDefined();
+      expect(resolveStreamMode('unknown' as any)).toBeDefined();
+    });
+
+    it('builds initialization/configuration requests', () => {
+      const config = {
+        definition: {},
+        options: new Map([['k1', { x: 1 }]]),
+        metadata: new Map([['k2', { y: 2 }]]),
+        arguments: new Map([['k3', { z: 3 }]]),
+        inputOptions: { channel: Channel.Text },
+        userIdentifier: { id: 'user-1' },
+      } as any;
+
+      const initReq = buildInitializationRequest(config, 'conv-10');
+      expect(initReq).toBeDefined();
+
+      const confReq = buildConfigurationRequest(Channel.Audio);
+      expect(confReq).toBeDefined();
     });
   });
 });
