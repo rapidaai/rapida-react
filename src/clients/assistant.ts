@@ -51,6 +51,13 @@ import {
   DeleteAssistantRequest,
   GetAllMessageRequest,
   GetAllMessageResponse,
+  GetAssistantTelemetryProviderRequest,
+  GetAssistantTelemetryProviderResponse,
+  GetAllAssistantTelemetryProviderRequest,
+  GetAllAssistantTelemetryProviderResponse,
+  CreateAssistantTelemetryProviderRequest,
+  UpdateAssistantTelemetryProviderRequest,
+  DeleteAssistantTelemetryProviderRequest,
 } from "@/rapida/clients/protos/assistant-api_pb";
 
 import {
@@ -990,6 +997,137 @@ export function DeleteAssistantWebhook(
   req.setAssistantid(assistantId);
   req.setId(webhookId);
   return connectionConfig.assistantClient.deleteAssistantWebhook(
+    req,
+    WithAuthContext(authHeader),
+    cb
+  );
+}
+
+/**
+ *
+ * @param assistantId
+ * @param page
+ * @param pageSize
+ * @param criteria
+ * @param cb
+ * @param authHeader
+ * @returns
+ */
+export function GetAllAssistantTelemetryProvider(
+  connectionConfig: ConnectionConfig,
+  assistantId: string,
+  page: number,
+  pageSize: number,
+  criteria: { key: string; value: string }[],
+  cb: (
+    err: ServiceError | null,
+    response: GetAllAssistantTelemetryProviderResponse | null
+  ) => void,
+  authHeader: ClientAuthInfo | UserAuthInfo
+) {
+  const req = new GetAllAssistantTelemetryProviderRequest();
+  const paginate = new Paginate();
+  criteria.forEach(({ key, value }) => {
+    const ctr = new Criteria();
+    ctr.setKey(key);
+    ctr.setValue(value);
+    req.addCriterias(ctr);
+  });
+  paginate.setPage(page);
+  paginate.setPagesize(pageSize);
+  req.setPaginate(paginate);
+  req.setAssistantid(assistantId);
+  return connectionConfig.assistantClient.getAllAssistantTelemetryProvider(
+    req,
+    WithAuthContext(authHeader),
+    cb
+  );
+}
+
+export function CreateAssistantTelemetryProvider(
+  connectionConfig: ConnectionConfig,
+  assistantId: string,
+  providerType: string,
+  enabled: boolean,
+  options: Metadata[],
+  cb: (
+    err: ServiceError | null,
+    response: GetAssistantTelemetryProviderResponse | null
+  ) => void,
+  authHeader: ClientAuthInfo | UserAuthInfo
+) {
+  const req = new CreateAssistantTelemetryProviderRequest();
+  req.setAssistantid(assistantId);
+  req.setProvidertype(providerType);
+  req.setEnabled(enabled);
+  options.forEach((opt) => req.addOptions(opt));
+  return connectionConfig.assistantClient.createAssistantTelemetryProvider(
+    req,
+    WithAuthContext(authHeader),
+    cb
+  );
+}
+
+export function UpdateAssistantTelemetryProvider(
+  connectionConfig: ConnectionConfig,
+  assistantId: string,
+  telemetryProviderId: string,
+  providerType: string,
+  enabled: boolean,
+  options: Metadata[],
+  cb: (
+    err: ServiceError | null,
+    response: GetAssistantTelemetryProviderResponse | null
+  ) => void,
+  authHeader: ClientAuthInfo | UserAuthInfo
+) {
+  const req = new UpdateAssistantTelemetryProviderRequest();
+  req.setId(telemetryProviderId);
+  req.setAssistantid(assistantId);
+  req.setProvidertype(providerType);
+  req.setEnabled(enabled);
+  options.forEach((opt) => req.addOptions(opt));
+  return connectionConfig.assistantClient.updateAssistantTelemetryProvider(
+    req,
+    WithAuthContext(authHeader),
+    cb
+  );
+}
+
+export function GetAssistantTelemetryProvider(
+  connectionConfig: ConnectionConfig,
+  assistantId: string,
+  telemetryProviderId: string,
+  cb: (
+    err: ServiceError | null,
+    response: GetAssistantTelemetryProviderResponse | null
+  ) => void,
+  authHeader: ClientAuthInfo | UserAuthInfo
+) {
+  const req = new GetAssistantTelemetryProviderRequest();
+  req.setId(telemetryProviderId);
+  req.setAssistantid(assistantId);
+  return connectionConfig.assistantClient.getAssistantTelemetryProvider(
+    req,
+    WithAuthContext(authHeader),
+    cb
+  );
+}
+
+export function DeleteAssistantTelemetryProvider(
+  connectionConfig: ConnectionConfig,
+  assistantId: string,
+  telemetryProviderId: string,
+  cb: (
+    err: ServiceError | null,
+    response: GetAssistantTelemetryProviderResponse | null
+  ) => void,
+  authHeader: ClientAuthInfo | UserAuthInfo
+) {
+  const req = new DeleteAssistantTelemetryProviderRequest();
+  req.setId(telemetryProviderId);
+  req.setAssistantid(assistantId);
+  return connectionConfig.assistantClient.deleteAssistantTelemetryProvider(
     req,
     WithAuthContext(authHeader),
     cb
