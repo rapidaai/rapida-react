@@ -1729,7 +1729,8 @@ proto.integration_api.EmbeddingRequest.toObject = function(includeInstance, msg)
     credential: (f = msg.getCredential()) && proto.integration_api.Credential.toObject(includeInstance, f),
     contentMap: (f = msg.getContentMap()) ? f.toObject(includeInstance, undefined) : [],
     modelparametersMap: (f = msg.getModelparametersMap()) ? f.toObject(includeInstance, proto.google.protobuf.Any.toObject) : [],
-    additionaldataMap: (f = msg.getAdditionaldataMap()) ? f.toObject(includeInstance, undefined) : []
+    additionaldataMap: (f = msg.getAdditionaldataMap()) ? f.toObject(includeInstance, undefined) : [],
+    providername: jspb.Message.getFieldWithDefault(msg, 7, "")
   };
 
   if (includeInstance) {
@@ -1789,6 +1790,10 @@ proto.integration_api.EmbeddingRequest.deserializeBinaryFromReader = function(ms
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
          });
       break;
+    case 7:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProvidername(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1837,6 +1842,13 @@ proto.integration_api.EmbeddingRequest.serializeBinaryToWriter = function(messag
   f = message.getAdditionaldataMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(6, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+  }
+  f = message.getProvidername();
+  if (f.length > 0) {
+    writer.writeString(
+      7,
+      f
+    );
   }
 };
 
@@ -1942,6 +1954,24 @@ proto.integration_api.EmbeddingRequest.prototype.getAdditionaldataMap = function
 proto.integration_api.EmbeddingRequest.prototype.clearAdditionaldataMap = function() {
   this.getAdditionaldataMap().clear();
   return this;};
+
+
+/**
+ * optional string providerName = 7;
+ * @return {string}
+ */
+proto.integration_api.EmbeddingRequest.prototype.getProvidername = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.integration_api.EmbeddingRequest} returns this
+ */
+proto.integration_api.EmbeddingRequest.prototype.setProvidername = function(value) {
+  return jspb.Message.setProto3StringField(this, 7, value);
+};
 
 
 
@@ -2524,7 +2554,8 @@ proto.integration_api.RerankingRequest.toObject = function(includeInstance, msg)
     query: jspb.Message.getFieldWithDefault(msg, 4, ""),
     contentMap: (f = msg.getContentMap()) ? f.toObject(includeInstance, undefined) : [],
     modelparametersMap: (f = msg.getModelparametersMap()) ? f.toObject(includeInstance, proto.google.protobuf.Any.toObject) : [],
-    additionaldataMap: (f = msg.getAdditionaldataMap()) ? f.toObject(includeInstance, undefined) : []
+    additionaldataMap: (f = msg.getAdditionaldataMap()) ? f.toObject(includeInstance, undefined) : [],
+    providername: jspb.Message.getFieldWithDefault(msg, 8, "")
   };
 
   if (includeInstance) {
@@ -2588,6 +2619,10 @@ proto.integration_api.RerankingRequest.deserializeBinaryFromReader = function(ms
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
          });
       break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProvidername(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -2643,6 +2678,13 @@ proto.integration_api.RerankingRequest.serializeBinaryToWriter = function(messag
   f = message.getAdditionaldataMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(7, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+  }
+  f = message.getProvidername();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
+      f
+    );
   }
 };
 
@@ -2766,6 +2808,24 @@ proto.integration_api.RerankingRequest.prototype.getAdditionaldataMap = function
 proto.integration_api.RerankingRequest.prototype.clearAdditionaldataMap = function() {
   this.getAdditionaldataMap().clear();
   return this;};
+
+
+/**
+ * optional string providerName = 8;
+ * @return {string}
+ */
+proto.integration_api.RerankingRequest.prototype.getProvidername = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.integration_api.RerankingRequest} returns this
+ */
+proto.integration_api.RerankingRequest.prototype.setProvidername = function(value) {
+  return jspb.Message.setProto3StringField(this, 8, value);
+};
 
 
 
@@ -3550,7 +3610,8 @@ proto.integration_api.ChatRequest.toObject = function(includeInstance, msg) {
     additionaldataMap: (f = msg.getAdditionaldataMap()) ? f.toObject(includeInstance, undefined) : [],
     modelparametersMap: (f = msg.getModelparametersMap()) ? f.toObject(includeInstance, proto.google.protobuf.Any.toObject) : [],
     tooldefinitionsList: jspb.Message.toObjectList(msg.getTooldefinitionsList(),
-    proto.integration_api.ToolDefinition.toObject, includeInstance)
+    proto.integration_api.ToolDefinition.toObject, includeInstance),
+    providername: jspb.Message.getFieldWithDefault(msg, 8, "")
   };
 
   if (includeInstance) {
@@ -3618,6 +3679,10 @@ proto.integration_api.ChatRequest.deserializeBinaryFromReader = function(msg, re
       reader.readMessage(value,proto.integration_api.ToolDefinition.deserializeBinaryFromReader);
       msg.addTooldefinitions(value);
       break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProvidername(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -3684,6 +3749,13 @@ proto.integration_api.ChatRequest.serializeBinaryToWriter = function(message, wr
       7,
       f,
       proto.integration_api.ToolDefinition.serializeBinaryToWriter
+    );
+  }
+  f = message.getProvidername();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
+      f
     );
   }
 };
@@ -3864,6 +3936,24 @@ proto.integration_api.ChatRequest.prototype.clearTooldefinitionsList = function(
 };
 
 
+/**
+ * optional string providerName = 8;
+ * @return {string}
+ */
+proto.integration_api.ChatRequest.prototype.getProvidername = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.integration_api.ChatRequest} returns this
+ */
+proto.integration_api.ChatRequest.prototype.setProvidername = function(value) {
+  return jspb.Message.setProto3StringField(this, 8, value);
+};
+
+
 
 
 
@@ -3896,7 +3986,8 @@ proto.integration_api.VerifyCredentialRequest.prototype.toObject = function(opt_
  */
 proto.integration_api.VerifyCredentialRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    credential: (f = msg.getCredential()) && proto.integration_api.Credential.toObject(includeInstance, f)
+    credential: (f = msg.getCredential()) && proto.integration_api.Credential.toObject(includeInstance, f),
+    providername: jspb.Message.getFieldWithDefault(msg, 2, "")
   };
 
   if (includeInstance) {
@@ -3938,6 +4029,10 @@ proto.integration_api.VerifyCredentialRequest.deserializeBinaryFromReader = func
       reader.readMessage(value,proto.integration_api.Credential.deserializeBinaryFromReader);
       msg.setCredential(value);
       break;
+    case 2:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProvidername(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -3973,6 +4068,13 @@ proto.integration_api.VerifyCredentialRequest.serializeBinaryToWriter = function
       1,
       f,
       proto.integration_api.Credential.serializeBinaryToWriter
+    );
+  }
+  f = message.getProvidername();
+  if (f.length > 0) {
+    writer.writeString(
+      2,
+      f
     );
   }
 };
@@ -4012,6 +4114,24 @@ proto.integration_api.VerifyCredentialRequest.prototype.clearCredential = functi
  */
 proto.integration_api.VerifyCredentialRequest.prototype.hasCredential = function() {
   return jspb.Message.getField(this, 1) != null;
+};
+
+
+/**
+ * optional string providerName = 2;
+ * @return {string}
+ */
+proto.integration_api.VerifyCredentialRequest.prototype.getProvidername = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.integration_api.VerifyCredentialRequest} returns this
+ */
+proto.integration_api.VerifyCredentialRequest.prototype.setProvidername = function(value) {
+  return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 

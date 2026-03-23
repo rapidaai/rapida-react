@@ -133,6 +133,51 @@ AssistantService.GetAllAssistantTelemetry = {
   responseType: assistant_api_pb.GetAllAssistantTelemetryResponse
 };
 
+AssistantService.GetAssistantTelemetryProvider = {
+  methodName: "GetAssistantTelemetryProvider",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.GetAssistantTelemetryProviderRequest,
+  responseType: assistant_api_pb.GetAssistantTelemetryProviderResponse
+};
+
+AssistantService.GetAllAssistantTelemetryProvider = {
+  methodName: "GetAllAssistantTelemetryProvider",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.GetAllAssistantTelemetryProviderRequest,
+  responseType: assistant_api_pb.GetAllAssistantTelemetryProviderResponse
+};
+
+AssistantService.CreateAssistantTelemetryProvider = {
+  methodName: "CreateAssistantTelemetryProvider",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.CreateAssistantTelemetryProviderRequest,
+  responseType: assistant_api_pb.GetAssistantTelemetryProviderResponse
+};
+
+AssistantService.UpdateAssistantTelemetryProvider = {
+  methodName: "UpdateAssistantTelemetryProvider",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.UpdateAssistantTelemetryProviderRequest,
+  responseType: assistant_api_pb.GetAssistantTelemetryProviderResponse
+};
+
+AssistantService.DeleteAssistantTelemetryProvider = {
+  methodName: "DeleteAssistantTelemetryProvider",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.DeleteAssistantTelemetryProviderRequest,
+  responseType: assistant_api_pb.GetAssistantTelemetryProviderResponse
+};
+
 AssistantService.GetAllAssistantConversation = {
   methodName: "GetAllAssistantConversation",
   service: AssistantService,
@@ -751,6 +796,161 @@ AssistantServiceClient.prototype.getAllAssistantTelemetry = function getAllAssis
     callback = arguments[1];
   }
   var client = grpc.unary(AssistantService.GetAllAssistantTelemetry, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.getAssistantTelemetryProvider = function getAssistantTelemetryProvider(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAssistantTelemetryProvider, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.getAllAssistantTelemetryProvider = function getAllAssistantTelemetryProvider(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAllAssistantTelemetryProvider, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.createAssistantTelemetryProvider = function createAssistantTelemetryProvider(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.CreateAssistantTelemetryProvider, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.updateAssistantTelemetryProvider = function updateAssistantTelemetryProvider(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.UpdateAssistantTelemetryProvider, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.deleteAssistantTelemetryProvider = function deleteAssistantTelemetryProvider(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.DeleteAssistantTelemetryProvider, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

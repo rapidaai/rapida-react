@@ -127,6 +127,51 @@ type AssistantServiceGetAllAssistantTelemetry = {
   readonly responseType: typeof assistant_api_pb.GetAllAssistantTelemetryResponse;
 };
 
+type AssistantServiceGetAssistantTelemetryProvider = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.GetAssistantTelemetryProviderRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantTelemetryProviderResponse;
+};
+
+type AssistantServiceGetAllAssistantTelemetryProvider = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.GetAllAssistantTelemetryProviderRequest;
+  readonly responseType: typeof assistant_api_pb.GetAllAssistantTelemetryProviderResponse;
+};
+
+type AssistantServiceCreateAssistantTelemetryProvider = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.CreateAssistantTelemetryProviderRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantTelemetryProviderResponse;
+};
+
+type AssistantServiceUpdateAssistantTelemetryProvider = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.UpdateAssistantTelemetryProviderRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantTelemetryProviderResponse;
+};
+
+type AssistantServiceDeleteAssistantTelemetryProvider = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.DeleteAssistantTelemetryProviderRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantTelemetryProviderResponse;
+};
+
 type AssistantServiceGetAllAssistantConversation = {
   readonly methodName: string;
   readonly service: typeof AssistantService;
@@ -376,6 +421,11 @@ export class AssistantService {
   static readonly GetAllConversationMessage: AssistantServiceGetAllConversationMessage;
   static readonly GetAllMessage: AssistantServiceGetAllMessage;
   static readonly GetAllAssistantTelemetry: AssistantServiceGetAllAssistantTelemetry;
+  static readonly GetAssistantTelemetryProvider: AssistantServiceGetAssistantTelemetryProvider;
+  static readonly GetAllAssistantTelemetryProvider: AssistantServiceGetAllAssistantTelemetryProvider;
+  static readonly CreateAssistantTelemetryProvider: AssistantServiceCreateAssistantTelemetryProvider;
+  static readonly UpdateAssistantTelemetryProvider: AssistantServiceUpdateAssistantTelemetryProvider;
+  static readonly DeleteAssistantTelemetryProvider: AssistantServiceDeleteAssistantTelemetryProvider;
   static readonly GetAllAssistantConversation: AssistantServiceGetAllAssistantConversation;
   static readonly GetAssistantConversation: AssistantServiceGetAssistantConversation;
   static readonly GetAssistantWebhookLog: AssistantServiceGetAssistantWebhookLog;
@@ -552,6 +602,51 @@ export class AssistantServiceClient {
   getAllAssistantTelemetry(
     requestMessage: assistant_api_pb.GetAllAssistantTelemetryRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAllAssistantTelemetryResponse|null) => void
+  ): UnaryResponse;
+  getAssistantTelemetryProvider(
+    requestMessage: assistant_api_pb.GetAssistantTelemetryProviderRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantTelemetryProviderResponse|null) => void
+  ): UnaryResponse;
+  getAssistantTelemetryProvider(
+    requestMessage: assistant_api_pb.GetAssistantTelemetryProviderRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantTelemetryProviderResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantTelemetryProvider(
+    requestMessage: assistant_api_pb.GetAllAssistantTelemetryProviderRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAllAssistantTelemetryProviderResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantTelemetryProvider(
+    requestMessage: assistant_api_pb.GetAllAssistantTelemetryProviderRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAllAssistantTelemetryProviderResponse|null) => void
+  ): UnaryResponse;
+  createAssistantTelemetryProvider(
+    requestMessage: assistant_api_pb.CreateAssistantTelemetryProviderRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantTelemetryProviderResponse|null) => void
+  ): UnaryResponse;
+  createAssistantTelemetryProvider(
+    requestMessage: assistant_api_pb.CreateAssistantTelemetryProviderRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantTelemetryProviderResponse|null) => void
+  ): UnaryResponse;
+  updateAssistantTelemetryProvider(
+    requestMessage: assistant_api_pb.UpdateAssistantTelemetryProviderRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantTelemetryProviderResponse|null) => void
+  ): UnaryResponse;
+  updateAssistantTelemetryProvider(
+    requestMessage: assistant_api_pb.UpdateAssistantTelemetryProviderRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantTelemetryProviderResponse|null) => void
+  ): UnaryResponse;
+  deleteAssistantTelemetryProvider(
+    requestMessage: assistant_api_pb.DeleteAssistantTelemetryProviderRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantTelemetryProviderResponse|null) => void
+  ): UnaryResponse;
+  deleteAssistantTelemetryProvider(
+    requestMessage: assistant_api_pb.DeleteAssistantTelemetryProviderRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantTelemetryProviderResponse|null) => void
   ): UnaryResponse;
   getAllAssistantConversation(
     requestMessage: common_pb.GetAllAssistantConversationRequest,

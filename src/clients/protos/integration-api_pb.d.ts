@@ -195,6 +195,9 @@ export class EmbeddingRequest extends jspb.Message {
   clearModelparametersMap(): void;
   getAdditionaldataMap(): jspb.Map<string, string>;
   clearAdditionaldataMap(): void;
+  getProvidername(): string;
+  setProvidername(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): EmbeddingRequest.AsObject;
   static toObject(includeInstance: boolean, msg: EmbeddingRequest): EmbeddingRequest.AsObject;
@@ -211,6 +214,7 @@ export namespace EmbeddingRequest {
     contentMap: Array<[number, string]>,
     modelparametersMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
     additionaldataMap: Array<[string, string]>,
+    providername: string,
   }
 }
 
@@ -303,6 +307,9 @@ export class RerankingRequest extends jspb.Message {
   clearModelparametersMap(): void;
   getAdditionaldataMap(): jspb.Map<string, string>;
   clearAdditionaldataMap(): void;
+  getProvidername(): string;
+  setProvidername(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): RerankingRequest.AsObject;
   static toObject(includeInstance: boolean, msg: RerankingRequest): RerankingRequest.AsObject;
@@ -320,6 +327,7 @@ export namespace RerankingRequest {
     contentMap: Array<[number, string]>,
     modelparametersMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
     additionaldataMap: Array<[string, string]>,
+    providername: string,
   }
 }
 
@@ -442,6 +450,9 @@ export class ChatRequest extends jspb.Message {
   setTooldefinitionsList(value: Array<ToolDefinition>): void;
   addTooldefinitions(value?: ToolDefinition, index?: number): ToolDefinition;
 
+  getProvidername(): string;
+  setProvidername(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ChatRequest.AsObject;
   static toObject(includeInstance: boolean, msg: ChatRequest): ChatRequest.AsObject;
@@ -460,6 +471,7 @@ export namespace ChatRequest {
     additionaldataMap: Array<[string, string]>,
     modelparametersMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
     tooldefinitionsList: Array<ToolDefinition.AsObject>,
+    providername: string,
   }
 }
 
@@ -468,6 +480,9 @@ export class VerifyCredentialRequest extends jspb.Message {
   clearCredential(): void;
   getCredential(): Credential | undefined;
   setCredential(value?: Credential): void;
+
+  getProvidername(): string;
+  setProvidername(value: string): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): VerifyCredentialRequest.AsObject;
@@ -482,6 +497,7 @@ export class VerifyCredentialRequest extends jspb.Message {
 export namespace VerifyCredentialRequest {
   export type AsObject = {
     credential?: Credential.AsObject,
+    providername: string,
   }
 }
 
