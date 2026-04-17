@@ -366,6 +366,7 @@ export function UpdateAssistantDetail(
   assistantId: string,
   name: string,
   description: string,
+  toolFillerEnabled: boolean,
   cb: (err: ServiceError | null, response: GetAssistantResponse | null) => void,
   authHeader: UserAuthInfo
 ) {
@@ -373,6 +374,7 @@ export function UpdateAssistantDetail(
   req.setName(name);
   req.setDescription(description);
   req.setAssistantid(assistantId);
+  req.setToolfillerenabled(toolFillerEnabled);
 
   return connectionConfig.assistantClient.updateAssistantDetail(
     req,
