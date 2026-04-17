@@ -720,7 +720,8 @@ proto.assistant_api.Assistant.toObject = function(includeInstance, msg) {
     assistanttoolsList: jspb.Message.toObjectList(msg.getAssistanttoolsList(),
     assistant$tool_pb.AssistantTool.toObject, includeInstance),
     assistanttelemetryprovidersList: jspb.Message.toObjectList(msg.getAssistanttelemetryprovidersList(),
-    proto.assistant_api.AssistantTelemetryProvider.toObject, includeInstance)
+    proto.assistant_api.AssistantTelemetryProvider.toObject, includeInstance),
+    toolfillerenabled: jspb.Message.getBooleanFieldWithDefault(msg, 38, false)
   };
 
   if (includeInstance) {
@@ -894,6 +895,10 @@ proto.assistant_api.Assistant.deserializeBinaryFromReader = function(msg, reader
       reader.readMessage(value,proto.assistant_api.AssistantTelemetryProvider.deserializeBinaryFromReader);
       msg.addAssistanttelemetryproviders(value);
       break;
+    case 38:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setToolfillerenabled(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -997,6 +1002,13 @@ proto.assistant_api.Assistant.serializeBinaryToWriter = function(message, writer
   if (f.length > 0) {
     writer.writeString(
       12,
+      f
+    );
+  }
+  f = message.getToolfillerenabled();
+  if (f === true) {
+    writer.writeBool(
+      38,
       f
     );
   }
@@ -1348,6 +1360,24 @@ proto.assistant_api.Assistant.prototype.getDescription = function() {
  */
 proto.assistant_api.Assistant.prototype.setDescription = function(value) {
   return jspb.Message.setProto3StringField(this, 12, value);
+};
+
+
+/**
+ * optional bool toolFillerEnabled = 38;
+ * @return {boolean}
+ */
+proto.assistant_api.Assistant.prototype.getToolfillerenabled = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 38, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.assistant_api.Assistant} returns this
+ */
+proto.assistant_api.Assistant.prototype.setToolfillerenabled = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 38, value);
 };
 
 
@@ -8797,7 +8827,8 @@ proto.assistant_api.UpdateAssistantDetailRequest.toObject = function(includeInst
   var f, obj = {
     assistantid: jspb.Message.getFieldWithDefault(msg, 1, "0"),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    description: jspb.Message.getFieldWithDefault(msg, 3, "")
+    description: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    toolfillerenabled: jspb.Message.getBooleanFieldWithDefault(msg, 4, false)
   };
 
   if (includeInstance) {
@@ -8846,6 +8877,10 @@ proto.assistant_api.UpdateAssistantDetailRequest.deserializeBinaryFromReader = f
       var value = /** @type {string} */ (reader.readString());
       msg.setDescription(value);
       break;
+    case 4:
+      var value = /** @type {boolean} */ (reader.readBool());
+      msg.setToolfillerenabled(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -8893,6 +8928,13 @@ proto.assistant_api.UpdateAssistantDetailRequest.serializeBinaryToWriter = funct
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getToolfillerenabled();
+  if (f === true) {
+    writer.writeBool(
+      4,
       f
     );
   }
@@ -8950,6 +8992,24 @@ proto.assistant_api.UpdateAssistantDetailRequest.prototype.getDescription = func
  */
 proto.assistant_api.UpdateAssistantDetailRequest.prototype.setDescription = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional bool toolFillerEnabled = 4;
+ * @return {boolean}
+ */
+proto.assistant_api.UpdateAssistantDetailRequest.prototype.getToolfillerenabled = function() {
+  return /** @type {boolean} */ (jspb.Message.getBooleanFieldWithDefault(this, 4, false));
+};
+
+
+/**
+ * @param {boolean} value
+ * @return {!proto.assistant_api.UpdateAssistantDetailRequest} returns this
+ */
+proto.assistant_api.UpdateAssistantDetailRequest.prototype.setToolfillerenabled = function(value) {
+  return jspb.Message.setProto3BooleanField(this, 4, value);
 };
 
 
