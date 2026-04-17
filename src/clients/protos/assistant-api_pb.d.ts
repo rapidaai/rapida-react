@@ -136,6 +136,9 @@ export class Assistant extends jspb.Message {
   setAssistanttelemetryprovidersList(value: Array<AssistantTelemetryProvider>): void;
   addAssistanttelemetryproviders(value?: AssistantTelemetryProvider, index?: number): AssistantTelemetryProvider;
 
+  getToolfillerenabled(): boolean;
+  setToolfillerenabled(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Assistant.AsObject;
   static toObject(includeInstance: boolean, msg: Assistant): Assistant.AsObject;
@@ -178,6 +181,7 @@ export namespace Assistant {
     assistantwebhooksList: Array<assistant_webhook_pb.AssistantWebhook.AsObject>,
     assistanttoolsList: Array<assistant_tool_pb.AssistantTool.AsObject>,
     assistanttelemetryprovidersList: Array<AssistantTelemetryProvider.AsObject>,
+    toolfillerenabled: boolean,
   }
 }
 
@@ -1097,6 +1101,9 @@ export class UpdateAssistantDetailRequest extends jspb.Message {
   getDescription(): string;
   setDescription(value: string): void;
 
+  getToolfillerenabled(): boolean;
+  setToolfillerenabled(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UpdateAssistantDetailRequest.AsObject;
   static toObject(includeInstance: boolean, msg: UpdateAssistantDetailRequest): UpdateAssistantDetailRequest.AsObject;
@@ -1112,6 +1119,7 @@ export namespace UpdateAssistantDetailRequest {
     assistantid: string,
     name: string,
     description: string,
+    toolfillerenabled: boolean,
   }
 }
 
