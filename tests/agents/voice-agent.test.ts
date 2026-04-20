@@ -26,6 +26,7 @@ const mockWebRTCTransport = {
   resumeAudio: jest.fn().mockResolvedValue(undefined),
   interruptAudio: jest.fn(),
   sendText: jest.fn(),
+  sendToolCallResult: jest.fn(),
   isGrpcConnected: true,
   isAudioConnected: true,
   connected: true,
@@ -98,7 +99,7 @@ import { Channel } from '@/rapida/types/channel';
 import { AgentEvent } from '@/rapida/types/agent-event';
 import { ConnectionState } from '@/rapida/types/connection-state';
 import { MessageRole, MessageStatus } from '@/rapida/types/message';
-import { ConversationDirective } from '@/rapida/clients/protos/talk-api_pb';
+import { ToolCallAction } from '@/rapida/clients/protos/talk-api_pb';
 
 describe('VoiceAgent', () => {
   let voiceAgent: VoiceAgent;
@@ -506,13 +507,37 @@ describe('VoiceAgent', () => {
       expect((voiceAgent as any).agentMessages[0].status).toBe(MessageStatus.Complete);
     });
 
-    it('disconnects on END_CONVERSATION directive', async () => {
-      await voiceAgent.connect();
-      const disconnectSpy = jest.spyOn(voiceAgent, 'disconnect');
-      lastTransportCallbacks.onDirective?.({
-        type: ConversationDirective.DirectiveType.END_CONVERSATION,
+    it('sends tool call result when callback returns one', async () => {
+      (voiceAgent as any).agentCallbacks.push({
+        onToolCall: () => ({ status: 'handled' }),
       });
-      expect(disconnectSpy).toHaveBeenCalled();
+      await voiceAgent.connect();
+      const sendSpy = jest.spyOn(mockWebRTCTransport, 'sendToolCallResult');
+      lastTransportCallbacks.onToolCall?.({
+        id: 'ctx-1',
+        toolid: 'tool-1',
+        name: 'end_of_conversation',
+        action: ToolCallAction.TOOL_CALL_ACTION_END_CONVERSATION,
+        argsMap: [],
+      });
+      expect(sendSpy).toHaveBeenCalledWith(
+        'ctx-1', 'tool-1', 'end_of_conversation',
+        ToolCallAction.TOOL_CALL_ACTION_END_CONVERSATION,
+        { status: 'handled' },
+      );
+    });
+
+    it('does not send result when no callback handles tool call', async () => {
+      await voiceAgent.connect();
+      const sendSpy = jest.spyOn(mockWebRTCTransport, 'sendToolCallResult');
+      lastTransportCallbacks.onToolCall?.({
+        id: 'ctx-1',
+        toolid: 'tool-1',
+        name: 'end_of_conversation',
+        action: ToolCallAction.TOOL_CALL_ACTION_END_CONVERSATION,
+        argsMap: [],
+      });
+      expect(sendSpy).not.toHaveBeenCalled();
     });
 
     it('routes callback errors to ErrorEvent', async () => {

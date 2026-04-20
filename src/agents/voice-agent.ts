@@ -40,7 +40,6 @@ import {
   ConversationUserMessage,
 } from "@/rapida/types/agent-callback";
 import { ConnectionState } from "@/rapida/types/connection-state";
-import { ConversationDirective } from "../clients/protos/talk-api_pb";
 
 const LOG_PREFIX = "[Rapida:VoiceAgent]";
 
@@ -144,11 +143,30 @@ export class VoiceAgent extends Agent {
 
       },
 
-      onDirective: (directive) => {
-        // console.log(`${LOG_PREFIX} callback -> onDirective`, directive);
-        if (directive && directive.type === ConversationDirective.DirectiveType.END_CONVERSATION) {
-          this.disconnect();
+      onToolCall: (toolCall) => {
+        const sendResult = (result: Record<string, string>) => {
+          this.webrtcTransport?.sendToolCallResult(
+            toolCall.id, toolCall.toolid, toolCall.name, toolCall.action, result,
+          );
+        };
+
+        for (const cb of this.agentCallbacks) {
+          const r = cb.onToolCall?.(toolCall);
+          if (r && typeof (r as Promise<unknown>).then === "function") {
+            (r as Promise<Record<string, string>>).then((res) => { if (res) sendResult(res); });
+            return;
+          }
+          if (r) {
+            sendResult(r as Record<string, string>);
+            return;
+          }
         }
+      },
+
+      onToolCallResult: (result) => {
+        this.agentCallbacks.forEach((cb) => {
+          cb.onToolCallResult?.(result);
+        });
       },
       onConversationEvent: (event) => {
         this.agentCallbacks.forEach((cb) => {

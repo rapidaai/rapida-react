@@ -277,6 +277,11 @@ export class WebTalkRequest extends jspb.Message {
   getDisconnection(): talk_api_pb.ConversationDisconnection | undefined;
   setDisconnection(value?: talk_api_pb.ConversationDisconnection): void;
 
+  hasToolcallresult(): boolean;
+  clearToolcallresult(): void;
+  getToolcallresult(): talk_api_pb.ConversationToolCallResult | undefined;
+  setToolcallresult(value?: talk_api_pb.ConversationToolCallResult): void;
+
   getRequestCase(): WebTalkRequest.RequestCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): WebTalkRequest.AsObject;
@@ -297,6 +302,7 @@ export namespace WebTalkRequest {
     metadata?: talk_api_pb.ConversationMetadata.AsObject,
     metric?: talk_api_pb.ConversationMetric.AsObject,
     disconnection?: talk_api_pb.ConversationDisconnection.AsObject,
+    toolcallresult?: talk_api_pb.ConversationToolCallResult.AsObject,
   }
 
   export enum RequestCase {
@@ -308,6 +314,7 @@ export namespace WebTalkRequest {
     METADATA = 5,
     METRIC = 6,
     DISCONNECTION = 7,
+    TOOLCALLRESULT = 8,
   }
 }
 
@@ -343,20 +350,15 @@ export class WebTalkResponse extends jspb.Message {
   getAssistant(): talk_api_pb.ConversationAssistantMessage | undefined;
   setAssistant(value?: talk_api_pb.ConversationAssistantMessage): void;
 
-  hasTool(): boolean;
-  clearTool(): void;
-  getTool(): talk_api_pb.ConversationToolCall | undefined;
-  setTool(value?: talk_api_pb.ConversationToolCall): void;
+  hasToolcall(): boolean;
+  clearToolcall(): void;
+  getToolcall(): talk_api_pb.ConversationToolCall | undefined;
+  setToolcall(value?: talk_api_pb.ConversationToolCall): void;
 
-  hasToolresult(): boolean;
-  clearToolresult(): void;
-  getToolresult(): talk_api_pb.ConversationToolResult | undefined;
-  setToolresult(value?: talk_api_pb.ConversationToolResult): void;
-
-  hasDirective(): boolean;
-  clearDirective(): void;
-  getDirective(): talk_api_pb.ConversationDirective | undefined;
-  setDirective(value?: talk_api_pb.ConversationDirective): void;
+  hasToolcallresult(): boolean;
+  clearToolcallresult(): void;
+  getToolcallresult(): talk_api_pb.ConversationToolCallResult | undefined;
+  setToolcallresult(value?: talk_api_pb.ConversationToolCallResult): void;
 
   hasError(): boolean;
   clearError(): void;
@@ -408,9 +410,8 @@ export namespace WebTalkResponse {
     interruption?: talk_api_pb.ConversationInterruption.AsObject,
     user?: talk_api_pb.ConversationUserMessage.AsObject,
     assistant?: talk_api_pb.ConversationAssistantMessage.AsObject,
-    tool?: talk_api_pb.ConversationToolCall.AsObject,
-    toolresult?: talk_api_pb.ConversationToolResult.AsObject,
-    directive?: talk_api_pb.ConversationDirective.AsObject,
+    toolcall?: talk_api_pb.ConversationToolCall.AsObject,
+    toolcallresult?: talk_api_pb.ConversationToolCallResult.AsObject,
     error?: talk_api_pb.ConversationError.AsObject,
     signaling?: ServerSignaling.AsObject,
     metadata?: talk_api_pb.ConversationMetadata.AsObject,
@@ -426,9 +427,8 @@ export namespace WebTalkResponse {
     INTERRUPTION = 10,
     USER = 11,
     ASSISTANT = 12,
-    TOOL = 13,
-    TOOLRESULT = 14,
-    DIRECTIVE = 16,
+    TOOLCALL = 13,
+    TOOLCALLRESULT = 14,
     ERROR = 15,
     SIGNALING = 17,
     METADATA = 19,

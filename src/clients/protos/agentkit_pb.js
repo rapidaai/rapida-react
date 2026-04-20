@@ -510,7 +510,7 @@ proto.talk_api.TalkInput.prototype.hasMetric = function() {
  * @private {!Array<!Array<number>>}
  * @const
  */
-proto.talk_api.TalkOutput.oneofGroups_ = [[9,10,12,13,14,16,15]];
+proto.talk_api.TalkOutput.oneofGroups_ = [[9,10,12,13,14,15]];
 
 /**
  * @enum {number}
@@ -520,9 +520,8 @@ proto.talk_api.TalkOutput.DataCase = {
   INITIALIZATION: 9,
   INTERRUPTION: 10,
   ASSISTANT: 12,
-  TOOL: 13,
-  TOOLRESULT: 14,
-  DIRECTIVE: 16,
+  TOOLCALL: 13,
+  TOOLCALLRESULT: 14,
   ERROR: 15
 };
 
@@ -569,9 +568,8 @@ proto.talk_api.TalkOutput.toObject = function(includeInstance, msg) {
     initialization: (f = msg.getInitialization()) && talk$api_pb.ConversationInitialization.toObject(includeInstance, f),
     interruption: (f = msg.getInterruption()) && talk$api_pb.ConversationInterruption.toObject(includeInstance, f),
     assistant: (f = msg.getAssistant()) && talk$api_pb.ConversationAssistantMessage.toObject(includeInstance, f),
-    tool: (f = msg.getTool()) && talk$api_pb.ConversationToolCall.toObject(includeInstance, f),
-    toolresult: (f = msg.getToolresult()) && talk$api_pb.ConversationToolResult.toObject(includeInstance, f),
-    directive: (f = msg.getDirective()) && talk$api_pb.ConversationDirective.toObject(includeInstance, f),
+    toolcall: (f = msg.getToolcall()) && talk$api_pb.ConversationToolCall.toObject(includeInstance, f),
+    toolcallresult: (f = msg.getToolcallresult()) && talk$api_pb.ConversationToolCallResult.toObject(includeInstance, f),
     error: (f = msg.getError()) && common_pb.Error.toObject(includeInstance, f)
   };
 
@@ -635,17 +633,12 @@ proto.talk_api.TalkOutput.deserializeBinaryFromReader = function(msg, reader) {
     case 13:
       var value = new talk$api_pb.ConversationToolCall;
       reader.readMessage(value,talk$api_pb.ConversationToolCall.deserializeBinaryFromReader);
-      msg.setTool(value);
+      msg.setToolcall(value);
       break;
     case 14:
-      var value = new talk$api_pb.ConversationToolResult;
-      reader.readMessage(value,talk$api_pb.ConversationToolResult.deserializeBinaryFromReader);
-      msg.setToolresult(value);
-      break;
-    case 16:
-      var value = new talk$api_pb.ConversationDirective;
-      reader.readMessage(value,talk$api_pb.ConversationDirective.deserializeBinaryFromReader);
-      msg.setDirective(value);
+      var value = new talk$api_pb.ConversationToolCallResult;
+      reader.readMessage(value,talk$api_pb.ConversationToolCallResult.deserializeBinaryFromReader);
+      msg.setToolcallresult(value);
       break;
     case 15:
       var value = new common_pb.Error;
@@ -719,7 +712,7 @@ proto.talk_api.TalkOutput.serializeBinaryToWriter = function(message, writer) {
       talk$api_pb.ConversationAssistantMessage.serializeBinaryToWriter
     );
   }
-  f = message.getTool();
+  f = message.getToolcall();
   if (f != null) {
     writer.writeMessage(
       13,
@@ -727,20 +720,12 @@ proto.talk_api.TalkOutput.serializeBinaryToWriter = function(message, writer) {
       talk$api_pb.ConversationToolCall.serializeBinaryToWriter
     );
   }
-  f = message.getToolresult();
+  f = message.getToolcallresult();
   if (f != null) {
     writer.writeMessage(
       14,
       f,
-      talk$api_pb.ConversationToolResult.serializeBinaryToWriter
-    );
-  }
-  f = message.getDirective();
-  if (f != null) {
-    writer.writeMessage(
-      16,
-      f,
-      talk$api_pb.ConversationDirective.serializeBinaryToWriter
+      talk$api_pb.ConversationToolCallResult.serializeBinaryToWriter
     );
   }
   f = message.getError();
@@ -902,10 +887,10 @@ proto.talk_api.TalkOutput.prototype.hasAssistant = function() {
 
 
 /**
- * optional ConversationToolCall tool = 13;
+ * optional ConversationToolCall toolCall = 13;
  * @return {?proto.talk_api.ConversationToolCall}
  */
-proto.talk_api.TalkOutput.prototype.getTool = function() {
+proto.talk_api.TalkOutput.prototype.getToolcall = function() {
   return /** @type{?proto.talk_api.ConversationToolCall} */ (
     jspb.Message.getWrapperField(this, talk$api_pb.ConversationToolCall, 13));
 };
@@ -915,7 +900,7 @@ proto.talk_api.TalkOutput.prototype.getTool = function() {
  * @param {?proto.talk_api.ConversationToolCall|undefined} value
  * @return {!proto.talk_api.TalkOutput} returns this
 */
-proto.talk_api.TalkOutput.prototype.setTool = function(value) {
+proto.talk_api.TalkOutput.prototype.setToolcall = function(value) {
   return jspb.Message.setOneofWrapperField(this, 13, proto.talk_api.TalkOutput.oneofGroups_[0], value);
 };
 
@@ -924,8 +909,8 @@ proto.talk_api.TalkOutput.prototype.setTool = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.talk_api.TalkOutput} returns this
  */
-proto.talk_api.TalkOutput.prototype.clearTool = function() {
-  return this.setTool(undefined);
+proto.talk_api.TalkOutput.prototype.clearToolcall = function() {
+  return this.setToolcall(undefined);
 };
 
 
@@ -933,26 +918,26 @@ proto.talk_api.TalkOutput.prototype.clearTool = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.talk_api.TalkOutput.prototype.hasTool = function() {
+proto.talk_api.TalkOutput.prototype.hasToolcall = function() {
   return jspb.Message.getField(this, 13) != null;
 };
 
 
 /**
- * optional ConversationToolResult toolResult = 14;
- * @return {?proto.talk_api.ConversationToolResult}
+ * optional ConversationToolCallResult toolCallResult = 14;
+ * @return {?proto.talk_api.ConversationToolCallResult}
  */
-proto.talk_api.TalkOutput.prototype.getToolresult = function() {
-  return /** @type{?proto.talk_api.ConversationToolResult} */ (
-    jspb.Message.getWrapperField(this, talk$api_pb.ConversationToolResult, 14));
+proto.talk_api.TalkOutput.prototype.getToolcallresult = function() {
+  return /** @type{?proto.talk_api.ConversationToolCallResult} */ (
+    jspb.Message.getWrapperField(this, talk$api_pb.ConversationToolCallResult, 14));
 };
 
 
 /**
- * @param {?proto.talk_api.ConversationToolResult|undefined} value
+ * @param {?proto.talk_api.ConversationToolCallResult|undefined} value
  * @return {!proto.talk_api.TalkOutput} returns this
 */
-proto.talk_api.TalkOutput.prototype.setToolresult = function(value) {
+proto.talk_api.TalkOutput.prototype.setToolcallresult = function(value) {
   return jspb.Message.setOneofWrapperField(this, 14, proto.talk_api.TalkOutput.oneofGroups_[0], value);
 };
 
@@ -961,8 +946,8 @@ proto.talk_api.TalkOutput.prototype.setToolresult = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.talk_api.TalkOutput} returns this
  */
-proto.talk_api.TalkOutput.prototype.clearToolresult = function() {
-  return this.setToolresult(undefined);
+proto.talk_api.TalkOutput.prototype.clearToolcallresult = function() {
+  return this.setToolcallresult(undefined);
 };
 
 
@@ -970,45 +955,8 @@ proto.talk_api.TalkOutput.prototype.clearToolresult = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.talk_api.TalkOutput.prototype.hasToolresult = function() {
+proto.talk_api.TalkOutput.prototype.hasToolcallresult = function() {
   return jspb.Message.getField(this, 14) != null;
-};
-
-
-/**
- * optional ConversationDirective directive = 16;
- * @return {?proto.talk_api.ConversationDirective}
- */
-proto.talk_api.TalkOutput.prototype.getDirective = function() {
-  return /** @type{?proto.talk_api.ConversationDirective} */ (
-    jspb.Message.getWrapperField(this, talk$api_pb.ConversationDirective, 16));
-};
-
-
-/**
- * @param {?proto.talk_api.ConversationDirective|undefined} value
- * @return {!proto.talk_api.TalkOutput} returns this
-*/
-proto.talk_api.TalkOutput.prototype.setDirective = function(value) {
-  return jspb.Message.setOneofWrapperField(this, 16, proto.talk_api.TalkOutput.oneofGroups_[0], value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.talk_api.TalkOutput} returns this
- */
-proto.talk_api.TalkOutput.prototype.clearDirective = function() {
-  return this.setDirective(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.talk_api.TalkOutput.prototype.hasDirective = function() {
-  return jspb.Message.getField(this, 16) != null;
 };
 
 

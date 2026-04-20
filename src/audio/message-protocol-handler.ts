@@ -43,7 +43,7 @@ import type { AudioMediaManager } from "./audio-media-manager";
  * - Parse each response and route to the correct manager / callback
  * - Handle ServerSignaling (config, SDP, ICE, ready, clear, error)
  * - Handle conversation init/config responses
- * - Handle assistant / user / interruption / directive messages
+ * - Handle assistant / user / interruption / tool call messages
  *
  * This is pure dispatch logic — it holds no state of its own.
  */
@@ -115,10 +115,21 @@ export class MessageProtocolHandler {
       if (interruption) this.callbacks.onInterrupt?.(interruption.toObject());
     }
 
-    // Directive / action
-    if (response.hasDirective()) {
-      const directive = response.getDirective();
-      if (directive) this.callbacks.onDirective?.(directive.toObject());
+    // Tool call (server invokes a tool — client may need to act)
+    if (response.hasToolcall()) {
+      const toolCall = response.getToolcall();
+      if (toolCall) this.callbacks.onToolCall?.(toolCall.toObject());
+    }
+
+    // Tool call result (server-side tool completed — informational)
+    if (response.hasToolcallresult()) {
+      const result = response.getToolcallresult();
+      if (result) this.callbacks.onToolCallResult?.(result.toObject());
+    }
+
+    // Disconnection (server requests disconnect)
+    if (response.hasDisconnection()) {
+      this.callbacks.onDisconnected?.();
     }
 
     // Pipeline conversation event (STT, TTS, LLM, session, etc.)

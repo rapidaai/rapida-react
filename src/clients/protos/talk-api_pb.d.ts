@@ -16,7 +16,10 @@ export class ConversationToolCall extends jspb.Message {
   getName(): string;
   setName(value: string): void;
 
-  getArgsMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
+  getAction(): ToolCallActionMap[keyof ToolCallActionMap];
+  setAction(value: ToolCallActionMap[keyof ToolCallActionMap]): void;
+
+  getArgsMap(): jspb.Map<string, string>;
   clearArgsMap(): void;
   hasTime(): boolean;
   clearTime(): void;
@@ -38,12 +41,13 @@ export namespace ConversationToolCall {
     id: string,
     toolid: string,
     name: string,
-    argsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
+    action: ToolCallActionMap[keyof ToolCallActionMap],
+    argsMap: Array<[string, string]>,
     time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
 }
 
-export class ConversationToolResult extends jspb.Message {
+export class ConversationToolCallResult extends jspb.Message {
   getId(): string;
   setId(value: string): void;
 
@@ -53,33 +57,33 @@ export class ConversationToolResult extends jspb.Message {
   getName(): string;
   setName(value: string): void;
 
-  getArgsMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
-  clearArgsMap(): void;
-  getSuccess(): boolean;
-  setSuccess(value: boolean): void;
+  getAction(): ToolCallActionMap[keyof ToolCallActionMap];
+  setAction(value: ToolCallActionMap[keyof ToolCallActionMap]): void;
 
+  getResultMap(): jspb.Map<string, string>;
+  clearResultMap(): void;
   hasTime(): boolean;
   clearTime(): void;
   getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ConversationToolResult.AsObject;
-  static toObject(includeInstance: boolean, msg: ConversationToolResult): ConversationToolResult.AsObject;
+  toObject(includeInstance?: boolean): ConversationToolCallResult.AsObject;
+  static toObject(includeInstance: boolean, msg: ConversationToolCallResult): ConversationToolCallResult.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ConversationToolResult, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ConversationToolResult;
-  static deserializeBinaryFromReader(message: ConversationToolResult, reader: jspb.BinaryReader): ConversationToolResult;
+  static serializeBinaryToWriter(message: ConversationToolCallResult, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ConversationToolCallResult;
+  static deserializeBinaryFromReader(message: ConversationToolCallResult, reader: jspb.BinaryReader): ConversationToolCallResult;
 }
 
-export namespace ConversationToolResult {
+export namespace ConversationToolCallResult {
   export type AsObject = {
     id: string,
     toolid: string,
     name: string,
-    argsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
-    success: boolean,
+    action: ToolCallActionMap[keyof ToolCallActionMap],
+    resultMap: Array<[string, string]>,
     time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
 }
@@ -136,45 +140,48 @@ export namespace ConversationMetadata {
   }
 }
 
-export class ConversationDirective extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  getType(): ConversationDirective.DirectiveTypeMap[keyof ConversationDirective.DirectiveTypeMap];
-  setType(value: ConversationDirective.DirectiveTypeMap[keyof ConversationDirective.DirectiveTypeMap]): void;
-
-  getArgsMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
-  clearArgsMap(): void;
-  hasTime(): boolean;
-  clearTime(): void;
-  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
-  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
+export class ConversationBridgeUserAudio extends jspb.Message {
+  getAudio(): Uint8Array | string;
+  getAudio_asU8(): Uint8Array;
+  getAudio_asB64(): string;
+  setAudio(value: Uint8Array | string): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ConversationDirective.AsObject;
-  static toObject(includeInstance: boolean, msg: ConversationDirective): ConversationDirective.AsObject;
+  toObject(includeInstance?: boolean): ConversationBridgeUserAudio.AsObject;
+  static toObject(includeInstance: boolean, msg: ConversationBridgeUserAudio): ConversationBridgeUserAudio.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ConversationDirective, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ConversationDirective;
-  static deserializeBinaryFromReader(message: ConversationDirective, reader: jspb.BinaryReader): ConversationDirective;
+  static serializeBinaryToWriter(message: ConversationBridgeUserAudio, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ConversationBridgeUserAudio;
+  static deserializeBinaryFromReader(message: ConversationBridgeUserAudio, reader: jspb.BinaryReader): ConversationBridgeUserAudio;
 }
 
-export namespace ConversationDirective {
+export namespace ConversationBridgeUserAudio {
   export type AsObject = {
-    id: string,
-    type: ConversationDirective.DirectiveTypeMap[keyof ConversationDirective.DirectiveTypeMap],
-    argsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
-    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    audio: Uint8Array | string,
   }
+}
 
-  export interface DirectiveTypeMap {
-    DIRECTIVE_TYPE_UNSPECIFIED: 0;
-    END_CONVERSATION: 1;
-    TRANSFER_CONVERSATION: 2;
+export class ConversationBridgeOperatorAudio extends jspb.Message {
+  getAudio(): Uint8Array | string;
+  getAudio_asU8(): Uint8Array;
+  getAudio_asB64(): string;
+  setAudio(value: Uint8Array | string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ConversationBridgeOperatorAudio.AsObject;
+  static toObject(includeInstance: boolean, msg: ConversationBridgeOperatorAudio): ConversationBridgeOperatorAudio.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ConversationBridgeOperatorAudio, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ConversationBridgeOperatorAudio;
+  static deserializeBinaryFromReader(message: ConversationBridgeOperatorAudio, reader: jspb.BinaryReader): ConversationBridgeOperatorAudio;
+}
+
+export namespace ConversationBridgeOperatorAudio {
+  export type AsObject = {
+    audio: Uint8Array | string,
   }
-
-  export const DirectiveType: DirectiveTypeMap;
 }
 
 export class ConversationError extends jspb.Message {
@@ -184,7 +191,7 @@ export class ConversationError extends jspb.Message {
   getMessage(): string;
   setMessage(value: string): void;
 
-  getDetailsMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
+  getDetailsMap(): jspb.Map<string, string>;
   clearDetailsMap(): void;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationError.AsObject;
@@ -200,7 +207,7 @@ export namespace ConversationError {
   export type AsObject = {
     assistantconversationid: string,
     message: string,
-    detailsMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
+    detailsMap: Array<[string, string]>,
   }
 }
 
@@ -683,6 +690,21 @@ export class AssistantTalkRequest extends jspb.Message {
   getDisconnection(): ConversationDisconnection | undefined;
   setDisconnection(value?: ConversationDisconnection): void;
 
+  hasToolcallresult(): boolean;
+  clearToolcallresult(): void;
+  getToolcallresult(): ConversationToolCallResult | undefined;
+  setToolcallresult(value?: ConversationToolCallResult): void;
+
+  hasBridgeoperatoraudio(): boolean;
+  clearBridgeoperatoraudio(): void;
+  getBridgeoperatoraudio(): ConversationBridgeOperatorAudio | undefined;
+  setBridgeoperatoraudio(value?: ConversationBridgeOperatorAudio): void;
+
+  hasBridgeuseraudio(): boolean;
+  clearBridgeuseraudio(): void;
+  getBridgeuseraudio(): ConversationBridgeUserAudio | undefined;
+  setBridgeuseraudio(value?: ConversationBridgeUserAudio): void;
+
   getRequestCase(): AssistantTalkRequest.RequestCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantTalkRequest.AsObject;
@@ -702,6 +724,9 @@ export namespace AssistantTalkRequest {
     metadata?: ConversationMetadata.AsObject,
     metric?: ConversationMetric.AsObject,
     disconnection?: ConversationDisconnection.AsObject,
+    toolcallresult?: ConversationToolCallResult.AsObject,
+    bridgeoperatoraudio?: ConversationBridgeOperatorAudio.AsObject,
+    bridgeuseraudio?: ConversationBridgeUserAudio.AsObject,
   }
 
   export enum RequestCase {
@@ -712,6 +737,9 @@ export namespace AssistantTalkRequest {
     METADATA = 4,
     METRIC = 5,
     DISCONNECTION = 6,
+    TOOLCALLRESULT = 7,
+    BRIDGEOPERATORAUDIO = 8,
+    BRIDGEUSERAUDIO = 9,
   }
 }
 
@@ -752,15 +780,10 @@ export class AssistantTalkResponse extends jspb.Message {
   getToolcall(): ConversationToolCall | undefined;
   setToolcall(value?: ConversationToolCall): void;
 
-  hasToolresult(): boolean;
-  clearToolresult(): void;
-  getToolresult(): ConversationToolResult | undefined;
-  setToolresult(value?: ConversationToolResult): void;
-
-  hasDirective(): boolean;
-  clearDirective(): void;
-  getDirective(): ConversationDirective | undefined;
-  setDirective(value?: ConversationDirective): void;
+  hasToolcallresult(): boolean;
+  clearToolcallresult(): void;
+  getToolcallresult(): ConversationToolCallResult | undefined;
+  setToolcallresult(value?: ConversationToolCallResult): void;
 
   hasMetadata(): boolean;
   clearMetadata(): void;
@@ -808,8 +831,7 @@ export namespace AssistantTalkResponse {
     user?: ConversationUserMessage.AsObject,
     assistant?: ConversationAssistantMessage.AsObject,
     toolcall?: ConversationToolCall.AsObject,
-    toolresult?: ConversationToolResult.AsObject,
-    directive?: ConversationDirective.AsObject,
+    toolcallresult?: ConversationToolCallResult.AsObject,
     metadata?: ConversationMetadata.AsObject,
     metric?: ConversationMetric.AsObject,
     disconnection?: ConversationDisconnection.AsObject,
@@ -825,8 +847,7 @@ export namespace AssistantTalkResponse {
     USER = 11,
     ASSISTANT = 12,
     TOOLCALL = 13,
-    TOOLRESULT = 14,
-    DIRECTIVE = 16,
+    TOOLCALLRESULT = 14,
     METADATA = 17,
     METRIC = 18,
     DISCONNECTION = 19,
@@ -1103,6 +1124,14 @@ export namespace CreateBulkPhoneCallResponse {
     error?: common_pb.Error.AsObject,
   }
 }
+
+export interface ToolCallActionMap {
+  TOOL_CALL_ACTION_UNSPECIFIED: 0;
+  TOOL_CALL_ACTION_END_CONVERSATION: 1;
+  TOOL_CALL_ACTION_TRANSFER_CONVERSATION: 2;
+}
+
+export const ToolCallAction: ToolCallActionMap;
 
 export interface StreamModeMap {
   STREAM_MODE_UNSPECIFIED: 0;

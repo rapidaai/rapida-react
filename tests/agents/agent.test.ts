@@ -483,7 +483,8 @@ describe('Agent', () => {
         hasUser: () => true,
         getUser: () => ({ getText: () => 'user text' }),
         hasInterruption: () => true,
-        hasDirective: () => true,
+        hasToolcall: () => true,
+        hasToolcallresult: () => true,
         hasSignaling: () => true,
       } as any);
 
@@ -492,7 +493,8 @@ describe('Agent', () => {
       expect(mixed).toContain('Assistant(');
       expect(mixed).toContain('User(');
       expect(mixed).toContain('Interruption');
-      expect(mixed).toContain('Directive');
+      expect(mixed).toContain('ToolCall');
+      expect(mixed).toContain('ToolCallResult');
       expect(mixed).toContain('Signaling');
     });
 

@@ -80,7 +80,8 @@ export function describeResponse(res: WebTalkResponse): string {
   if (res.hasAssistant()) parts.push(`Assistant("${res.getAssistant()?.getText()?.substring(0, 80) ?? ""}"`);
   if (res.hasUser()) parts.push(`User("${res.getUser()?.getText()?.substring(0, 80) ?? ""}"`);
   if (res.hasInterruption()) parts.push("Interruption");
-  if (res.hasDirective()) parts.push("Directive");
+  if (res.hasToolcall?.()) parts.push("ToolCall");
+  if (res.hasToolcallresult?.()) parts.push("ToolCallResult");
   if (res.hasSignaling()) parts.push("Signaling");
   return parts.length > 0 ? parts.join(" + ") : "Empty";
 }

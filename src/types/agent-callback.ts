@@ -27,7 +27,8 @@ import {
   ConversationAssistantMessage as CAMessage,
   ConversationConfiguration,
   ConversationInterruption,
-  ConversationDirective,
+  ConversationToolCall,
+  ConversationToolCallResult,
   ConversationInitialization,
   ConversationEvent,
   ConversationMetric,
@@ -105,8 +106,22 @@ export interface AgentCallback {
   /** Called when user message is received */
   onUserMessage?: (args: ConversationUserMessage | undefined) => void;
 
-  /** Called when directive/action is received */
-  onDirective?: (arg?: ConversationDirective.AsObject) => void;
+  /**
+   * Called when the server invokes a tool call. Return a result map to
+   * send it back as ConversationToolCallResult.
+   *
+   * - Return `Record<string, string>` → SDK sends result to server
+   * - Return void/undefined → no result sent
+   * - Async supported → SDK awaits the promise
+   *
+   * Orphan tool calls (no result returned), timeouts, and error recovery
+   * are managed server-side. The client is only responsible for executing
+   * the action and returning a result when ready.
+   */
+  onToolCall?: (toolCall: ConversationToolCall.AsObject) => Promise<Record<string, string>> | Record<string, string> | void;
+
+  /** Called when a tool call result is received from the server (informational) */
+  onToolCallResult?: (result: ConversationToolCallResult.AsObject) => void;
 
   /** Called when a pipeline conversation event is received (STT, TTS, LLM, session, etc.) */
   onConversationEvent?: (event: ConversationEvent.AsObject) => void;

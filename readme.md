@@ -443,7 +443,11 @@ const agent = new VoiceAgent(
     onConfiguration: (cfg) => console.log("Config:", cfg),
     onInterrupt: () => console.log("Interrupted"),
     onInitialization: (init) => console.log("Session started:", init),
-    onDirective: (dir) => console.log("Directive:", dir),
+    onToolCall: (toolCall) => {
+      console.log("Tool call:", toolCall);
+      // Return a result to send back to server, or void to skip
+      return { status: "completed" };
+    },
   }
 );
 ```
@@ -1092,7 +1096,7 @@ const updated = await UpdateNotificationSetting(config, request, authHeader);
 | `InputOptions` | Input channel config: `channels`, `channel`, `device`, `iceServers`. |
 | `OutputOptions` | Output channel config: `channels`, `channel`, `device`. |
 | `UserIdentifier` | User identity: `id` and optional `name`. |
-| `AgentCallback` | Callback interface: `onAssistantMessage`, `onUserMessage`, `onConfiguration`, `onInterrupt`, `onDirective`, `onInitialization`, `onConnectionStateChange`, `onConnected`, `onDisconnected`, `onError`. |
+| `AgentCallback` | Callback interface: `onAssistantMessage`, `onUserMessage`, `onConfiguration`, `onInterrupt`, `onToolCall`, `onToolCallResult`, `onInitialization`, `onConnectionStateChange`, `onConnected`, `onDisconnected`, `onError`. |
 | `Channel` | Enum: `Channel.Audio`, `Channel.Text` |
 | `ConnectionState` | Enum: `ConnectionState.Disconnected`, `ConnectionState.Connecting`, `ConnectionState.Connected` |
 | `Message` | Message object: `id`, `role`, `messages[]`, `feedback?`, `time`, `status` |

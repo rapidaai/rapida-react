@@ -209,6 +209,9 @@ export class WebRTCGrpcTransport {
   sendConversationInitialization(): void { this.signaling.sendConversationInitialization(); }
   sendConversationConfiguration(): void { this.signaling.sendConversationConfiguration(); }
   sendText(text: string): void { this.signaling.sendText(text); }
+  sendToolCallResult(id: string, toolId: string, name: string, action: 0 | 1 | 2, result: Record<string, string>): void {
+    this.signaling.sendToolCallResult(id, toolId, name, action, result);
+  }
 
   // ---------------------------------------------------------------------------
   // Audio controls (delegated to audio & peer managers)

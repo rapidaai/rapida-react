@@ -181,6 +181,33 @@ export namespace FeaturePermission {
   }
 }
 
+export class AuthBillingPlan extends jspb.Message {
+  getPlanslug(): string;
+  setPlanslug(value: string): void;
+
+  getPlanname(): string;
+  setPlanname(value: string): void;
+
+  getQuotasMap(): jspb.Map<string, number>;
+  clearQuotasMap(): void;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AuthBillingPlan.AsObject;
+  static toObject(includeInstance: boolean, msg: AuthBillingPlan): AuthBillingPlan.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AuthBillingPlan, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AuthBillingPlan;
+  static deserializeBinaryFromReader(message: AuthBillingPlan, reader: jspb.BinaryReader): AuthBillingPlan;
+}
+
+export namespace AuthBillingPlan {
+  export type AsObject = {
+    planslug: string,
+    planname: string,
+    quotasMap: Array<[string, number]>,
+  }
+}
+
 export class Authentication extends jspb.Message {
   hasUser(): boolean;
   clearUser(): void;
@@ -207,6 +234,11 @@ export class Authentication extends jspb.Message {
   setFeaturepermissionsList(value: Array<FeaturePermission>): void;
   addFeaturepermissions(value?: FeaturePermission, index?: number): FeaturePermission;
 
+  hasBillingplan(): boolean;
+  clearBillingplan(): void;
+  getBillingplan(): AuthBillingPlan | undefined;
+  setBillingplan(value?: AuthBillingPlan): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Authentication.AsObject;
   static toObject(includeInstance: boolean, msg: Authentication): Authentication.AsObject;
@@ -224,6 +256,7 @@ export namespace Authentication {
     organizationrole?: OrganizationRole.AsObject,
     projectrolesList: Array<ProjectRole.AsObject>,
     featurepermissionsList: Array<FeaturePermission.AsObject>,
+    billingplan?: AuthBillingPlan.AsObject,
   }
 }
 

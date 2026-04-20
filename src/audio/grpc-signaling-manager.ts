@@ -28,6 +28,8 @@ import { AgentCallback } from "@/rapida/types/agent-callback";
 import { WebTalk } from "@/rapida/clients/webrtc";
 import {
   ConversationUserMessage,
+  ConversationToolCallResult,
+  ToolCallActionMap,
 } from "@/rapida/clients/protos/talk-api_pb";
 import {
   WebTalkRequest,
@@ -192,6 +194,36 @@ export class GrpcSignalingManager {
     } catch (error) {
       console.error(`${LOG_PREFIX} Failed to send text message`, error);
       this.callbacks.onError?.(new Error(`Failed to send text: ${error}`));
+    }
+  }
+
+  /** Send a tool call result back to the server */
+  sendToolCallResult(
+    id: string,
+    toolId: string,
+    name: string,
+    action: ToolCallActionMap[keyof ToolCallActionMap],
+    result: Record<string, string>,
+  ): void {
+    if (!this.grpcStream) return;
+    this.ensureInitializationSent();
+
+    try {
+      const request = new WebTalkRequest();
+      const toolCallResult = new ConversationToolCallResult();
+      toolCallResult.setId(id);
+      toolCallResult.setToolid(toolId);
+      toolCallResult.setName(name);
+      toolCallResult.setAction(action);
+      const resultMap = toolCallResult.getResultMap();
+      for (const [k, v] of Object.entries(result)) {
+        resultMap.set(k, v);
+      }
+      request.setToolcallresult(toolCallResult);
+      this.grpcStream.write(request);
+    } catch (error) {
+      console.error(`${LOG_PREFIX} Failed to send tool call result`, error);
+      this.callbacks.onError?.(new Error(`Failed to send tool call result: ${error}`));
     }
   }
 

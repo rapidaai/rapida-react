@@ -90,20 +90,15 @@ export class TalkOutput extends jspb.Message {
   getAssistant(): talk_api_pb.ConversationAssistantMessage | undefined;
   setAssistant(value?: talk_api_pb.ConversationAssistantMessage): void;
 
-  hasTool(): boolean;
-  clearTool(): void;
-  getTool(): talk_api_pb.ConversationToolCall | undefined;
-  setTool(value?: talk_api_pb.ConversationToolCall): void;
+  hasToolcall(): boolean;
+  clearToolcall(): void;
+  getToolcall(): talk_api_pb.ConversationToolCall | undefined;
+  setToolcall(value?: talk_api_pb.ConversationToolCall): void;
 
-  hasToolresult(): boolean;
-  clearToolresult(): void;
-  getToolresult(): talk_api_pb.ConversationToolResult | undefined;
-  setToolresult(value?: talk_api_pb.ConversationToolResult): void;
-
-  hasDirective(): boolean;
-  clearDirective(): void;
-  getDirective(): talk_api_pb.ConversationDirective | undefined;
-  setDirective(value?: talk_api_pb.ConversationDirective): void;
+  hasToolcallresult(): boolean;
+  clearToolcallresult(): void;
+  getToolcallresult(): talk_api_pb.ConversationToolCallResult | undefined;
+  setToolcallresult(value?: talk_api_pb.ConversationToolCallResult): void;
 
   hasError(): boolean;
   clearError(): void;
@@ -128,9 +123,8 @@ export namespace TalkOutput {
     initialization?: talk_api_pb.ConversationInitialization.AsObject,
     interruption?: talk_api_pb.ConversationInterruption.AsObject,
     assistant?: talk_api_pb.ConversationAssistantMessage.AsObject,
-    tool?: talk_api_pb.ConversationToolCall.AsObject,
-    toolresult?: talk_api_pb.ConversationToolResult.AsObject,
-    directive?: talk_api_pb.ConversationDirective.AsObject,
+    toolcall?: talk_api_pb.ConversationToolCall.AsObject,
+    toolcallresult?: talk_api_pb.ConversationToolCallResult.AsObject,
     error?: common_pb.Error.AsObject,
   }
 
@@ -139,9 +133,8 @@ export namespace TalkOutput {
     INITIALIZATION = 9,
     INTERRUPTION = 10,
     ASSISTANT = 12,
-    TOOL = 13,
-    TOOLRESULT = 14,
-    DIRECTIVE = 16,
+    TOOLCALL = 13,
+    TOOLCALLRESULT = 14,
     ERROR = 15,
   }
 }
