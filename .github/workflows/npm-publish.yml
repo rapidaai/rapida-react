@@ -18,8 +18,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
-          registry-url: https://registry.npmjs.org/
+          node-version: 24
           cache: "npm"
           cache-dependency-path: package-lock.json
 
@@ -44,7 +43,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 22.12.0
+          node-version: 24
           cache: "npm"
           cache-dependency-path: package-lock.json
 
@@ -68,6 +67,12 @@ jobs:
           echo "ref=$GITHUB_REF"
           echo "workflow_ref=$GITHUB_WORKFLOW_REF"
           echo "oidc_url_set=${ACTIONS_ID_TOKEN_REQUEST_URL:+yes}"
+
+      - name: Prepare npm for OIDC trusted publish
+        run: |
+          npm config set registry https://registry.npmjs.org/
+          npm config delete //registry.npmjs.org/:_authToken || true
+          npm config list
 
       - name: Publish to npm
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
