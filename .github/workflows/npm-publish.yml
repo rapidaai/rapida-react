@@ -62,12 +62,11 @@ jobs:
       - name: Build package
         run: npm run build
 
-      - name: Verify npm Trusted Publishing identity
-        run: npm whoami
-
       - name: Publish to npm
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         run: npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ""
 
   create_release:
     name: Create GitHub Release
