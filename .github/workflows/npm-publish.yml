@@ -44,7 +44,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22.12.0
-          registry-url: https://registry.npmjs.org/
           cache: "npm"
           cache-dependency-path: package-lock.json
 
@@ -65,8 +64,6 @@ jobs:
       - name: Publish to npm
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         run: npm publish --access public --provenance
-        env:
-          NODE_AUTH_TOKEN: ""
 
   create_release:
     name: Create GitHub Release
