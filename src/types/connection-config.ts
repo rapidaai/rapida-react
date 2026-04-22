@@ -60,6 +60,7 @@ import {
 } from "@/rapida/utils/rapida_header";
 import { NotificationServiceClient } from "@/rapida/clients/protos/notification-api_pb_service";
 import { WebRTCClient } from "@/rapida/clients/protos/webrtc_pb_service";
+import { BillingServiceClient } from "@/rapida/clients/protos/billing-api_pb_service";
 
 /**
  *
@@ -284,6 +285,10 @@ export class ConnectionConfig {
       this.endpoint.web,
       this.getClientOptions()
     );
+  }
+
+  get billingClient(): BillingServiceClient {
+    return new BillingServiceClient(this.endpoint.web, this.getClientOptions());
   }
 
   get connectClient(): ConnectServiceClient {

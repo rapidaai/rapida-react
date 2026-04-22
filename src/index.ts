@@ -231,6 +231,11 @@ export {
   GetAllProjectCredential,
   CreateProjectCredential,
 } from "@/rapida/clients/project";
+export {
+  GetAllPlans,
+  GetSubscription,
+  UpdateSubscription,
+} from "@/rapida/clients/billing";
 
 export {
   EndpointService,
@@ -602,6 +607,21 @@ export {
   RequestStream,
   BidirectionalStream,
 } from "@/rapida/clients/types";
+export {
+  BillingService,
+  BillingServiceClient,
+} from "@/rapida/clients/protos/billing-api_pb_service";
+export {
+  BillingPlanQuota,
+  BillingPlan,
+  BillingSubscription,
+  GetAllPlansRequest,
+  GetAllPlansResponse,
+  GetSubscriptionRequest,
+  GetSubscriptionResponse,
+  UpdateSubscriptionRequest,
+  UpdateSubscriptionResponse,
+} from "@/rapida/clients/protos/billing-api_pb";
 
 // component export
 export { DeviceSelectorComponent } from "@/rapida/components/device-selector";
