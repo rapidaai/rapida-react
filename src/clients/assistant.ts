@@ -1466,36 +1466,22 @@ export function DeleteAssistant(
  */
 export function GetAllAssistantAnalysis(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  page: number,
-  pageSize: number,
-  criteria: { key: string; value: string }[],
-  cb: (
-    err: ServiceError | null,
-    response: GetAllAssistantAnalysisResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAllAssistantAnalysisRequest();
-  req.setAssistantid(assistantId);
-  const paginate = new Paginate();
-
-  criteria.forEach(({ key, value }) => {
-    const ctr = new Criteria();
-    ctr.setKey(key);
-    ctr.setValue(value);
-    req.addCriterias(ctr);
+  req: GetAllAssistantAnalysisRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAllAssistantAnalysisResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.getAllAssistantAnalysis(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAllAssistantAnalysisResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
   });
-
-  paginate.setPage(page);
-  paginate.setPagesize(pageSize);
-  req.setPaginate(paginate);
-
-  return connectionConfig.assistantClient.getAllAssistantAnalysis(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
 }
 
 /**
@@ -1513,35 +1499,22 @@ export function GetAllAssistantAnalysis(
  */
 export function CreateAnalysis(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  name: string,
-  endpointid: string,
-  endpointversion: string,
-  executionpriority: number,
-  parameters: { key: string; value: string }[],
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantAnalysisResponse | null
-  ) => void,
-  authHeader: UserAuthInfo,
-  description?: string
-) {
-  const req = new CreateAssistantAnalysisRequest();
-  req.setAssistantid(assistantId);
-  req.setEndpointid(endpointid);
-  req.setEndpointversion(endpointversion);
-  req.setName(name);
-  req.setExecutionpriority(executionpriority);
-  parameters.forEach((k) => {
-    req.getEndpointparametersMap().set(k.key, k.value);
+  req: CreateAssistantAnalysisRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<GetAssistantAnalysisResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.createAssistantAnalysis(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantAnalysisResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
   });
-
-  if (description) req.setDescription(description);
-  return connectionConfig.assistantClient.createAssistantAnalysis(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
 }
 
 /**
@@ -1562,37 +1535,22 @@ export function CreateAnalysis(
  */
 export function UpdateAnalysis(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  AnalysisId: string,
-  name: string,
-  endpointid: string,
-  endpointversion: string,
-  executionpriority: number,
-  parameters: { key: string; value: string }[],
-
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantAnalysisResponse | null
-  ) => void,
-  authHeader: UserAuthInfo,
-  description?: string
-) {
-  const req = new UpdateAssistantAnalysisRequest();
-  req.setId(AnalysisId);
-  req.setAssistantid(assistantId);
-  req.setEndpointid(endpointid);
-  req.setEndpointversion(endpointversion);
-  req.setName(name);
-  req.setExecutionpriority(executionpriority);
-  parameters.forEach((k) => {
-    req.getEndpointparametersMap().set(k.key, k.value);
+  req: UpdateAssistantAnalysisRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<GetAssistantAnalysisResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.updateAssistantAnalysis(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantAnalysisResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
   });
-  if (description) req.setDescription(description);
-  return connectionConfig.assistantClient.updateAssistantAnalysis(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
 }
 
 /**
@@ -1605,50 +1563,49 @@ export function UpdateAnalysis(
  */
 export function GetAssistantAnalysis(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  AnalysisId: string,
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantAnalysisResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAssistantAnalysisRequest();
-  req.setAssistantid(assistantId);
-  req.setId(AnalysisId);
-  return connectionConfig.assistantClient.getAssistantAnalysis(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: GetAssistantAnalysisRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantAnalysisResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.getAssistantAnalysis(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantAnalysisResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**
  *
  * @param assistantId
  * @param AnalysisId
- * @param cb
  * @param authHeader
  * @returns
  */
 export function DeleteAssistantAnalysis(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  AnalysisId: string,
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantAnalysisResponse | null
-  ) => void,
-  authHeader: UserAuthInfo
-) {
-  const req = new DeleteAssistantAnalysisRequest();
-  req.setAssistantid(assistantId);
-  req.setId(AnalysisId);
-  return connectionConfig.assistantClient.deleteAssistantAnalysis(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: DeleteAssistantAnalysisRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<GetAssistantAnalysisResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.deleteAssistantAnalysis(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantAnalysisResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**
