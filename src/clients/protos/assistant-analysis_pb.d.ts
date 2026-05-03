@@ -15,14 +15,11 @@ export class AssistantAnalysis extends jspb.Message {
   getDescription(): string;
   setDescription(value: string): void;
 
-  getEndpointid(): string;
-  setEndpointid(value: string): void;
+  clearOptionsList(): void;
+  getOptionsList(): Array<common_pb.Metadata>;
+  setOptionsList(value: Array<common_pb.Metadata>): void;
+  addOptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
-  getEndpointversion(): string;
-  setEndpointversion(value: string): void;
-
-  getEndpointparametersMap(): jspb.Map<string, string>;
-  clearEndpointparametersMap(): void;
   getAssistantid(): string;
   setAssistantid(value: string): void;
 
@@ -73,9 +70,7 @@ export namespace AssistantAnalysis {
     id: string,
     name: string,
     description: string,
-    endpointid: string,
-    endpointversion: string,
-    endpointparametersMap: Array<[string, string]>,
+    optionsList: Array<common_pb.Metadata.AsObject>,
     assistantid: string,
     status: string,
     createdby: string,
@@ -95,14 +90,11 @@ export class CreateAssistantAnalysisRequest extends jspb.Message {
   getDescription(): string;
   setDescription(value: string): void;
 
-  getEndpointid(): string;
-  setEndpointid(value: string): void;
+  clearOptionsList(): void;
+  getOptionsList(): Array<common_pb.Metadata>;
+  setOptionsList(value: Array<common_pb.Metadata>): void;
+  addOptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
-  getEndpointversion(): string;
-  setEndpointversion(value: string): void;
-
-  getEndpointparametersMap(): jspb.Map<string, string>;
-  clearEndpointparametersMap(): void;
   getAssistantid(): string;
   setAssistantid(value: string): void;
 
@@ -123,9 +115,7 @@ export namespace CreateAssistantAnalysisRequest {
   export type AsObject = {
     name: string,
     description: string,
-    endpointid: string,
-    endpointversion: string,
-    endpointparametersMap: Array<[string, string]>,
+    optionsList: Array<common_pb.Metadata.AsObject>,
     assistantid: string,
     executionpriority: number,
   }
@@ -141,14 +131,11 @@ export class UpdateAssistantAnalysisRequest extends jspb.Message {
   getDescription(): string;
   setDescription(value: string): void;
 
-  getEndpointid(): string;
-  setEndpointid(value: string): void;
+  clearOptionsList(): void;
+  getOptionsList(): Array<common_pb.Metadata>;
+  setOptionsList(value: Array<common_pb.Metadata>): void;
+  addOptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
-  getEndpointversion(): string;
-  setEndpointversion(value: string): void;
-
-  getEndpointparametersMap(): jspb.Map<string, string>;
-  clearEndpointparametersMap(): void;
   getAssistantid(): string;
   setAssistantid(value: string): void;
 
@@ -170,9 +157,7 @@ export namespace UpdateAssistantAnalysisRequest {
     id: string,
     name: string,
     description: string,
-    endpointid: string,
-    endpointversion: string,
-    endpointparametersMap: Array<[string, string]>,
+    optionsList: Array<common_pb.Metadata.AsObject>,
     assistantid: string,
     executionpriority: number,
   }
