@@ -58,6 +58,10 @@ import {
   CreateAssistantTelemetryProviderRequest,
   UpdateAssistantTelemetryProviderRequest,
   DeleteAssistantTelemetryProviderRequest,
+  CreateAssistantAuthenticationRequest,
+  GetAssistantAuthenticationRequest,
+  DisableAssistantAuthenticationRequest,
+  GetAssistantAuthenticationResponse,
 } from "@/rapida/clients/protos/assistant-api_pb";
 
 import {
@@ -124,10 +128,16 @@ import {
 import { GetAllAssistantConversationRequest } from "@/rapida/clients/protos/common_pb";
 import {
   CreateAssistantDeploymentRequest,
+  GetAllAssistantDeploymentRequest,
   GetAssistantApiDeploymentResponse,
+  GetAllAssistantApiDeploymentResponse,
   GetAssistantPhoneDeploymentResponse,
+  GetAllAssistantPhoneDeploymentResponse,
   GetAssistantWebpluginDeploymentResponse,
+  GetAllAssistantWebpluginDeploymentResponse,
   GetAssistantDeploymentRequest,
+  GetAllAssistantWhatsappDeploymentResponse,
+  GetAllAssistantDebuggerDeploymentResponse,
 } from "@/rapida/clients/protos/assistant-deployment_pb";
 import { GetAssistantWhatsappDeploymentResponse } from "./protos/assistant-deployment_pb";
 import { GetAssistantDebuggerDeploymentResponse } from "@/rapida/clients/protos/assistant-deployment_pb";
@@ -787,6 +797,266 @@ export function GetAssistantWhatsappDeployment(
       (
         err: ServiceError | null,
         response: GetAssistantWhatsappDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function GetAllAssistantApiDeployment(
+  clientCfg: ConnectionConfig,
+  req: GetAllAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAllAssistantApiDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.getAllAssistantApiDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAllAssistantApiDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function DisableAssistantApiDeployment(
+  clientCfg: ConnectionConfig,
+  req: GetAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantApiDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.disableAssistantApiDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantApiDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function GetAllAssistantWebpluginDeployment(
+  clientCfg: ConnectionConfig,
+  req: GetAllAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAllAssistantWebpluginDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.getAllAssistantWebpluginDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAllAssistantWebpluginDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function DisableAssistantWebpluginDeployment(
+  clientCfg: ConnectionConfig,
+  req: GetAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantWebpluginDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.disableAssistantWebpluginDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantWebpluginDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function GetAllAssistantDebuggerDeployment(
+  clientCfg: ConnectionConfig,
+  req: GetAllAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAllAssistantDebuggerDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.getAllAssistantDebuggerDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAllAssistantDebuggerDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function DisableAssistantDebuggerDeployment(
+  clientCfg: ConnectionConfig,
+  req: GetAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantDebuggerDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.disableAssistantDebuggerDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantDebuggerDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function GetAllAssistantWhatsappDeployment(
+  clientCfg: ConnectionConfig,
+  req: GetAllAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAllAssistantWhatsappDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.getAllAssistantWhatsappDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAllAssistantWhatsappDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function DisableAssistantWhatsappDeployment(
+  clientCfg: ConnectionConfig,
+  req: GetAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantWhatsappDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.disableAssistantWhatsappDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantWhatsappDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function GetAllAssistantPhoneDeployment(
+  clientCfg: ConnectionConfig,
+  req: GetAllAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAllAssistantPhoneDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.getAllAssistantPhoneDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAllAssistantPhoneDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function DisableAssistantPhoneDeployment(
+  clientCfg: ConnectionConfig,
+  req: GetAssistantDeploymentRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantPhoneDeploymentResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantDeploymentClient.disableAssistantPhoneDeployment(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantPhoneDeploymentResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function CreateAssistantAuthentication(
+  clientCfg: ConnectionConfig,
+  req: CreateAssistantAuthenticationRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantAuthenticationResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantClient.createAssistantAuthentication(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantAuthenticationResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function GetAssistantAuthentication(
+  clientCfg: ConnectionConfig,
+  req: GetAssistantAuthenticationRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantAuthenticationResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantClient.getAssistantAuthentication(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantAuthenticationResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function DisableAssistantAuthentication(
+  clientCfg: ConnectionConfig,
+  req: DisableAssistantAuthenticationRequest,
+  auth?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantAuthenticationResponse> {
+  return new Promise((resolve, reject) => {
+    clientCfg.assistantClient.disableAssistantAuthentication(
+      req,
+      WithAuthContext(clientCfg.auth || auth),
+      (
+        err: ServiceError | null,
+        response: GetAssistantAuthenticationResponse | null
       ) => {
         if (err) reject(err);
         else resolve(response!);

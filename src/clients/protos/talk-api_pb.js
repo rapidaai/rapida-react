@@ -13,13 +13,7 @@
 
 var jspb = require('google-protobuf');
 var goog = jspb;
-var global = (function() {
-  if (this) { return this; }
-  if (typeof window !== 'undefined') { return window; }
-  if (typeof global !== 'undefined') { return global; }
-  if (typeof self !== 'undefined') { return self; }
-  return Function('return this')();
-}.call(null));
+var global = (function() { return this || window || global || self || Function('return this')(); }).call(null);
 
 var google_protobuf_any_pb = require('google-protobuf/google/protobuf/any_pb.js');
 goog.object.extend(proto, google_protobuf_any_pb);
@@ -4192,7 +4186,9 @@ proto.talk_api.ConversationDisconnection.serializeBinaryToWriter = function(mess
 proto.talk_api.ConversationDisconnection.DisconnectionType = {
   DISCONNECTION_TYPE_UNSPECIFIED: 0,
   DISCONNECTION_TYPE_TOOL: 1,
-  DISCONNECTION_TYPE_USER: 2
+  DISCONNECTION_TYPE_USER: 2,
+  DISCONNECTION_TYPE_IDLE_TIMEOUT: 3,
+  DISCONNECTION_TYPE_MAX_DURATION: 4
 };
 
 /**

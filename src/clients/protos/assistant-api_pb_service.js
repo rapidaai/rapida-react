@@ -178,6 +178,33 @@ AssistantService.DeleteAssistantTelemetryProvider = {
   responseType: assistant_api_pb.GetAssistantTelemetryProviderResponse
 };
 
+AssistantService.CreateAssistantAuthentication = {
+  methodName: "CreateAssistantAuthentication",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.CreateAssistantAuthenticationRequest,
+  responseType: assistant_api_pb.GetAssistantAuthenticationResponse
+};
+
+AssistantService.GetAssistantAuthentication = {
+  methodName: "GetAssistantAuthentication",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.GetAssistantAuthenticationRequest,
+  responseType: assistant_api_pb.GetAssistantAuthenticationResponse
+};
+
+AssistantService.DisableAssistantAuthentication = {
+  methodName: "DisableAssistantAuthentication",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_api_pb.DisableAssistantAuthenticationRequest,
+  responseType: assistant_api_pb.GetAssistantAuthenticationResponse
+};
+
 AssistantService.GetAllAssistantConversation = {
   methodName: "GetAllAssistantConversation",
   service: AssistantService,
@@ -951,6 +978,99 @@ AssistantServiceClient.prototype.deleteAssistantTelemetryProvider = function del
     callback = arguments[1];
   }
   var client = grpc.unary(AssistantService.DeleteAssistantTelemetryProvider, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.createAssistantAuthentication = function createAssistantAuthentication(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.CreateAssistantAuthentication, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.getAssistantAuthentication = function getAssistantAuthentication(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.GetAssistantAuthentication, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.disableAssistantAuthentication = function disableAssistantAuthentication(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.DisableAssistantAuthentication, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

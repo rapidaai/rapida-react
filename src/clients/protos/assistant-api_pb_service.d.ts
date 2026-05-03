@@ -172,6 +172,33 @@ type AssistantServiceDeleteAssistantTelemetryProvider = {
   readonly responseType: typeof assistant_api_pb.GetAssistantTelemetryProviderResponse;
 };
 
+type AssistantServiceCreateAssistantAuthentication = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.CreateAssistantAuthenticationRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantAuthenticationResponse;
+};
+
+type AssistantServiceGetAssistantAuthentication = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.GetAssistantAuthenticationRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantAuthenticationResponse;
+};
+
+type AssistantServiceDisableAssistantAuthentication = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.DisableAssistantAuthenticationRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantAuthenticationResponse;
+};
+
 type AssistantServiceGetAllAssistantConversation = {
   readonly methodName: string;
   readonly service: typeof AssistantService;
@@ -426,6 +453,9 @@ export class AssistantService {
   static readonly CreateAssistantTelemetryProvider: AssistantServiceCreateAssistantTelemetryProvider;
   static readonly UpdateAssistantTelemetryProvider: AssistantServiceUpdateAssistantTelemetryProvider;
   static readonly DeleteAssistantTelemetryProvider: AssistantServiceDeleteAssistantTelemetryProvider;
+  static readonly CreateAssistantAuthentication: AssistantServiceCreateAssistantAuthentication;
+  static readonly GetAssistantAuthentication: AssistantServiceGetAssistantAuthentication;
+  static readonly DisableAssistantAuthentication: AssistantServiceDisableAssistantAuthentication;
   static readonly GetAllAssistantConversation: AssistantServiceGetAllAssistantConversation;
   static readonly GetAssistantConversation: AssistantServiceGetAssistantConversation;
   static readonly GetAssistantWebhookLog: AssistantServiceGetAssistantWebhookLog;
@@ -647,6 +677,33 @@ export class AssistantServiceClient {
   deleteAssistantTelemetryProvider(
     requestMessage: assistant_api_pb.DeleteAssistantTelemetryProviderRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantTelemetryProviderResponse|null) => void
+  ): UnaryResponse;
+  createAssistantAuthentication(
+    requestMessage: assistant_api_pb.CreateAssistantAuthenticationRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAuthenticationResponse|null) => void
+  ): UnaryResponse;
+  createAssistantAuthentication(
+    requestMessage: assistant_api_pb.CreateAssistantAuthenticationRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAuthenticationResponse|null) => void
+  ): UnaryResponse;
+  getAssistantAuthentication(
+    requestMessage: assistant_api_pb.GetAssistantAuthenticationRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAuthenticationResponse|null) => void
+  ): UnaryResponse;
+  getAssistantAuthentication(
+    requestMessage: assistant_api_pb.GetAssistantAuthenticationRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAuthenticationResponse|null) => void
+  ): UnaryResponse;
+  disableAssistantAuthentication(
+    requestMessage: assistant_api_pb.DisableAssistantAuthenticationRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAuthenticationResponse|null) => void
+  ): UnaryResponse;
+  disableAssistantAuthentication(
+    requestMessage: assistant_api_pb.DisableAssistantAuthenticationRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantAuthenticationResponse|null) => void
   ): UnaryResponse;
   getAllAssistantConversation(
     requestMessage: common_pb.GetAllAssistantConversationRequest,

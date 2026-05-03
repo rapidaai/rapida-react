@@ -518,6 +518,8 @@ export namespace ConversationDisconnection {
     DISCONNECTION_TYPE_UNSPECIFIED: 0;
     DISCONNECTION_TYPE_TOOL: 1;
     DISCONNECTION_TYPE_USER: 2;
+    DISCONNECTION_TYPE_IDLE_TIMEOUT: 3;
+    DISCONNECTION_TYPE_MAX_DURATION: 4;
   }
 
   export const DisconnectionType: DisconnectionTypeMap;

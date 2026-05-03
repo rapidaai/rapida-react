@@ -136,6 +136,11 @@ export class Assistant extends jspb.Message {
   setAssistanttelemetryprovidersList(value: Array<AssistantTelemetryProvider>): void;
   addAssistanttelemetryproviders(value?: AssistantTelemetryProvider, index?: number): AssistantTelemetryProvider;
 
+  hasAssistantauthentication(): boolean;
+  clearAssistantauthentication(): void;
+  getAssistantauthentication(): AssistantAuthentication | undefined;
+  setAssistantauthentication(value?: AssistantAuthentication): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Assistant.AsObject;
   static toObject(includeInstance: boolean, msg: Assistant): Assistant.AsObject;
@@ -178,6 +183,7 @@ export namespace Assistant {
     assistantwebhooksList: Array<assistant_webhook_pb.AssistantWebhook.AsObject>,
     assistanttoolsList: Array<assistant_tool_pb.AssistantTool.AsObject>,
     assistanttelemetryprovidersList: Array<AssistantTelemetryProvider.AsObject>,
+    assistantauthentication?: AssistantAuthentication.AsObject,
   }
 }
 
@@ -874,6 +880,182 @@ export namespace DeleteAssistantTelemetryProviderRequest {
   export type AsObject = {
     id: string,
     assistantid: string,
+  }
+}
+
+export class AssistantAuthentication extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  getStatus(): string;
+  setStatus(value: string): void;
+
+  getFailbehavior(): string;
+  setFailbehavior(value: string): void;
+
+  getTimeoutms(): string;
+  setTimeoutms(value: string): void;
+
+  clearOptionsList(): void;
+  getOptionsList(): Array<common_pb.Metadata>;
+  setOptionsList(value: Array<common_pb.Metadata>): void;
+  addOptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
+
+  getCreatedby(): string;
+  setCreatedby(value: string): void;
+
+  getUpdatedby(): string;
+  setUpdatedby(value: string): void;
+
+  hasCreateddate(): boolean;
+  clearCreateddate(): void;
+  getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setCreateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasUpdateddate(): boolean;
+  clearUpdateddate(): void;
+  getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantAuthentication.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantAuthentication): AssistantAuthentication.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantAuthentication, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantAuthentication;
+  static deserializeBinaryFromReader(message: AssistantAuthentication, reader: jspb.BinaryReader): AssistantAuthentication;
+}
+
+export namespace AssistantAuthentication {
+  export type AsObject = {
+    id: string,
+    assistantid: string,
+    status: string,
+    failbehavior: string,
+    timeoutms: string,
+    optionsList: Array<common_pb.Metadata.AsObject>,
+    createdby: string,
+    updatedby: string,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
+export class CreateAssistantAuthenticationRequest extends jspb.Message {
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  getStatus(): string;
+  setStatus(value: string): void;
+
+  getFailbehavior(): string;
+  setFailbehavior(value: string): void;
+
+  getTimeoutms(): string;
+  setTimeoutms(value: string): void;
+
+  clearOptionsList(): void;
+  getOptionsList(): Array<common_pb.Metadata>;
+  setOptionsList(value: Array<common_pb.Metadata>): void;
+  addOptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CreateAssistantAuthenticationRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateAssistantAuthenticationRequest): CreateAssistantAuthenticationRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CreateAssistantAuthenticationRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateAssistantAuthenticationRequest;
+  static deserializeBinaryFromReader(message: CreateAssistantAuthenticationRequest, reader: jspb.BinaryReader): CreateAssistantAuthenticationRequest;
+}
+
+export namespace CreateAssistantAuthenticationRequest {
+  export type AsObject = {
+    assistantid: string,
+    status: string,
+    failbehavior: string,
+    timeoutms: string,
+    optionsList: Array<common_pb.Metadata.AsObject>,
+  }
+}
+
+export class GetAssistantAuthenticationRequest extends jspb.Message {
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAssistantAuthenticationRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantAuthenticationRequest): GetAssistantAuthenticationRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantAuthenticationRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantAuthenticationRequest;
+  static deserializeBinaryFromReader(message: GetAssistantAuthenticationRequest, reader: jspb.BinaryReader): GetAssistantAuthenticationRequest;
+}
+
+export namespace GetAssistantAuthenticationRequest {
+  export type AsObject = {
+    assistantid: string,
+  }
+}
+
+export class DisableAssistantAuthenticationRequest extends jspb.Message {
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DisableAssistantAuthenticationRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: DisableAssistantAuthenticationRequest): DisableAssistantAuthenticationRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DisableAssistantAuthenticationRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DisableAssistantAuthenticationRequest;
+  static deserializeBinaryFromReader(message: DisableAssistantAuthenticationRequest, reader: jspb.BinaryReader): DisableAssistantAuthenticationRequest;
+}
+
+export namespace DisableAssistantAuthenticationRequest {
+  export type AsObject = {
+    assistantid: string,
+  }
+}
+
+export class GetAssistantAuthenticationResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasData(): boolean;
+  clearData(): void;
+  getData(): AssistantAuthentication | undefined;
+  setData(value?: AssistantAuthentication): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAssistantAuthenticationResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantAuthenticationResponse): GetAssistantAuthenticationResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantAuthenticationResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantAuthenticationResponse;
+  static deserializeBinaryFromReader(message: GetAssistantAuthenticationResponse, reader: jspb.BinaryReader): GetAssistantAuthenticationResponse;
+}
+
+export namespace GetAssistantAuthenticationResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    data?: AssistantAuthentication.AsObject,
+    error?: common_pb.Error.AsObject,
   }
 }
 

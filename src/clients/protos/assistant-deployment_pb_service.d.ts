@@ -22,6 +22,24 @@ type AssistantDeploymentServiceGetAssistantApiDeployment = {
   readonly responseType: typeof assistant_deployment_pb.GetAssistantApiDeploymentResponse;
 };
 
+type AssistantDeploymentServiceGetAllAssistantApiDeployment = {
+  readonly methodName: string;
+  readonly service: typeof AssistantDeploymentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_deployment_pb.GetAllAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAllAssistantApiDeploymentResponse;
+};
+
+type AssistantDeploymentServiceDisableAssistantApiDeployment = {
+  readonly methodName: string;
+  readonly service: typeof AssistantDeploymentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_deployment_pb.GetAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantApiDeploymentResponse;
+};
+
 type AssistantDeploymentServiceCreateAssistantWebpluginDeployment = {
   readonly methodName: string;
   readonly service: typeof AssistantDeploymentService;
@@ -32,6 +50,24 @@ type AssistantDeploymentServiceCreateAssistantWebpluginDeployment = {
 };
 
 type AssistantDeploymentServiceGetAssistantWebpluginDeployment = {
+  readonly methodName: string;
+  readonly service: typeof AssistantDeploymentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_deployment_pb.GetAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse;
+};
+
+type AssistantDeploymentServiceGetAllAssistantWebpluginDeployment = {
+  readonly methodName: string;
+  readonly service: typeof AssistantDeploymentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_deployment_pb.GetAllAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAllAssistantWebpluginDeploymentResponse;
+};
+
+type AssistantDeploymentServiceDisableAssistantWebpluginDeployment = {
   readonly methodName: string;
   readonly service: typeof AssistantDeploymentService;
   readonly requestStream: false;
@@ -58,6 +94,24 @@ type AssistantDeploymentServiceGetAssistantDebuggerDeployment = {
   readonly responseType: typeof assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse;
 };
 
+type AssistantDeploymentServiceGetAllAssistantDebuggerDeployment = {
+  readonly methodName: string;
+  readonly service: typeof AssistantDeploymentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_deployment_pb.GetAllAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAllAssistantDebuggerDeploymentResponse;
+};
+
+type AssistantDeploymentServiceDisableAssistantDebuggerDeployment = {
+  readonly methodName: string;
+  readonly service: typeof AssistantDeploymentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_deployment_pb.GetAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse;
+};
+
 type AssistantDeploymentServiceCreateAssistantWhatsappDeployment = {
   readonly methodName: string;
   readonly service: typeof AssistantDeploymentService;
@@ -68,6 +122,24 @@ type AssistantDeploymentServiceCreateAssistantWhatsappDeployment = {
 };
 
 type AssistantDeploymentServiceGetAssistantWhatsappDeployment = {
+  readonly methodName: string;
+  readonly service: typeof AssistantDeploymentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_deployment_pb.GetAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantWhatsappDeploymentResponse;
+};
+
+type AssistantDeploymentServiceGetAllAssistantWhatsappDeployment = {
+  readonly methodName: string;
+  readonly service: typeof AssistantDeploymentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_deployment_pb.GetAllAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAllAssistantWhatsappDeploymentResponse;
+};
+
+type AssistantDeploymentServiceDisableAssistantWhatsappDeployment = {
   readonly methodName: string;
   readonly service: typeof AssistantDeploymentService;
   readonly requestStream: false;
@@ -94,18 +166,46 @@ type AssistantDeploymentServiceGetAssistantPhoneDeployment = {
   readonly responseType: typeof assistant_deployment_pb.GetAssistantPhoneDeploymentResponse;
 };
 
+type AssistantDeploymentServiceGetAllAssistantPhoneDeployment = {
+  readonly methodName: string;
+  readonly service: typeof AssistantDeploymentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_deployment_pb.GetAllAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAllAssistantPhoneDeploymentResponse;
+};
+
+type AssistantDeploymentServiceDisableAssistantPhoneDeployment = {
+  readonly methodName: string;
+  readonly service: typeof AssistantDeploymentService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_deployment_pb.GetAssistantDeploymentRequest;
+  readonly responseType: typeof assistant_deployment_pb.GetAssistantPhoneDeploymentResponse;
+};
+
 export class AssistantDeploymentService {
   static readonly serviceName: string;
   static readonly CreateAssistantApiDeployment: AssistantDeploymentServiceCreateAssistantApiDeployment;
   static readonly GetAssistantApiDeployment: AssistantDeploymentServiceGetAssistantApiDeployment;
+  static readonly GetAllAssistantApiDeployment: AssistantDeploymentServiceGetAllAssistantApiDeployment;
+  static readonly DisableAssistantApiDeployment: AssistantDeploymentServiceDisableAssistantApiDeployment;
   static readonly CreateAssistantWebpluginDeployment: AssistantDeploymentServiceCreateAssistantWebpluginDeployment;
   static readonly GetAssistantWebpluginDeployment: AssistantDeploymentServiceGetAssistantWebpluginDeployment;
+  static readonly GetAllAssistantWebpluginDeployment: AssistantDeploymentServiceGetAllAssistantWebpluginDeployment;
+  static readonly DisableAssistantWebpluginDeployment: AssistantDeploymentServiceDisableAssistantWebpluginDeployment;
   static readonly CreateAssistantDebuggerDeployment: AssistantDeploymentServiceCreateAssistantDebuggerDeployment;
   static readonly GetAssistantDebuggerDeployment: AssistantDeploymentServiceGetAssistantDebuggerDeployment;
+  static readonly GetAllAssistantDebuggerDeployment: AssistantDeploymentServiceGetAllAssistantDebuggerDeployment;
+  static readonly DisableAssistantDebuggerDeployment: AssistantDeploymentServiceDisableAssistantDebuggerDeployment;
   static readonly CreateAssistantWhatsappDeployment: AssistantDeploymentServiceCreateAssistantWhatsappDeployment;
   static readonly GetAssistantWhatsappDeployment: AssistantDeploymentServiceGetAssistantWhatsappDeployment;
+  static readonly GetAllAssistantWhatsappDeployment: AssistantDeploymentServiceGetAllAssistantWhatsappDeployment;
+  static readonly DisableAssistantWhatsappDeployment: AssistantDeploymentServiceDisableAssistantWhatsappDeployment;
   static readonly CreateAssistantPhoneDeployment: AssistantDeploymentServiceCreateAssistantPhoneDeployment;
   static readonly GetAssistantPhoneDeployment: AssistantDeploymentServiceGetAssistantPhoneDeployment;
+  static readonly GetAllAssistantPhoneDeployment: AssistantDeploymentServiceGetAllAssistantPhoneDeployment;
+  static readonly DisableAssistantPhoneDeployment: AssistantDeploymentServiceDisableAssistantPhoneDeployment;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -158,6 +258,24 @@ export class AssistantDeploymentServiceClient {
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantApiDeploymentResponse|null) => void
   ): UnaryResponse;
+  getAllAssistantApiDeployment(
+    requestMessage: assistant_deployment_pb.GetAllAssistantDeploymentRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAllAssistantApiDeploymentResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantApiDeployment(
+    requestMessage: assistant_deployment_pb.GetAllAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAllAssistantApiDeploymentResponse|null) => void
+  ): UnaryResponse;
+  disableAssistantApiDeployment(
+    requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantApiDeploymentResponse|null) => void
+  ): UnaryResponse;
+  disableAssistantApiDeployment(
+    requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantApiDeploymentResponse|null) => void
+  ): UnaryResponse;
   createAssistantWebpluginDeployment(
     requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
     metadata: grpc.Metadata,
@@ -173,6 +291,24 @@ export class AssistantDeploymentServiceClient {
     callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse|null) => void
   ): UnaryResponse;
   getAssistantWebpluginDeployment(
+    requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantWebpluginDeployment(
+    requestMessage: assistant_deployment_pb.GetAllAssistantDeploymentRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAllAssistantWebpluginDeploymentResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantWebpluginDeployment(
+    requestMessage: assistant_deployment_pb.GetAllAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAllAssistantWebpluginDeploymentResponse|null) => void
+  ): UnaryResponse;
+  disableAssistantWebpluginDeployment(
+    requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse|null) => void
+  ): UnaryResponse;
+  disableAssistantWebpluginDeployment(
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWebpluginDeploymentResponse|null) => void
   ): UnaryResponse;
@@ -194,6 +330,24 @@ export class AssistantDeploymentServiceClient {
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse|null) => void
   ): UnaryResponse;
+  getAllAssistantDebuggerDeployment(
+    requestMessage: assistant_deployment_pb.GetAllAssistantDeploymentRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAllAssistantDebuggerDeploymentResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantDebuggerDeployment(
+    requestMessage: assistant_deployment_pb.GetAllAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAllAssistantDebuggerDeploymentResponse|null) => void
+  ): UnaryResponse;
+  disableAssistantDebuggerDeployment(
+    requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse|null) => void
+  ): UnaryResponse;
+  disableAssistantDebuggerDeployment(
+    requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantDebuggerDeploymentResponse|null) => void
+  ): UnaryResponse;
   createAssistantWhatsappDeployment(
     requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
     metadata: grpc.Metadata,
@@ -212,6 +366,24 @@ export class AssistantDeploymentServiceClient {
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWhatsappDeploymentResponse|null) => void
   ): UnaryResponse;
+  getAllAssistantWhatsappDeployment(
+    requestMessage: assistant_deployment_pb.GetAllAssistantDeploymentRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAllAssistantWhatsappDeploymentResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantWhatsappDeployment(
+    requestMessage: assistant_deployment_pb.GetAllAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAllAssistantWhatsappDeploymentResponse|null) => void
+  ): UnaryResponse;
+  disableAssistantWhatsappDeployment(
+    requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWhatsappDeploymentResponse|null) => void
+  ): UnaryResponse;
+  disableAssistantWhatsappDeployment(
+    requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantWhatsappDeploymentResponse|null) => void
+  ): UnaryResponse;
   createAssistantPhoneDeployment(
     requestMessage: assistant_deployment_pb.CreateAssistantDeploymentRequest,
     metadata: grpc.Metadata,
@@ -227,6 +399,24 @@ export class AssistantDeploymentServiceClient {
     callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantPhoneDeploymentResponse|null) => void
   ): UnaryResponse;
   getAssistantPhoneDeployment(
+    requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantPhoneDeploymentResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantPhoneDeployment(
+    requestMessage: assistant_deployment_pb.GetAllAssistantDeploymentRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAllAssistantPhoneDeploymentResponse|null) => void
+  ): UnaryResponse;
+  getAllAssistantPhoneDeployment(
+    requestMessage: assistant_deployment_pb.GetAllAssistantDeploymentRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAllAssistantPhoneDeploymentResponse|null) => void
+  ): UnaryResponse;
+  disableAssistantPhoneDeployment(
+    requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantPhoneDeploymentResponse|null) => void
+  ): UnaryResponse;
+  disableAssistantPhoneDeployment(
     requestMessage: assistant_deployment_pb.GetAssistantDeploymentRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_deployment_pb.GetAssistantPhoneDeploymentResponse|null) => void
   ): UnaryResponse;

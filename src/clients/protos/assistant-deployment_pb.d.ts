@@ -733,6 +733,216 @@ export namespace GetAssistantWebpluginDeploymentResponse {
   }
 }
 
+export class GetAllAssistantApiDeploymentResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<AssistantApiDeployment>;
+  setDataList(value: Array<AssistantApiDeployment>): void;
+  addData(value?: AssistantApiDeployment, index?: number): AssistantApiDeployment;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantApiDeploymentResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantApiDeploymentResponse): GetAllAssistantApiDeploymentResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantApiDeploymentResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantApiDeploymentResponse;
+  static deserializeBinaryFromReader(message: GetAllAssistantApiDeploymentResponse, reader: jspb.BinaryReader): GetAllAssistantApiDeploymentResponse;
+}
+
+export namespace GetAllAssistantApiDeploymentResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<AssistantApiDeployment.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class GetAllAssistantPhoneDeploymentResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<AssistantPhoneDeployment>;
+  setDataList(value: Array<AssistantPhoneDeployment>): void;
+  addData(value?: AssistantPhoneDeployment, index?: number): AssistantPhoneDeployment;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantPhoneDeploymentResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantPhoneDeploymentResponse): GetAllAssistantPhoneDeploymentResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantPhoneDeploymentResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantPhoneDeploymentResponse;
+  static deserializeBinaryFromReader(message: GetAllAssistantPhoneDeploymentResponse, reader: jspb.BinaryReader): GetAllAssistantPhoneDeploymentResponse;
+}
+
+export namespace GetAllAssistantPhoneDeploymentResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<AssistantPhoneDeployment.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class GetAllAssistantWhatsappDeploymentResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<AssistantWhatsappDeployment>;
+  setDataList(value: Array<AssistantWhatsappDeployment>): void;
+  addData(value?: AssistantWhatsappDeployment, index?: number): AssistantWhatsappDeployment;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantWhatsappDeploymentResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantWhatsappDeploymentResponse): GetAllAssistantWhatsappDeploymentResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantWhatsappDeploymentResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantWhatsappDeploymentResponse;
+  static deserializeBinaryFromReader(message: GetAllAssistantWhatsappDeploymentResponse, reader: jspb.BinaryReader): GetAllAssistantWhatsappDeploymentResponse;
+}
+
+export namespace GetAllAssistantWhatsappDeploymentResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<AssistantWhatsappDeployment.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class GetAllAssistantDebuggerDeploymentResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<AssistantDebuggerDeployment>;
+  setDataList(value: Array<AssistantDebuggerDeployment>): void;
+  addData(value?: AssistantDebuggerDeployment, index?: number): AssistantDebuggerDeployment;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantDebuggerDeploymentResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantDebuggerDeploymentResponse): GetAllAssistantDebuggerDeploymentResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantDebuggerDeploymentResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantDebuggerDeploymentResponse;
+  static deserializeBinaryFromReader(message: GetAllAssistantDebuggerDeploymentResponse, reader: jspb.BinaryReader): GetAllAssistantDebuggerDeploymentResponse;
+}
+
+export namespace GetAllAssistantDebuggerDeploymentResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<AssistantDebuggerDeployment.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class GetAllAssistantWebpluginDeploymentResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<AssistantWebpluginDeployment>;
+  setDataList(value: Array<AssistantWebpluginDeployment>): void;
+  addData(value?: AssistantWebpluginDeployment, index?: number): AssistantWebpluginDeployment;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantWebpluginDeploymentResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantWebpluginDeploymentResponse): GetAllAssistantWebpluginDeploymentResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantWebpluginDeploymentResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantWebpluginDeploymentResponse;
+  static deserializeBinaryFromReader(message: GetAllAssistantWebpluginDeploymentResponse, reader: jspb.BinaryReader): GetAllAssistantWebpluginDeploymentResponse;
+}
+
+export namespace GetAllAssistantWebpluginDeploymentResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<AssistantWebpluginDeployment.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
 export class GetAssistantDeploymentRequest extends jspb.Message {
   getAssistantid(): string;
   setAssistantid(value: string): void;
@@ -750,6 +960,38 @@ export class GetAssistantDeploymentRequest extends jspb.Message {
 export namespace GetAssistantDeploymentRequest {
   export type AsObject = {
     assistantid: string,
+  }
+}
+
+export class GetAllAssistantDeploymentRequest extends jspb.Message {
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): common_pb.Paginate | undefined;
+  setPaginate(value?: common_pb.Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAllAssistantDeploymentRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAllAssistantDeploymentRequest): GetAllAssistantDeploymentRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAllAssistantDeploymentRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAllAssistantDeploymentRequest;
+  static deserializeBinaryFromReader(message: GetAllAssistantDeploymentRequest, reader: jspb.BinaryReader): GetAllAssistantDeploymentRequest;
+}
+
+export namespace GetAllAssistantDeploymentRequest {
+  export type AsObject = {
+    assistantid: string,
+    paginate?: common_pb.Paginate.AsObject,
+    criteriasList: Array<common_pb.Criteria.AsObject>,
   }
 }
 
