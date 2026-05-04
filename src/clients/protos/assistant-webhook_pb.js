@@ -313,7 +313,7 @@ if (goog.DEBUG && !COMPILED) {
  * @private {!Array<number>}
  * @const
  */
-proto.assistant_api.AssistantWebhook.repeatedFields_ = [2,8];
+proto.assistant_api.AssistantWebhook.repeatedFields_ = [2,7];
 
 
 
@@ -349,14 +349,9 @@ proto.assistant_api.AssistantWebhook.toObject = function(includeInstance, msg) {
     id: jspb.Message.getFieldWithDefault(msg, 1, "0"),
     assistanteventsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
     description: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    httpmethod: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    httpurl: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    httpheadersMap: (f = msg.getHttpheadersMap()) ? f.toObject(includeInstance, undefined) : [],
-    httpbodyMap: (f = msg.getHttpbodyMap()) ? f.toObject(includeInstance, undefined) : [],
-    timeoutsecond: jspb.Message.getFieldWithDefault(msg, 19, 0),
+    optionsList: jspb.Message.toObjectList(msg.getOptionsList(),
+    common_pb.Metadata.toObject, includeInstance),
     executionpriority: jspb.Message.getFieldWithDefault(msg, 20, 0),
-    retrystatuscodesList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f,
-    retrycount: jspb.Message.getFieldWithDefault(msg, 9, 0),
     assistantid: jspb.Message.getFieldWithDefault(msg, 10, "0"),
     status: jspb.Message.getFieldWithDefault(msg, 12, ""),
     createdby: jspb.Message.getFieldWithDefault(msg, 13, "0"),
@@ -413,41 +408,14 @@ proto.assistant_api.AssistantWebhook.deserializeBinaryFromReader = function(msg,
       var value = /** @type {string} */ (reader.readString());
       msg.setDescription(value);
       break;
-    case 4:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setHttpmethod(value);
-      break;
-    case 5:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setHttpurl(value);
-      break;
-    case 6:
-      var value = msg.getHttpheadersMap();
-      reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
-         });
-      break;
     case 7:
-      var value = msg.getHttpbodyMap();
-      reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
-         });
-      break;
-    case 19:
-      var value = /** @type {number} */ (reader.readUint32());
-      msg.setTimeoutsecond(value);
+      var value = new common_pb.Metadata;
+      reader.readMessage(value,common_pb.Metadata.deserializeBinaryFromReader);
+      msg.addOptions(value);
       break;
     case 20:
       var value = /** @type {number} */ (reader.readUint32());
       msg.setExecutionpriority(value);
-      break;
-    case 8:
-      var value = /** @type {string} */ (reader.readString());
-      msg.addRetrystatuscodes(value);
-      break;
-    case 9:
-      var value = /** @type {number} */ (reader.readUint32());
-      msg.setRetrycount(value);
       break;
     case 10:
       var value = /** @type {string} */ (reader.readUint64String());
@@ -535,53 +503,18 @@ proto.assistant_api.AssistantWebhook.serializeBinaryToWriter = function(message,
       f
     );
   }
-  f = message.getHttpmethod();
+  f = message.getOptionsList();
   if (f.length > 0) {
-    writer.writeString(
-      4,
-      f
-    );
-  }
-  f = message.getHttpurl();
-  if (f.length > 0) {
-    writer.writeString(
-      5,
-      f
-    );
-  }
-  f = message.getHttpheadersMap(true);
-  if (f && f.getLength() > 0) {
-    f.serializeBinary(6, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
-  }
-  f = message.getHttpbodyMap(true);
-  if (f && f.getLength() > 0) {
-    f.serializeBinary(7, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
-  }
-  f = message.getTimeoutsecond();
-  if (f !== 0) {
-    writer.writeUint32(
-      19,
-      f
+    writer.writeRepeatedMessage(
+      7,
+      f,
+      common_pb.Metadata.serializeBinaryToWriter
     );
   }
   f = message.getExecutionpriority();
   if (f !== 0) {
     writer.writeUint32(
       20,
-      f
-    );
-  }
-  f = message.getRetrystatuscodesList();
-  if (f.length > 0) {
-    writer.writeRepeatedString(
-      8,
-      f
-    );
-  }
-  f = message.getRetrycount();
-  if (f !== 0) {
-    writer.writeUint32(
-      9,
       f
     );
   }
@@ -722,100 +655,40 @@ proto.assistant_api.AssistantWebhook.prototype.setDescription = function(value) 
 
 
 /**
- * optional string httpMethod = 4;
- * @return {string}
+ * repeated Metadata options = 7;
+ * @return {!Array<!proto.Metadata>}
  */
-proto.assistant_api.AssistantWebhook.prototype.getHttpmethod = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+proto.assistant_api.AssistantWebhook.prototype.getOptionsList = function() {
+  return /** @type{!Array<!proto.Metadata>} */ (
+    jspb.Message.getRepeatedWrapperField(this, common_pb.Metadata, 7));
 };
 
 
 /**
- * @param {string} value
+ * @param {!Array<!proto.Metadata>} value
+ * @return {!proto.assistant_api.AssistantWebhook} returns this
+*/
+proto.assistant_api.AssistantWebhook.prototype.setOptionsList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 7, value);
+};
+
+
+/**
+ * @param {!proto.Metadata=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.Metadata}
+ */
+proto.assistant_api.AssistantWebhook.prototype.addOptions = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 7, opt_value, proto.Metadata, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
  * @return {!proto.assistant_api.AssistantWebhook} returns this
  */
-proto.assistant_api.AssistantWebhook.prototype.setHttpmethod = function(value) {
-  return jspb.Message.setProto3StringField(this, 4, value);
-};
-
-
-/**
- * optional string httpUrl = 5;
- * @return {string}
- */
-proto.assistant_api.AssistantWebhook.prototype.getHttpurl = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantWebhook} returns this
- */
-proto.assistant_api.AssistantWebhook.prototype.setHttpurl = function(value) {
-  return jspb.Message.setProto3StringField(this, 5, value);
-};
-
-
-/**
- * map<string, string> httpHeaders = 6;
- * @param {boolean=} opt_noLazyCreate Do not create the map if
- * empty, instead returning `undefined`
- * @return {!jspb.Map<string,string>}
- */
-proto.assistant_api.AssistantWebhook.prototype.getHttpheadersMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<string,string>} */ (
-      jspb.Message.getMapField(this, 6, opt_noLazyCreate,
-      null));
-};
-
-
-/**
- * Clears values from the map. The map will be non-null.
- * @return {!proto.assistant_api.AssistantWebhook} returns this
- */
-proto.assistant_api.AssistantWebhook.prototype.clearHttpheadersMap = function() {
-  this.getHttpheadersMap().clear();
-  return this;};
-
-
-/**
- * map<string, string> httpBody = 7;
- * @param {boolean=} opt_noLazyCreate Do not create the map if
- * empty, instead returning `undefined`
- * @return {!jspb.Map<string,string>}
- */
-proto.assistant_api.AssistantWebhook.prototype.getHttpbodyMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<string,string>} */ (
-      jspb.Message.getMapField(this, 7, opt_noLazyCreate,
-      null));
-};
-
-
-/**
- * Clears values from the map. The map will be non-null.
- * @return {!proto.assistant_api.AssistantWebhook} returns this
- */
-proto.assistant_api.AssistantWebhook.prototype.clearHttpbodyMap = function() {
-  this.getHttpbodyMap().clear();
-  return this;};
-
-
-/**
- * optional uint32 timeoutSecond = 19;
- * @return {number}
- */
-proto.assistant_api.AssistantWebhook.prototype.getTimeoutsecond = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 19, 0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.assistant_api.AssistantWebhook} returns this
- */
-proto.assistant_api.AssistantWebhook.prototype.setTimeoutsecond = function(value) {
-  return jspb.Message.setProto3IntField(this, 19, value);
+proto.assistant_api.AssistantWebhook.prototype.clearOptionsList = function() {
+  return this.setOptionsList([]);
 };
 
 
@@ -834,61 +707,6 @@ proto.assistant_api.AssistantWebhook.prototype.getExecutionpriority = function()
  */
 proto.assistant_api.AssistantWebhook.prototype.setExecutionpriority = function(value) {
   return jspb.Message.setProto3IntField(this, 20, value);
-};
-
-
-/**
- * repeated string retryStatusCodes = 8;
- * @return {!Array<string>}
- */
-proto.assistant_api.AssistantWebhook.prototype.getRetrystatuscodesList = function() {
-  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 8));
-};
-
-
-/**
- * @param {!Array<string>} value
- * @return {!proto.assistant_api.AssistantWebhook} returns this
- */
-proto.assistant_api.AssistantWebhook.prototype.setRetrystatuscodesList = function(value) {
-  return jspb.Message.setField(this, 8, value || []);
-};
-
-
-/**
- * @param {string} value
- * @param {number=} opt_index
- * @return {!proto.assistant_api.AssistantWebhook} returns this
- */
-proto.assistant_api.AssistantWebhook.prototype.addRetrystatuscodes = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 8, value, opt_index);
-};
-
-
-/**
- * Clears the list making it empty but non-null.
- * @return {!proto.assistant_api.AssistantWebhook} returns this
- */
-proto.assistant_api.AssistantWebhook.prototype.clearRetrystatuscodesList = function() {
-  return this.setRetrystatuscodesList([]);
-};
-
-
-/**
- * optional uint32 retryCount = 9;
- * @return {number}
- */
-proto.assistant_api.AssistantWebhook.prototype.getRetrycount = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.assistant_api.AssistantWebhook} returns this
- */
-proto.assistant_api.AssistantWebhook.prototype.setRetrycount = function(value) {
-  return jspb.Message.setProto3IntField(this, 9, value);
 };
 
 
@@ -1842,7 +1660,7 @@ proto.assistant_api.AssistantWebhookLog.prototype.setHttpurl = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.assistant_api.CreateAssistantWebhookRequest.repeatedFields_ = [2,8];
+proto.assistant_api.CreateAssistantWebhookRequest.repeatedFields_ = [2,7];
 
 
 
@@ -1877,13 +1695,8 @@ proto.assistant_api.CreateAssistantWebhookRequest.toObject = function(includeIns
   var f, obj = {
     assistanteventsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
     description: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    httpmethod: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    httpurl: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    httpheadersMap: (f = msg.getHttpheadersMap()) ? f.toObject(includeInstance, undefined) : [],
-    httpbodyMap: (f = msg.getHttpbodyMap()) ? f.toObject(includeInstance, undefined) : [],
-    timeoutsecond: jspb.Message.getFieldWithDefault(msg, 7, 0),
-    retrystatuscodesList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f,
-    maxretrycount: jspb.Message.getFieldWithDefault(msg, 9, 0),
+    optionsList: jspb.Message.toObjectList(msg.getOptionsList(),
+    common_pb.Metadata.toObject, includeInstance),
     assistantid: jspb.Message.getFieldWithDefault(msg, 10, "0"),
     executionpriority: jspb.Message.getFieldWithDefault(msg, 20, 0)
   };
@@ -1930,37 +1743,10 @@ proto.assistant_api.CreateAssistantWebhookRequest.deserializeBinaryFromReader = 
       var value = /** @type {string} */ (reader.readString());
       msg.setDescription(value);
       break;
-    case 4:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setHttpmethod(value);
-      break;
-    case 5:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setHttpurl(value);
-      break;
-    case 6:
-      var value = msg.getHttpheadersMap();
-      reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
-         });
-      break;
-    case 11:
-      var value = msg.getHttpbodyMap();
-      reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
-         });
-      break;
     case 7:
-      var value = /** @type {number} */ (reader.readUint32());
-      msg.setTimeoutsecond(value);
-      break;
-    case 8:
-      var value = /** @type {string} */ (reader.readString());
-      msg.addRetrystatuscodes(value);
-      break;
-    case 9:
-      var value = /** @type {number} */ (reader.readUint32());
-      msg.setMaxretrycount(value);
+      var value = new common_pb.Metadata;
+      reader.readMessage(value,common_pb.Metadata.deserializeBinaryFromReader);
+      msg.addOptions(value);
       break;
     case 10:
       var value = /** @type {string} */ (reader.readUint64String());
@@ -2013,47 +1799,12 @@ proto.assistant_api.CreateAssistantWebhookRequest.serializeBinaryToWriter = func
       f
     );
   }
-  f = message.getHttpmethod();
+  f = message.getOptionsList();
   if (f.length > 0) {
-    writer.writeString(
-      4,
-      f
-    );
-  }
-  f = message.getHttpurl();
-  if (f.length > 0) {
-    writer.writeString(
-      5,
-      f
-    );
-  }
-  f = message.getHttpheadersMap(true);
-  if (f && f.getLength() > 0) {
-    f.serializeBinary(6, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
-  }
-  f = message.getHttpbodyMap(true);
-  if (f && f.getLength() > 0) {
-    f.serializeBinary(11, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
-  }
-  f = message.getTimeoutsecond();
-  if (f !== 0) {
-    writer.writeUint32(
+    writer.writeRepeatedMessage(
       7,
-      f
-    );
-  }
-  f = message.getRetrystatuscodesList();
-  if (f.length > 0) {
-    writer.writeRepeatedString(
-      8,
-      f
-    );
-  }
-  f = message.getMaxretrycount();
-  if (f !== 0) {
-    writer.writeUint32(
-      9,
-      f
+      f,
+      common_pb.Metadata.serializeBinaryToWriter
     );
   }
   f = message.getAssistantid();
@@ -2129,128 +1880,31 @@ proto.assistant_api.CreateAssistantWebhookRequest.prototype.setDescription = fun
 
 
 /**
- * optional string httpMethod = 4;
- * @return {string}
+ * repeated Metadata options = 7;
+ * @return {!Array<!proto.Metadata>}
  */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.getHttpmethod = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+proto.assistant_api.CreateAssistantWebhookRequest.prototype.getOptionsList = function() {
+  return /** @type{!Array<!proto.Metadata>} */ (
+    jspb.Message.getRepeatedWrapperField(this, common_pb.Metadata, 7));
 };
 
 
 /**
- * @param {string} value
+ * @param {!Array<!proto.Metadata>} value
  * @return {!proto.assistant_api.CreateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.setHttpmethod = function(value) {
-  return jspb.Message.setProto3StringField(this, 4, value);
+*/
+proto.assistant_api.CreateAssistantWebhookRequest.prototype.setOptionsList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 7, value);
 };
 
 
 /**
- * optional string httpUrl = 5;
- * @return {string}
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.getHttpurl = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.CreateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.setHttpurl = function(value) {
-  return jspb.Message.setProto3StringField(this, 5, value);
-};
-
-
-/**
- * map<string, string> httpHeaders = 6;
- * @param {boolean=} opt_noLazyCreate Do not create the map if
- * empty, instead returning `undefined`
- * @return {!jspb.Map<string,string>}
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.getHttpheadersMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<string,string>} */ (
-      jspb.Message.getMapField(this, 6, opt_noLazyCreate,
-      null));
-};
-
-
-/**
- * Clears values from the map. The map will be non-null.
- * @return {!proto.assistant_api.CreateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.clearHttpheadersMap = function() {
-  this.getHttpheadersMap().clear();
-  return this;};
-
-
-/**
- * map<string, string> httpBody = 11;
- * @param {boolean=} opt_noLazyCreate Do not create the map if
- * empty, instead returning `undefined`
- * @return {!jspb.Map<string,string>}
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.getHttpbodyMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<string,string>} */ (
-      jspb.Message.getMapField(this, 11, opt_noLazyCreate,
-      null));
-};
-
-
-/**
- * Clears values from the map. The map will be non-null.
- * @return {!proto.assistant_api.CreateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.clearHttpbodyMap = function() {
-  this.getHttpbodyMap().clear();
-  return this;};
-
-
-/**
- * optional uint32 timeoutSecond = 7;
- * @return {number}
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.getTimeoutsecond = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.assistant_api.CreateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.setTimeoutsecond = function(value) {
-  return jspb.Message.setProto3IntField(this, 7, value);
-};
-
-
-/**
- * repeated string retryStatusCodes = 8;
- * @return {!Array<string>}
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.getRetrystatuscodesList = function() {
-  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 8));
-};
-
-
-/**
- * @param {!Array<string>} value
- * @return {!proto.assistant_api.CreateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.setRetrystatuscodesList = function(value) {
-  return jspb.Message.setField(this, 8, value || []);
-};
-
-
-/**
- * @param {string} value
+ * @param {!proto.Metadata=} opt_value
  * @param {number=} opt_index
- * @return {!proto.assistant_api.CreateAssistantWebhookRequest} returns this
+ * @return {!proto.Metadata}
  */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.addRetrystatuscodes = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 8, value, opt_index);
+proto.assistant_api.CreateAssistantWebhookRequest.prototype.addOptions = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 7, opt_value, proto.Metadata, opt_index);
 };
 
 
@@ -2258,26 +1912,8 @@ proto.assistant_api.CreateAssistantWebhookRequest.prototype.addRetrystatuscodes 
  * Clears the list making it empty but non-null.
  * @return {!proto.assistant_api.CreateAssistantWebhookRequest} returns this
  */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.clearRetrystatuscodesList = function() {
-  return this.setRetrystatuscodesList([]);
-};
-
-
-/**
- * optional uint32 maxRetryCount = 9;
- * @return {number}
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.getMaxretrycount = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.assistant_api.CreateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.CreateAssistantWebhookRequest.prototype.setMaxretrycount = function(value) {
-  return jspb.Message.setProto3IntField(this, 9, value);
+proto.assistant_api.CreateAssistantWebhookRequest.prototype.clearOptionsList = function() {
+  return this.setOptionsList([]);
 };
 
 
@@ -2323,7 +1959,7 @@ proto.assistant_api.CreateAssistantWebhookRequest.prototype.setExecutionpriority
  * @private {!Array<number>}
  * @const
  */
-proto.assistant_api.UpdateAssistantWebhookRequest.repeatedFields_ = [2,8];
+proto.assistant_api.UpdateAssistantWebhookRequest.repeatedFields_ = [2,7];
 
 
 
@@ -2359,13 +1995,8 @@ proto.assistant_api.UpdateAssistantWebhookRequest.toObject = function(includeIns
     id: jspb.Message.getFieldWithDefault(msg, 1, "0"),
     assistanteventsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
     description: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    httpmethod: jspb.Message.getFieldWithDefault(msg, 4, ""),
-    httpurl: jspb.Message.getFieldWithDefault(msg, 5, ""),
-    httpheadersMap: (f = msg.getHttpheadersMap()) ? f.toObject(includeInstance, undefined) : [],
-    httpbodyMap: (f = msg.getHttpbodyMap()) ? f.toObject(includeInstance, undefined) : [],
-    timeoutsecond: jspb.Message.getFieldWithDefault(msg, 7, 0),
-    retrystatuscodesList: (f = jspb.Message.getRepeatedField(msg, 8)) == null ? undefined : f,
-    maxretrycount: jspb.Message.getFieldWithDefault(msg, 9, 0),
+    optionsList: jspb.Message.toObjectList(msg.getOptionsList(),
+    common_pb.Metadata.toObject, includeInstance),
     assistantid: jspb.Message.getFieldWithDefault(msg, 10, "0"),
     executionpriority: jspb.Message.getFieldWithDefault(msg, 20, 0)
   };
@@ -2416,37 +2047,10 @@ proto.assistant_api.UpdateAssistantWebhookRequest.deserializeBinaryFromReader = 
       var value = /** @type {string} */ (reader.readString());
       msg.setDescription(value);
       break;
-    case 4:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setHttpmethod(value);
-      break;
-    case 5:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setHttpurl(value);
-      break;
-    case 6:
-      var value = msg.getHttpheadersMap();
-      reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
-         });
-      break;
-    case 11:
-      var value = msg.getHttpbodyMap();
-      reader.readMessage(value, function(message, reader) {
-        jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
-         });
-      break;
     case 7:
-      var value = /** @type {number} */ (reader.readUint32());
-      msg.setTimeoutsecond(value);
-      break;
-    case 8:
-      var value = /** @type {string} */ (reader.readString());
-      msg.addRetrystatuscodes(value);
-      break;
-    case 9:
-      var value = /** @type {number} */ (reader.readUint32());
-      msg.setMaxretrycount(value);
+      var value = new common_pb.Metadata;
+      reader.readMessage(value,common_pb.Metadata.deserializeBinaryFromReader);
+      msg.addOptions(value);
       break;
     case 10:
       var value = /** @type {string} */ (reader.readUint64String());
@@ -2506,47 +2110,12 @@ proto.assistant_api.UpdateAssistantWebhookRequest.serializeBinaryToWriter = func
       f
     );
   }
-  f = message.getHttpmethod();
+  f = message.getOptionsList();
   if (f.length > 0) {
-    writer.writeString(
-      4,
-      f
-    );
-  }
-  f = message.getHttpurl();
-  if (f.length > 0) {
-    writer.writeString(
-      5,
-      f
-    );
-  }
-  f = message.getHttpheadersMap(true);
-  if (f && f.getLength() > 0) {
-    f.serializeBinary(6, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
-  }
-  f = message.getHttpbodyMap(true);
-  if (f && f.getLength() > 0) {
-    f.serializeBinary(11, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
-  }
-  f = message.getTimeoutsecond();
-  if (f !== 0) {
-    writer.writeUint32(
+    writer.writeRepeatedMessage(
       7,
-      f
-    );
-  }
-  f = message.getRetrystatuscodesList();
-  if (f.length > 0) {
-    writer.writeRepeatedString(
-      8,
-      f
-    );
-  }
-  f = message.getMaxretrycount();
-  if (f !== 0) {
-    writer.writeUint32(
-      9,
-      f
+      f,
+      common_pb.Metadata.serializeBinaryToWriter
     );
   }
   f = message.getAssistantid();
@@ -2640,128 +2209,31 @@ proto.assistant_api.UpdateAssistantWebhookRequest.prototype.setDescription = fun
 
 
 /**
- * optional string httpMethod = 4;
- * @return {string}
+ * repeated Metadata options = 7;
+ * @return {!Array<!proto.Metadata>}
  */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.getHttpmethod = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 4, ""));
+proto.assistant_api.UpdateAssistantWebhookRequest.prototype.getOptionsList = function() {
+  return /** @type{!Array<!proto.Metadata>} */ (
+    jspb.Message.getRepeatedWrapperField(this, common_pb.Metadata, 7));
 };
 
 
 /**
- * @param {string} value
+ * @param {!Array<!proto.Metadata>} value
  * @return {!proto.assistant_api.UpdateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.setHttpmethod = function(value) {
-  return jspb.Message.setProto3StringField(this, 4, value);
+*/
+proto.assistant_api.UpdateAssistantWebhookRequest.prototype.setOptionsList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 7, value);
 };
 
 
 /**
- * optional string httpUrl = 5;
- * @return {string}
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.getHttpurl = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.assistant_api.UpdateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.setHttpurl = function(value) {
-  return jspb.Message.setProto3StringField(this, 5, value);
-};
-
-
-/**
- * map<string, string> httpHeaders = 6;
- * @param {boolean=} opt_noLazyCreate Do not create the map if
- * empty, instead returning `undefined`
- * @return {!jspb.Map<string,string>}
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.getHttpheadersMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<string,string>} */ (
-      jspb.Message.getMapField(this, 6, opt_noLazyCreate,
-      null));
-};
-
-
-/**
- * Clears values from the map. The map will be non-null.
- * @return {!proto.assistant_api.UpdateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.clearHttpheadersMap = function() {
-  this.getHttpheadersMap().clear();
-  return this;};
-
-
-/**
- * map<string, string> httpBody = 11;
- * @param {boolean=} opt_noLazyCreate Do not create the map if
- * empty, instead returning `undefined`
- * @return {!jspb.Map<string,string>}
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.getHttpbodyMap = function(opt_noLazyCreate) {
-  return /** @type {!jspb.Map<string,string>} */ (
-      jspb.Message.getMapField(this, 11, opt_noLazyCreate,
-      null));
-};
-
-
-/**
- * Clears values from the map. The map will be non-null.
- * @return {!proto.assistant_api.UpdateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.clearHttpbodyMap = function() {
-  this.getHttpbodyMap().clear();
-  return this;};
-
-
-/**
- * optional uint32 timeoutSecond = 7;
- * @return {number}
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.getTimeoutsecond = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.assistant_api.UpdateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.setTimeoutsecond = function(value) {
-  return jspb.Message.setProto3IntField(this, 7, value);
-};
-
-
-/**
- * repeated string retryStatusCodes = 8;
- * @return {!Array<string>}
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.getRetrystatuscodesList = function() {
-  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 8));
-};
-
-
-/**
- * @param {!Array<string>} value
- * @return {!proto.assistant_api.UpdateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.setRetrystatuscodesList = function(value) {
-  return jspb.Message.setField(this, 8, value || []);
-};
-
-
-/**
- * @param {string} value
+ * @param {!proto.Metadata=} opt_value
  * @param {number=} opt_index
- * @return {!proto.assistant_api.UpdateAssistantWebhookRequest} returns this
+ * @return {!proto.Metadata}
  */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.addRetrystatuscodes = function(value, opt_index) {
-  return jspb.Message.addToRepeatedField(this, 8, value, opt_index);
+proto.assistant_api.UpdateAssistantWebhookRequest.prototype.addOptions = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 7, opt_value, proto.Metadata, opt_index);
 };
 
 
@@ -2769,26 +2241,8 @@ proto.assistant_api.UpdateAssistantWebhookRequest.prototype.addRetrystatuscodes 
  * Clears the list making it empty but non-null.
  * @return {!proto.assistant_api.UpdateAssistantWebhookRequest} returns this
  */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.clearRetrystatuscodesList = function() {
-  return this.setRetrystatuscodesList([]);
-};
-
-
-/**
- * optional uint32 maxRetryCount = 9;
- * @return {number}
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.getMaxretrycount = function() {
-  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 9, 0));
-};
-
-
-/**
- * @param {number} value
- * @return {!proto.assistant_api.UpdateAssistantWebhookRequest} returns this
- */
-proto.assistant_api.UpdateAssistantWebhookRequest.prototype.setMaxretrycount = function(value) {
-  return jspb.Message.setProto3IntField(this, 9, value);
+proto.assistant_api.UpdateAssistantWebhookRequest.prototype.clearOptionsList = function() {
+  return this.setOptionsList([]);
 };
 
 

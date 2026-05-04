@@ -18,29 +18,13 @@ export class AssistantWebhook extends jspb.Message {
   getDescription(): string;
   setDescription(value: string): void;
 
-  getHttpmethod(): string;
-  setHttpmethod(value: string): void;
-
-  getHttpurl(): string;
-  setHttpurl(value: string): void;
-
-  getHttpheadersMap(): jspb.Map<string, string>;
-  clearHttpheadersMap(): void;
-  getHttpbodyMap(): jspb.Map<string, string>;
-  clearHttpbodyMap(): void;
-  getTimeoutsecond(): number;
-  setTimeoutsecond(value: number): void;
+  clearOptionsList(): void;
+  getOptionsList(): Array<common_pb.Metadata>;
+  setOptionsList(value: Array<common_pb.Metadata>): void;
+  addOptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
   getExecutionpriority(): number;
   setExecutionpriority(value: number): void;
-
-  clearRetrystatuscodesList(): void;
-  getRetrystatuscodesList(): Array<string>;
-  setRetrystatuscodesList(value: Array<string>): void;
-  addRetrystatuscodes(value: string, index?: number): string;
-
-  getRetrycount(): number;
-  setRetrycount(value: number): void;
 
   getAssistantid(): string;
   setAssistantid(value: string): void;
@@ -89,14 +73,8 @@ export namespace AssistantWebhook {
     id: string,
     assistanteventsList: Array<string>,
     description: string,
-    httpmethod: string,
-    httpurl: string,
-    httpheadersMap: Array<[string, string]>,
-    httpbodyMap: Array<[string, string]>,
-    timeoutsecond: number,
+    optionsList: Array<common_pb.Metadata.AsObject>,
     executionpriority: number,
-    retrystatuscodesList: Array<string>,
-    retrycount: number,
     assistantid: string,
     status: string,
     createdby: string,
@@ -213,26 +191,10 @@ export class CreateAssistantWebhookRequest extends jspb.Message {
   getDescription(): string;
   setDescription(value: string): void;
 
-  getHttpmethod(): string;
-  setHttpmethod(value: string): void;
-
-  getHttpurl(): string;
-  setHttpurl(value: string): void;
-
-  getHttpheadersMap(): jspb.Map<string, string>;
-  clearHttpheadersMap(): void;
-  getHttpbodyMap(): jspb.Map<string, string>;
-  clearHttpbodyMap(): void;
-  getTimeoutsecond(): number;
-  setTimeoutsecond(value: number): void;
-
-  clearRetrystatuscodesList(): void;
-  getRetrystatuscodesList(): Array<string>;
-  setRetrystatuscodesList(value: Array<string>): void;
-  addRetrystatuscodes(value: string, index?: number): string;
-
-  getMaxretrycount(): number;
-  setMaxretrycount(value: number): void;
+  clearOptionsList(): void;
+  getOptionsList(): Array<common_pb.Metadata>;
+  setOptionsList(value: Array<common_pb.Metadata>): void;
+  addOptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
   getAssistantid(): string;
   setAssistantid(value: string): void;
@@ -254,13 +216,7 @@ export namespace CreateAssistantWebhookRequest {
   export type AsObject = {
     assistanteventsList: Array<string>,
     description: string,
-    httpmethod: string,
-    httpurl: string,
-    httpheadersMap: Array<[string, string]>,
-    httpbodyMap: Array<[string, string]>,
-    timeoutsecond: number,
-    retrystatuscodesList: Array<string>,
-    maxretrycount: number,
+    optionsList: Array<common_pb.Metadata.AsObject>,
     assistantid: string,
     executionpriority: number,
   }
@@ -278,26 +234,10 @@ export class UpdateAssistantWebhookRequest extends jspb.Message {
   getDescription(): string;
   setDescription(value: string): void;
 
-  getHttpmethod(): string;
-  setHttpmethod(value: string): void;
-
-  getHttpurl(): string;
-  setHttpurl(value: string): void;
-
-  getHttpheadersMap(): jspb.Map<string, string>;
-  clearHttpheadersMap(): void;
-  getHttpbodyMap(): jspb.Map<string, string>;
-  clearHttpbodyMap(): void;
-  getTimeoutsecond(): number;
-  setTimeoutsecond(value: number): void;
-
-  clearRetrystatuscodesList(): void;
-  getRetrystatuscodesList(): Array<string>;
-  setRetrystatuscodesList(value: Array<string>): void;
-  addRetrystatuscodes(value: string, index?: number): string;
-
-  getMaxretrycount(): number;
-  setMaxretrycount(value: number): void;
+  clearOptionsList(): void;
+  getOptionsList(): Array<common_pb.Metadata>;
+  setOptionsList(value: Array<common_pb.Metadata>): void;
+  addOptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
   getAssistantid(): string;
   setAssistantid(value: string): void;
@@ -320,13 +260,7 @@ export namespace UpdateAssistantWebhookRequest {
     id: string,
     assistanteventsList: Array<string>,
     description: string,
-    httpmethod: string,
-    httpurl: string,
-    httpheadersMap: Array<[string, string]>,
-    httpbodyMap: Array<[string, string]>,
-    timeoutsecond: number,
-    retrystatuscodesList: Array<string>,
-    maxretrycount: number,
+    optionsList: Array<common_pb.Metadata.AsObject>,
     assistantid: string,
     executionpriority: number,
   }

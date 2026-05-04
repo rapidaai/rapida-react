@@ -1067,35 +1067,22 @@ export function DisableAssistantAuthentication(
 
 export function GetAllAssistantWebhook(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  page: number,
-  pageSize: number,
-  criteria: { key: string; value: string }[],
-  cb: (
-    err: ServiceError | null,
-    response: GetAllAssistantWebhookResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAllAssistantWebhookRequest();
-  const paginate = new Paginate();
-  criteria.forEach(({ key, value }) => {
-    const ctr = new Criteria();
-    ctr.setKey(key);
-    ctr.setValue(value);
-    req.addCriterias(ctr);
+  req: GetAllAssistantWebhookRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAllAssistantWebhookResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.getAllAssistantWebhook(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAllAssistantWebhookResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
   });
-
-  paginate.setPage(page);
-  paginate.setPagesize(pageSize);
-  req.setPaginate(paginate);
-
-  req.setAssistantid(assistantId);
-  return connectionConfig.assistantClient.getAllAssistantWebhook(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
 }
 
 /**
@@ -1117,44 +1104,22 @@ export function GetAllAssistantWebhook(
  */
 export function CreateWebhook(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  method: string,
-  endpoint: string,
-  headers: { key: string; value: string }[],
-  parameters: { key: string; value: string }[],
-  events: string[],
-  retryOnStatus: string[],
-  maxRetries: number,
-  timeout: number,
-  priority: number,
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantWebhookResponse | null
-  ) => void,
-  authHeader: UserAuthInfo,
-  description?: string
-) {
-  const req = new CreateAssistantWebhookRequest();
-  req.setAssistantid(assistantId);
-  req.setHttpurl(endpoint);
-  req.setHttpmethod(method);
-  req.setAssistanteventsList(events);
-  headers.forEach((k) => {
-    req.getHttpheadersMap().set(k.key, k.value);
+  req: CreateAssistantWebhookRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<GetAssistantWebhookResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.createAssistantWebhook(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantWebhookResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
   });
-  parameters.forEach((k) => {
-    req.getHttpbodyMap().set(k.key, k.value);
-  });
-  req.setRetrystatuscodesList(retryOnStatus);
-  req.setMaxretrycount(maxRetries);
-  req.setTimeoutsecond(timeout);
-  req.setExecutionpriority(priority);
-  if (description) req.setDescription(description);
-  return connectionConfig.assistantClient.createAssistantWebhook(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
 }
 
 /**
@@ -1175,46 +1140,22 @@ export function CreateWebhook(
  */
 export function UpdateWebhook(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  webhookId: string,
-  method: string,
-  endpoint: string,
-  headers: { key: string; value: string }[],
-  parameters: { key: string; value: string }[],
-  events: string[],
-  retryOnStatus: string[],
-  maxRetries: number,
-  timeout: number,
-  priority: number,
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantWebhookResponse | null
-  ) => void,
-  authHeader: UserAuthInfo,
-  description?: string
-) {
-  const req = new UpdateAssistantWebhookRequest();
-  req.setId(webhookId);
-  req.setAssistantid(assistantId);
-  req.setHttpurl(endpoint);
-  req.setHttpmethod(method);
-  req.setAssistanteventsList(events);
-  headers.forEach((k) => {
-    req.getHttpheadersMap().set(k.key, k.value);
+  req: UpdateAssistantWebhookRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<GetAssistantWebhookResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.updateAssistantWebhook(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantWebhookResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
   });
-  parameters.forEach((k) => {
-    req.getHttpbodyMap().set(k.key, k.value);
-  });
-  req.setRetrystatuscodesList(retryOnStatus);
-  req.setMaxretrycount(maxRetries);
-  req.setTimeoutsecond(timeout);
-  req.setExecutionpriority(priority);
-  if (description) req.setDescription(description);
-  return connectionConfig.assistantClient.updateAssistantWebhook(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
 }
 
 /**
@@ -1227,22 +1168,22 @@ export function UpdateWebhook(
  */
 export function GetAssistantWebhook(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  webhookId: string,
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantWebhookResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAssistantWebhookRequest();
-  req.setAssistantid(assistantId);
-  req.setId(webhookId);
-  return connectionConfig.assistantClient.getAssistantWebhook(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: GetAssistantWebhookRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantWebhookResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.getAssistantWebhook(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantWebhookResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**
@@ -1255,22 +1196,22 @@ export function GetAssistantWebhook(
  */
 export function DeleteAssistantWebhook(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  webhookId: string,
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantWebhookResponse | null
-  ) => void,
-  authHeader: UserAuthInfo
-) {
-  const req = new DeleteAssistantWebhookRequest();
-  req.setAssistantid(assistantId);
-  req.setId(webhookId);
-  return connectionConfig.assistantClient.deleteAssistantWebhook(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: DeleteAssistantWebhookRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<GetAssistantWebhookResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.deleteAssistantWebhook(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantWebhookResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**
