@@ -520,6 +520,7 @@ export namespace ConversationDisconnection {
     DISCONNECTION_TYPE_USER: 2;
     DISCONNECTION_TYPE_IDLE_TIMEOUT: 3;
     DISCONNECTION_TYPE_MAX_DURATION: 4;
+    DISCONNECTION_TYPE_ERROR: 5;
   }
 
   export const DisconnectionType: DisconnectionTypeMap;

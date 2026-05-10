@@ -18,8 +18,8 @@ type UnifiedProviderServiceStreamChat = {
   readonly service: typeof UnifiedProviderService;
   readonly requestStream: true;
   readonly responseStream: true;
-  readonly requestType: typeof integration_api_pb.ChatRequest;
-  readonly responseType: typeof integration_api_pb.ChatResponse;
+  readonly requestType: typeof integration_api_pb.StreamChatRequest;
+  readonly responseType: typeof integration_api_pb.StreamChatResponse;
 };
 
 type UnifiedProviderServiceEmbedding = {
@@ -99,7 +99,7 @@ export class UnifiedProviderServiceClient {
     requestMessage: integration_api_pb.ChatRequest,
     callback: (error: ServiceError|null, responseMessage: integration_api_pb.ChatResponse|null) => void
   ): UnaryResponse;
-  streamChat(metadata?: grpc.Metadata): BidirectionalStream<integration_api_pb.ChatRequest, integration_api_pb.ChatResponse>;
+  streamChat(metadata?: grpc.Metadata): BidirectionalStream<integration_api_pb.StreamChatRequest, integration_api_pb.StreamChatResponse>;
   embedding(
     requestMessage: integration_api_pb.EmbeddingRequest,
     metadata: grpc.Metadata,

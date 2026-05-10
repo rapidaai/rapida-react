@@ -453,6 +453,8 @@ export class ChatRequest extends jspb.Message {
   getProvidername(): string;
   setProvidername(value: string): void;
 
+  getConnectionoptionsMap(): jspb.Map<string, string>;
+  clearConnectionoptionsMap(): void;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ChatRequest.AsObject;
   static toObject(includeInstance: boolean, msg: ChatRequest): ChatRequest.AsObject;
@@ -472,6 +474,254 @@ export namespace ChatRequest {
     modelparametersMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
     tooldefinitionsList: Array<ToolDefinition.AsObject>,
     providername: string,
+    connectionoptionsMap: Array<[string, string]>,
+  }
+}
+
+export class StreamChatConfiguration extends jspb.Message {
+  hasCredential(): boolean;
+  clearCredential(): void;
+  getCredential(): Credential | undefined;
+  setCredential(value?: Credential): void;
+
+  getProvidername(): string;
+  setProvidername(value: string): void;
+
+  getConnectionoptionsMap(): jspb.Map<string, string>;
+  clearConnectionoptionsMap(): void;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): StreamChatConfiguration.AsObject;
+  static toObject(includeInstance: boolean, msg: StreamChatConfiguration): StreamChatConfiguration.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: StreamChatConfiguration, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): StreamChatConfiguration;
+  static deserializeBinaryFromReader(message: StreamChatConfiguration, reader: jspb.BinaryReader): StreamChatConfiguration;
+}
+
+export namespace StreamChatConfiguration {
+  export type AsObject = {
+    credential?: Credential.AsObject,
+    providername: string,
+    connectionoptionsMap: Array<[string, string]>,
+  }
+}
+
+export class StreamChatConfigured extends jspb.Message {
+  getProvidername(): string;
+  setProvidername(value: string): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): StreamChatConfigured.AsObject;
+  static toObject(includeInstance: boolean, msg: StreamChatConfigured): StreamChatConfigured.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: StreamChatConfigured, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): StreamChatConfigured;
+  static deserializeBinaryFromReader(message: StreamChatConfigured, reader: jspb.BinaryReader): StreamChatConfigured;
+}
+
+export namespace StreamChatConfigured {
+  export type AsObject = {
+    providername: string,
+    success: boolean,
+    error?: common_pb.Error.AsObject,
+  }
+}
+
+export class StreamChatInput extends jspb.Message {
+  getRequestid(): string;
+  setRequestid(value: string): void;
+
+  getProvidername(): string;
+  setProvidername(value: string): void;
+
+  clearConversationsList(): void;
+  getConversationsList(): Array<common_pb.Message>;
+  setConversationsList(value: Array<common_pb.Message>): void;
+  addConversations(value?: common_pb.Message, index?: number): common_pb.Message;
+
+  getAdditionaldataMap(): jspb.Map<string, string>;
+  clearAdditionaldataMap(): void;
+  getModelparametersMap(): jspb.Map<string, google_protobuf_any_pb.Any>;
+  clearModelparametersMap(): void;
+  clearTooldefinitionsList(): void;
+  getTooldefinitionsList(): Array<ToolDefinition>;
+  setTooldefinitionsList(value: Array<ToolDefinition>): void;
+  addTooldefinitions(value?: ToolDefinition, index?: number): ToolDefinition;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): StreamChatInput.AsObject;
+  static toObject(includeInstance: boolean, msg: StreamChatInput): StreamChatInput.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: StreamChatInput, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): StreamChatInput;
+  static deserializeBinaryFromReader(message: StreamChatInput, reader: jspb.BinaryReader): StreamChatInput;
+}
+
+export namespace StreamChatInput {
+  export type AsObject = {
+    requestid: string,
+    providername: string,
+    conversationsList: Array<common_pb.Message.AsObject>,
+    additionaldataMap: Array<[string, string]>,
+    modelparametersMap: Array<[string, google_protobuf_any_pb.Any.AsObject]>,
+    tooldefinitionsList: Array<ToolDefinition.AsObject>,
+  }
+}
+
+export class StreamChatOutput extends jspb.Message {
+  getRequestid(): string;
+  setRequestid(value: string): void;
+
+  hasData(): boolean;
+  clearData(): void;
+  getData(): common_pb.Message | undefined;
+  setData(value?: common_pb.Message): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  clearMetricsList(): void;
+  getMetricsList(): Array<common_pb.Metric>;
+  setMetricsList(value: Array<common_pb.Metric>): void;
+  addMetrics(value?: common_pb.Metric, index?: number): common_pb.Metric;
+
+  getFinishreason(): string;
+  setFinishreason(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): StreamChatOutput.AsObject;
+  static toObject(includeInstance: boolean, msg: StreamChatOutput): StreamChatOutput.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: StreamChatOutput, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): StreamChatOutput;
+  static deserializeBinaryFromReader(message: StreamChatOutput, reader: jspb.BinaryReader): StreamChatOutput;
+}
+
+export namespace StreamChatOutput {
+  export type AsObject = {
+    requestid: string,
+    data?: common_pb.Message.AsObject,
+    error?: common_pb.Error.AsObject,
+    metricsList: Array<common_pb.Metric.AsObject>,
+    finishreason: string,
+  }
+}
+
+export class StreamChatClose extends jspb.Message {
+  getReason(): string;
+  setReason(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): StreamChatClose.AsObject;
+  static toObject(includeInstance: boolean, msg: StreamChatClose): StreamChatClose.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: StreamChatClose, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): StreamChatClose;
+  static deserializeBinaryFromReader(message: StreamChatClose, reader: jspb.BinaryReader): StreamChatClose;
+}
+
+export namespace StreamChatClose {
+  export type AsObject = {
+    reason: string,
+  }
+}
+
+export class StreamChatRequest extends jspb.Message {
+  hasConfiguration(): boolean;
+  clearConfiguration(): void;
+  getConfiguration(): StreamChatConfiguration | undefined;
+  setConfiguration(value?: StreamChatConfiguration): void;
+
+  hasChat(): boolean;
+  clearChat(): void;
+  getChat(): StreamChatInput | undefined;
+  setChat(value?: StreamChatInput): void;
+
+  hasClose(): boolean;
+  clearClose(): void;
+  getClose(): StreamChatClose | undefined;
+  setClose(value?: StreamChatClose): void;
+
+  getRequestCase(): StreamChatRequest.RequestCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): StreamChatRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: StreamChatRequest): StreamChatRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: StreamChatRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): StreamChatRequest;
+  static deserializeBinaryFromReader(message: StreamChatRequest, reader: jspb.BinaryReader): StreamChatRequest;
+}
+
+export namespace StreamChatRequest {
+  export type AsObject = {
+    configuration?: StreamChatConfiguration.AsObject,
+    chat?: StreamChatInput.AsObject,
+    close?: StreamChatClose.AsObject,
+  }
+
+  export enum RequestCase {
+    REQUEST_NOT_SET = 0,
+    CONFIGURATION = 1,
+    CHAT = 2,
+    CLOSE = 3,
+  }
+}
+
+export class StreamChatResponse extends jspb.Message {
+  hasConfiguration(): boolean;
+  clearConfiguration(): void;
+  getConfiguration(): StreamChatConfigured | undefined;
+  setConfiguration(value?: StreamChatConfigured): void;
+
+  hasChat(): boolean;
+  clearChat(): void;
+  getChat(): StreamChatOutput | undefined;
+  setChat(value?: StreamChatOutput): void;
+
+  hasClose(): boolean;
+  clearClose(): void;
+  getClose(): StreamChatClose | undefined;
+  setClose(value?: StreamChatClose): void;
+
+  getResponseCase(): StreamChatResponse.ResponseCase;
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): StreamChatResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: StreamChatResponse): StreamChatResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: StreamChatResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): StreamChatResponse;
+  static deserializeBinaryFromReader(message: StreamChatResponse, reader: jspb.BinaryReader): StreamChatResponse;
+}
+
+export namespace StreamChatResponse {
+  export type AsObject = {
+    configuration?: StreamChatConfigured.AsObject,
+    chat?: StreamChatOutput.AsObject,
+    close?: StreamChatClose.AsObject,
+  }
+
+  export enum ResponseCase {
+    RESPONSE_NOT_SET = 0,
+    CONFIGURATION = 1,
+    CHAT = 2,
+    CLOSE = 3,
   }
 }
 

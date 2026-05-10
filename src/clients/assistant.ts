@@ -107,13 +107,14 @@ import {
 
 import {
   DeleteAssistantWebhookRequest,
-  GetAssistantWebhookLogRequest,
-  GetAllAssistantWebhookLogRequest,
-  GetAssistantWebhookLogResponse,
+  GetAssistantHTTPLogRequest,
+  GetAllAssistantHTTPLogRequest,
+  GetAssistantHTTPLogResponse,
   GetAssistantWebhookResponse,
   CreateAssistantWebhookRequest,
   UpdateAssistantWebhookRequest,
-  GetAllAssistantWebhookLogResponse,
+  GetAllAssistantHTTPLogResponse,
+  RetryAssistantHTTPLogRequest,
   GetAssistantWebhookRequest,
   GetAllAssistantWebhookRequest,
   GetAllAssistantWebhookResponse,
@@ -1551,74 +1552,80 @@ export function DeleteAssistantAnalysis(
 
 /**
  *
- * @param page
- * @param pageSize
- * @param criteria
- * @param cb
+ * @param req
  * @param authHeader
  * @returns
  */
-export function GetAllWebhookLog(
+export function GetAllHTTPLog(
   connectionConfig: ConnectionConfig,
-  projectId: string,
-  page: number,
-  pageSize: number,
-  criteria: { key: string; value: string; logic: string }[],
-  cb: (
-    err: ServiceError | null,
-    response: GetAllAssistantWebhookLogResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAllAssistantWebhookLogRequest();
-  req.setProjectid(projectId);
-  const paginate = new Paginate();
-  criteria.forEach(({ key, value, logic }) => {
-    const ctr = new Criteria();
-    ctr.setKey(key);
-    ctr.setValue(value);
-    ctr.setLogic(logic);
-    req.addCriterias(ctr);
+  req: GetAllAssistantHTTPLogRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAllAssistantHTTPLogResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.getAllAssistantHTTPLog(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAllAssistantHTTPLogResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
   });
-
-  paginate.setPage(page);
-  paginate.setPagesize(pageSize);
-  req.setPaginate(paginate);
-
-  return connectionConfig.assistantClient.getAllAssistantWebhookLog(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
 }
 
 /**
  *
- * @param organizationId
- * @param projectId
- * @param webhookLogId
- * @param cb
+ * @param req
  * @param authHeader
  * @returns
  */
-export function GetWebhookLog(
+export function GetHTTPLog(
   connectionConfig: ConnectionConfig,
-  projectId: string,
-  webhookLogId: string,
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantWebhookLogResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAssistantWebhookLogRequest();
-  req.setProjectid(projectId);
-  req.setId(webhookLogId);
-  return connectionConfig.assistantClient.getAssistantWebhookLog(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: GetAssistantHTTPLogRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantHTTPLogResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.getAssistantHTTPLog(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantHTTPLogResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+/**
+ *
+ * @param req
+ * @param authHeader
+ * @returns
+ */
+export function RetryHTTPLog(
+  connectionConfig: ConnectionConfig,
+  req: RetryAssistantHTTPLogRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantHTTPLogResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.retryAssistantHTTPLog(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantHTTPLogResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**

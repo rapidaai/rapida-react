@@ -223,22 +223,31 @@ AssistantService.GetAssistantConversation = {
   responseType: assistant_api_pb.GetAssistantConversationResponse
 };
 
-AssistantService.GetAssistantWebhookLog = {
-  methodName: "GetAssistantWebhookLog",
+AssistantService.GetAssistantHTTPLog = {
+  methodName: "GetAssistantHTTPLog",
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_webhook_pb.GetAssistantWebhookLogRequest,
-  responseType: assistant_webhook_pb.GetAssistantWebhookLogResponse
+  requestType: assistant_webhook_pb.GetAssistantHTTPLogRequest,
+  responseType: assistant_webhook_pb.GetAssistantHTTPLogResponse
 };
 
-AssistantService.GetAllAssistantWebhookLog = {
-  methodName: "GetAllAssistantWebhookLog",
+AssistantService.GetAllAssistantHTTPLog = {
+  methodName: "GetAllAssistantHTTPLog",
   service: AssistantService,
   requestStream: false,
   responseStream: false,
-  requestType: assistant_webhook_pb.GetAllAssistantWebhookLogRequest,
-  responseType: assistant_webhook_pb.GetAllAssistantWebhookLogResponse
+  requestType: assistant_webhook_pb.GetAllAssistantHTTPLogRequest,
+  responseType: assistant_webhook_pb.GetAllAssistantHTTPLogResponse
+};
+
+AssistantService.RetryAssistantHTTPLog = {
+  methodName: "RetryAssistantHTTPLog",
+  service: AssistantService,
+  requestStream: false,
+  responseStream: false,
+  requestType: assistant_webhook_pb.RetryAssistantHTTPLogRequest,
+  responseType: assistant_webhook_pb.GetAssistantHTTPLogResponse
 };
 
 AssistantService.GetAllAssistantWebhook = {
@@ -1159,11 +1168,11 @@ AssistantServiceClient.prototype.getAssistantConversation = function getAssistan
   };
 };
 
-AssistantServiceClient.prototype.getAssistantWebhookLog = function getAssistantWebhookLog(requestMessage, metadata, callback) {
+AssistantServiceClient.prototype.getAssistantHTTPLog = function getAssistantHTTPLog(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(AssistantService.GetAssistantWebhookLog, {
+  var client = grpc.unary(AssistantService.GetAssistantHTTPLog, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
@@ -1190,11 +1199,42 @@ AssistantServiceClient.prototype.getAssistantWebhookLog = function getAssistantW
   };
 };
 
-AssistantServiceClient.prototype.getAllAssistantWebhookLog = function getAllAssistantWebhookLog(requestMessage, metadata, callback) {
+AssistantServiceClient.prototype.getAllAssistantHTTPLog = function getAllAssistantHTTPLog(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(AssistantService.GetAllAssistantWebhookLog, {
+  var client = grpc.unary(AssistantService.GetAllAssistantHTTPLog, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+AssistantServiceClient.prototype.retryAssistantHTTPLog = function retryAssistantHTTPLog(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(AssistantService.RetryAssistantHTTPLog, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

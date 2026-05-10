@@ -217,22 +217,31 @@ type AssistantServiceGetAssistantConversation = {
   readonly responseType: typeof assistant_api_pb.GetAssistantConversationResponse;
 };
 
-type AssistantServiceGetAssistantWebhookLog = {
+type AssistantServiceGetAssistantHTTPLog = {
   readonly methodName: string;
   readonly service: typeof AssistantService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof assistant_webhook_pb.GetAssistantWebhookLogRequest;
-  readonly responseType: typeof assistant_webhook_pb.GetAssistantWebhookLogResponse;
+  readonly requestType: typeof assistant_webhook_pb.GetAssistantHTTPLogRequest;
+  readonly responseType: typeof assistant_webhook_pb.GetAssistantHTTPLogResponse;
 };
 
-type AssistantServiceGetAllAssistantWebhookLog = {
+type AssistantServiceGetAllAssistantHTTPLog = {
   readonly methodName: string;
   readonly service: typeof AssistantService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof assistant_webhook_pb.GetAllAssistantWebhookLogRequest;
-  readonly responseType: typeof assistant_webhook_pb.GetAllAssistantWebhookLogResponse;
+  readonly requestType: typeof assistant_webhook_pb.GetAllAssistantHTTPLogRequest;
+  readonly responseType: typeof assistant_webhook_pb.GetAllAssistantHTTPLogResponse;
+};
+
+type AssistantServiceRetryAssistantHTTPLog = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_webhook_pb.RetryAssistantHTTPLogRequest;
+  readonly responseType: typeof assistant_webhook_pb.GetAssistantHTTPLogResponse;
 };
 
 type AssistantServiceGetAllAssistantWebhook = {
@@ -458,8 +467,9 @@ export class AssistantService {
   static readonly DisableAssistantAuthentication: AssistantServiceDisableAssistantAuthentication;
   static readonly GetAllAssistantConversation: AssistantServiceGetAllAssistantConversation;
   static readonly GetAssistantConversation: AssistantServiceGetAssistantConversation;
-  static readonly GetAssistantWebhookLog: AssistantServiceGetAssistantWebhookLog;
-  static readonly GetAllAssistantWebhookLog: AssistantServiceGetAllAssistantWebhookLog;
+  static readonly GetAssistantHTTPLog: AssistantServiceGetAssistantHTTPLog;
+  static readonly GetAllAssistantHTTPLog: AssistantServiceGetAllAssistantHTTPLog;
+  static readonly RetryAssistantHTTPLog: AssistantServiceRetryAssistantHTTPLog;
   static readonly GetAllAssistantWebhook: AssistantServiceGetAllAssistantWebhook;
   static readonly GetAssistantWebhook: AssistantServiceGetAssistantWebhook;
   static readonly CreateAssistantWebhook: AssistantServiceCreateAssistantWebhook;
@@ -723,23 +733,32 @@ export class AssistantServiceClient {
     requestMessage: assistant_api_pb.GetAssistantConversationRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantConversationResponse|null) => void
   ): UnaryResponse;
-  getAssistantWebhookLog(
-    requestMessage: assistant_webhook_pb.GetAssistantWebhookLogRequest,
+  getAssistantHTTPLog(
+    requestMessage: assistant_webhook_pb.GetAssistantHTTPLogRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_webhook_pb.GetAssistantWebhookLogResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_webhook_pb.GetAssistantHTTPLogResponse|null) => void
   ): UnaryResponse;
-  getAssistantWebhookLog(
-    requestMessage: assistant_webhook_pb.GetAssistantWebhookLogRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_webhook_pb.GetAssistantWebhookLogResponse|null) => void
+  getAssistantHTTPLog(
+    requestMessage: assistant_webhook_pb.GetAssistantHTTPLogRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_webhook_pb.GetAssistantHTTPLogResponse|null) => void
   ): UnaryResponse;
-  getAllAssistantWebhookLog(
-    requestMessage: assistant_webhook_pb.GetAllAssistantWebhookLogRequest,
+  getAllAssistantHTTPLog(
+    requestMessage: assistant_webhook_pb.GetAllAssistantHTTPLogRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: assistant_webhook_pb.GetAllAssistantWebhookLogResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: assistant_webhook_pb.GetAllAssistantHTTPLogResponse|null) => void
   ): UnaryResponse;
-  getAllAssistantWebhookLog(
-    requestMessage: assistant_webhook_pb.GetAllAssistantWebhookLogRequest,
-    callback: (error: ServiceError|null, responseMessage: assistant_webhook_pb.GetAllAssistantWebhookLogResponse|null) => void
+  getAllAssistantHTTPLog(
+    requestMessage: assistant_webhook_pb.GetAllAssistantHTTPLogRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_webhook_pb.GetAllAssistantHTTPLogResponse|null) => void
+  ): UnaryResponse;
+  retryAssistantHTTPLog(
+    requestMessage: assistant_webhook_pb.RetryAssistantHTTPLogRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_webhook_pb.GetAssistantHTTPLogResponse|null) => void
+  ): UnaryResponse;
+  retryAssistantHTTPLog(
+    requestMessage: assistant_webhook_pb.RetryAssistantHTTPLogRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_webhook_pb.GetAssistantHTTPLogResponse|null) => void
   ): UnaryResponse;
   getAllAssistantWebhook(
     requestMessage: assistant_webhook_pb.GetAllAssistantWebhookRequest,

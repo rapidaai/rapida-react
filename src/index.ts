@@ -176,8 +176,9 @@ export {
   UpdateAnalysis,
   GetAssistantAnalysis,
   DeleteAssistantAnalysis,
-  GetAllWebhookLog,
-  GetWebhookLog,
+  GetAllHTTPLog,
+  GetHTTPLog,
+  RetryHTTPLog,
   GetAllAssistantTool,
   CreateAssistantTool,
   UpdateAssistantTool,
@@ -432,7 +433,7 @@ export {
 } from "@/rapida/clients/protos/talk-api_pb_service";
 export {
   AssistantWebhook,
-  AssistantWebhookLog,
+  AssistantHTTPLog,
   CreateAssistantWebhookRequest,
   UpdateAssistantWebhookRequest,
   GetAssistantWebhookRequest,
@@ -440,10 +441,11 @@ export {
   GetAssistantWebhookResponse,
   GetAllAssistantWebhookRequest,
   GetAllAssistantWebhookResponse,
-  GetAllAssistantWebhookLogRequest,
-  GetAssistantWebhookLogRequest,
-  GetAssistantWebhookLogResponse,
-  GetAllAssistantWebhookLogResponse,
+  GetAllAssistantHTTPLogRequest,
+  GetAssistantHTTPLogRequest,
+  GetAssistantHTTPLogResponse,
+  GetAllAssistantHTTPLogResponse,
+  RetryAssistantHTTPLogRequest,
 } from "@/rapida/clients/protos/assistant-webhook_pb";
 export {
   GeneralConnectRequest,

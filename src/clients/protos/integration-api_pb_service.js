@@ -24,8 +24,8 @@ UnifiedProviderService.StreamChat = {
   service: UnifiedProviderService,
   requestStream: true,
   responseStream: true,
-  requestType: integration_api_pb.ChatRequest,
-  responseType: integration_api_pb.ChatResponse
+  requestType: integration_api_pb.StreamChatRequest,
+  responseType: integration_api_pb.StreamChatResponse
 };
 
 UnifiedProviderService.Embedding = {
