@@ -7340,6 +7340,7 @@ proto.assistant_api.AssistantAuthentication.toObject = function(includeInstance,
     id: jspb.Message.getFieldWithDefault(msg, 1, "0"),
     assistantid: jspb.Message.getFieldWithDefault(msg, 2, "0"),
     status: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    provider: jspb.Message.getFieldWithDefault(msg, 12, ""),
     failbehavior: jspb.Message.getFieldWithDefault(msg, 5, ""),
     timeoutms: jspb.Message.getFieldWithDefault(msg, 6, "0"),
     optionsList: jspb.Message.toObjectList(msg.getOptionsList(),
@@ -7395,6 +7396,10 @@ proto.assistant_api.AssistantAuthentication.deserializeBinaryFromReader = functi
     case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
+      break;
+    case 12:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProvider(value);
       break;
     case 5:
       var value = /** @type {string} */ (reader.readString());
@@ -7474,6 +7479,13 @@ proto.assistant_api.AssistantAuthentication.serializeBinaryToWriter = function(m
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getProvider();
+  if (f.length > 0) {
+    writer.writeString(
+      12,
       f
     );
   }
@@ -7583,6 +7595,24 @@ proto.assistant_api.AssistantAuthentication.prototype.getStatus = function() {
  */
 proto.assistant_api.AssistantAuthentication.prototype.setStatus = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional string provider = 12;
+ * @return {string}
+ */
+proto.assistant_api.AssistantAuthentication.prototype.getProvider = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 12, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantAuthentication} returns this
+ */
+proto.assistant_api.AssistantAuthentication.prototype.setProvider = function(value) {
+  return jspb.Message.setProto3StringField(this, 12, value);
 };
 
 
@@ -7814,7 +7844,8 @@ proto.assistant_api.CreateAssistantAuthenticationRequest.toObject = function(inc
     failbehavior: jspb.Message.getFieldWithDefault(msg, 3, ""),
     timeoutms: jspb.Message.getFieldWithDefault(msg, 4, "0"),
     optionsList: jspb.Message.toObjectList(msg.getOptionsList(),
-    common_pb.Metadata.toObject, includeInstance)
+    common_pb.Metadata.toObject, includeInstance),
+    provider: jspb.Message.getFieldWithDefault(msg, 6, "")
   };
 
   if (includeInstance) {
@@ -7871,6 +7902,10 @@ proto.assistant_api.CreateAssistantAuthenticationRequest.deserializeBinaryFromRe
       var value = new common_pb.Metadata;
       reader.readMessage(value,common_pb.Metadata.deserializeBinaryFromReader);
       msg.addOptions(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProvider(value);
       break;
     default:
       reader.skipField();
@@ -7935,6 +7970,13 @@ proto.assistant_api.CreateAssistantAuthenticationRequest.serializeBinaryToWriter
       5,
       f,
       common_pb.Metadata.serializeBinaryToWriter
+    );
+  }
+  f = message.getProvider();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
+      f
     );
   }
 };
@@ -8047,6 +8089,24 @@ proto.assistant_api.CreateAssistantAuthenticationRequest.prototype.addOptions = 
  */
 proto.assistant_api.CreateAssistantAuthenticationRequest.prototype.clearOptionsList = function() {
   return this.setOptionsList([]);
+};
+
+
+/**
+ * optional string provider = 6;
+ * @return {string}
+ */
+proto.assistant_api.CreateAssistantAuthenticationRequest.prototype.getProvider = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.CreateAssistantAuthenticationRequest} returns this
+ */
+proto.assistant_api.CreateAssistantAuthenticationRequest.prototype.setProvider = function(value) {
+  return jspb.Message.setProto3StringField(this, 6, value);
 };
 
 

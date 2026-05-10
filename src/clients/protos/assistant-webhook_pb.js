@@ -371,6 +371,7 @@ proto.assistant_api.AssistantWebhook.toObject = function(includeInstance, msg) {
     id: jspb.Message.getFieldWithDefault(msg, 1, "0"),
     assistanteventsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
     description: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    provider: jspb.Message.getFieldWithDefault(msg, 21, ""),
     optionsList: jspb.Message.toObjectList(msg.getOptionsList(),
     common_pb.Metadata.toObject, includeInstance),
     executionpriority: jspb.Message.getFieldWithDefault(msg, 20, 0),
@@ -429,6 +430,10 @@ proto.assistant_api.AssistantWebhook.deserializeBinaryFromReader = function(msg,
     case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setDescription(value);
+      break;
+    case 21:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProvider(value);
       break;
     case 7:
       var value = new common_pb.Metadata;
@@ -522,6 +527,13 @@ proto.assistant_api.AssistantWebhook.serializeBinaryToWriter = function(message,
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getProvider();
+  if (f.length > 0) {
+    writer.writeString(
+      21,
       f
     );
   }
@@ -673,6 +685,24 @@ proto.assistant_api.AssistantWebhook.prototype.getDescription = function() {
  */
 proto.assistant_api.AssistantWebhook.prototype.setDescription = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional string provider = 21;
+ * @return {string}
+ */
+proto.assistant_api.AssistantWebhook.prototype.getProvider = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 21, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantWebhook} returns this
+ */
+proto.assistant_api.AssistantWebhook.prototype.setProvider = function(value) {
+  return jspb.Message.setProto3StringField(this, 21, value);
 };
 
 
@@ -1807,6 +1837,7 @@ proto.assistant_api.CreateAssistantWebhookRequest.toObject = function(includeIns
   var f, obj = {
     assistanteventsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
     description: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    provider: jspb.Message.getFieldWithDefault(msg, 21, ""),
     optionsList: jspb.Message.toObjectList(msg.getOptionsList(),
     common_pb.Metadata.toObject, includeInstance),
     assistantid: jspb.Message.getFieldWithDefault(msg, 10, "0"),
@@ -1854,6 +1885,10 @@ proto.assistant_api.CreateAssistantWebhookRequest.deserializeBinaryFromReader = 
     case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setDescription(value);
+      break;
+    case 21:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProvider(value);
       break;
     case 7:
       var value = new common_pb.Metadata;
@@ -1908,6 +1943,13 @@ proto.assistant_api.CreateAssistantWebhookRequest.serializeBinaryToWriter = func
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getProvider();
+  if (f.length > 0) {
+    writer.writeString(
+      21,
       f
     );
   }
@@ -1988,6 +2030,24 @@ proto.assistant_api.CreateAssistantWebhookRequest.prototype.getDescription = fun
  */
 proto.assistant_api.CreateAssistantWebhookRequest.prototype.setDescription = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional string provider = 21;
+ * @return {string}
+ */
+proto.assistant_api.CreateAssistantWebhookRequest.prototype.getProvider = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 21, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.CreateAssistantWebhookRequest} returns this
+ */
+proto.assistant_api.CreateAssistantWebhookRequest.prototype.setProvider = function(value) {
+  return jspb.Message.setProto3StringField(this, 21, value);
 };
 
 
@@ -2107,6 +2167,7 @@ proto.assistant_api.UpdateAssistantWebhookRequest.toObject = function(includeIns
     id: jspb.Message.getFieldWithDefault(msg, 1, "0"),
     assistanteventsList: (f = jspb.Message.getRepeatedField(msg, 2)) == null ? undefined : f,
     description: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    provider: jspb.Message.getFieldWithDefault(msg, 21, ""),
     optionsList: jspb.Message.toObjectList(msg.getOptionsList(),
     common_pb.Metadata.toObject, includeInstance),
     assistantid: jspb.Message.getFieldWithDefault(msg, 10, "0"),
@@ -2158,6 +2219,10 @@ proto.assistant_api.UpdateAssistantWebhookRequest.deserializeBinaryFromReader = 
     case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setDescription(value);
+      break;
+    case 21:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProvider(value);
       break;
     case 7:
       var value = new common_pb.Metadata;
@@ -2219,6 +2284,13 @@ proto.assistant_api.UpdateAssistantWebhookRequest.serializeBinaryToWriter = func
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getProvider();
+  if (f.length > 0) {
+    writer.writeString(
+      21,
       f
     );
   }
@@ -2317,6 +2389,24 @@ proto.assistant_api.UpdateAssistantWebhookRequest.prototype.getDescription = fun
  */
 proto.assistant_api.UpdateAssistantWebhookRequest.prototype.setDescription = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional string provider = 21;
+ * @return {string}
+ */
+proto.assistant_api.UpdateAssistantWebhookRequest.prototype.getProvider = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 21, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.UpdateAssistantWebhookRequest} returns this
+ */
+proto.assistant_api.UpdateAssistantWebhookRequest.prototype.setProvider = function(value) {
+  return jspb.Message.setProto3StringField(this, 21, value);
 };
 
 

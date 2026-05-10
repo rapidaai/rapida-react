@@ -18,6 +18,9 @@ export class AssistantWebhook extends jspb.Message {
   getDescription(): string;
   setDescription(value: string): void;
 
+  getProvider(): string;
+  setProvider(value: string): void;
+
   clearOptionsList(): void;
   getOptionsList(): Array<common_pb.Metadata>;
   setOptionsList(value: Array<common_pb.Metadata>): void;
@@ -73,6 +76,7 @@ export namespace AssistantWebhook {
     id: string,
     assistanteventsList: Array<string>,
     description: string,
+    provider: string,
     optionsList: Array<common_pb.Metadata.AsObject>,
     executionpriority: number,
     assistantid: string,
@@ -203,6 +207,9 @@ export class CreateAssistantWebhookRequest extends jspb.Message {
   getDescription(): string;
   setDescription(value: string): void;
 
+  getProvider(): string;
+  setProvider(value: string): void;
+
   clearOptionsList(): void;
   getOptionsList(): Array<common_pb.Metadata>;
   setOptionsList(value: Array<common_pb.Metadata>): void;
@@ -228,6 +235,7 @@ export namespace CreateAssistantWebhookRequest {
   export type AsObject = {
     assistanteventsList: Array<string>,
     description: string,
+    provider: string,
     optionsList: Array<common_pb.Metadata.AsObject>,
     assistantid: string,
     executionpriority: number,
@@ -245,6 +253,9 @@ export class UpdateAssistantWebhookRequest extends jspb.Message {
 
   getDescription(): string;
   setDescription(value: string): void;
+
+  getProvider(): string;
+  setProvider(value: string): void;
 
   clearOptionsList(): void;
   getOptionsList(): Array<common_pb.Metadata>;
@@ -272,6 +283,7 @@ export namespace UpdateAssistantWebhookRequest {
     id: string,
     assistanteventsList: Array<string>,
     description: string,
+    provider: string,
     optionsList: Array<common_pb.Metadata.AsObject>,
     assistantid: string,
     executionpriority: number,

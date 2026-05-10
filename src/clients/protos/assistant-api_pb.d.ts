@@ -893,6 +893,9 @@ export class AssistantAuthentication extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
+  getProvider(): string;
+  setProvider(value: string): void;
+
   getFailbehavior(): string;
   setFailbehavior(value: string): void;
 
@@ -935,6 +938,7 @@ export namespace AssistantAuthentication {
     id: string,
     assistantid: string,
     status: string,
+    provider: string,
     failbehavior: string,
     timeoutms: string,
     optionsList: Array<common_pb.Metadata.AsObject>,
@@ -963,6 +967,9 @@ export class CreateAssistantAuthenticationRequest extends jspb.Message {
   setOptionsList(value: Array<common_pb.Metadata>): void;
   addOptions(value?: common_pb.Metadata, index?: number): common_pb.Metadata;
 
+  getProvider(): string;
+  setProvider(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateAssistantAuthenticationRequest.AsObject;
   static toObject(includeInstance: boolean, msg: CreateAssistantAuthenticationRequest): CreateAssistantAuthenticationRequest.AsObject;
@@ -980,6 +987,7 @@ export namespace CreateAssistantAuthenticationRequest {
     failbehavior: string,
     timeoutms: string,
     optionsList: Array<common_pb.Metadata.AsObject>,
+    provider: string,
   }
 }
 

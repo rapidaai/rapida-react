@@ -237,6 +237,7 @@ proto.assistant_api.AssistantAnalysis.toObject = function(includeInstance, msg) 
     id: jspb.Message.getFieldWithDefault(msg, 1, "0"),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     description: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    provider: jspb.Message.getFieldWithDefault(msg, 21, ""),
     optionsList: jspb.Message.toObjectList(msg.getOptionsList(),
     common_pb.Metadata.toObject, includeInstance),
     assistantid: jspb.Message.getFieldWithDefault(msg, 10, "0"),
@@ -295,6 +296,10 @@ proto.assistant_api.AssistantAnalysis.deserializeBinaryFromReader = function(msg
     case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setDescription(value);
+      break;
+    case 21:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProvider(value);
       break;
     case 7:
       var value = new common_pb.Metadata;
@@ -388,6 +393,13 @@ proto.assistant_api.AssistantAnalysis.serializeBinaryToWriter = function(message
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getProvider();
+  if (f.length > 0) {
+    writer.writeString(
+      21,
       f
     );
   }
@@ -520,6 +532,24 @@ proto.assistant_api.AssistantAnalysis.prototype.getDescription = function() {
  */
 proto.assistant_api.AssistantAnalysis.prototype.setDescription = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional string provider = 21;
+ * @return {string}
+ */
+proto.assistant_api.AssistantAnalysis.prototype.getProvider = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 21, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantAnalysis} returns this
+ */
+proto.assistant_api.AssistantAnalysis.prototype.setProvider = function(value) {
+  return jspb.Message.setProto3StringField(this, 21, value);
 };
 
 
@@ -840,6 +870,7 @@ proto.assistant_api.CreateAssistantAnalysisRequest.toObject = function(includeIn
   var f, obj = {
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     description: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    provider: jspb.Message.getFieldWithDefault(msg, 21, ""),
     optionsList: jspb.Message.toObjectList(msg.getOptionsList(),
     common_pb.Metadata.toObject, includeInstance),
     assistantid: jspb.Message.getFieldWithDefault(msg, 10, "0"),
@@ -887,6 +918,10 @@ proto.assistant_api.CreateAssistantAnalysisRequest.deserializeBinaryFromReader =
     case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setDescription(value);
+      break;
+    case 21:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProvider(value);
       break;
     case 7:
       var value = new common_pb.Metadata;
@@ -941,6 +976,13 @@ proto.assistant_api.CreateAssistantAnalysisRequest.serializeBinaryToWriter = fun
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getProvider();
+  if (f.length > 0) {
+    writer.writeString(
+      21,
       f
     );
   }
@@ -1002,6 +1044,24 @@ proto.assistant_api.CreateAssistantAnalysisRequest.prototype.getDescription = fu
  */
 proto.assistant_api.CreateAssistantAnalysisRequest.prototype.setDescription = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional string provider = 21;
+ * @return {string}
+ */
+proto.assistant_api.CreateAssistantAnalysisRequest.prototype.getProvider = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 21, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.CreateAssistantAnalysisRequest} returns this
+ */
+proto.assistant_api.CreateAssistantAnalysisRequest.prototype.setProvider = function(value) {
+  return jspb.Message.setProto3StringField(this, 21, value);
 };
 
 
@@ -1121,6 +1181,7 @@ proto.assistant_api.UpdateAssistantAnalysisRequest.toObject = function(includeIn
     id: jspb.Message.getFieldWithDefault(msg, 1, "0"),
     name: jspb.Message.getFieldWithDefault(msg, 2, ""),
     description: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    provider: jspb.Message.getFieldWithDefault(msg, 21, ""),
     optionsList: jspb.Message.toObjectList(msg.getOptionsList(),
     common_pb.Metadata.toObject, includeInstance),
     assistantid: jspb.Message.getFieldWithDefault(msg, 10, "0"),
@@ -1172,6 +1233,10 @@ proto.assistant_api.UpdateAssistantAnalysisRequest.deserializeBinaryFromReader =
     case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setDescription(value);
+      break;
+    case 21:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setProvider(value);
       break;
     case 7:
       var value = new common_pb.Metadata;
@@ -1233,6 +1298,13 @@ proto.assistant_api.UpdateAssistantAnalysisRequest.serializeBinaryToWriter = fun
   if (f.length > 0) {
     writer.writeString(
       3,
+      f
+    );
+  }
+  f = message.getProvider();
+  if (f.length > 0) {
+    writer.writeString(
+      21,
       f
     );
   }
@@ -1312,6 +1384,24 @@ proto.assistant_api.UpdateAssistantAnalysisRequest.prototype.getDescription = fu
  */
 proto.assistant_api.UpdateAssistantAnalysisRequest.prototype.setDescription = function(value) {
   return jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional string provider = 21;
+ * @return {string}
+ */
+proto.assistant_api.UpdateAssistantAnalysisRequest.prototype.getProvider = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 21, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.UpdateAssistantAnalysisRequest} returns this
+ */
+proto.assistant_api.UpdateAssistantAnalysisRequest.prototype.setProvider = function(value) {
+  return jspb.Message.setProto3StringField(this, 21, value);
 };
 
 
