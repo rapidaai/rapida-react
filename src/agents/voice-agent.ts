@@ -382,26 +382,29 @@ export class VoiceAgent extends Agent {
   private _handleUserTranscription(text: string, messageId?: string, completed: boolean = true) {
     const id = messageId || `msg_${Date.now()}`;
     const now = new Date();
-
-    // Check if we need to update existing message or create new one
-    if (this.agentMessages.length > 0) {
-      const lastMessage = this.agentMessages[this.agentMessages.length - 1];
-      if (
-        lastMessage.role === MessageRole.User &&
-        lastMessage.id === id
-      ) {
-        // Update existing message with same ID
-        this.agentMessages.pop();
+    let userMessageIndex = -1;
+    for (let i = this.agentMessages.length - 1; i >= 0; i--) {
+      const message = this.agentMessages[i];
+      if (message.role === MessageRole.User && message.id === id) {
+        userMessageIndex = i;
+        break;
       }
     }
 
-    this.agentMessages.push({
+    const nextUserMessage = {
       id: id,
       role: MessageRole.User,
       messages: [text],
       time: now,
       status: completed ? MessageStatus.Complete : MessageStatus.Pending,
-    });
+    };
+
+    if (userMessageIndex >= 0) {
+      // Replace existing user message in-place instead of appending duplicate.
+      this.agentMessages[userMessageIndex] = nextUserMessage;
+    } else {
+      this.agentMessages.push(nextUserMessage);
+    }
 
     // Create callback message and notify callbacks
     const callbackMessage = new ConversationUserMessage();

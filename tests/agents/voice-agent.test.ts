@@ -588,6 +588,54 @@ describe('VoiceAgent', () => {
       expect((agent as any).agentMessages.some((m: any) => m.role === MessageRole.System)).toBe(true);
       expect((agent as any).agentMessages.some((m: any) => m.role === MessageRole.User)).toBe(true);
     });
+
+    it('marks existing user message complete instead of appending when completed arrives after assistant events', async () => {
+      const agent = new VoiceAgent(
+        mockConnectionConfig as any,
+        mockAgentConfig as any,
+      );
+      await agent.connect();
+
+      // User starts speaking (pending)
+      lastTransportCallbacks.onUserMessage?.({
+        id: '1',
+        messageText: 'Hello',
+        completed: false,
+      });
+
+      // Assistant events interleave before final user completion
+      lastTransportCallbacks.onAssistantMessage?.({
+        id: '1',
+        messageText: 'gg',
+        completed: false,
+      });
+      lastTransportCallbacks.onAssistantMessage?.({
+        id: '1',
+        messageText: 'gg',
+        completed: true,
+      });
+
+      // Final user completion for same id should update existing user message
+      lastTransportCallbacks.onUserMessage?.({
+        id: '1',
+        messageText: 'Hello',
+        completed: true,
+      });
+
+      const userMessages = (agent as any).agentMessages.filter(
+        (m: any) => m.role === MessageRole.User && m.id === '1'
+      );
+      const assistantMessages = (agent as any).agentMessages.filter(
+        (m: any) => m.role === MessageRole.System && m.id === '1'
+      );
+
+      expect(userMessages).toHaveLength(1);
+      expect(userMessages[0].messages).toEqual(['Hello']);
+      expect(userMessages[0].status).toBe(MessageStatus.Complete);
+      expect(assistantMessages).toHaveLength(1);
+      expect(assistantMessages[0].messages).toEqual(['gg']);
+      expect(assistantMessages[0].status).toBe(MessageStatus.Complete);
+    });
   });
 
   describe('mute controls', () => {
