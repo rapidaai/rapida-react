@@ -48,6 +48,8 @@ const BUNDLE_POLICY: RTCBundlePolicy = "max-bundle";
 export class WebRTCPeerManager {
   private peerConnection: RTCPeerConnection | null = null;
   private _isConnected = false;
+  private peerConnectionGeneration = 0;
+  private pendingRemoteICECandidates: RTCIceCandidateInit[] = [];
 
   constructor(
     private callbacks: AgentCallback,
@@ -72,6 +74,8 @@ export class WebRTCPeerManager {
       this.peerConnection = null;
       this._isConnected = false;
     }
+    this.peerConnectionGeneration += 1;
+    this.pendingRemoteICECandidates = [];
 
     this.peerConnection = new RTCPeerConnection({
       iceServers: iceServers?.length ? iceServers : DEFAULT_ICE_SERVERS,
@@ -103,7 +107,9 @@ export class WebRTCPeerManager {
       if (state === "connected") {
         this._isConnected = true;
         this.callbacks.onConnected?.();
-      } else if (state === "disconnected" || state === "failed" || state === "closed") {
+      } else if (state === "disconnected") {
+        this._isConnected = false;
+      } else if (state === "failed" || state === "closed") {
         this._isConnected = false;
         this.callbacks.onDisconnected?.();
       }
@@ -121,12 +127,6 @@ export class WebRTCPeerManager {
         this.peerConnection.ontrack = null;
         this.peerConnection.onicecandidate = null;
 
-        // Stop all sender tracks so the browser releases the microphone
-        // indicator. RTCPeerConnection.close() alone does not guarantee
-        // that tracks are stopped in every browser.
-        this.peerConnection.getSenders().forEach(sender => {
-          try { sender.track?.stop(); } catch { /* best-effort */ }
-        });
         this.peerConnection.close();
       }
     } catch (error) {
@@ -134,6 +134,8 @@ export class WebRTCPeerManager {
     }
     this.peerConnection = null;
     this._isConnected = false;
+    this.peerConnectionGeneration += 1;
+    this.pendingRemoteICECandidates = [];
   }
 
   get isConnected(): boolean { return this._isConnected; }
@@ -155,64 +157,136 @@ export class WebRTCPeerManager {
    * with the server sending a complete offer (all server candidates inline).
    * Together they eliminate trickle-ICE timing bugs that cause Safari to fail.
    */
-  async handleOffer(sdp: string, localStream: MediaStream | null): Promise<void> {
+  async handleOffer(sdp: string, localStream: MediaStream | null): Promise<string | null> {
     if (!this.peerConnection) this.setup();
-    const pc = this.peerConnection!;
+    const peerConnection = this.peerConnection!;
+    const offerPeerGeneration = this.peerConnectionGeneration;
 
-    await pc.setRemoteDescription({ type: "offer", sdp });
-
-    const track = localStream?.getAudioTracks()[0];
-    const transceivers = pc.getTransceivers();
-
-    // Safari (pre-14.1) leaves receiver.track null after setRemoteDescription
-    // until the first remote packet arrives, so the receiver-track check alone
-    // is unreliable. Use a cascade of fallbacks:
-    //   1. receiver.track.kind  — Chrome, Firefox, Safari 14.1+
-    //   2. sender.track.kind    — if the sender already has a track attached
-    //   3. transceivers[0]      — voice-only sessions always have exactly one
-    //                             audio m-line, so the first transceiver is it
-    const audioTransceiver =
-      transceivers.find(t => t.receiver.track?.kind === "audio") ??
-      transceivers.find(t => t.sender.track?.kind === "audio") ??
-      transceivers[0];
-
-    if (!audioTransceiver) {
-      console.warn("No audio transceiver found in offer");
-      const answer = await pc.createAnswer();
-      await pc.setLocalDescription(answer);
-      await this.waitForIceGathering(pc);
-      return;
+    await peerConnection.setRemoteDescription({ type: "offer", sdp });
+    if (this.peerConnection !== peerConnection || this.peerConnectionGeneration !== offerPeerGeneration) {
+      return null;
     }
 
-    if (track) {
-      // Audio mode — bidirectional.
-      audioTransceiver.direction = "sendrecv";
+    const pendingRemoteICECandidates = this.pendingRemoteICECandidates;
+    this.pendingRemoteICECandidates = [];
+    for (const pendingRemoteICECandidate of pendingRemoteICECandidates) {
+      await peerConnection.addIceCandidate(pendingRemoteICECandidate);
+      if (this.peerConnection !== peerConnection || this.peerConnectionGeneration !== offerPeerGeneration) {
+        return null;
+      }
+    }
 
-      // replaceTrack attaches the mic track to the transceiver's sender.
-      // If it fails (e.g. on older Safari), fall back to recvonly rather
-      // than throwing — the answer is still sent and the server can at least
-      // push audio to the client (user hears the assistant, doesn't send mic).
-      try {
-        await audioTransceiver.sender.replaceTrack(track);
-      } catch (error) {
-        console.warn("[WebRTCPeerManager] replaceTrack failed, falling back to recvonly", error);
-        audioTransceiver.direction = "recvonly";
+    const localAudioTrack = localStream?.getAudioTracks().find(track => track.readyState === "live") ?? null;
+    const requiresAudioPublish = localStream !== null;
+    if (requiresAudioPublish && !localAudioTrack) {
+      throw new Error("[WebRTCPeerManager] Audio mode requires a live local audio track");
+    }
+
+    const offeredTransceivers = peerConnection.getTransceivers();
+    const audioTransceiver = offeredTransceivers.find(transceiver => transceiver.sender.track?.kind === "audio")
+      ?? offeredTransceivers.find(transceiver => transceiver.receiver.track?.kind === "audio")
+      // Voice sessions carry one audio m-line; some browsers fill track metadata later.
+      ?? (offeredTransceivers.length === 1 ? offeredTransceivers[0] : null);
+
+    if (!audioTransceiver) {
+      if (requiresAudioPublish) {
+        throw new Error("[WebRTCPeerManager] Audio mode offer has no usable audio transceiver");
       }
 
+      console.warn("[WebRTCPeerManager] No audio transceiver found in offer");
+      const answer = await peerConnection.createAnswer();
+      if (this.peerConnection !== peerConnection || this.peerConnectionGeneration !== offerPeerGeneration) {
+        return null;
+      }
+      await peerConnection.setLocalDescription(answer);
+      if (this.peerConnection !== peerConnection || this.peerConnectionGeneration !== offerPeerGeneration) {
+        return null;
+      }
+      await this.waitForIceGathering(peerConnection);
+      if (this.peerConnection !== peerConnection || this.peerConnectionGeneration !== offerPeerGeneration) {
+        return null;
+      }
+      return peerConnection.localDescription?.sdp ?? null;
+    }
+
+    if (localAudioTrack) {
+      // Audio mode — bidirectional.
+      audioTransceiver.direction = "sendrecv";
+      if (audioTransceiver.sender.track !== localAudioTrack) {
+        try {
+          await audioTransceiver.sender.replaceTrack(localAudioTrack);
+        } catch (replaceTrackError) {
+          audioTransceiver.direction = "recvonly";
+          const replaceTrackErrorMessage = replaceTrackError instanceof Error
+            ? replaceTrackError.message
+            : String(replaceTrackError);
+          throw new Error(`[WebRTCPeerManager] Failed to attach local audio track: ${replaceTrackErrorMessage}`);
+        }
+      }
       this.setCodecPreferences(audioTransceiver);
     } else {
       // Text-only mode — receive only (no microphone)
       audioTransceiver.direction = "recvonly";
     }
 
-    const answer = await pc.createAnswer();
-    await pc.setLocalDescription(answer);
+    const answer = await peerConnection.createAnswer();
+    if (this.peerConnection !== peerConnection || this.peerConnectionGeneration !== offerPeerGeneration) {
+      return null;
+    }
+    await peerConnection.setLocalDescription(answer);
+    if (this.peerConnection !== peerConnection || this.peerConnectionGeneration !== offerPeerGeneration) {
+      return null;
+    }
 
     // Wait for local ICE gathering to complete so the answer SDP contains
     // all client candidates inline. Safari handles the complete SDP reliably;
     // it often drops or misorders trickle ICE candidates that arrive as
     // separate addIceCandidate() calls after the offer/answer exchange.
-    await this.waitForIceGathering(pc);
+    await this.waitForIceGathering(peerConnection);
+    if (this.peerConnection !== peerConnection || this.peerConnectionGeneration !== offerPeerGeneration) {
+      return null;
+    }
+    const answerSdp = peerConnection.localDescription?.sdp ?? null;
+    if (!answerSdp) {
+      return null;
+    }
+
+    if (requiresAudioPublish) {
+      let audioMediaSectionFound = false;
+      let insideAudioMediaSection = false;
+      let negotiatedAudioDirection = "sendrecv";
+      let audioMediaHasLocalStream = false;
+
+      for (const answerSdpLine of answerSdp.split(/\r?\n/)) {
+        if (answerSdpLine.startsWith("m=")) {
+          insideAudioMediaSection = answerSdpLine.startsWith("m=audio ");
+          audioMediaSectionFound = audioMediaSectionFound || insideAudioMediaSection;
+          continue;
+        }
+        if (!insideAudioMediaSection) {
+          continue;
+        }
+        if (
+          answerSdpLine === "a=sendrecv" ||
+          answerSdpLine === "a=sendonly" ||
+          answerSdpLine === "a=recvonly" ||
+          answerSdpLine === "a=inactive"
+        ) {
+          negotiatedAudioDirection = answerSdpLine.slice("a=".length);
+        }
+        if (answerSdpLine.startsWith("a=msid:")) {
+          audioMediaHasLocalStream = true;
+        }
+      }
+
+      if (!audioMediaSectionFound || negotiatedAudioDirection !== "sendrecv" || !audioMediaHasLocalStream) {
+        throw new Error(
+          `[WebRTCPeerManager] Audio answer did not publish microphone: audio=${audioMediaSectionFound}, direction=${negotiatedAudioDirection}, msid=${audioMediaHasLocalStream}`,
+        );
+      }
+    }
+
+    return answerSdp;
   }
 
   /**
@@ -224,15 +298,21 @@ export class WebRTCPeerManager {
     if (pc.iceGatheringState === "complete") return Promise.resolve();
 
     return new Promise<void>((resolve) => {
-      const timeout = setTimeout(resolve, 5000);
-
+      let isResolved = false;
+      let timeout: ReturnType<typeof setTimeout>;
+      const resolveOnce = () => {
+        if (isResolved) return;
+        isResolved = true;
+        clearTimeout(timeout);
+        pc.removeEventListener("icegatheringstatechange", handler);
+        resolve();
+      };
       const handler = () => {
         if (pc.iceGatheringState === "complete") {
-          clearTimeout(timeout);
-          pc.removeEventListener("icegatheringstatechange", handler);
-          resolve();
+          resolveOnce();
         }
       };
+      timeout = setTimeout(resolveOnce, 5000);
 
       pc.addEventListener("icegatheringstatechange", handler);
     });
@@ -246,13 +326,24 @@ export class WebRTCPeerManager {
   /** Apply an SDP answer (unusual server flow) */
   async handleAnswer(sdp: string): Promise<void> {
     if (!this.peerConnection) return;
-    await this.peerConnection.setRemoteDescription({ type: "answer", sdp });
+    const peerConnection = this.peerConnection;
+    await peerConnection.setRemoteDescription({ type: "answer", sdp });
+    const pendingRemoteICECandidates = this.pendingRemoteICECandidates;
+    this.pendingRemoteICECandidates = [];
+    for (const pendingRemoteICECandidate of pendingRemoteICECandidates) {
+      await peerConnection.addIceCandidate(pendingRemoteICECandidate);
+    }
   }
 
   /** Add a remote ICE candidate */
   async addICECandidate(candidate: string, sdpMid: string, sdpMLineIndex: number): Promise<void> {
     if (!this.peerConnection) return;
-    await this.peerConnection.addIceCandidate({ candidate, sdpMid, sdpMLineIndex });
+    const remoteICECandidate: RTCIceCandidateInit = { candidate, sdpMid, sdpMLineIndex };
+    if (!this.peerConnection.remoteDescription) {
+      this.pendingRemoteICECandidates.push(remoteICECandidate);
+      return;
+    }
+    await this.peerConnection.addIceCandidate(remoteICECandidate);
   }
 
   /** Replace the audio track on the existing sender */

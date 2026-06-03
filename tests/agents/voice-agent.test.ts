@@ -400,6 +400,29 @@ describe('VoiceAgent', () => {
       expect(mockWebRTCTransport.sendConversationConfiguration).toHaveBeenCalled();
     });
 
+    it('should not reconnect audio after a fresh Audio initialization', async () => {
+      const textConfig = {
+        ...mockAgentConfig,
+        inputOptions: { ...mockAgentConfig.inputOptions, channel: Channel.Text },
+        outputOptions: { ...mockAgentConfig.outputOptions, channel: Channel.Text },
+      };
+      const agent = new VoiceAgent(
+        mockConnectionConfig as any,
+        textConfig as any
+      );
+      mockWebRTCTransport.isGrpcConnected = false;
+
+      await agent.setInputChannel(Channel.Audio);
+
+      expect(WebRTCGrpcTransport.create).toHaveBeenCalledWith(
+        expect.any(Object),
+        expect.any(Object),
+        false,
+      );
+      expect(mockWebRTCTransport.reconnectAudio).not.toHaveBeenCalled();
+      expect(mockWebRTCTransport.sendConversationConfiguration).not.toHaveBeenCalled();
+    });
+
     it('should disconnect audio when switching to Text channel while connected', async () => {
       // Start with audio channel
       await voiceAgent.connect();
@@ -490,6 +513,26 @@ describe('VoiceAgent', () => {
       await voiceAgent.connect();
       const emitSpy = jest.spyOn(voiceAgent, 'emit');
       lastTransportCallbacks.onDisconnected?.();
+      expect(emitSpy).toHaveBeenCalledWith(AgentEvent.InputChannelChangeEvent, Channel.Text);
+    });
+
+    it('keeps audio mode on transient WebRTC disconnected while gRPC is alive', async () => {
+      await voiceAgent.connect();
+      const emitSpy = jest.spyOn(voiceAgent, 'emit');
+
+      lastTransportCallbacks.onConnectionStateChange?.('disconnected');
+
+      expect(mockAgentConfig.inputOptions.channel).toBe(Channel.Audio);
+      expect(emitSpy).not.toHaveBeenCalledWith(AgentEvent.InputChannelChangeEvent, Channel.Text);
+    });
+
+    it('falls back to text mode on failed WebRTC state while gRPC is alive', async () => {
+      await voiceAgent.connect();
+      const emitSpy = jest.spyOn(voiceAgent, 'emit');
+
+      lastTransportCallbacks.onConnectionStateChange?.('failed');
+
+      expect(mockAgentConfig.inputOptions.channel).toBe(Channel.Text);
       expect(emitSpy).toHaveBeenCalledWith(AgentEvent.InputChannelChangeEvent, Channel.Text);
     });
 

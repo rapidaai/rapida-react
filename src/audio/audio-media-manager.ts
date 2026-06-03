@@ -102,15 +102,17 @@ export class AudioMediaManager {
       }
     }
 
-    const track = this.localStream.getAudioTracks()[0];
-    if (track) {
-      track.enabled = true;
+    const localAudioTrack = this.localStream.getAudioTracks()[0];
+    if (!localAudioTrack) {
+      throw new Error("[AudioMediaManager] Microphone capture returned no audio track");
+    }
 
-      // Store the actual device being used when none was explicitly selected
-      const settings = track.getSettings();
-      if (settings.deviceId && !this.agentConfig.inputOptions.device) {
-        this.agentConfig.inputOptions.device = settings.deviceId;
-      }
+    localAudioTrack.enabled = true;
+
+    // Store the actual device being used when none was explicitly selected.
+    const localAudioTrackSettings = localAudioTrack.getSettings();
+    if (localAudioTrackSettings.deviceId && !this.agentConfig.inputOptions.device) {
+      this.agentConfig.inputOptions.device = localAudioTrackSettings.deviceId;
     }
 
     // Audio context for visualization - use vendor-prefixed version if needed
@@ -165,7 +167,7 @@ export class AudioMediaManager {
     const base: MediaTrackConstraints = {
       echoCancellation: true,
       noiseSuppression: true,
-      autoGainControl: false,
+      autoGainControl: true,
     };
 
     if (this.agentConfig.inputOptions.device) {
@@ -183,11 +185,9 @@ export class AudioMediaManager {
       channelCount: { ideal: 1 },
       echoCancellation: true,
       noiseSuppression: true,
-      // Disable AGC for voice AI: when the assistant finishes speaking and the
-      // user starts talking, AGC would abruptly boost the mic gain (it was
-      // suppressed while output was playing), clipping the first syllable and
-      // causing a jarring volume jump. The STT model handles normalization.
-      autoGainControl: false,
+      // Keep AGC enabled to prevent low microphone capture levels on quieter
+      // mics and mobile hardware.
+      autoGainControl: true,
     };
 
     if (this.agentConfig.inputOptions.device) {
@@ -213,8 +213,8 @@ export class AudioMediaManager {
         ...base,
         // @ts-ignore Chrome/Edge-specific
         googEchoCancellation: true,
-        // @ts-ignore AGC disabled — matches autoGainControl: false above
-        googAutoGainControl: false,
+        // @ts-ignore Chrome/Edge-specific AGC.
+        googAutoGainControl: true,
         // @ts-ignore
         googNoiseSuppression: true,
         // @ts-ignore removes low-frequency rumble (fan/AC noise)
@@ -362,9 +362,19 @@ export class AudioMediaManager {
       // the load algorithm (which internally pauses), so play() must wait until
       // the element is ready or AbortError follows.
       if (el.readyState < 3 /* HAVE_FUTURE_DATA */) {
-        await new Promise<void>((resolve) => {
-          el.addEventListener('canplay', resolve as EventListener, { once: true });
-          setTimeout(resolve, 200);
+        await new Promise<void>((resolvePromise) => {
+          let isPromiseResolved = false;
+          // Resolve from whichever arrives first: `canplay` or fallback timeout.
+          const resolveOnce = () => {
+            if (isPromiseResolved) return;
+            isPromiseResolved = true;
+            clearTimeout(fallbackTimeoutId);
+            el.removeEventListener("canplay", handleCanPlay);
+            resolvePromise();
+          };
+          const handleCanPlay: EventListener = () => resolveOnce();
+          const fallbackTimeoutId = setTimeout(resolveOnce, 200);
+          el.addEventListener("canplay", handleCanPlay, { once: true });
         });
       }
 
@@ -417,9 +427,19 @@ export class AudioMediaManager {
       // complete before resuming. 200 ms timeout guards against streams
       // with no active audio tracks where canplay may never fire.
       if (el.readyState < 3 /* HAVE_FUTURE_DATA */) {
-        await new Promise<void>((resolve) => {
-          el.addEventListener('canplay', resolve as EventListener, { once: true });
-          setTimeout(resolve, 200);
+        await new Promise<void>((resolvePromise) => {
+          let isPromiseResolved = false;
+          // Resolve from whichever arrives first: `canplay` or fallback timeout.
+          const resolveOnce = () => {
+            if (isPromiseResolved) return;
+            isPromiseResolved = true;
+            clearTimeout(fallbackTimeoutId);
+            el.removeEventListener("canplay", handleCanPlay);
+            resolvePromise();
+          };
+          const handleCanPlay: EventListener = () => resolveOnce();
+          const fallbackTimeoutId = setTimeout(resolveOnce, 200);
+          el.addEventListener("canplay", handleCanPlay, { once: true });
         });
       }
 
@@ -504,6 +524,12 @@ export class AudioMediaManager {
       }
     }
 
+    const localAudioTrack = this.localStream.getAudioTracks()[0];
+    if (!localAudioTrack) {
+      throw new Error("[AudioMediaManager] Microphone device switch returned no audio track");
+    }
+    localAudioTrack.enabled = !this.isMuted;
+
     // Reconnect analyser (disconnect old source first to avoid leaking audio nodes)
     if (this.audioContext && this._inputAnalyser && this.localStream) {
       this._inputAnalyser.disconnect();
@@ -554,7 +580,7 @@ export class AudioMediaManager {
 
   /** Get the new audio track after setInputDevice (caller wires it to peer) */
   getLocalAudioTrack(): MediaStreamTrack | undefined {
-    return this.localStream?.getAudioTracks()[0];
+    return this.localStream?.getAudioTracks().find(track => track.readyState === "live");
   }
 
   // ---------------------------------------------------------------------------

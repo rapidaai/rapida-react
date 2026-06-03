@@ -85,7 +85,10 @@ export class VoiceAgent extends Agent {
           // (the server's ConversationInitialization response) to confirm
           // the conversation is truly established.
           // console.log(`${LOG_PREFIX} transport connected, waiting for conversation initialization`);
-        } else if (state === "disconnected" || state === "closed" || state === "failed") {
+        } else if (state === "disconnected") {
+          // Browser WebRTC can briefly report disconnected during ICE changes.
+          // Keep the selected channel stable while recovery/renegotiation runs.
+        } else if (state === "closed" || state === "failed") {
           // Only mark as disconnected if the gRPC session is also gone.
           // When switching from audio → text the WebRTC peer fires
           // "disconnected"/"closed", but the gRPC stream is still alive.
@@ -679,32 +682,35 @@ export class VoiceAgent extends Agent {
     this.agentConfig.inputOptions.channel = input;
     this.agentConfig.outputOptions.channel = input;
 
-    // Track whether a fresh connection was just created.
-    // If so, ConversationInitialization already carried the stream mode
-    // — no need to send a redundant ConversationConfiguration.
-    const wasConnected = this.webrtcTransport?.isGrpcConnected ?? false;
+    // Fresh Audio connect captures mic during initialization. Runtime switches
+    // recapture before sending configuration so the offer sees a stable track.
+    const wasGrpcConnectedBeforeChannelChange = this.webrtcTransport?.isGrpcConnected ?? false;
 
     // Ensure the session exists
     await this.ensureConnected();
 
     // Add or remove the audio transport
     if (input === Channel.Audio) {
-      try {
-        await this.webrtcTransport?.reconnectAudio();
-      } catch (error) {
-        // gRPC stream was lost between ensureConnected and reconnectAudio.
-        // Trigger a full reconnect on the next user action.
-        this.emit(AgentEvent.ErrorEvent, "client", `Audio reconnect failed: ${error}`);
-        this.webrtcTransport = null;
+      if (wasGrpcConnectedBeforeChannelChange) {
+        try {
+          await this.webrtcTransport?.reconnectAudio();
+        } catch (error) {
+          // gRPC stream was lost between ensureConnected and reconnectAudio.
+          // Trigger a full reconnect on the next user action.
+          this.emit(AgentEvent.ErrorEvent, "client", `Audio reconnect failed: ${error}`);
+          this.webrtcTransport = null;
+        }
       }
     } else {
-      await this.webrtcTransport?.disconnectAudioOnly();
+      if (wasGrpcConnectedBeforeChannelChange) {
+        await this.webrtcTransport?.disconnectAudioOnly();
+      }
     }
 
     // Only send ConversationConfiguration for runtime mode switches.
     // On a fresh connection the ConversationInitialization message
     // already includes the stream mode, so sending it again is redundant.
-    if (wasConnected) {
+    if (wasGrpcConnectedBeforeChannelChange) {
       this.webrtcTransport?.sendConversationConfiguration();
     }
 

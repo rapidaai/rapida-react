@@ -95,6 +95,7 @@ class MockMediaStream {
       {
         kind: 'audio',
         enabled: true,
+        readyState: 'live',
         stop: jest.fn(),
         getSettings: () => ({ sampleRate: 48000 }),
       } as unknown as MediaStreamTrack,

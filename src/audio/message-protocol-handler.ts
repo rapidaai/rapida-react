@@ -45,12 +45,13 @@ import type { AudioMediaManager } from "./audio-media-manager";
  * - Handle conversation init/config responses
  * - Handle assistant / user / interruption / tool call messages
  *
- * This is pure dispatch logic — it holds no state of its own.
+ * State: tracks the active WebRTC signaling session to ignore stale offers/ICE.
  */
 export class MessageProtocolHandler {
   // Serialization chain ensures signaling messages (CONFIG → OFFER → ICE)
   // are processed in order even though gRPC callbacks fire without await.
   private processingChain: Promise<void> = Promise.resolve();
+  private activeSignalingSessionId: string | null = null;
 
   constructor(
     private callbacks: AgentCallback,
@@ -159,45 +160,74 @@ export class MessageProtocolHandler {
   // ---------------------------------------------------------------------------
 
   private async handleServerSignaling(signaling: ServerSignaling): Promise<void> {
-    const sessionId = signaling.getSessionid();
-    if (sessionId) this.signaling.setSessionId(sessionId);
-
+    const signalingSessionId = signaling.getSessionid();
     const messageCase = signaling.getMessageCase();
+
+    if (messageCase !== ServerSignaling.MessageCase.CONFIG) {
+      if (this.activeSignalingSessionId && signalingSessionId && signalingSessionId !== this.activeSignalingSessionId) {
+        console.debug("[Protocol] Ignoring stale WebRTC signaling", {
+          activeSignalingSessionId: this.activeSignalingSessionId,
+          signalingSessionId,
+          messageCase,
+        });
+        return;
+      }
+      if (!this.activeSignalingSessionId && signalingSessionId) {
+        this.activeSignalingSessionId = signalingSessionId;
+        this.signaling.setSessionId(signalingSessionId);
+      }
+    }
 
     switch (messageCase) {
       case ServerSignaling.MessageCase.CONFIG: {
-        const config = signaling.getConfig();
-        const iceServers = config?.getIceserversList()?.map(srv => ({
-          urls: srv.getUrlsList(),
-          username: srv.getUsername() || undefined,
-          credential: srv.getCredential() || undefined,
-        })) as RTCIceServer[] | undefined;
-        this.peer.setup(iceServers);
+        try {
+          this.activeSignalingSessionId = signalingSessionId || null;
+          if (this.activeSignalingSessionId) {
+            this.signaling.setSessionId(this.activeSignalingSessionId);
+          }
+
+          const config = signaling.getConfig();
+          const iceServers = config?.getIceserversList()?.map(srv => ({
+            urls: srv.getUrlsList(),
+            username: srv.getUsername() || undefined,
+            credential: srv.getCredential() || undefined,
+          })) as RTCIceServer[] | undefined;
+          this.peer.setup(iceServers);
+        } catch (error) {
+          this.peer.close();
+          console.error("Failed to handle WebRTC config signaling", error);
+          this.callbacks.onConnectionStateChange?.("failed");
+          this.callbacks.onError?.(new Error(`WebRTC config signaling failed: ${error}`));
+        }
         break;
       }
 
       case ServerSignaling.MessageCase.SDP: {
+        const sdpMessage = signaling.getSdp();
+        const sdpType = sdpMessage?.getType();
         try {
-          const sdpMsg = signaling.getSdp();
-          if (!sdpMsg) break;
+          if (!sdpMessage) break;
 
-          const sdpType = sdpMsg.getType();
-          const sdp = sdpMsg.getSdp();
+          const sdp = sdpMessage.getSdp();
 
           if (sdpType === WebRTCSDP.SDPType.OFFER) {
             // console.log("[Protocol] Handling SDP OFFER");
-            await this.peer.handleOffer(sdp, this.audio.mediaStream);
-            const answerSdp = this.peer.getLocalSDP();
+            const answerSdp = await this.peer.handleOffer(sdp, this.audio.mediaStream);
             if (answerSdp) {
               this.signaling.sendWebRTCAnswer(answerSdp);
             } else {
-              console.error("No local SDP after creating answer");
+              console.debug("[Protocol] SDP offer was superseded before answer was sent");
             }
           } else if (sdpType === WebRTCSDP.SDPType.ANSWER) {
             // console.log("[Protocol] Handling SDP ANSWER");
             await this.peer.handleAnswer(sdp);
           }
         } catch (error) {
+          if (sdpType === WebRTCSDP.SDPType.OFFER) {
+            // Cleanup strategy: on failed offer handling, close stale peer state.
+            // Next CONFIG/OFFER cycle will recreate the peer cleanly.
+            this.peer.close();
+          }
           console.error("Failed to handle SDP signaling", error);
           this.callbacks.onConnectionStateChange?.("failed");
           this.callbacks.onError?.(new Error(`SDP signaling failed: ${error}`));

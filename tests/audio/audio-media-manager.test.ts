@@ -117,6 +117,8 @@ describe('AudioMediaManager', () => {
       expect(navigator.mediaDevices.getUserMedia).toHaveBeenCalledWith(
         expect.objectContaining({ audio: expect.any(Object), video: false }),
       );
+      const [call] = (navigator.mediaDevices.getUserMedia as jest.Mock).mock.calls;
+      expect(call[0].audio).toHaveProperty('autoGainControl', true);
       expect(manager.mediaStream).not.toBeNull();
     });
 
@@ -642,6 +644,7 @@ describe('AudioMediaManager', () => {
       const [call] = (navigator.mediaDevices.getUserMedia as jest.Mock).mock.calls;
       const audio = call[0].audio;
       expect(audio).toHaveProperty('googEchoCancellation', true);
+      expect(audio).toHaveProperty('googAutoGainControl', true);
       expect(audio).toHaveProperty('googNoiseSuppression', true);
     });
 

@@ -30,6 +30,13 @@ import { WebRTCPeerManager } from "./webrtc-peer-manager";
 import { AudioMediaManager } from "./audio-media-manager";
 import { MessageProtocolHandler } from "./message-protocol-handler";
 
+type MediaTransportState =
+  | "text_ready"
+  | "audio_capturing"
+  | "audio_negotiating"
+  | "audio_connected"
+  | "audio_failed";
+
 /**
  * WebRTC gRPC Transport Configuration
  */
@@ -56,6 +63,7 @@ export interface WebRTCGrpcTransportConfig {
 export class WebRTCGrpcTransport {
   private config: WebRTCGrpcTransportConfig;
   private callbacks: AgentCallback;
+  private mediaTransportState: MediaTransportState = "text_ready";
 
   // Managers
   private signaling: GrpcSignalingManager;
@@ -65,7 +73,25 @@ export class WebRTCGrpcTransport {
 
   constructor(config: WebRTCGrpcTransportConfig, callbacks: AgentCallback = {}) {
     this.config = config;
-    this.callbacks = callbacks;
+    this.callbacks = {
+      ...callbacks,
+      onConnectionStateChange: (state) => {
+        if (state === "connecting" && this.mediaTransportState === "audio_capturing") {
+          this.mediaTransportState = "audio_negotiating";
+        } else if (state === "connected" && this.mediaTransportState !== "text_ready") {
+          this.mediaTransportState = "audio_connected";
+        } else if (state === "failed" && this.mediaTransportState !== "text_ready") {
+          this.mediaTransportState = "audio_failed";
+        }
+        callbacks.onConnectionStateChange?.(state);
+      },
+      onConnected: () => {
+        if (this.mediaTransportState !== "text_ready") {
+          this.mediaTransportState = "audio_connected";
+        }
+        callbacks.onConnected?.();
+      },
+    };
 
     // 1. Audio manager — captures/plays media, manages devices
     this.audio = new AudioMediaManager(config.agentConfig);
@@ -73,7 +99,7 @@ export class WebRTCGrpcTransport {
     // 2. Peer manager — WebRTC connection, wired to send ICE via signaling
     //    and route remote tracks to audio manager
     this.peer = new WebRTCPeerManager(
-      callbacks,
+      this.callbacks,
       (candidate) => this.signaling.sendICECandidate(candidate),
       (stream) => this.audio.setupRemoteAudio(stream),
     );
@@ -82,13 +108,13 @@ export class WebRTCGrpcTransport {
     this.signaling = new GrpcSignalingManager(
       config.connectionConfig,
       config.agentConfig,
-      callbacks,
+      this.callbacks,
       (response) => this.protocol.handleMessage(response),
       config.conversationId,
     );
 
     // 4. Protocol handler — dispatches incoming messages to the right manager/callback
-    this.protocol = new MessageProtocolHandler(callbacks, this.signaling, this.peer, this.audio);
+    this.protocol = new MessageProtocolHandler(this.callbacks, this.signaling, this.peer, this.audio);
   }
 
   // ---------------------------------------------------------------------------
@@ -129,7 +155,10 @@ export class WebRTCGrpcTransport {
   async connect(textOnly: boolean = false): Promise<void> {
     try {
       if (!textOnly) {
+        this.mediaTransportState = "audio_capturing";
         await this.audio.setupLocalMedia();
+      } else {
+        this.mediaTransportState = "text_ready";
       }
       await this.signaling.connect();
       this.signaling.sendConversationInitialization();
@@ -145,6 +174,7 @@ export class WebRTCGrpcTransport {
       }
     } catch (error) {
       this.callbacks.onError?.(error as Error);
+      this.mediaTransportState = textOnly ? "text_ready" : "audio_failed";
       await this.close();
       throw error;
     }
@@ -157,6 +187,7 @@ export class WebRTCGrpcTransport {
   async disconnectAudioOnly(): Promise<void> {
     this.peer.close();
     await this.audio.disconnectAudio();
+    this.mediaTransportState = "text_ready";
     // Don't fire "disconnected" — the gRPC session is still alive.
     // This is a transport-layer change only (audio → text).
   }
@@ -174,11 +205,13 @@ export class WebRTCGrpcTransport {
     }
 
     try {
+      this.mediaTransportState = "audio_capturing";
       await this.audio.setupLocalMedia();
       // Don't fire "connecting" — the session is already connected.
       // Audio reconnect is a transport-layer change, not a session-level one.
     } catch (error) {
       console.error("[WebRTCTransport] failed to reconnect audio", error);
+      this.mediaTransportState = "audio_failed";
       this.callbacks.onConnectionStateChange?.("failed");
       this.callbacks.onError?.(error as Error);
       throw error;
@@ -192,6 +225,7 @@ export class WebRTCGrpcTransport {
       this.signaling.close();
       this.peer.close();
       await this.audio.close();
+      this.mediaTransportState = "text_ready";
     } catch (error) {
       console.error("[WebRTCTransport] error during close", error);
     }

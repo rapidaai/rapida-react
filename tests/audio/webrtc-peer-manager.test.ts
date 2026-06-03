@@ -4,9 +4,8 @@
  * Covers every behavioural change made during the reliability pass:
  *  1. setup() detaches event handlers BEFORE closing the old peer so that
  *     re-negotiation does not spuriously fire onDisconnected.
- *  2. handleOffer() uses a three-level transceiver fallback so that Safari
- *     (where receiver.track is null after setRemoteDescription) still
- *     attaches the microphone track correctly.
+ *  2. handleOffer() attaches the microphone to the server-offered audio
+ *     transceiver, which is the correct flow for server-offer/client-answer.
  *  3. handleOffer() reverts transceiver direction to recvonly and re-throws
  *     when replaceTrack() fails, preventing a silent "sendrecv SDP with no
  *     actual mic audio" situation.
@@ -25,12 +24,18 @@ function createMockPeerConnection() {
     connectionState: 'new' as RTCPeerConnectionState,
     iceGatheringState: 'complete' as RTCIceGatheringState,
     localDescription: null as RTCSessionDescription | null,
+    remoteDescription: null as RTCSessionDescription | null,
     onconnectionstatechange: null as any,
     ontrack: null as any,
     onicecandidate: null as any,
 
-    setRemoteDescription: jest.fn().mockResolvedValue(undefined),
-    createAnswer: jest.fn().mockResolvedValue({ type: 'answer', sdp: 'v=0\r\n' }),
+    setRemoteDescription: jest.fn().mockImplementation(async (desc: any) => {
+      pc.remoteDescription = desc;
+    }),
+    createAnswer: jest.fn().mockResolvedValue({
+      type: 'answer',
+      sdp: 'v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=sendrecv\r\na=msid:local-stream local-track\r\n',
+    }),
     setLocalDescription: jest.fn().mockImplementation(async (desc: any) => {
       pc.localDescription = desc;
     }),
@@ -130,16 +135,23 @@ describe('WebRTCPeerManager', () => {
       expect(manager.isConnected).toBe(true);
     });
 
-    it('fires onDisconnected when connection state transitions to "disconnected"', () => {
+    it('does not fire onDisconnected when connection state transitions to "disconnected"', () => {
       manager.setup();
       mockPCInstances[0]._triggerConnectionState('disconnected');
-      expect(callbacks.onDisconnected).toHaveBeenCalledTimes(1);
+      expect(callbacks.onDisconnected).not.toHaveBeenCalled();
+      expect(callbacks.onConnectionStateChange).toHaveBeenCalledWith('disconnected');
       expect(manager.isConnected).toBe(false);
     });
 
     it('fires onDisconnected when connection state transitions to "failed"', () => {
       manager.setup();
       mockPCInstances[0]._triggerConnectionState('failed');
+      expect(callbacks.onDisconnected).toHaveBeenCalledTimes(1);
+    });
+
+    it('fires onDisconnected when connection state transitions to "closed"', () => {
+      manager.setup();
+      mockPCInstances[0]._triggerConnectionState('closed');
       expect(callbacks.onDisconnected).toHaveBeenCalledTimes(1);
     });
 
@@ -251,14 +263,14 @@ describe('WebRTCPeerManager', () => {
       expect(manager.connection).toBeNull();
     });
 
-    it('stops all sender tracks so the browser releases the microphone indicator', () => {
+    it('does not stop sender tracks because AudioMediaManager owns microphone cleanup', () => {
       manager.setup();
       const mockTrack = { kind: 'audio', stop: jest.fn() };
       mockPCInstances[0].getSenders.mockReturnValue([{ track: mockTrack }]);
 
       manager.close();
 
-      expect(mockTrack.stop).toHaveBeenCalled();
+      expect(mockTrack.stop).not.toHaveBeenCalled();
     });
   });
 
@@ -334,14 +346,22 @@ describe('WebRTCPeerManager', () => {
       expect(transceiver.sender.replaceTrack).not.toHaveBeenCalled();
     });
 
-    it('no transceivers: creates answer without attaching mic track', async () => {
+    it('no transceivers in audio mode: fails instead of silently answering recvonly', async () => {
       manager.setup();
       mockPCInstances[0].getTransceivers.mockReturnValue([]);
 
       const stream = new MockMediaStream() as unknown as MediaStream;
-      await manager.handleOffer('v=0\r\n', stream);
+      await expect(manager.handleOffer('v=0\r\n', stream)).rejects.toThrow(
+        'Audio mode offer has no usable audio transceiver',
+      );
+    });
 
-      // createAnswer and setLocalDescription should still be called
+    it('no transceivers in text-only mode: still creates answer', async () => {
+      manager.setup();
+      mockPCInstances[0].getTransceivers.mockReturnValue([]);
+
+      await manager.handleOffer('v=0\r\n', null);
+
       expect(mockPCInstances[0].createAnswer).toHaveBeenCalled();
       expect(mockPCInstances[0].setLocalDescription).toHaveBeenCalled();
     });
@@ -364,12 +384,7 @@ describe('WebRTCPeerManager', () => {
       expect(manager.connection).not.toBeNull();
     });
 
-    /**
-     * If replaceTrack() throws (e.g. on older Safari), the implementation
-     * falls back gracefully to recvonly rather than re-throwing. The answer
-     * SDP is still sent so the server can push audio to the client.
-     */
-    it('replaceTrack failure: reverts direction to recvonly and resolves (graceful fallback)', async () => {
+    it('replaceTrack failure: reverts direction to recvonly and throws', async () => {
       const replaceTrackError = new Error('track ended');
       const transceiver = createMockTransceiver({
         receiverTrackKind: 'audio',
@@ -379,20 +394,83 @@ describe('WebRTCPeerManager', () => {
 
       const stream = new MockMediaStream() as unknown as MediaStream;
 
-      // Does NOT re-throw — falls back gracefully
-      await expect(manager.handleOffer('v=0\r\n', stream)).resolves.not.toThrow();
+      await expect(manager.handleOffer('v=0\r\n', stream)).rejects.toThrow(
+        'Failed to attach local audio track: track ended',
+      );
 
-      // Direction must have been reverted — answer SDP will show recvonly
       expect(transceiver.direction).toBe('recvonly');
+    });
+
+    it('audio mode with ended local track: fails before creating a recvonly answer', async () => {
+      const transceiver = createMockTransceiver({ receiverTrackKind: 'audio' });
+      setupWithTransceivers([transceiver]);
+      const endedAudioTrack = {
+        kind: 'audio',
+        readyState: 'ended',
+      } as MediaStreamTrack;
+      const stream = {
+        getAudioTracks: () => [endedAudioTrack],
+      } as unknown as MediaStream;
+
+      await expect(manager.handleOffer('v=0\r\n', stream)).rejects.toThrow(
+        'Audio mode requires a live local audio track',
+      );
+
+      expect(mockPCInstances[0].createAnswer).not.toHaveBeenCalled();
+    });
+
+    it('audio mode with recvonly answer SDP: fails instead of connecting output-only', async () => {
+      const transceiver = createMockTransceiver({ receiverTrackKind: 'audio' });
+      setupWithTransceivers([transceiver]);
+      mockPCInstances[0].createAnswer.mockResolvedValueOnce({
+        type: 'answer',
+        sdp: 'v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=recvonly\r\n',
+      });
+
+      const stream = new MockMediaStream() as unknown as MediaStream;
+      await expect(manager.handleOffer('v=0\r\n', stream)).rejects.toThrow(
+        'Audio answer did not publish microphone',
+      );
+    });
+
+    it('audio mode without answer msid: fails because no local mic stream is negotiated', async () => {
+      const transceiver = createMockTransceiver({ receiverTrackKind: 'audio' });
+      setupWithTransceivers([transceiver]);
+      mockPCInstances[0].createAnswer.mockResolvedValueOnce({
+        type: 'answer',
+        sdp: 'v=0\r\nm=audio 9 UDP/TLS/RTP/SAVPF 111\r\na=sendrecv\r\n',
+      });
+
+      const stream = new MockMediaStream() as unknown as MediaStream;
+      await expect(manager.handleOffer('v=0\r\n', stream)).rejects.toThrow(
+        'Audio answer did not publish microphone',
+      );
     });
 
     it('stores the answer SDP in localDescription', async () => {
       const transceiver = createMockTransceiver({ receiverTrackKind: 'audio' });
       setupWithTransceivers([transceiver]);
 
-      await manager.handleOffer('v=0\r\n', null);
+      const answerSdp = await manager.handleOffer('v=0\r\n', null);
 
       expect(manager.getLocalSDP()).toBeDefined();
+      expect(answerSdp).toContain('m=audio');
+    });
+
+    it('does not return an answer when the peer is replaced while handling an offer', async () => {
+      manager.setup();
+      const firstPeerConnection = mockPCInstances[0];
+      let resolveRemoteDescription: (() => void) | undefined;
+      firstPeerConnection.setRemoteDescription.mockImplementationOnce(
+        () => new Promise<void>((resolve) => { resolveRemoteDescription = resolve; }),
+      );
+
+      const offerPromise = manager.handleOffer('v=0\r\n', null);
+      manager.setup();
+      resolveRemoteDescription?.();
+
+      await expect(offerPromise).resolves.toBeNull();
+      expect(firstPeerConnection.createAnswer).not.toHaveBeenCalled();
     });
   });
 
@@ -457,6 +535,7 @@ describe('WebRTCPeerManager', () => {
   describe('addICECandidate()', () => {
     it('adds the candidate to the peer connection', async () => {
       manager.setup();
+      mockPCInstances[0].remoteDescription = { type: 'offer', sdp: 'v=0\r\n' };
       await manager.addICECandidate('candidate:1', 'audio', 0);
       expect(mockPCInstances[0].addIceCandidate).toHaveBeenCalledWith({
         candidate: 'candidate:1',
@@ -467,6 +546,23 @@ describe('WebRTCPeerManager', () => {
 
     it('is a no-op when peer connection is null', async () => {
       await expect(manager.addICECandidate('c', '0', 0)).resolves.not.toThrow();
+    });
+
+    it('queues candidates until a remote description is applied', async () => {
+      const transceiver = createMockTransceiver({ receiverTrackKind: 'audio' });
+      manager.setup();
+      mockPCInstances[0].getTransceivers.mockReturnValue([transceiver]);
+
+      await manager.addICECandidate('candidate:queued', 'audio', 0);
+      expect(mockPCInstances[0].addIceCandidate).not.toHaveBeenCalled();
+
+      await manager.handleOffer('v=0\r\n', null);
+
+      expect(mockPCInstances[0].addIceCandidate).toHaveBeenCalledWith({
+        candidate: 'candidate:queued',
+        sdpMid: 'audio',
+        sdpMLineIndex: 0,
+      });
     });
   });
 });
