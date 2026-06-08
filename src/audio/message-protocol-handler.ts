@@ -130,6 +130,8 @@ export class MessageProtocolHandler {
 
     // Disconnection (server requests disconnect)
     if (response.hasDisconnection()) {
+      const disconnection = response.getDisconnection();
+      await this.callbacks.onConversationDisconnected?.(disconnection?.toObject());
       this.callbacks.onDisconnected?.();
     }
 

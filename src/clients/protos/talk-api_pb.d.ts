@@ -146,6 +146,11 @@ export class ConversationBridgeUserAudio extends jspb.Message {
   getAudio_asB64(): string;
   setAudio(value: Uint8Array | string): void;
 
+  hasTime(): boolean;
+  clearTime(): void;
+  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationBridgeUserAudio.AsObject;
   static toObject(includeInstance: boolean, msg: ConversationBridgeUserAudio): ConversationBridgeUserAudio.AsObject;
@@ -159,6 +164,7 @@ export class ConversationBridgeUserAudio extends jspb.Message {
 export namespace ConversationBridgeUserAudio {
   export type AsObject = {
     audio: Uint8Array | string,
+    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
 }
 
@@ -167,6 +173,11 @@ export class ConversationBridgeOperatorAudio extends jspb.Message {
   getAudio_asU8(): Uint8Array;
   getAudio_asB64(): string;
   setAudio(value: Uint8Array | string): void;
+
+  hasTime(): boolean;
+  clearTime(): void;
+  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ConversationBridgeOperatorAudio.AsObject;
@@ -181,6 +192,7 @@ export class ConversationBridgeOperatorAudio extends jspb.Message {
 export namespace ConversationBridgeOperatorAudio {
   export type AsObject = {
     audio: Uint8Array | string,
+    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
 }
 

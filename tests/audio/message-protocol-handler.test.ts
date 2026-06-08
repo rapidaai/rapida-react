@@ -6,12 +6,15 @@ import {
   WebRTCSDP,
   WebTalkResponse,
 } from '@/rapida/clients/protos/webrtc_pb';
+import { ConversationDisconnection } from '@/rapida/clients/protos/talk-api_pb';
 import { MockMediaStream } from '../setup';
 
 function createHandler() {
   const callbacks = {
     onConnectionStateChange: jest.fn(),
     onError: jest.fn(),
+    onConversationDisconnected: jest.fn(),
+    onDisconnected: jest.fn(),
   };
   const signaling = {
     setSessionId: jest.fn(),
@@ -37,6 +40,12 @@ function createHandler() {
     audio,
     handler: new MessageProtocolHandler(callbacks as any, signaling as any, peer as any, audio as any),
   };
+}
+
+function responseWithDisconnection(): WebTalkResponse {
+  const response = new WebTalkResponse();
+  response.setDisconnection(new ConversationDisconnection());
+  return response;
 }
 
 function responseWithSignaling(signaling: ServerSignaling): WebTalkResponse {
@@ -116,5 +125,14 @@ describe('MessageProtocolHandler WebRTC signaling sessions', () => {
     expect(peer.setup).toHaveBeenCalledTimes(2);
     expect(peer.handleOffer).toHaveBeenCalledTimes(1);
     expect(signaling.sendWebRTCAnswer).toHaveBeenCalledTimes(1);
+  });
+
+  it('routes server disconnection through terminal conversation callback', async () => {
+    const { handler, callbacks } = createHandler();
+
+    await handler.handleMessage(responseWithDisconnection());
+
+    expect(callbacks.onConversationDisconnected).toHaveBeenCalledTimes(1);
+    expect(callbacks.onDisconnected).toHaveBeenCalledTimes(1);
   });
 });

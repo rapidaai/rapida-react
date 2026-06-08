@@ -46,6 +46,7 @@ import { OrganizationServiceClient } from "@/rapida/clients/protos/web-api_pb_se
 import { ConnectServiceClient } from "@/rapida/clients/protos/connect-api_pb_service";
 import { AuthenticationServiceClient } from "@/rapida/clients/protos/web-api_pb_service";
 import { DeploymentClient } from "@/rapida/clients/protos/invoker-api_pb_service";
+import { ObservabilityServiceClient} from "@/rapida/clients/protos/observability-api_pb_service";
 
 import {
   DEBUGGER_SOURCE,
@@ -279,6 +280,14 @@ export class ConnectionConfig {
       this.getClientOptions()
     );
   }
+
+    get observabilityServiceClient(): ObservabilityServiceClient {
+    return new ObservabilityServiceClient(
+      this.endpoint.web,
+      this.getClientOptions()
+    );
+  }
+
 
   get organizationClient(): OrganizationServiceClient {
     return new OrganizationServiceClient(

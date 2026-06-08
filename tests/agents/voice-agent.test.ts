@@ -516,6 +516,22 @@ describe('VoiceAgent', () => {
       expect(emitSpy).toHaveBeenCalledWith(AgentEvent.InputChannelChangeEvent, Channel.Text);
     });
 
+    it('closes transport and marks disconnected on server conversation disconnection', async () => {
+      await voiceAgent.connect();
+      lastTransportCallbacks.onInitialization?.({ assistantconversationid: 'conv-123' });
+      const emitSpy = jest.spyOn(voiceAgent, 'emit');
+
+      await lastTransportCallbacks.onConversationDisconnected?.();
+
+      expect(mockWebRTCTransport.close).toHaveBeenCalled();
+      expect((voiceAgent as any).webrtcTransport).toBeNull();
+      expect(voiceAgent.state).toBe(ConnectionState.Disconnected);
+      expect(emitSpy).toHaveBeenCalledWith(
+        AgentEvent.ConnectionStateEvent,
+        ConnectionState.Disconnected,
+      );
+    });
+
     it('keeps audio mode on transient WebRTC disconnected while gRPC is alive', async () => {
       await voiceAgent.connect();
       const emitSpy = jest.spyOn(voiceAgent, 'emit');

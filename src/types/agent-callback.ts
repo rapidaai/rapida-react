@@ -33,6 +33,7 @@ import {
   ConversationEvent,
   ConversationMetric,
   ConversationError,
+  ConversationDisconnection,
 } from "@/rapida/clients/protos/talk-api_pb";
 
 import { AssistantConversationMessage } from "@/rapida/clients/protos/common_pb";
@@ -137,6 +138,11 @@ export interface AgentCallback {
 
   /** Called when disconnected */
   onDisconnected?: () => void;
+
+  /** Called when the server ends the conversation */
+  onConversationDisconnected?: (
+    args: ConversationDisconnection.AsObject | undefined
+  ) => void | Promise<void>;
 
   /** Called when a server-side conversation error is received (with conversation ID and details) */
   onConversationError?: (error: ConversationError.AsObject) => void;

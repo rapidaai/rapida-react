@@ -117,6 +117,19 @@ export class VoiceAgent extends Agent {
         // console.log(`${LOG_PREFIX} callback -> onDisconnected`);
         this.switchToTextModeOnDisconnect();
       },
+      onConversationDisconnected: async () => {
+        const activeTransport = this.webrtcTransport;
+        this.webrtcTransport = null;
+        if (activeTransport) {
+          await activeTransport.close();
+        }
+        await this.disconnectAgent();
+        if (this.connectionState !== ConnectionState.Disconnected) {
+          this.connectionState = ConnectionState.Disconnected;
+          this.emit(AgentEvent.ConnectionStateEvent, ConnectionState.Disconnected);
+        }
+        this.switchToTextModeOnDisconnect();
+      },
       onError: (error) => {
         // console.log(`${LOG_PREFIX} callback -> onError`, error);
         this.emit(AgentEvent.ErrorEvent, "client", error.message || String(error));

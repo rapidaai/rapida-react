@@ -1,4 +1,3 @@
-import { TelemetryEvent } from './clients/protos/assistant-api_pb';
 /*
  *  Copyright (c) 2024. Rapida
  *
@@ -36,6 +35,7 @@ export {
   hasKnownAudioIssues,
   getRecommendedAudioSettings,
 } from "@/rapida/audio/compatibility";
+
 export {
   isWindows,
   isLinux,
@@ -119,13 +119,13 @@ export {
   getClientInfo,
   WithClientContext,
 } from "@/rapida/clients/index";
-export { TelemetryEvent, TelemetryMetric, TelemetryRecord } from "@/rapida/clients/protos/assistant-api_pb";
 export { GeneralConnect, GetConnectorFiles } from "@/rapida/clients/connect";
 export {
   CreateOrganization,
   UpdateOrganization,
   GetOrganization,
 } from "@/rapida/clients/organization";
+
 export {
   GetAllAssistant,
   UpdateAssistantVersion,
@@ -259,6 +259,7 @@ export {
   AssistantDeploymentService,
   AssistantDeploymentServiceClient,
 } from "@/rapida/clients/protos/assistant-deployment_pb_service";
+export { ObservabilityLogRecord, ObservabilityEventRecord, ObservabilityMetricRecord, ObservabilityRecord, ObservabilityRecordKind, ObservabilityRecordKindMap } from "@/rapida/clients/protos/observability-api_pb";
 export {
   ConnectService,
   ConnectServiceClient,
@@ -657,9 +658,9 @@ export { MultibandAudioVisualizerComponent } from "@/rapida/components/visualiza
 export { agentEventSelector } from "@/rapida/hooks/observables/voice-agent";
 export { AgentEvent } from "./types/agent-event";
 export {
-  GetAllAssistantTelemetryRequest,
-  GetAllAssistantTelemetryResponse,
-} from "@/rapida/clients/protos/assistant-api_pb";
+  GetAllTelemetryRequest,
+  GetAllTelemetryResponse,
+} from "@/rapida/clients/protos/observability-api_pb";
 
 export {
   GetNotificationSettingRequest,
@@ -668,7 +669,7 @@ export {
   NotificationSetting,
 } from "@/rapida/clients/protos/notification-api_pb";
 
-export { GetAllAssistantTelemetry } from "./clients/telemetry";
+export { GetAllTelemetry } from "./clients/telemetry";
 export {
   AssistantProviderModel,
   AssistantProviderAgentkit,

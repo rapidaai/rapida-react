@@ -124,15 +124,6 @@ AssistantService.GetAllMessage = {
   responseType: assistant_api_pb.GetAllMessageResponse
 };
 
-AssistantService.GetAllAssistantTelemetry = {
-  methodName: "GetAllAssistantTelemetry",
-  service: AssistantService,
-  requestStream: false,
-  responseStream: false,
-  requestType: assistant_api_pb.GetAllAssistantTelemetryRequest,
-  responseType: assistant_api_pb.GetAllAssistantTelemetryResponse
-};
-
 AssistantService.GetAssistantTelemetryProvider = {
   methodName: "GetAssistantTelemetryProvider",
   service: AssistantService,
@@ -801,37 +792,6 @@ AssistantServiceClient.prototype.getAllMessage = function getAllMessage(requestM
     callback = arguments[1];
   }
   var client = grpc.unary(AssistantService.GetAllMessage, {
-    request: requestMessage,
-    host: this.serviceHost,
-    metadata: metadata,
-    transport: this.options.transport,
-    debug: this.options.debug,
-    onEnd: function (response) {
-      if (callback) {
-        if (response.status !== grpc.Code.OK) {
-          var err = new Error(response.statusMessage);
-          err.code = response.status;
-          err.metadata = response.trailers;
-          callback(err, null);
-        } else {
-          callback(null, response.message);
-        }
-      }
-    }
-  });
-  return {
-    cancel: function () {
-      callback = null;
-      client.close();
-    }
-  };
-};
-
-AssistantServiceClient.prototype.getAllAssistantTelemetry = function getAllAssistantTelemetry(requestMessage, metadata, callback) {
-  if (arguments.length === 2) {
-    callback = arguments[1];
-  }
-  var client = grpc.unary(AssistantService.GetAllAssistantTelemetry, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,

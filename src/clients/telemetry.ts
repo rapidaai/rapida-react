@@ -32,9 +32,9 @@ import {
 } from "@/rapida/clients";
 import { ConnectionConfig } from "@/rapida/types/connection-config";
 import {
-  GetAllAssistantTelemetryRequest,
-  GetAllAssistantTelemetryResponse,
-} from "@/rapida/clients/protos/assistant-api_pb";
+  GetAllTelemetryRequest,
+  GetAllTelemetryResponse,
+} from "@/rapida/clients/protos/observability-api_pb";
 
 /**
  *
@@ -43,18 +43,18 @@ import {
  * @param auth
  * @returns
  */
-export function GetAllAssistantTelemetry(
+export function GetAllTelemetry(
   clientCfg: ConnectionConfig,
-  request: GetAllAssistantTelemetryRequest,
+  request: GetAllTelemetryRequest,
   auth?: ClientAuthInfo | UserAuthInfo
-): Promise<GetAllAssistantTelemetryResponse> {
+): Promise<GetAllTelemetryResponse> {
   return new Promise((resolve, reject) => {
-    clientCfg.assistantClient.getAllAssistantTelemetry(
+    clientCfg.observabilityServiceClient.getAllTelemetry(
       request,
       WithAuthContext(clientCfg.auth || auth),
       (
         err: ServiceError | null,
-        response: GetAllAssistantTelemetryResponse | null
+        response: GetAllTelemetryResponse | null
       ) => {
         if (err) reject(err);
         else resolve(response!);
