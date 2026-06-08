@@ -99,6 +99,11 @@ jest.mock("@/rapida/clients/protos/assistant-api_pb", () => ({
   GetAllAssistantTelemetryRequest: makeReq([]),
 }));
 
+jest.mock("@/rapida/clients/protos/observability-api_pb", () => ({
+  GetAllTelemetryRequest: makeReq([]),
+  GetAllTelemetryResponse: makeReq([]),
+}));
+
 jest.mock("@/rapida/clients/protos/talk-api_pb", () => ({
   CreatePhoneCallRequest: makeReq([]),
   CreateBulkPhoneCallRequest: makeReq([]),
@@ -114,7 +119,7 @@ import {
   UpdateNotificationSetting,
   GetNotificationSetting,
 } from "@/rapida/clients/notification";
-import { GetAllAssistantTelemetry } from "@/rapida/clients/telemetry";
+import { GetAllTelemetry } from "@/rapida/clients/telemetry";
 import { WebTalk } from "@/rapida/clients/webrtc";
 import {
   CreateProviderKey,
@@ -191,6 +196,9 @@ describe("clients wrappers", () => {
       },
       assistantClient: {
         getAllAssistantTelemetry: jest.fn(),
+      },
+      observabilityServiceClient: {
+        getAllTelemetry: jest.fn(),
       },
       webrtcClient: {
         webTalk: jest.fn().mockReturnValue("webtalk-stream"),
@@ -306,7 +314,7 @@ describe("clients wrappers", () => {
     config.notificationClient.getNotificationSettting.mockImplementation(
       (_r: any, _m: any, done: any) => done(null, { ok: true }),
     );
-    config.assistantClient.getAllAssistantTelemetry.mockImplementation((_r: any, _m: any, done: any) =>
+    config.observabilityServiceClient.getAllTelemetry.mockImplementation((_r: any, _m: any, done: any) =>
       done(null, { ok: true }),
     );
     config.deploymentClient.invoke.mockImplementation((_r: any, _m: any, done: any) =>
@@ -329,7 +337,7 @@ describe("clients wrappers", () => {
     await expect(CreateBulkPhoneCall(config, {} as any)).resolves.toEqual({ ok: true });
     await expect(UpdateNotificationSetting(config, {} as any)).resolves.toEqual({ ok: true });
     await expect(GetNotificationSetting(config, {} as any)).resolves.toEqual({ ok: true });
-    await expect(GetAllAssistantTelemetry(config, {} as any)).resolves.toEqual({ ok: true });
+    await expect(GetAllTelemetry(config, {} as any)).resolves.toEqual({ ok: true });
     await expect(Invoke(config, {} as any)).resolves.toEqual({ ok: true });
     await expect(CreateMessageMetric(config, {} as any)).resolves.toEqual({ ok: true });
     await expect(CreateConversationMetric(config, {} as any)).resolves.toEqual({ ok: true });
@@ -375,4 +383,3 @@ describe("clients wrappers", () => {
     expect(config.authenticationClient.github).toHaveBeenCalled();
   });
 });
-
