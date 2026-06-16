@@ -115,6 +115,11 @@ export class AssistantWebpluginDeployment extends jspb.Message {
   getIdealtimeoutbackoff(): string;
   setIdealtimeoutbackoff(value: string): void;
 
+  hasGreetinginterruptible(): boolean;
+  clearGreetinginterruptible(): void;
+  getGreetinginterruptible(): boolean;
+  setGreetinginterruptible(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantWebpluginDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantWebpluginDeployment): AssistantWebpluginDeployment.AsObject;
@@ -146,6 +151,7 @@ export namespace AssistantWebpluginDeployment {
     idealtimeout: string,
     idealtimeoutmessage: string,
     idealtimeoutbackoff: string,
+    greetinginterruptible: boolean,
   }
 }
 
@@ -209,6 +215,11 @@ export class AssistantPhoneDeployment extends jspb.Message {
   getIdealtimeoutbackoff(): string;
   setIdealtimeoutbackoff(value: string): void;
 
+  hasGreetinginterruptible(): boolean;
+  clearGreetinginterruptible(): void;
+  getGreetinginterruptible(): boolean;
+  setGreetinginterruptible(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantPhoneDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantPhoneDeployment): AssistantPhoneDeployment.AsObject;
@@ -236,6 +247,7 @@ export namespace AssistantPhoneDeployment {
     idealtimeout: string,
     idealtimeoutmessage: string,
     idealtimeoutbackoff: string,
+    greetinginterruptible: boolean,
   }
 }
 
@@ -302,6 +314,11 @@ export class AssistantWhatsappDeployment extends jspb.Message {
   getIdealtimeoutbackoff(): string;
   setIdealtimeoutbackoff(value: string): void;
 
+  hasGreetinginterruptible(): boolean;
+  clearGreetinginterruptible(): void;
+  getGreetinginterruptible(): boolean;
+  setGreetinginterruptible(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantWhatsappDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantWhatsappDeployment): AssistantWhatsappDeployment.AsObject;
@@ -330,6 +347,7 @@ export namespace AssistantWhatsappDeployment {
     idealtimeout: string,
     idealtimeoutmessage: string,
     idealtimeoutbackoff: string,
+    greetinginterruptible: boolean,
   }
 }
 
@@ -388,6 +406,11 @@ export class AssistantDebuggerDeployment extends jspb.Message {
   getIdealtimeoutbackoff(): string;
   setIdealtimeoutbackoff(value: string): void;
 
+  hasGreetinginterruptible(): boolean;
+  clearGreetinginterruptible(): void;
+  getGreetinginterruptible(): boolean;
+  setGreetinginterruptible(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantDebuggerDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantDebuggerDeployment): AssistantDebuggerDeployment.AsObject;
@@ -414,6 +437,7 @@ export namespace AssistantDebuggerDeployment {
     idealtimeout: string,
     idealtimeoutmessage: string,
     idealtimeoutbackoff: string,
+    greetinginterruptible: boolean,
   }
 }
 
@@ -469,6 +493,11 @@ export class AssistantApiDeployment extends jspb.Message {
   getIdealtimeoutbackoff(): string;
   setIdealtimeoutbackoff(value: string): void;
 
+  hasGreetinginterruptible(): boolean;
+  clearGreetinginterruptible(): void;
+  getGreetinginterruptible(): boolean;
+  setGreetinginterruptible(value: boolean): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantApiDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantApiDeployment): AssistantApiDeployment.AsObject;
@@ -494,6 +523,7 @@ export namespace AssistantApiDeployment {
     idealtimeout: string,
     idealtimeoutmessage: string,
     idealtimeoutbackoff: string,
+    greetinginterruptible: boolean,
   }
 }
 
