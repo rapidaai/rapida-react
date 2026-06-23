@@ -51,17 +51,13 @@ import {
   DeleteAssistantRequest,
   GetAllMessageRequest,
   GetAllMessageResponse,
-  GetAssistantTelemetryProviderRequest,
-  GetAssistantTelemetryProviderResponse,
-  GetAllAssistantTelemetryProviderRequest,
-  GetAllAssistantTelemetryProviderResponse,
-  CreateAssistantTelemetryProviderRequest,
-  UpdateAssistantTelemetryProviderRequest,
-  DeleteAssistantTelemetryProviderRequest,
-  CreateAssistantAuthenticationRequest,
-  GetAssistantAuthenticationRequest,
-  DisableAssistantAuthenticationRequest,
-  GetAssistantAuthenticationResponse,
+  GetAssistantConfigurationRequest,
+  GetAssistantConfigurationResponse,
+  GetAllAssistantConfigurationRequest,
+  GetAllAssistantConfigurationResponse,
+  CreateAssistantConfigurationRequest,
+  UpdateAssistantConfigurationRequest,
+  DeleteAssistantConfigurationRequest,
 } from "@/rapida/clients/protos/assistant-api_pb";
 
 import {
@@ -71,15 +67,6 @@ import {
   GetAllAssistantProviderRequest,
   UpdateAssistantVersionRequest,
 } from "@/rapida/clients/protos/assistant-provider_pb";
-import {
-  GetAssistantAnalysisResponse,
-  GetAssistantAnalysisRequest,
-  UpdateAssistantAnalysisRequest,
-  CreateAssistantAnalysisRequest,
-  GetAllAssistantAnalysisResponse,
-  GetAllAssistantAnalysisRequest,
-  DeleteAssistantAnalysisRequest,
-} from "@/rapida/clients/protos/assistant-analysis_pb";
 
 import {
   GetAssistantToolResponse,
@@ -106,19 +93,12 @@ import {
 } from "@/rapida/clients/protos/assistant-knowledge_pb";
 
 import {
-  DeleteAssistantWebhookRequest,
   GetAssistantHTTPLogRequest,
   GetAllAssistantHTTPLogRequest,
   GetAssistantHTTPLogResponse,
-  GetAssistantWebhookResponse,
-  CreateAssistantWebhookRequest,
-  UpdateAssistantWebhookRequest,
   GetAllAssistantHTTPLogResponse,
   RetryAssistantHTTPLogRequest,
-  GetAssistantWebhookRequest,
-  GetAllAssistantWebhookRequest,
-  GetAllAssistantWebhookResponse,
-} from "@/rapida/clients/protos/assistant-webhook_pb";
+} from "@/rapida/clients/protos/assistant-http-log_pb";
 import { AssistantServiceClient } from "@/rapida/clients/protos/assistant-api_pb_service";
 import { ServiceError } from "@/rapida/clients/types";
 import {
@@ -1006,78 +986,18 @@ export function DisableAssistantPhoneDeployment(
   });
 }
 
-export function CreateAssistantAuthentication(
-  clientCfg: ConnectionConfig,
-  req: CreateAssistantAuthenticationRequest,
-  auth?: ClientAuthInfo | UserAuthInfo
-): Promise<GetAssistantAuthenticationResponse> {
-  return new Promise((resolve, reject) => {
-    clientCfg.assistantClient.createAssistantAuthentication(
-      req,
-      WithAuthContext(clientCfg.auth || auth),
-      (
-        err: ServiceError | null,
-        response: GetAssistantAuthenticationResponse | null
-      ) => {
-        if (err) reject(err);
-        else resolve(response!);
-      }
-    );
-  });
-}
-
-export function GetAssistantAuthentication(
-  clientCfg: ConnectionConfig,
-  req: GetAssistantAuthenticationRequest,
-  auth?: ClientAuthInfo | UserAuthInfo
-): Promise<GetAssistantAuthenticationResponse> {
-  return new Promise((resolve, reject) => {
-    clientCfg.assistantClient.getAssistantAuthentication(
-      req,
-      WithAuthContext(clientCfg.auth || auth),
-      (
-        err: ServiceError | null,
-        response: GetAssistantAuthenticationResponse | null
-      ) => {
-        if (err) reject(err);
-        else resolve(response!);
-      }
-    );
-  });
-}
-
-export function DisableAssistantAuthentication(
-  clientCfg: ConnectionConfig,
-  req: DisableAssistantAuthenticationRequest,
-  auth?: ClientAuthInfo | UserAuthInfo
-): Promise<GetAssistantAuthenticationResponse> {
-  return new Promise((resolve, reject) => {
-    clientCfg.assistantClient.disableAssistantAuthentication(
-      req,
-      WithAuthContext(clientCfg.auth || auth),
-      (
-        err: ServiceError | null,
-        response: GetAssistantAuthenticationResponse | null
-      ) => {
-        if (err) reject(err);
-        else resolve(response!);
-      }
-    );
-  });
-}
-
-export function GetAllAssistantWebhook(
+export function GetAssistantConfiguration(
   connectionConfig: ConnectionConfig,
-  req: GetAllAssistantWebhookRequest,
+  req: GetAssistantConfigurationRequest,
   authHeader?: ClientAuthInfo | UserAuthInfo
-): Promise<GetAllAssistantWebhookResponse> {
+): Promise<GetAssistantConfigurationResponse> {
   return new Promise((resolve, reject) => {
-    connectionConfig.assistantClient.getAllAssistantWebhook(
+    connectionConfig.assistantClient.getAssistantConfiguration(
       req,
       WithAuthContext(connectionConfig.auth || authHeader),
       (
         err: ServiceError | null,
-        response: GetAllAssistantWebhookResponse | null
+        response: GetAssistantConfigurationResponse | null
       ) => {
         if (err) reject(err);
         else resolve(response!);
@@ -1086,99 +1006,18 @@ export function GetAllAssistantWebhook(
   });
 }
 
-/**
- *
- * @param assistantId
- * @param method
- * @param endpoint
- * @param headers
- * @param parameters
- * @param events
- * @param retryOnStatus
- * @param maxRetries
- * @param timeout
- * @param priority
- * @param cb
- * @param authHeader
- * @param description
- * @returns
- */
-export function CreateWebhook(
+export function GetAllAssistantConfiguration(
   connectionConfig: ConnectionConfig,
-  req: CreateAssistantWebhookRequest,
-  authHeader?: UserAuthInfo | ClientAuthInfo
-): Promise<GetAssistantWebhookResponse> {
-  return new Promise((resolve, reject) => {
-    connectionConfig.assistantClient.createAssistantWebhook(
-      req,
-      WithAuthContext(connectionConfig.auth || authHeader),
-      (
-        err: ServiceError | null,
-        response: GetAssistantWebhookResponse | null
-      ) => {
-        if (err) reject(err);
-        else resolve(response!);
-      }
-    );
-  });
-}
-
-/**
- *
- * @param assistantId
- * @param webhookId
- * @param method
- * @param endpoint
- * @param headers
- * @param events
- * @param retryOnStatus
- * @param maxRetries
- * @param timeout
- * @param cb
- * @param authHeader
- * @param description
- * @returns
- */
-export function UpdateWebhook(
-  connectionConfig: ConnectionConfig,
-  req: UpdateAssistantWebhookRequest,
-  authHeader?: UserAuthInfo | ClientAuthInfo
-): Promise<GetAssistantWebhookResponse> {
-  return new Promise((resolve, reject) => {
-    connectionConfig.assistantClient.updateAssistantWebhook(
-      req,
-      WithAuthContext(connectionConfig.auth || authHeader),
-      (
-        err: ServiceError | null,
-        response: GetAssistantWebhookResponse | null
-      ) => {
-        if (err) reject(err);
-        else resolve(response!);
-      }
-    );
-  });
-}
-
-/**
- *
- * @param assistantId
- * @param webhookId
- * @param cb
- * @param authHeader
- * @returns
- */
-export function GetAssistantWebhook(
-  connectionConfig: ConnectionConfig,
-  req: GetAssistantWebhookRequest,
+  req: GetAllAssistantConfigurationRequest,
   authHeader?: ClientAuthInfo | UserAuthInfo
-): Promise<GetAssistantWebhookResponse> {
+): Promise<GetAllAssistantConfigurationResponse> {
   return new Promise((resolve, reject) => {
-    connectionConfig.assistantClient.getAssistantWebhook(
+    connectionConfig.assistantClient.getAllAssistantConfiguration(
       req,
       WithAuthContext(connectionConfig.auth || authHeader),
       (
         err: ServiceError | null,
-        response: GetAssistantWebhookResponse | null
+        response: GetAllAssistantConfigurationResponse | null
       ) => {
         if (err) reject(err);
         else resolve(response!);
@@ -1187,26 +1026,18 @@ export function GetAssistantWebhook(
   });
 }
 
-/**
- *
- * @param assistantId
- * @param webhookId
- * @param cb
- * @param authHeader
- * @returns
- */
-export function DeleteAssistantWebhook(
+export function CreateAssistantConfiguration(
   connectionConfig: ConnectionConfig,
-  req: DeleteAssistantWebhookRequest,
+  req: CreateAssistantConfigurationRequest,
   authHeader?: UserAuthInfo | ClientAuthInfo
-): Promise<GetAssistantWebhookResponse> {
+): Promise<GetAssistantConfigurationResponse> {
   return new Promise((resolve, reject) => {
-    connectionConfig.assistantClient.deleteAssistantWebhook(
+    connectionConfig.assistantClient.createAssistantConfiguration(
       req,
       WithAuthContext(connectionConfig.auth || authHeader),
       (
         err: ServiceError | null,
-        response: GetAssistantWebhookResponse | null
+        response: GetAssistantConfigurationResponse | null
       ) => {
         if (err) reject(err);
         else resolve(response!);
@@ -1215,135 +1046,44 @@ export function DeleteAssistantWebhook(
   });
 }
 
-/**
- *
- * @param assistantId
- * @param page
- * @param pageSize
- * @param criteria
- * @param cb
- * @param authHeader
- * @returns
- */
-export function GetAllAssistantTelemetryProvider(
+export function UpdateAssistantConfiguration(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  page: number,
-  pageSize: number,
-  criteria: { key: string; value: string }[],
-  cb: (
-    err: ServiceError | null,
-    response: GetAllAssistantTelemetryProviderResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAllAssistantTelemetryProviderRequest();
-  const paginate = new Paginate();
-  criteria.forEach(({ key, value }) => {
-    const ctr = new Criteria();
-    ctr.setKey(key);
-    ctr.setValue(value);
-    req.addCriterias(ctr);
+  req: UpdateAssistantConfigurationRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<GetAssistantConfigurationResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.updateAssistantConfiguration(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantConfigurationResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
   });
-  paginate.setPage(page);
-  paginate.setPagesize(pageSize);
-  req.setPaginate(paginate);
-  req.setAssistantid(assistantId);
-  return connectionConfig.assistantClient.getAllAssistantTelemetryProvider(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
 }
 
-export function CreateAssistantTelemetryProvider(
+export function DeleteAssistantConfiguration(
   connectionConfig: ConnectionConfig,
-  assistantId: string,
-  providerType: string,
-  enabled: boolean,
-  options: Metadata[],
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantTelemetryProviderResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new CreateAssistantTelemetryProviderRequest();
-  req.setAssistantid(assistantId);
-  req.setProvidertype(providerType);
-  req.setEnabled(enabled);
-  options.forEach((opt) => req.addOptions(opt));
-  return connectionConfig.assistantClient.createAssistantTelemetryProvider(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
-}
-
-export function UpdateAssistantTelemetryProvider(
-  connectionConfig: ConnectionConfig,
-  assistantId: string,
-  telemetryProviderId: string,
-  providerType: string,
-  enabled: boolean,
-  options: Metadata[],
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantTelemetryProviderResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new UpdateAssistantTelemetryProviderRequest();
-  req.setId(telemetryProviderId);
-  req.setAssistantid(assistantId);
-  req.setProvidertype(providerType);
-  req.setEnabled(enabled);
-  options.forEach((opt) => req.addOptions(opt));
-  return connectionConfig.assistantClient.updateAssistantTelemetryProvider(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
-}
-
-export function GetAssistantTelemetryProvider(
-  connectionConfig: ConnectionConfig,
-  assistantId: string,
-  telemetryProviderId: string,
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantTelemetryProviderResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAssistantTelemetryProviderRequest();
-  req.setId(telemetryProviderId);
-  req.setAssistantid(assistantId);
-  return connectionConfig.assistantClient.getAssistantTelemetryProvider(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
-}
-
-export function DeleteAssistantTelemetryProvider(
-  connectionConfig: ConnectionConfig,
-  assistantId: string,
-  telemetryProviderId: string,
-  cb: (
-    err: ServiceError | null,
-    response: GetAssistantTelemetryProviderResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new DeleteAssistantTelemetryProviderRequest();
-  req.setId(telemetryProviderId);
-  req.setAssistantid(assistantId);
-  return connectionConfig.assistantClient.deleteAssistantTelemetryProvider(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
+  req: DeleteAssistantConfigurationRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<GetAssistantConfigurationResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.deleteAssistantConfiguration(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantConfigurationResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**
@@ -1394,160 +1134,6 @@ export function DeleteAssistant(
     WithAuthContext(authHeader),
     cb
   );
-}
-
-/**
- *
- * @param assistantId
- * @param page
- * @param pageSize
- * @param criteria
- * @param cb
- * @param authHeader
- * @returns
- */
-export function GetAllAssistantAnalysis(
-  connectionConfig: ConnectionConfig,
-  req: GetAllAssistantAnalysisRequest,
-  authHeader?: ClientAuthInfo | UserAuthInfo
-): Promise<GetAllAssistantAnalysisResponse> {
-  return new Promise((resolve, reject) => {
-    connectionConfig.assistantClient.getAllAssistantAnalysis(
-      req,
-      WithAuthContext(connectionConfig.auth || authHeader),
-      (
-        err: ServiceError | null,
-        response: GetAllAssistantAnalysisResponse | null
-      ) => {
-        if (err) reject(err);
-        else resolve(response!);
-      }
-    );
-  });
-}
-
-/**
- *
- * @param assistantId
- * @param name
- * @param endpointid
- * @param endpointversion
- * @param executionpriority
- * @param parameters
- * @param cb
- * @param authHeader
- * @param description
- * @returns
- */
-export function CreateAnalysis(
-  connectionConfig: ConnectionConfig,
-  req: CreateAssistantAnalysisRequest,
-  authHeader?: UserAuthInfo | ClientAuthInfo
-): Promise<GetAssistantAnalysisResponse> {
-  return new Promise((resolve, reject) => {
-    connectionConfig.assistantClient.createAssistantAnalysis(
-      req,
-      WithAuthContext(connectionConfig.auth || authHeader),
-      (
-        err: ServiceError | null,
-        response: GetAssistantAnalysisResponse | null
-      ) => {
-        if (err) reject(err);
-        else resolve(response!);
-      }
-    );
-  });
-}
-
-/**
- *
- * @param assistantId
- * @param webhookId
- * @param method
- * @param endpoint
- * @param headers
- * @param events
- * @param retryOnStatus
- * @param maxRetries
- * @param timeout
- * @param cb
- * @param authHeader
- * @param description
- * @returns
- */
-export function UpdateAnalysis(
-  connectionConfig: ConnectionConfig,
-  req: UpdateAssistantAnalysisRequest,
-  authHeader?: UserAuthInfo | ClientAuthInfo
-): Promise<GetAssistantAnalysisResponse> {
-  return new Promise((resolve, reject) => {
-    connectionConfig.assistantClient.updateAssistantAnalysis(
-      req,
-      WithAuthContext(connectionConfig.auth || authHeader),
-      (
-        err: ServiceError | null,
-        response: GetAssistantAnalysisResponse | null
-      ) => {
-        if (err) reject(err);
-        else resolve(response!);
-      }
-    );
-  });
-}
-
-/**
- *
- * @param assistantId
- * @param webhookId
- * @param cb
- * @param authHeader
- * @returns
- */
-export function GetAssistantAnalysis(
-  connectionConfig: ConnectionConfig,
-  req: GetAssistantAnalysisRequest,
-  authHeader?: ClientAuthInfo | UserAuthInfo
-): Promise<GetAssistantAnalysisResponse> {
-  return new Promise((resolve, reject) => {
-    connectionConfig.assistantClient.getAssistantAnalysis(
-      req,
-      WithAuthContext(connectionConfig.auth || authHeader),
-      (
-        err: ServiceError | null,
-        response: GetAssistantAnalysisResponse | null
-      ) => {
-        if (err) reject(err);
-        else resolve(response!);
-      }
-    );
-  });
-}
-
-/**
- *
- * @param assistantId
- * @param AnalysisId
- * @param authHeader
- * @returns
- */
-export function DeleteAssistantAnalysis(
-  connectionConfig: ConnectionConfig,
-  req: DeleteAssistantAnalysisRequest,
-  authHeader?: UserAuthInfo | ClientAuthInfo
-): Promise<GetAssistantAnalysisResponse> {
-  return new Promise((resolve, reject) => {
-    connectionConfig.assistantClient.deleteAssistantAnalysis(
-      req,
-      WithAuthContext(connectionConfig.auth || authHeader),
-      (
-        err: ServiceError | null,
-        response: GetAssistantAnalysisResponse | null
-      ) => {
-        if (err) reject(err);
-        else resolve(response!);
-      }
-    );
-  });
 }
 
 /**

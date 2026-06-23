@@ -137,5 +137,16 @@ describe('Main Entry Point', () => {
     expect(sdk.getRecommendedAudioSettings).toBeDefined();
     expect(sdk.CreateMessageMetric).toBeDefined();
     expect(sdk.GetAssistant).toBeDefined();
+    expect(sdk.GetAssistantConfiguration).toBeDefined();
+    expect(sdk.GetAllAssistantConfiguration).toBeDefined();
+    expect(sdk.CreateAssistantConfiguration).toBeDefined();
+    expect(sdk.UpdateAssistantConfiguration).toBeDefined();
+    expect(sdk.DeleteAssistantConfiguration).toBeDefined();
+    expect(sdk.AssistantConfiguration).toBeDefined();
+    expect(sdk.CreateAssistantConfigurationRequest).toBeDefined();
+    expect(sdk.UpdateAssistantConfigurationRequest).toBeDefined();
+    expect(sdk.GetAssistantConfigurationRequest).toBeDefined();
+    expect(sdk.GetAllAssistantConfigurationRequest).toBeDefined();
+    expect(sdk.DeleteAssistantConfigurationRequest).toBeDefined();
   });
 });
