@@ -30,6 +30,10 @@ import {
   GetOrganizationResponse,
   CreateOrganizationResponse,
   UpdateOrganizationResponse,
+  InviteUserToOrganizationRequest,
+  InviteUserToOrganizationResponse,
+  DeleteUserFromOrganizationRequest,
+  DeleteUserFromOrganizationResponse,
 } from "./protos/web-api_pb";
 import {
   UserAuthInfo,
@@ -137,4 +141,44 @@ export function GetOrganization(
     WithAuthContext(authHeader),
     cb
   );
+}
+
+export function InviteUserToOrganization(
+  connectionConfig: ConnectionConfig,
+  req: InviteUserToOrganizationRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<InviteUserToOrganizationResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.organizationClient.inviteUserToOrganization(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: InviteUserToOrganizationResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function DeleteUserFromOrganization(
+  connectionConfig: ConnectionConfig,
+  req: DeleteUserFromOrganizationRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<DeleteUserFromOrganizationResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.organizationClient.deleteUserFromOrganization(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: DeleteUserFromOrganizationResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }

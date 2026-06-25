@@ -74,7 +74,10 @@ jest.mock("@/rapida/clients/protos/web-api_pb", () => ({
     "setOrganizationcontact",
   ]),
   GetOrganizationRequest: makeReq([]),
-  AddUsersToProjectRequest: makeReq(["setEmail", "setRole", "setProjectidsList"]),
+  InviteUserToOrganizationRequest: makeReq([]),
+  DeleteUserFromOrganizationRequest: makeReq([]),
+  AddUserToProjectsRequest: makeReq([]),
+  DeleteUserFromProjectRequest: makeReq([]),
   CreateProjectRequest: makeReq(["setProjectname", "setProjectdescription"]),
   UpdateProjectRequest: makeReq(["setProjectid", "setProjectname", "setProjectdescription"]),
   GetAllProjectRequest: makeReq(["addCriterias", "setPaginate"]),
@@ -130,9 +133,12 @@ import {
   CreateOrganization,
   UpdateOrganization,
   GetOrganization,
+  InviteUserToOrganization,
+  DeleteUserFromOrganization,
 } from "@/rapida/clients/organization";
 import {
-  AddUsersToProject,
+  AddUserToProjects,
+  DeleteUserFromProject,
   CreateProject,
   UpdateProject,
   GetAllProject,
@@ -212,9 +218,24 @@ describe("clients wrappers", () => {
         createOrganization: jest.fn().mockReturnValue("create-org"),
         updateOrganization: jest.fn().mockReturnValue("update-org"),
         getOrganization: jest.fn().mockReturnValue("get-org"),
+        inviteUserToOrganization: jest.fn((_req: any, _meta: any, done: any) => {
+          done(null, "invite-org-response" as any);
+          return "invite-org";
+        }),
+        deleteUserFromOrganization: jest.fn((_req: any, _meta: any, done: any) => {
+          done(null, "delete-org-user-response" as any);
+          return "delete-org-user";
+        }),
       },
       projectClient: {
-        addUsersToProject: jest.fn().mockReturnValue("add-users"),
+        addUserToProjects: jest.fn((_req: any, _meta: any, done: any) => {
+          done(null, "add-user-projects-response" as any);
+          return "add-user-projects";
+        }),
+        deleteUserFromProject: jest.fn((_req: any, _meta: any, done: any) => {
+          done(null, "delete-project-user-response" as any);
+          return "delete-project-user";
+        }),
         createProject: jest.fn().mockReturnValue("create-project"),
         updateProject: jest.fn().mockReturnValue("update-project"),
         getAllProject: jest.fn().mockReturnValue("get-all-project"),
@@ -264,15 +285,24 @@ describe("clients wrappers", () => {
     expect(mockWithAuthContext).toHaveBeenCalled();
   });
 
-  it("organization/project/vault wrappers call expected methods", () => {
+  it("organization/project/vault wrappers call expected methods", async () => {
     expect(CreateOrganization(config, "Org", "10", "AI", { a: 1 } as any, cb)).toBe("create-org");
     expect(
       UpdateOrganization(config, "org-1", { a: 1 } as any, cb, "New Org", "SaaS", "contact"),
     ).toBe("update-org");
     expect(GetOrganization(config, { a: 1 } as any, cb)).toBe("get-org");
 
-    expect(AddUsersToProject(config, "a@b.com", "owner", ["p1"], cb, { a: 1 } as any)).toBe(
-      "add-users",
+    await expect(InviteUserToOrganization(config, {} as any, { a: 1 } as any)).resolves.toBe(
+      "invite-org-response",
+    );
+    await expect(DeleteUserFromOrganization(config, {} as any, { a: 1 } as any)).resolves.toBe(
+      "delete-org-user-response",
+    );
+    await expect(AddUserToProjects(config, {} as any, { a: 1 } as any)).resolves.toBe(
+      "add-user-projects-response",
+    );
+    await expect(DeleteUserFromProject(config, {} as any, { a: 1 } as any)).resolves.toBe(
+      "delete-project-user-response",
     );
     expect(CreateProject(config, "P", "Desc", { a: 1 } as any, cb)).toBe("create-project");
     expect(UpdateProject(config, "p1", cb, { a: 1 } as any, "P2", "D2")).toBe("update-project");

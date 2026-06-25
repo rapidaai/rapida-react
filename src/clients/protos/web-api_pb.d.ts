@@ -1355,33 +1355,231 @@ export namespace GetAllProjectResponse {
   }
 }
 
-export class AddUsersToProjectRequest extends jspb.Message {
+export class ProjectRoleAssignment extends jspb.Message {
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  getProjectrole(): string;
+  setProjectrole(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ProjectRoleAssignment.AsObject;
+  static toObject(includeInstance: boolean, msg: ProjectRoleAssignment): ProjectRoleAssignment.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ProjectRoleAssignment, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ProjectRoleAssignment;
+  static deserializeBinaryFromReader(message: ProjectRoleAssignment, reader: jspb.BinaryReader): ProjectRoleAssignment;
+}
+
+export namespace ProjectRoleAssignment {
+  export type AsObject = {
+    projectid: string,
+    projectrole: string,
+  }
+}
+
+export class InviteUserToOrganizationRequest extends jspb.Message {
   getEmail(): string;
   setEmail(value: string): void;
 
-  getRole(): string;
-  setRole(value: string): void;
+  getOrganizationrole(): string;
+  setOrganizationrole(value: string): void;
 
-  clearProjectidsList(): void;
-  getProjectidsList(): Array<string>;
-  setProjectidsList(value: Array<string>): void;
-  addProjectids(value: string, index?: number): string;
+  clearProjectrolesList(): void;
+  getProjectrolesList(): Array<ProjectRoleAssignment>;
+  setProjectrolesList(value: Array<ProjectRoleAssignment>): void;
+  addProjectroles(value?: ProjectRoleAssignment, index?: number): ProjectRoleAssignment;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AddUsersToProjectRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: AddUsersToProjectRequest): AddUsersToProjectRequest.AsObject;
+  toObject(includeInstance?: boolean): InviteUserToOrganizationRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: InviteUserToOrganizationRequest): InviteUserToOrganizationRequest.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AddUsersToProjectRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AddUsersToProjectRequest;
-  static deserializeBinaryFromReader(message: AddUsersToProjectRequest, reader: jspb.BinaryReader): AddUsersToProjectRequest;
+  static serializeBinaryToWriter(message: InviteUserToOrganizationRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): InviteUserToOrganizationRequest;
+  static deserializeBinaryFromReader(message: InviteUserToOrganizationRequest, reader: jspb.BinaryReader): InviteUserToOrganizationRequest;
 }
 
-export namespace AddUsersToProjectRequest {
+export namespace InviteUserToOrganizationRequest {
   export type AsObject = {
     email: string,
-    role: string,
-    projectidsList: Array<string>,
+    organizationrole: string,
+    projectrolesList: Array<ProjectRoleAssignment.AsObject>,
+  }
+}
+
+export class InviteUserToOrganizationResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasData(): boolean;
+  clearData(): void;
+  getData(): common_pb.User | undefined;
+  setData(value?: common_pb.User): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): InviteUserToOrganizationResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: InviteUserToOrganizationResponse): InviteUserToOrganizationResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: InviteUserToOrganizationResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): InviteUserToOrganizationResponse;
+  static deserializeBinaryFromReader(message: InviteUserToOrganizationResponse, reader: jspb.BinaryReader): InviteUserToOrganizationResponse;
+}
+
+export namespace InviteUserToOrganizationResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    data?: common_pb.User.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
+}
+
+export class AddUserToProjectsRequest extends jspb.Message {
+  getUserid(): string;
+  setUserid(value: string): void;
+
+  clearProjectrolesList(): void;
+  getProjectrolesList(): Array<ProjectRoleAssignment>;
+  setProjectrolesList(value: Array<ProjectRoleAssignment>): void;
+  addProjectroles(value?: ProjectRoleAssignment, index?: number): ProjectRoleAssignment;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AddUserToProjectsRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: AddUserToProjectsRequest): AddUserToProjectsRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AddUserToProjectsRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AddUserToProjectsRequest;
+  static deserializeBinaryFromReader(message: AddUserToProjectsRequest, reader: jspb.BinaryReader): AddUserToProjectsRequest;
+}
+
+export namespace AddUserToProjectsRequest {
+  export type AsObject = {
+    userid: string,
+    projectrolesList: Array<ProjectRoleAssignment.AsObject>,
+  }
+}
+
+export class DeleteUserFromOrganizationRequest extends jspb.Message {
+  getUserid(): string;
+  setUserid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteUserFromOrganizationRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteUserFromOrganizationRequest): DeleteUserFromOrganizationRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteUserFromOrganizationRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteUserFromOrganizationRequest;
+  static deserializeBinaryFromReader(message: DeleteUserFromOrganizationRequest, reader: jspb.BinaryReader): DeleteUserFromOrganizationRequest;
+}
+
+export namespace DeleteUserFromOrganizationRequest {
+  export type AsObject = {
+    userid: string,
+  }
+}
+
+export class DeleteUserFromOrganizationResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  getId(): string;
+  setId(value: string): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteUserFromOrganizationResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteUserFromOrganizationResponse): DeleteUserFromOrganizationResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteUserFromOrganizationResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteUserFromOrganizationResponse;
+  static deserializeBinaryFromReader(message: DeleteUserFromOrganizationResponse, reader: jspb.BinaryReader): DeleteUserFromOrganizationResponse;
+}
+
+export namespace DeleteUserFromOrganizationResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    id: string,
+    error?: common_pb.Error.AsObject,
+  }
+}
+
+export class DeleteUserFromProjectRequest extends jspb.Message {
+  getUserid(): string;
+  setUserid(value: string): void;
+
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteUserFromProjectRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteUserFromProjectRequest): DeleteUserFromProjectRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteUserFromProjectRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteUserFromProjectRequest;
+  static deserializeBinaryFromReader(message: DeleteUserFromProjectRequest, reader: jspb.BinaryReader): DeleteUserFromProjectRequest;
+}
+
+export namespace DeleteUserFromProjectRequest {
+  export type AsObject = {
+    userid: string,
+    projectid: string,
+  }
+}
+
+export class DeleteUserFromProjectResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  getId(): string;
+  setId(value: string): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): DeleteUserFromProjectResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: DeleteUserFromProjectResponse): DeleteUserFromProjectResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: DeleteUserFromProjectResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): DeleteUserFromProjectResponse;
+  static deserializeBinaryFromReader(message: DeleteUserFromProjectResponse, reader: jspb.BinaryReader): DeleteUserFromProjectResponse;
+}
+
+export namespace DeleteUserFromProjectResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    id: string,
+    error?: common_pb.Error.AsObject,
   }
 }
 
@@ -1439,7 +1637,7 @@ export namespace ArchiveProjectResponse {
   }
 }
 
-export class AddUsersToProjectResponse extends jspb.Message {
+export class AddUserToProjectsResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
 
@@ -1457,16 +1655,16 @@ export class AddUsersToProjectResponse extends jspb.Message {
   setError(value?: common_pb.Error): void;
 
   serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AddUsersToProjectResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: AddUsersToProjectResponse): AddUsersToProjectResponse.AsObject;
+  toObject(includeInstance?: boolean): AddUserToProjectsResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: AddUserToProjectsResponse): AddUserToProjectsResponse.AsObject;
   static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
   static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AddUsersToProjectResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AddUsersToProjectResponse;
-  static deserializeBinaryFromReader(message: AddUsersToProjectResponse, reader: jspb.BinaryReader): AddUsersToProjectResponse;
+  static serializeBinaryToWriter(message: AddUserToProjectsResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AddUserToProjectsResponse;
+  static deserializeBinaryFromReader(message: AddUserToProjectsResponse, reader: jspb.BinaryReader): AddUserToProjectsResponse;
 }
 
-export namespace AddUsersToProjectResponse {
+export namespace AddUserToProjectsResponse {
   export type AsObject = {
     code: number,
     success: boolean,

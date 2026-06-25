@@ -124,6 +124,8 @@ export {
   CreateOrganization,
   UpdateOrganization,
   GetOrganization,
+  InviteUserToOrganization,
+  DeleteUserFromOrganization,
 } from "@/rapida/clients/organization";
 
 export {
@@ -223,7 +225,8 @@ export {
   GetAllKnowledgeLog,
 } from "@/rapida/clients/knowledge";
 export {
-  AddUsersToProject,
+  AddUserToProjects,
+  DeleteUserFromProject,
   CreateProject,
   UpdateProject,
   GetAllProject,
@@ -359,10 +362,17 @@ export {
   GetProjectResponse,
   GetAllProjectRequest,
   GetAllProjectResponse,
-  AddUsersToProjectRequest,
+  ProjectRoleAssignment,
+  InviteUserToOrganizationRequest,
+  InviteUserToOrganizationResponse,
+  AddUserToProjectsRequest,
+  AddUserToProjectsResponse,
+  DeleteUserFromOrganizationRequest,
+  DeleteUserFromOrganizationResponse,
+  DeleteUserFromProjectRequest,
+  DeleteUserFromProjectResponse,
   ArchiveProjectRequest,
   ArchiveProjectResponse,
-  AddUsersToProjectResponse,
   ProjectCredential,
   CreateProjectCredentialRequest,
   GetAllProjectCredentialRequest,

@@ -185,12 +185,32 @@ type OrganizationServiceUpdateBillingInformation = {
   readonly responseType: typeof common_pb.BaseResponse;
 };
 
+type OrganizationServiceInviteUserToOrganization = {
+  readonly methodName: string;
+  readonly service: typeof OrganizationService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof web_api_pb.InviteUserToOrganizationRequest;
+  readonly responseType: typeof web_api_pb.InviteUserToOrganizationResponse;
+};
+
+type OrganizationServiceDeleteUserFromOrganization = {
+  readonly methodName: string;
+  readonly service: typeof OrganizationService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof web_api_pb.DeleteUserFromOrganizationRequest;
+  readonly responseType: typeof web_api_pb.DeleteUserFromOrganizationResponse;
+};
+
 export class OrganizationService {
   static readonly serviceName: string;
   static readonly CreateOrganization: OrganizationServiceCreateOrganization;
   static readonly GetOrganization: OrganizationServiceGetOrganization;
   static readonly UpdateOrganization: OrganizationServiceUpdateOrganization;
   static readonly UpdateBillingInformation: OrganizationServiceUpdateBillingInformation;
+  static readonly InviteUserToOrganization: OrganizationServiceInviteUserToOrganization;
+  static readonly DeleteUserFromOrganization: OrganizationServiceDeleteUserFromOrganization;
 }
 
 type ProjectServiceCreateProject = {
@@ -229,13 +249,22 @@ type ProjectServiceGetAllProject = {
   readonly responseType: typeof web_api_pb.GetAllProjectResponse;
 };
 
-type ProjectServiceAddUsersToProject = {
+type ProjectServiceAddUserToProjects = {
   readonly methodName: string;
   readonly service: typeof ProjectService;
   readonly requestStream: false;
   readonly responseStream: false;
-  readonly requestType: typeof web_api_pb.AddUsersToProjectRequest;
-  readonly responseType: typeof web_api_pb.AddUsersToProjectResponse;
+  readonly requestType: typeof web_api_pb.AddUserToProjectsRequest;
+  readonly responseType: typeof web_api_pb.AddUserToProjectsResponse;
+};
+
+type ProjectServiceDeleteUserFromProject = {
+  readonly methodName: string;
+  readonly service: typeof ProjectService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof web_api_pb.DeleteUserFromProjectRequest;
+  readonly responseType: typeof web_api_pb.DeleteUserFromProjectResponse;
 };
 
 type ProjectServiceArchiveProject = {
@@ -271,7 +300,8 @@ export class ProjectService {
   static readonly UpdateProject: ProjectServiceUpdateProject;
   static readonly GetProject: ProjectServiceGetProject;
   static readonly GetAllProject: ProjectServiceGetAllProject;
-  static readonly AddUsersToProject: ProjectServiceAddUsersToProject;
+  static readonly AddUserToProjects: ProjectServiceAddUserToProjects;
+  static readonly DeleteUserFromProject: ProjectServiceDeleteUserFromProject;
   static readonly ArchiveProject: ProjectServiceArchiveProject;
   static readonly CreateProjectCredential: ProjectServiceCreateProjectCredential;
   static readonly GetAllProjectCredential: ProjectServiceGetAllProjectCredential;
@@ -477,6 +507,24 @@ export class OrganizationServiceClient {
     requestMessage: web_api_pb.UpdateBillingInformationRequest,
     callback: (error: ServiceError|null, responseMessage: common_pb.BaseResponse|null) => void
   ): UnaryResponse;
+  inviteUserToOrganization(
+    requestMessage: web_api_pb.InviteUserToOrganizationRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.InviteUserToOrganizationResponse|null) => void
+  ): UnaryResponse;
+  inviteUserToOrganization(
+    requestMessage: web_api_pb.InviteUserToOrganizationRequest,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.InviteUserToOrganizationResponse|null) => void
+  ): UnaryResponse;
+  deleteUserFromOrganization(
+    requestMessage: web_api_pb.DeleteUserFromOrganizationRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.DeleteUserFromOrganizationResponse|null) => void
+  ): UnaryResponse;
+  deleteUserFromOrganization(
+    requestMessage: web_api_pb.DeleteUserFromOrganizationRequest,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.DeleteUserFromOrganizationResponse|null) => void
+  ): UnaryResponse;
 }
 
 export class ProjectServiceClient {
@@ -519,14 +567,23 @@ export class ProjectServiceClient {
     requestMessage: web_api_pb.GetAllProjectRequest,
     callback: (error: ServiceError|null, responseMessage: web_api_pb.GetAllProjectResponse|null) => void
   ): UnaryResponse;
-  addUsersToProject(
-    requestMessage: web_api_pb.AddUsersToProjectRequest,
+  addUserToProjects(
+    requestMessage: web_api_pb.AddUserToProjectsRequest,
     metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: web_api_pb.AddUsersToProjectResponse|null) => void
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.AddUserToProjectsResponse|null) => void
   ): UnaryResponse;
-  addUsersToProject(
-    requestMessage: web_api_pb.AddUsersToProjectRequest,
-    callback: (error: ServiceError|null, responseMessage: web_api_pb.AddUsersToProjectResponse|null) => void
+  addUserToProjects(
+    requestMessage: web_api_pb.AddUserToProjectsRequest,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.AddUserToProjectsResponse|null) => void
+  ): UnaryResponse;
+  deleteUserFromProject(
+    requestMessage: web_api_pb.DeleteUserFromProjectRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.DeleteUserFromProjectResponse|null) => void
+  ): UnaryResponse;
+  deleteUserFromProject(
+    requestMessage: web_api_pb.DeleteUserFromProjectRequest,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.DeleteUserFromProjectResponse|null) => void
   ): UnaryResponse;
   archiveProject(
     requestMessage: web_api_pb.ArchiveProjectRequest,

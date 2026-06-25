@@ -25,9 +25,12 @@
  */
 
 import {
-  AddUsersToProjectRequest,
+  AddUserToProjectsRequest,
+  AddUserToProjectsResponse,
   CreateProjectRequest,
   CreateProjectResponse,
+  DeleteUserFromProjectRequest,
+  DeleteUserFromProjectResponse,
   GetAllProjectResponse,
   UpdateProjectRequest,
   UpdateProjectResponse,
@@ -35,7 +38,6 @@ import {
   GetProjectRequest,
   ArchiveProjectResponse,
   ArchiveProjectRequest,
-  AddUsersToProjectResponse,
   GetAllProjectCredentialResponse,
   GetAllProjectCredentialRequest,
   CreateProjectCredentialRequest,
@@ -51,37 +53,44 @@ import {
 import { ServiceError } from "@/rapida/clients/types";
 import { ConnectionConfig } from "@/rapida/types/connection-config";
 
-/**
- * Adds users to a project with specified roles.
- *
- * @param email - The email address of the user to add.
- * @param role - The role to assign to the user.
- * @param projectIds - List of project IDs to which the user will be added.
- * @param cb - Callback function to handle the response.
- * @param authHeader - Authentication headers for the request.
- * @returns UnaryResponse - The gRPC response object.
- */
-export function AddUsersToProject(
+export function AddUserToProjects(
   connectionConfig: ConnectionConfig,
-  email: string,
-  role: string,
-  projectIds: string[],
-  cb: (
-    err: ServiceError | null,
-    response: AddUsersToProjectResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const requestObject = new AddUsersToProjectRequest();
-  requestObject.setEmail(email);
-  requestObject.setRole(role);
-  requestObject.setProjectidsList(projectIds);
+  req: AddUserToProjectsRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<AddUserToProjectsResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.projectClient.addUserToProjects(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: AddUserToProjectsResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
 
-  return connectionConfig.projectClient.addUsersToProject(
-    requestObject,
-    WithAuthContext(authHeader),
-    cb
-  );
+export function DeleteUserFromProject(
+  connectionConfig: ConnectionConfig,
+  req: DeleteUserFromProjectRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<DeleteUserFromProjectResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.projectClient.deleteUserFromProject(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: DeleteUserFromProjectResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
 }
 
 /**

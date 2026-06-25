@@ -622,6 +622,24 @@ OrganizationService.UpdateBillingInformation = {
   responseType: common_pb.BaseResponse
 };
 
+OrganizationService.InviteUserToOrganization = {
+  methodName: "InviteUserToOrganization",
+  service: OrganizationService,
+  requestStream: false,
+  responseStream: false,
+  requestType: web_api_pb.InviteUserToOrganizationRequest,
+  responseType: web_api_pb.InviteUserToOrganizationResponse
+};
+
+OrganizationService.DeleteUserFromOrganization = {
+  methodName: "DeleteUserFromOrganization",
+  service: OrganizationService,
+  requestStream: false,
+  responseStream: false,
+  requestType: web_api_pb.DeleteUserFromOrganizationRequest,
+  responseType: web_api_pb.DeleteUserFromOrganizationResponse
+};
+
 exports.OrganizationService = OrganizationService;
 
 function OrganizationServiceClient(serviceHost, options) {
@@ -753,6 +771,68 @@ OrganizationServiceClient.prototype.updateBillingInformation = function updateBi
   };
 };
 
+OrganizationServiceClient.prototype.inviteUserToOrganization = function inviteUserToOrganization(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(OrganizationService.InviteUserToOrganization, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+OrganizationServiceClient.prototype.deleteUserFromOrganization = function deleteUserFromOrganization(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(OrganizationService.DeleteUserFromOrganization, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
 exports.OrganizationServiceClient = OrganizationServiceClient;
 
 var ProjectService = (function () {
@@ -797,13 +877,22 @@ ProjectService.GetAllProject = {
   responseType: web_api_pb.GetAllProjectResponse
 };
 
-ProjectService.AddUsersToProject = {
-  methodName: "AddUsersToProject",
+ProjectService.AddUserToProjects = {
+  methodName: "AddUserToProjects",
   service: ProjectService,
   requestStream: false,
   responseStream: false,
-  requestType: web_api_pb.AddUsersToProjectRequest,
-  responseType: web_api_pb.AddUsersToProjectResponse
+  requestType: web_api_pb.AddUserToProjectsRequest,
+  responseType: web_api_pb.AddUserToProjectsResponse
+};
+
+ProjectService.DeleteUserFromProject = {
+  methodName: "DeleteUserFromProject",
+  service: ProjectService,
+  requestStream: false,
+  responseStream: false,
+  requestType: web_api_pb.DeleteUserFromProjectRequest,
+  responseType: web_api_pb.DeleteUserFromProjectResponse
 };
 
 ProjectService.ArchiveProject = {
@@ -964,11 +1053,42 @@ ProjectServiceClient.prototype.getAllProject = function getAllProject(requestMes
   };
 };
 
-ProjectServiceClient.prototype.addUsersToProject = function addUsersToProject(requestMessage, metadata, callback) {
+ProjectServiceClient.prototype.addUserToProjects = function addUserToProjects(requestMessage, metadata, callback) {
   if (arguments.length === 2) {
     callback = arguments[1];
   }
-  var client = grpc.unary(ProjectService.AddUsersToProject, {
+  var client = grpc.unary(ProjectService.AddUserToProjects, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+ProjectServiceClient.prototype.deleteUserFromProject = function deleteUserFromProject(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(ProjectService.DeleteUserFromProject, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
