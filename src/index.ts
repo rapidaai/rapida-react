@@ -125,6 +125,7 @@ export {
   UpdateOrganization,
   GetOrganization,
   InviteUserToOrganization,
+  UpdateUserOrganizationRole,
   DeleteUserFromOrganization,
 } from "@/rapida/clients/organization";
 
@@ -367,6 +368,8 @@ export {
   InviteUserToOrganizationResponse,
   AddUserToProjectsRequest,
   AddUserToProjectsResponse,
+  UpdateUserOrganizationRoleRequest,
+  UpdateUserOrganizationRoleResponse,
   DeleteUserFromOrganizationRequest,
   DeleteUserFromOrganizationResponse,
   DeleteUserFromProjectRequest,

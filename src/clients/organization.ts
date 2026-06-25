@@ -32,6 +32,8 @@ import {
   UpdateOrganizationResponse,
   InviteUserToOrganizationRequest,
   InviteUserToOrganizationResponse,
+  UpdateUserOrganizationRoleRequest,
+  UpdateUserOrganizationRoleResponse,
   DeleteUserFromOrganizationRequest,
   DeleteUserFromOrganizationResponse,
 } from "./protos/web-api_pb";
@@ -155,6 +157,26 @@ export function InviteUserToOrganization(
       (
         err: ServiceError | null,
         response: InviteUserToOrganizationResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+export function UpdateUserOrganizationRole(
+  connectionConfig: ConnectionConfig,
+  req: UpdateUserOrganizationRoleRequest,
+  authHeader?: UserAuthInfo | ClientAuthInfo
+): Promise<UpdateUserOrganizationRoleResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.organizationClient.updateUserOrganizationRole(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: UpdateUserOrganizationRoleResponse | null
       ) => {
         if (err) reject(err);
         else resolve(response!);

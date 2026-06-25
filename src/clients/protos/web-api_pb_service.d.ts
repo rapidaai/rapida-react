@@ -194,6 +194,15 @@ type OrganizationServiceInviteUserToOrganization = {
   readonly responseType: typeof web_api_pb.InviteUserToOrganizationResponse;
 };
 
+type OrganizationServiceUpdateUserOrganizationRole = {
+  readonly methodName: string;
+  readonly service: typeof OrganizationService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof web_api_pb.UpdateUserOrganizationRoleRequest;
+  readonly responseType: typeof web_api_pb.UpdateUserOrganizationRoleResponse;
+};
+
 type OrganizationServiceDeleteUserFromOrganization = {
   readonly methodName: string;
   readonly service: typeof OrganizationService;
@@ -210,6 +219,7 @@ export class OrganizationService {
   static readonly UpdateOrganization: OrganizationServiceUpdateOrganization;
   static readonly UpdateBillingInformation: OrganizationServiceUpdateBillingInformation;
   static readonly InviteUserToOrganization: OrganizationServiceInviteUserToOrganization;
+  static readonly UpdateUserOrganizationRole: OrganizationServiceUpdateUserOrganizationRole;
   static readonly DeleteUserFromOrganization: OrganizationServiceDeleteUserFromOrganization;
 }
 
@@ -515,6 +525,15 @@ export class OrganizationServiceClient {
   inviteUserToOrganization(
     requestMessage: web_api_pb.InviteUserToOrganizationRequest,
     callback: (error: ServiceError|null, responseMessage: web_api_pb.InviteUserToOrganizationResponse|null) => void
+  ): UnaryResponse;
+  updateUserOrganizationRole(
+    requestMessage: web_api_pb.UpdateUserOrganizationRoleRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.UpdateUserOrganizationRoleResponse|null) => void
+  ): UnaryResponse;
+  updateUserOrganizationRole(
+    requestMessage: web_api_pb.UpdateUserOrganizationRoleRequest,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.UpdateUserOrganizationRoleResponse|null) => void
   ): UnaryResponse;
   deleteUserFromOrganization(
     requestMessage: web_api_pb.DeleteUserFromOrganizationRequest,

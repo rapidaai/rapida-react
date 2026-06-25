@@ -1471,6 +1471,60 @@ export namespace AddUserToProjectsRequest {
   }
 }
 
+export class UpdateUserOrganizationRoleRequest extends jspb.Message {
+  getUserid(): string;
+  setUserid(value: string): void;
+
+  getOrganizationrole(): string;
+  setOrganizationrole(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): UpdateUserOrganizationRoleRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: UpdateUserOrganizationRoleRequest): UpdateUserOrganizationRoleRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: UpdateUserOrganizationRoleRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): UpdateUserOrganizationRoleRequest;
+  static deserializeBinaryFromReader(message: UpdateUserOrganizationRoleRequest, reader: jspb.BinaryReader): UpdateUserOrganizationRoleRequest;
+}
+
+export namespace UpdateUserOrganizationRoleRequest {
+  export type AsObject = {
+    userid: string,
+    organizationrole: string,
+  }
+}
+
+export class UpdateUserOrganizationRoleResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): UpdateUserOrganizationRoleResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: UpdateUserOrganizationRoleResponse): UpdateUserOrganizationRoleResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: UpdateUserOrganizationRoleResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): UpdateUserOrganizationRoleResponse;
+  static deserializeBinaryFromReader(message: UpdateUserOrganizationRoleResponse, reader: jspb.BinaryReader): UpdateUserOrganizationRoleResponse;
+}
+
+export namespace UpdateUserOrganizationRoleResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    error?: common_pb.Error.AsObject,
+  }
+}
+
 export class DeleteUserFromOrganizationRequest extends jspb.Message {
   getUserid(): string;
   setUserid(value: string): void;
