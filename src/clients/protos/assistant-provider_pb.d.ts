@@ -116,6 +116,30 @@ export namespace CreateAssistantProviderRequest {
 
     getMetadataMap(): jspb.Map<string, string>;
     clearMetadataMap(): void;
+    getTransportsecurity(): string;
+    setTransportsecurity(value: string): void;
+
+    getTlsverification(): string;
+    setTlsverification(value: string): void;
+
+    getTlsservername(): string;
+    setTlsservername(value: string): void;
+
+    getConnecttimeoutms(): number;
+    setConnecttimeoutms(value: number): void;
+
+    getKeepalivetimems(): number;
+    setKeepalivetimems(value: number): void;
+
+    getKeepalivetimeoutms(): number;
+    setKeepalivetimeoutms(value: number): void;
+
+    getMaxrecvmessagebytes(): number;
+    setMaxrecvmessagebytes(value: number): void;
+
+    getMaxsendmessagebytes(): number;
+    setMaxsendmessagebytes(value: number): void;
+
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): CreateAssistantProviderAgentkit.AsObject;
     static toObject(includeInstance: boolean, msg: CreateAssistantProviderAgentkit): CreateAssistantProviderAgentkit.AsObject;
@@ -131,6 +155,14 @@ export namespace CreateAssistantProviderRequest {
       agentkiturl: string,
       certificate: string,
       metadataMap: Array<[string, string]>,
+      transportsecurity: string,
+      tlsverification: string,
+      tlsservername: string,
+      connecttimeoutms: number,
+      keepalivetimems: number,
+      keepalivetimeoutms: number,
+      maxrecvmessagebytes: number,
+      maxsendmessagebytes: number,
     }
   }
 
@@ -215,6 +247,30 @@ export class AssistantProviderAgentkit extends jspb.Message {
   getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
+  getTransportsecurity(): string;
+  setTransportsecurity(value: string): void;
+
+  getTlsverification(): string;
+  setTlsverification(value: string): void;
+
+  getTlsservername(): string;
+  setTlsservername(value: string): void;
+
+  getConnecttimeoutms(): number;
+  setConnecttimeoutms(value: number): void;
+
+  getKeepalivetimems(): number;
+  setKeepalivetimems(value: number): void;
+
+  getKeepalivetimeoutms(): number;
+  setKeepalivetimeoutms(value: number): void;
+
+  getMaxrecvmessagebytes(): number;
+  setMaxrecvmessagebytes(value: number): void;
+
+  getMaxsendmessagebytes(): number;
+  setMaxsendmessagebytes(value: number): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantProviderAgentkit.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantProviderAgentkit): AssistantProviderAgentkit.AsObject;
@@ -240,6 +296,14 @@ export namespace AssistantProviderAgentkit {
     updateduser?: common_pb.User.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    transportsecurity: string,
+    tlsverification: string,
+    tlsservername: string,
+    connecttimeoutms: number,
+    keepalivetimems: number,
+    keepalivetimeoutms: number,
+    maxrecvmessagebytes: number,
+    maxsendmessagebytes: number,
   }
 }
 

@@ -944,7 +944,15 @@ proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentk
   var f, obj = {
     agentkiturl: jspb.Message.getFieldWithDefault(msg, 10, ""),
     certificate: jspb.Message.getFieldWithDefault(msg, 11, ""),
-    metadataMap: (f = msg.getMetadataMap()) ? f.toObject(includeInstance, undefined) : []
+    metadataMap: (f = msg.getMetadataMap()) ? f.toObject(includeInstance, undefined) : [],
+    transportsecurity: jspb.Message.getFieldWithDefault(msg, 13, ""),
+    tlsverification: jspb.Message.getFieldWithDefault(msg, 14, ""),
+    tlsservername: jspb.Message.getFieldWithDefault(msg, 15, ""),
+    connecttimeoutms: jspb.Message.getFieldWithDefault(msg, 16, 0),
+    keepalivetimems: jspb.Message.getFieldWithDefault(msg, 17, 0),
+    keepalivetimeoutms: jspb.Message.getFieldWithDefault(msg, 18, 0),
+    maxrecvmessagebytes: jspb.Message.getFieldWithDefault(msg, 19, 0),
+    maxsendmessagebytes: jspb.Message.getFieldWithDefault(msg, 20, 0)
   };
 
   if (includeInstance) {
@@ -995,6 +1003,38 @@ proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentk
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
          });
       break;
+    case 13:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTransportsecurity(value);
+      break;
+    case 14:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTlsverification(value);
+      break;
+    case 15:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTlsservername(value);
+      break;
+    case 16:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setConnecttimeoutms(value);
+      break;
+    case 17:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setKeepalivetimems(value);
+      break;
+    case 18:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setKeepalivetimeoutms(value);
+      break;
+    case 19:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setMaxrecvmessagebytes(value);
+      break;
+    case 20:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setMaxsendmessagebytes(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -1041,6 +1081,62 @@ proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentk
   f = message.getMetadataMap(true);
   if (f && f.getLength() > 0) {
     f.serializeBinary(12, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
+  }
+  f = message.getTransportsecurity();
+  if (f.length > 0) {
+    writer.writeString(
+      13,
+      f
+    );
+  }
+  f = message.getTlsverification();
+  if (f.length > 0) {
+    writer.writeString(
+      14,
+      f
+    );
+  }
+  f = message.getTlsservername();
+  if (f.length > 0) {
+    writer.writeString(
+      15,
+      f
+    );
+  }
+  f = message.getConnecttimeoutms();
+  if (f !== 0) {
+    writer.writeUint32(
+      16,
+      f
+    );
+  }
+  f = message.getKeepalivetimems();
+  if (f !== 0) {
+    writer.writeUint32(
+      17,
+      f
+    );
+  }
+  f = message.getKeepalivetimeoutms();
+  if (f !== 0) {
+    writer.writeUint32(
+      18,
+      f
+    );
+  }
+  f = message.getMaxrecvmessagebytes();
+  if (f !== 0) {
+    writer.writeUint32(
+      19,
+      f
+    );
+  }
+  f = message.getMaxsendmessagebytes();
+  if (f !== 0) {
+    writer.writeUint32(
+      20,
+      f
+    );
   }
 };
 
@@ -1101,6 +1197,150 @@ proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentk
 proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.clearMetadataMap = function() {
   this.getMetadataMap().clear();
   return this;};
+
+
+/**
+ * optional string transportSecurity = 13;
+ * @return {string}
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.getTransportsecurity = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.setTransportsecurity = function(value) {
+  return jspb.Message.setProto3StringField(this, 13, value);
+};
+
+
+/**
+ * optional string tlsVerification = 14;
+ * @return {string}
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.getTlsverification = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 14, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.setTlsverification = function(value) {
+  return jspb.Message.setProto3StringField(this, 14, value);
+};
+
+
+/**
+ * optional string tlsServerName = 15;
+ * @return {string}
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.getTlsservername = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.setTlsservername = function(value) {
+  return jspb.Message.setProto3StringField(this, 15, value);
+};
+
+
+/**
+ * optional uint32 connectTimeoutMs = 16;
+ * @return {number}
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.getConnecttimeoutms = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 16, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.setConnecttimeoutms = function(value) {
+  return jspb.Message.setProto3IntField(this, 16, value);
+};
+
+
+/**
+ * optional uint32 keepaliveTimeMs = 17;
+ * @return {number}
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.getKeepalivetimems = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 17, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.setKeepalivetimems = function(value) {
+  return jspb.Message.setProto3IntField(this, 17, value);
+};
+
+
+/**
+ * optional uint32 keepaliveTimeoutMs = 18;
+ * @return {number}
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.getKeepalivetimeoutms = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 18, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.setKeepalivetimeoutms = function(value) {
+  return jspb.Message.setProto3IntField(this, 18, value);
+};
+
+
+/**
+ * optional uint32 maxRecvMessageBytes = 19;
+ * @return {number}
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.getMaxrecvmessagebytes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 19, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.setMaxrecvmessagebytes = function(value) {
+  return jspb.Message.setProto3IntField(this, 19, value);
+};
+
+
+/**
+ * optional uint32 maxSendMessageBytes = 20;
+ * @return {number}
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.getMaxsendmessagebytes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 20, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.prototype.setMaxsendmessagebytes = function(value) {
+  return jspb.Message.setProto3IntField(this, 20, value);
+};
 
 
 
@@ -1490,7 +1730,15 @@ proto.assistant_api.AssistantProviderAgentkit.toObject = function(includeInstanc
     updatedby: jspb.Message.getFieldWithDefault(msg, 15, "0"),
     updateduser: (f = msg.getUpdateduser()) && common_pb.User.toObject(includeInstance, f),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-    updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
+    updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
+    transportsecurity: jspb.Message.getFieldWithDefault(msg, 19, ""),
+    tlsverification: jspb.Message.getFieldWithDefault(msg, 20, ""),
+    tlsservername: jspb.Message.getFieldWithDefault(msg, 21, ""),
+    connecttimeoutms: jspb.Message.getFieldWithDefault(msg, 22, 0),
+    keepalivetimems: jspb.Message.getFieldWithDefault(msg, 23, 0),
+    keepalivetimeoutms: jspb.Message.getFieldWithDefault(msg, 24, 0),
+    maxrecvmessagebytes: jspb.Message.getFieldWithDefault(msg, 25, 0),
+    maxsendmessagebytes: jspb.Message.getFieldWithDefault(msg, 26, 0)
   };
 
   if (includeInstance) {
@@ -1584,6 +1832,38 @@ proto.assistant_api.AssistantProviderAgentkit.deserializeBinaryFromReader = func
       var value = new google_protobuf_timestamp_pb.Timestamp;
       reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
       msg.setUpdateddate(value);
+      break;
+    case 19:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTransportsecurity(value);
+      break;
+    case 20:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTlsverification(value);
+      break;
+    case 21:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTlsservername(value);
+      break;
+    case 22:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setConnecttimeoutms(value);
+      break;
+    case 23:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setKeepalivetimems(value);
+      break;
+    case 24:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setKeepalivetimeoutms(value);
+      break;
+    case 25:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setMaxrecvmessagebytes(value);
+      break;
+    case 26:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setMaxsendmessagebytes(value);
       break;
     default:
       reader.skipField();
@@ -1704,6 +1984,62 @@ proto.assistant_api.AssistantProviderAgentkit.serializeBinaryToWriter = function
       18,
       f,
       google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
+    );
+  }
+  f = message.getTransportsecurity();
+  if (f.length > 0) {
+    writer.writeString(
+      19,
+      f
+    );
+  }
+  f = message.getTlsverification();
+  if (f.length > 0) {
+    writer.writeString(
+      20,
+      f
+    );
+  }
+  f = message.getTlsservername();
+  if (f.length > 0) {
+    writer.writeString(
+      21,
+      f
+    );
+  }
+  f = message.getConnecttimeoutms();
+  if (f !== 0) {
+    writer.writeUint32(
+      22,
+      f
+    );
+  }
+  f = message.getKeepalivetimems();
+  if (f !== 0) {
+    writer.writeUint32(
+      23,
+      f
+    );
+  }
+  f = message.getKeepalivetimeoutms();
+  if (f !== 0) {
+    writer.writeUint32(
+      24,
+      f
+    );
+  }
+  f = message.getMaxrecvmessagebytes();
+  if (f !== 0) {
+    writer.writeUint32(
+      25,
+      f
+    );
+  }
+  f = message.getMaxsendmessagebytes();
+  if (f !== 0) {
+    writer.writeUint32(
+      26,
+      f
     );
   }
 };
@@ -2020,6 +2356,150 @@ proto.assistant_api.AssistantProviderAgentkit.prototype.clearUpdateddate = funct
  */
 proto.assistant_api.AssistantProviderAgentkit.prototype.hasUpdateddate = function() {
   return jspb.Message.getField(this, 18) != null;
+};
+
+
+/**
+ * optional string transportSecurity = 19;
+ * @return {string}
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.getTransportsecurity = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 19, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.setTransportsecurity = function(value) {
+  return jspb.Message.setProto3StringField(this, 19, value);
+};
+
+
+/**
+ * optional string tlsVerification = 20;
+ * @return {string}
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.getTlsverification = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 20, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.setTlsverification = function(value) {
+  return jspb.Message.setProto3StringField(this, 20, value);
+};
+
+
+/**
+ * optional string tlsServerName = 21;
+ * @return {string}
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.getTlsservername = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 21, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.setTlsservername = function(value) {
+  return jspb.Message.setProto3StringField(this, 21, value);
+};
+
+
+/**
+ * optional uint32 connectTimeoutMs = 22;
+ * @return {number}
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.getConnecttimeoutms = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 22, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.setConnecttimeoutms = function(value) {
+  return jspb.Message.setProto3IntField(this, 22, value);
+};
+
+
+/**
+ * optional uint32 keepaliveTimeMs = 23;
+ * @return {number}
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.getKeepalivetimems = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 23, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.setKeepalivetimems = function(value) {
+  return jspb.Message.setProto3IntField(this, 23, value);
+};
+
+
+/**
+ * optional uint32 keepaliveTimeoutMs = 24;
+ * @return {number}
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.getKeepalivetimeoutms = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 24, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.setKeepalivetimeoutms = function(value) {
+  return jspb.Message.setProto3IntField(this, 24, value);
+};
+
+
+/**
+ * optional uint32 maxRecvMessageBytes = 25;
+ * @return {number}
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.getMaxrecvmessagebytes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 25, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.setMaxrecvmessagebytes = function(value) {
+  return jspb.Message.setProto3IntField(this, 25, value);
+};
+
+
+/**
+ * optional uint32 maxSendMessageBytes = 26;
+ * @return {number}
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.getMaxsendmessagebytes = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 26, 0));
+};
+
+
+/**
+ * @param {number} value
+ * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
+ */
+proto.assistant_api.AssistantProviderAgentkit.prototype.setMaxsendmessagebytes = function(value) {
+  return jspb.Message.setProto3IntField(this, 26, value);
 };
 
 
