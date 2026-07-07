@@ -59,6 +59,11 @@ export class Assistant extends jspb.Message {
   getAssistantproviderwebsocket(): assistant_provider_pb.AssistantProviderWebsocket | undefined;
   setAssistantproviderwebsocket(value?: assistant_provider_pb.AssistantProviderWebsocket): void;
 
+  hasAssistantprovideragentflow(): boolean;
+  clearAssistantprovideragentflow(): void;
+  getAssistantprovideragentflow(): assistant_provider_pb.AssistantProviderAgentflow | undefined;
+  setAssistantprovideragentflow(value?: assistant_provider_pb.AssistantProviderAgentflow): void;
+
   hasAssistanttag(): boolean;
   clearAssistanttag(): void;
   getAssistanttag(): common_pb.Tag | undefined;
@@ -156,6 +161,7 @@ export namespace Assistant {
     assistantprovidermodel?: assistant_provider_pb.AssistantProviderModel.AsObject,
     assistantprovideragentkit?: assistant_provider_pb.AssistantProviderAgentkit.AsObject,
     assistantproviderwebsocket?: assistant_provider_pb.AssistantProviderWebsocket.AsObject,
+    assistantprovideragentflow?: assistant_provider_pb.AssistantProviderAgentflow.AsObject,
     assistanttag?: common_pb.Tag.AsObject,
     createdby: string,
     createduser?: common_pb.User.AsObject,

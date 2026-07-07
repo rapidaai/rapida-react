@@ -588,6 +588,7 @@ proto.assistant_api.Assistant.toObject = function(includeInstance, msg) {
     assistantprovidermodel: (f = msg.getAssistantprovidermodel()) && assistant$provider_pb.AssistantProviderModel.toObject(includeInstance, f),
     assistantprovideragentkit: (f = msg.getAssistantprovideragentkit()) && assistant$provider_pb.AssistantProviderAgentkit.toObject(includeInstance, f),
     assistantproviderwebsocket: (f = msg.getAssistantproviderwebsocket()) && assistant$provider_pb.AssistantProviderWebsocket.toObject(includeInstance, f),
+    assistantprovideragentflow: (f = msg.getAssistantprovideragentflow()) && assistant$provider_pb.AssistantProviderAgentflow.toObject(includeInstance, f),
     assistanttag: (f = msg.getAssistanttag()) && common_pb.Tag.toObject(includeInstance, f),
     createdby: jspb.Message.getFieldWithDefault(msg, 22, "0"),
     createduser: (f = msg.getCreateduser()) && common_pb.User.toObject(includeInstance, f),
@@ -700,6 +701,11 @@ proto.assistant_api.Assistant.deserializeBinaryFromReader = function(msg, reader
       var value = new assistant$provider_pb.AssistantProviderWebsocket;
       reader.readMessage(value,assistant$provider_pb.AssistantProviderWebsocket.deserializeBinaryFromReader);
       msg.setAssistantproviderwebsocket(value);
+      break;
+    case 53:
+      var value = new assistant$provider_pb.AssistantProviderAgentflow;
+      reader.readMessage(value,assistant$provider_pb.AssistantProviderAgentflow.deserializeBinaryFromReader);
+      msg.setAssistantprovideragentflow(value);
       break;
     case 14:
       var value = new common_pb.Tag;
@@ -902,6 +908,14 @@ proto.assistant_api.Assistant.serializeBinaryToWriter = function(message, writer
       52,
       f,
       assistant$provider_pb.AssistantProviderWebsocket.serializeBinaryToWriter
+    );
+  }
+  f = message.getAssistantprovideragentflow();
+  if (f != null) {
+    writer.writeMessage(
+      53,
+      f,
+      assistant$provider_pb.AssistantProviderAgentflow.serializeBinaryToWriter
     );
   }
   f = message.getAssistanttag();
@@ -1331,6 +1345,43 @@ proto.assistant_api.Assistant.prototype.clearAssistantproviderwebsocket = functi
  */
 proto.assistant_api.Assistant.prototype.hasAssistantproviderwebsocket = function() {
   return jspb.Message.getField(this, 52) != null;
+};
+
+
+/**
+ * optional AssistantProviderAgentflow assistantProviderAgentflow = 53;
+ * @return {?proto.assistant_api.AssistantProviderAgentflow}
+ */
+proto.assistant_api.Assistant.prototype.getAssistantprovideragentflow = function() {
+  return /** @type{?proto.assistant_api.AssistantProviderAgentflow} */ (
+    jspb.Message.getWrapperField(this, assistant$provider_pb.AssistantProviderAgentflow, 53));
+};
+
+
+/**
+ * @param {?proto.assistant_api.AssistantProviderAgentflow|undefined} value
+ * @return {!proto.assistant_api.Assistant} returns this
+*/
+proto.assistant_api.Assistant.prototype.setAssistantprovideragentflow = function(value) {
+  return jspb.Message.setWrapperField(this, 53, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ * @return {!proto.assistant_api.Assistant} returns this
+ */
+proto.assistant_api.Assistant.prototype.clearAssistantprovideragentflow = function() {
+  return this.setAssistantprovideragentflow(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.assistant_api.Assistant.prototype.hasAssistantprovideragentflow = function() {
+  return jspb.Message.getField(this, 53) != null;
 };
 
 

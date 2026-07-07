@@ -3,6 +3,7 @@
 
 import * as jspb from "google-protobuf";
 import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
+import * as google_protobuf_struct_pb from "google-protobuf/google/protobuf/struct_pb";
 import * as common_pb from "./common_pb";
 
 export class UpdateAssistantVersionRequest extends jspb.Message {
@@ -55,6 +56,11 @@ export class CreateAssistantProviderRequest extends jspb.Message {
   getWebsocket(): CreateAssistantProviderRequest.CreateAssistantProviderWebsocket | undefined;
   setWebsocket(value?: CreateAssistantProviderRequest.CreateAssistantProviderWebsocket): void;
 
+  hasAgentflow(): boolean;
+  clearAgentflow(): void;
+  getAgentflow(): CreateAssistantProviderRequest.CreateAssistantProviderAgentflow | undefined;
+  setAgentflow(value?: CreateAssistantProviderRequest.CreateAssistantProviderAgentflow): void;
+
   getAssistantproviderCase(): CreateAssistantProviderRequest.AssistantproviderCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateAssistantProviderRequest.AsObject;
@@ -73,6 +79,7 @@ export namespace CreateAssistantProviderRequest {
     model?: CreateAssistantProviderRequest.CreateAssistantProviderModel.AsObject,
     agentkit?: CreateAssistantProviderRequest.CreateAssistantProviderAgentkit.AsObject,
     websocket?: CreateAssistantProviderRequest.CreateAssistantProviderWebsocket.AsObject,
+    agentflow?: CreateAssistantProviderRequest.CreateAssistantProviderAgentflow.AsObject,
   }
 
   export class CreateAssistantProviderModel extends jspb.Message {
@@ -192,11 +199,38 @@ export namespace CreateAssistantProviderRequest {
     }
   }
 
+  export class CreateAssistantProviderAgentflow extends jspb.Message {
+    getSchemaversion(): string;
+    setSchemaversion(value: string): void;
+
+    hasDefinition(): boolean;
+    clearDefinition(): void;
+    getDefinition(): google_protobuf_struct_pb.Struct | undefined;
+    setDefinition(value?: google_protobuf_struct_pb.Struct): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): CreateAssistantProviderAgentflow.AsObject;
+    static toObject(includeInstance: boolean, msg: CreateAssistantProviderAgentflow): CreateAssistantProviderAgentflow.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: CreateAssistantProviderAgentflow, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): CreateAssistantProviderAgentflow;
+    static deserializeBinaryFromReader(message: CreateAssistantProviderAgentflow, reader: jspb.BinaryReader): CreateAssistantProviderAgentflow;
+  }
+
+  export namespace CreateAssistantProviderAgentflow {
+    export type AsObject = {
+      schemaversion: string,
+      definition?: google_protobuf_struct_pb.Struct.AsObject,
+    }
+  }
+
   export enum AssistantproviderCase {
     ASSISTANTPROVIDER_NOT_SET = 0,
     MODEL = 50,
     AGENTKIT = 51,
     WEBSOCKET = 52,
+    AGENTFLOW = 53,
   }
 }
 
@@ -461,6 +495,80 @@ export namespace AssistantProviderModel {
   }
 }
 
+export class AssistantProviderAgentflow extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getDescription(): string;
+  setDescription(value: string): void;
+
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  getSchemaversion(): string;
+  setSchemaversion(value: string): void;
+
+  hasDefinition(): boolean;
+  clearDefinition(): void;
+  getDefinition(): google_protobuf_struct_pb.Struct | undefined;
+  setDefinition(value?: google_protobuf_struct_pb.Struct): void;
+
+  getStatus(): string;
+  setStatus(value: string): void;
+
+  getCreatedby(): string;
+  setCreatedby(value: string): void;
+
+  hasCreateduser(): boolean;
+  clearCreateduser(): void;
+  getCreateduser(): common_pb.User | undefined;
+  setCreateduser(value?: common_pb.User): void;
+
+  getUpdatedby(): string;
+  setUpdatedby(value: string): void;
+
+  hasUpdateduser(): boolean;
+  clearUpdateduser(): void;
+  getUpdateduser(): common_pb.User | undefined;
+  setUpdateduser(value?: common_pb.User): void;
+
+  hasCreateddate(): boolean;
+  clearCreateddate(): void;
+  getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setCreateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasUpdateddate(): boolean;
+  clearUpdateddate(): void;
+  getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantProviderAgentflow.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantProviderAgentflow): AssistantProviderAgentflow.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantProviderAgentflow, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantProviderAgentflow;
+  static deserializeBinaryFromReader(message: AssistantProviderAgentflow, reader: jspb.BinaryReader): AssistantProviderAgentflow;
+}
+
+export namespace AssistantProviderAgentflow {
+  export type AsObject = {
+    id: string,
+    description: string,
+    assistantid: string,
+    schemaversion: string,
+    definition?: google_protobuf_struct_pb.Struct.AsObject,
+    status: string,
+    createdby: string,
+    createduser?: common_pb.User.AsObject,
+    updatedby: string,
+    updateduser?: common_pb.User.AsObject,
+    createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
 export class GetAllAssistantProviderRequest extends jspb.Message {
   hasPaginate(): boolean;
   clearPaginate(): void;
@@ -515,6 +623,11 @@ export class GetAssistantProviderResponse extends jspb.Message {
   getAssistantproviderwebsocket(): AssistantProviderWebsocket | undefined;
   setAssistantproviderwebsocket(value?: AssistantProviderWebsocket): void;
 
+  hasAssistantprovideragentflow(): boolean;
+  clearAssistantprovideragentflow(): void;
+  getAssistantprovideragentflow(): AssistantProviderAgentflow | undefined;
+  setAssistantprovideragentflow(value?: AssistantProviderAgentflow): void;
+
   hasError(): boolean;
   clearError(): void;
   getError(): common_pb.Error | undefined;
@@ -538,6 +651,7 @@ export namespace GetAssistantProviderResponse {
     assistantprovidermodel?: AssistantProviderModel.AsObject,
     assistantprovideragentkit?: AssistantProviderAgentkit.AsObject,
     assistantproviderwebsocket?: AssistantProviderWebsocket.AsObject,
+    assistantprovideragentflow?: AssistantProviderAgentflow.AsObject,
     error?: common_pb.Error.AsObject,
   }
 
@@ -546,6 +660,7 @@ export namespace GetAssistantProviderResponse {
     ASSISTANTPROVIDERMODEL = 50,
     ASSISTANTPROVIDERAGENTKIT = 51,
     ASSISTANTPROVIDERWEBSOCKET = 52,
+    ASSISTANTPROVIDERAGENTFLOW = 53,
   }
 }
 
@@ -606,6 +721,11 @@ export namespace GetAllAssistantProviderResponse {
     getAssistantproviderwebsocket(): AssistantProviderWebsocket | undefined;
     setAssistantproviderwebsocket(value?: AssistantProviderWebsocket): void;
 
+    hasAssistantprovideragentflow(): boolean;
+    clearAssistantprovideragentflow(): void;
+    getAssistantprovideragentflow(): AssistantProviderAgentflow | undefined;
+    setAssistantprovideragentflow(value?: AssistantProviderAgentflow): void;
+
     getAssistantproviderCase(): AssistantProvider.AssistantproviderCase;
     serializeBinary(): Uint8Array;
     toObject(includeInstance?: boolean): AssistantProvider.AsObject;
@@ -622,6 +742,7 @@ export namespace GetAllAssistantProviderResponse {
       assistantprovidermodel?: AssistantProviderModel.AsObject,
       assistantprovideragentkit?: AssistantProviderAgentkit.AsObject,
       assistantproviderwebsocket?: AssistantProviderWebsocket.AsObject,
+      assistantprovideragentflow?: AssistantProviderAgentflow.AsObject,
     }
 
     export enum AssistantproviderCase {
@@ -629,6 +750,7 @@ export namespace GetAllAssistantProviderResponse {
       ASSISTANTPROVIDERMODEL = 50,
       ASSISTANTPROVIDERAGENTKIT = 51,
       ASSISTANTPROVIDERWEBSOCKET = 52,
+      ASSISTANTPROVIDERAGENTFLOW = 53,
     }
   }
 }
