@@ -906,6 +906,318 @@ export namespace GetAllMessageResponse {
   }
 }
 
+export class GetAssistantDashboardRequest extends jspb.Message {
+  getAssistantid(): string;
+  setAssistantid(value: string): void;
+
+  hasFromdate(): boolean;
+  clearFromdate(): void;
+  getFromdate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setFromdate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasTodate(): boolean;
+  clearTodate(): void;
+  getTodate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setTodate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAssistantDashboardRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantDashboardRequest): GetAssistantDashboardRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantDashboardRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantDashboardRequest;
+  static deserializeBinaryFromReader(message: GetAssistantDashboardRequest, reader: jspb.BinaryReader): GetAssistantDashboardRequest;
+}
+
+export namespace GetAssistantDashboardRequest {
+  export type AsObject = {
+    assistantid: string,
+    fromdate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    todate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
+export class GetAssistantDashboardResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasData(): boolean;
+  clearData(): void;
+  getData(): AssistantDashboard | undefined;
+  setData(value?: AssistantDashboard): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetAssistantDashboardResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetAssistantDashboardResponse): GetAssistantDashboardResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetAssistantDashboardResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetAssistantDashboardResponse;
+  static deserializeBinaryFromReader(message: GetAssistantDashboardResponse, reader: jspb.BinaryReader): GetAssistantDashboardResponse;
+}
+
+export namespace GetAssistantDashboardResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    data?: AssistantDashboard.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
+}
+
+export class AssistantDashboard extends jspb.Message {
+  hasSummary(): boolean;
+  clearSummary(): void;
+  getSummary(): AssistantDashboardSummary | undefined;
+  setSummary(value?: AssistantDashboardSummary): void;
+
+  hasLatency(): boolean;
+  clearLatency(): void;
+  getLatency(): AssistantDashboardLatency | undefined;
+  setLatency(value?: AssistantDashboardLatency): void;
+
+  hasUsage(): boolean;
+  clearUsage(): void;
+  getUsage(): AssistantDashboardUsage | undefined;
+  setUsage(value?: AssistantDashboardUsage): void;
+
+  clearSourcesList(): void;
+  getSourcesList(): Array<AssistantDashboardDistribution>;
+  setSourcesList(value: Array<AssistantDashboardDistribution>): void;
+  addSources(value?: AssistantDashboardDistribution, index?: number): AssistantDashboardDistribution;
+
+  clearLanguagesList(): void;
+  getLanguagesList(): Array<AssistantDashboardDistribution>;
+  setLanguagesList(value: Array<AssistantDashboardDistribution>): void;
+  addLanguages(value?: AssistantDashboardDistribution, index?: number): AssistantDashboardDistribution;
+
+  clearBucketsList(): void;
+  getBucketsList(): Array<AssistantDashboardBucket>;
+  setBucketsList(value: Array<AssistantDashboardBucket>): void;
+  addBuckets(value?: AssistantDashboardBucket, index?: number): AssistantDashboardBucket;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantDashboard.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantDashboard): AssistantDashboard.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantDashboard, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantDashboard;
+  static deserializeBinaryFromReader(message: AssistantDashboard, reader: jspb.BinaryReader): AssistantDashboard;
+}
+
+export namespace AssistantDashboard {
+  export type AsObject = {
+    summary?: AssistantDashboardSummary.AsObject,
+    latency?: AssistantDashboardLatency.AsObject,
+    usage?: AssistantDashboardUsage.AsObject,
+    sourcesList: Array<AssistantDashboardDistribution.AsObject>,
+    languagesList: Array<AssistantDashboardDistribution.AsObject>,
+    bucketsList: Array<AssistantDashboardBucket.AsObject>,
+  }
+}
+
+export class AssistantDashboardSummary extends jspb.Message {
+  getTotalsessions(): number;
+  setTotalsessions(value: number): void;
+
+  getActivesessions(): number;
+  setActivesessions(value: number): void;
+
+  getCompletedsessions(): number;
+  setCompletedsessions(value: number): void;
+
+  getFailedsessions(): number;
+  setFailedsessions(value: number): void;
+
+  getTotalmessages(): number;
+  setTotalmessages(value: number): void;
+
+  getUsermessages(): number;
+  setUsermessages(value: number): void;
+
+  getFailurerate(): number;
+  setFailurerate(value: number): void;
+
+  getAveragesessiondurationseconds(): number;
+  setAveragesessiondurationseconds(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantDashboardSummary.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantDashboardSummary): AssistantDashboardSummary.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantDashboardSummary, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantDashboardSummary;
+  static deserializeBinaryFromReader(message: AssistantDashboardSummary, reader: jspb.BinaryReader): AssistantDashboardSummary;
+}
+
+export namespace AssistantDashboardSummary {
+  export type AsObject = {
+    totalsessions: number,
+    activesessions: number,
+    completedsessions: number,
+    failedsessions: number,
+    totalmessages: number,
+    usermessages: number,
+    failurerate: number,
+    averagesessiondurationseconds: number,
+  }
+}
+
+export class AssistantDashboardLatency extends jspb.Message {
+  getAveragems(): number;
+  setAveragems(value: number): void;
+
+  getSttms(): number;
+  setSttms(value: number): void;
+
+  getEosms(): number;
+  setEosms(value: number): void;
+
+  getTtsms(): number;
+  setTtsms(value: number): void;
+
+  getLlmms(): number;
+  setLlmms(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantDashboardLatency.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantDashboardLatency): AssistantDashboardLatency.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantDashboardLatency, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantDashboardLatency;
+  static deserializeBinaryFromReader(message: AssistantDashboardLatency, reader: jspb.BinaryReader): AssistantDashboardLatency;
+}
+
+export namespace AssistantDashboardLatency {
+  export type AsObject = {
+    averagems: number,
+    sttms: number,
+    eosms: number,
+    ttsms: number,
+    llmms: number,
+  }
+}
+
+export class AssistantDashboardUsage extends jspb.Message {
+  getTotaltokens(): number;
+  setTotaltokens(value: number): void;
+
+  getSttdurationseconds(): number;
+  setSttdurationseconds(value: number): void;
+
+  getTtsdurationseconds(): number;
+  setTtsdurationseconds(value: number): void;
+
+  getTotaldurationseconds(): number;
+  setTotaldurationseconds(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantDashboardUsage.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantDashboardUsage): AssistantDashboardUsage.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantDashboardUsage, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantDashboardUsage;
+  static deserializeBinaryFromReader(message: AssistantDashboardUsage, reader: jspb.BinaryReader): AssistantDashboardUsage;
+}
+
+export namespace AssistantDashboardUsage {
+  export type AsObject = {
+    totaltokens: number,
+    sttdurationseconds: number,
+    ttsdurationseconds: number,
+    totaldurationseconds: number,
+  }
+}
+
+export class AssistantDashboardDistribution extends jspb.Message {
+  getName(): string;
+  setName(value: string): void;
+
+  getCount(): number;
+  setCount(value: number): void;
+
+  getPercentage(): number;
+  setPercentage(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantDashboardDistribution.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantDashboardDistribution): AssistantDashboardDistribution.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantDashboardDistribution, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantDashboardDistribution;
+  static deserializeBinaryFromReader(message: AssistantDashboardDistribution, reader: jspb.BinaryReader): AssistantDashboardDistribution;
+}
+
+export namespace AssistantDashboardDistribution {
+  export type AsObject = {
+    name: string,
+    count: number,
+    percentage: number,
+  }
+}
+
+export class AssistantDashboardBucket extends jspb.Message {
+  hasStartdate(): boolean;
+  clearStartdate(): void;
+  getStartdate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setStartdate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  hasEnddate(): boolean;
+  clearEnddate(): void;
+  getEnddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setEnddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  getMessagecount(): number;
+  setMessagecount(value: number): void;
+
+  getSttlatencyms(): number;
+  setSttlatencyms(value: number): void;
+
+  getEoslatencyms(): number;
+  setEoslatencyms(value: number): void;
+
+  getTtslatencyms(): number;
+  setTtslatencyms(value: number): void;
+
+  getLlmlatencyms(): number;
+  setLlmlatencyms(value: number): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssistantDashboardBucket.AsObject;
+  static toObject(includeInstance: boolean, msg: AssistantDashboardBucket): AssistantDashboardBucket.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssistantDashboardBucket, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssistantDashboardBucket;
+  static deserializeBinaryFromReader(message: AssistantDashboardBucket, reader: jspb.BinaryReader): AssistantDashboardBucket;
+}
+
+export namespace AssistantDashboardBucket {
+  export type AsObject = {
+    startdate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    enddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    messagecount: number,
+    sttlatencyms: number,
+    eoslatencyms: number,
+    ttslatencyms: number,
+    llmlatencyms: number,
+  }
+}
+
 export class UpdateAssistantDetailRequest extends jspb.Message {
   getAssistantid(): string;
   setAssistantid(value: string): void;

@@ -58,6 +58,8 @@ import {
   CreateAssistantConfigurationRequest,
   UpdateAssistantConfigurationRequest,
   DeleteAssistantConfigurationRequest,
+  GetAssistantDashboardRequest,
+  GetAssistantDashboardResponse,
 } from "@/rapida/clients/protos/assistant-api_pb";
 
 import {
@@ -242,6 +244,34 @@ export function GetAssistant(
       req,
       WithAuthContext(connectionConfig.auth || authHeader),
       (err: ServiceError | null, response: GetAssistantResponse | null) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
+  });
+}
+
+/**
+ * Retrieve dashboard metrics for an assistant.
+ *
+ * @param connectionConfig - SDK connection configuration.
+ * @param req - The dashboard request containing assistantId and optional fromDate/toDate.
+ * @param authHeader - Authentication headers for the request.
+ * @returns Promise<GetAssistantDashboardResponse> - The gRPC response object.
+ */
+export function GetAssistantDashboard(
+  connectionConfig: ConnectionConfig,
+  req: GetAssistantDashboardRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAssistantDashboardResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.getAssistantDashboard(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAssistantDashboardResponse | null
+      ) => {
         if (err) reject(err);
         else resolve(response!);
       }

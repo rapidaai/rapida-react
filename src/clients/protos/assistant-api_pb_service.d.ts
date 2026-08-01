@@ -117,6 +117,15 @@ type AssistantServiceGetAllMessage = {
   readonly responseType: typeof assistant_api_pb.GetAllMessageResponse;
 };
 
+type AssistantServiceGetAssistantDashboard = {
+  readonly methodName: string;
+  readonly service: typeof AssistantService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof assistant_api_pb.GetAssistantDashboardRequest;
+  readonly responseType: typeof assistant_api_pb.GetAssistantDashboardResponse;
+};
+
 type AssistantServiceGetAssistantConfiguration = {
   readonly methodName: string;
   readonly service: typeof AssistantService;
@@ -329,6 +338,7 @@ export class AssistantService {
   static readonly GetAllAssistantMessage: AssistantServiceGetAllAssistantMessage;
   static readonly GetAllConversationMessage: AssistantServiceGetAllConversationMessage;
   static readonly GetAllMessage: AssistantServiceGetAllMessage;
+  static readonly GetAssistantDashboard: AssistantServiceGetAssistantDashboard;
   static readonly GetAssistantConfiguration: AssistantServiceGetAssistantConfiguration;
   static readonly GetAllAssistantConfiguration: AssistantServiceGetAllAssistantConfiguration;
   static readonly CreateAssistantConfiguration: AssistantServiceCreateAssistantConfiguration;
@@ -492,6 +502,15 @@ export class AssistantServiceClient {
   getAllMessage(
     requestMessage: assistant_api_pb.GetAllMessageRequest,
     callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAllMessageResponse|null) => void
+  ): UnaryResponse;
+  getAssistantDashboard(
+    requestMessage: assistant_api_pb.GetAssistantDashboardRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantDashboardResponse|null) => void
+  ): UnaryResponse;
+  getAssistantDashboard(
+    requestMessage: assistant_api_pb.GetAssistantDashboardRequest,
+    callback: (error: ServiceError|null, responseMessage: assistant_api_pb.GetAssistantDashboardResponse|null) => void
   ): UnaryResponse;
   getAssistantConfiguration(
     requestMessage: assistant_api_pb.GetAssistantConfigurationRequest,
