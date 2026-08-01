@@ -128,43 +128,28 @@ import { ConnectionConfig } from "@/rapida/types/connection-config";
 /**
  * Retrieve all assistants with pagination and filtering criteria.
  *
- * @param page - The page number for pagination.
- * @param pageSize - The number of assistants per page.
- * @param criteria - List of criteria to filter assistants.
- * @param cb - Callback function to handle the response.
+ * @param req - The get-all assistant request.
  * @param authHeader - Authentication headers for the request.
- * @returns UnaryResponse - The gRPC response object.
+ * @returns Promise<GetAllAssistantResponse> - The gRPC response object.
  */
 export function GetAllAssistant(
   connectionConfig: ConnectionConfig,
-  page: number,
-  pageSize: number,
-  criteria: { key: string; value: string }[],
-  cb: (
-    err: ServiceError | null,
-    response: GetAllAssistantResponse | null
-  ) => void,
-  authHeader: ClientAuthInfo | UserAuthInfo
-) {
-  const req = new GetAllAssistantRequest();
-  const paginate = new Paginate();
-
-  criteria.forEach(({ key, value }) => {
-    const ctr = new Criteria();
-    ctr.setKey(key);
-    ctr.setValue(value);
-    req.addCriterias(ctr);
+  req: GetAllAssistantRequest,
+  authHeader?: ClientAuthInfo | UserAuthInfo
+): Promise<GetAllAssistantResponse> {
+  return new Promise((resolve, reject) => {
+    connectionConfig.assistantClient.getAllAssistant(
+      req,
+      WithAuthContext(connectionConfig.auth || authHeader),
+      (
+        err: ServiceError | null,
+        response: GetAllAssistantResponse | null
+      ) => {
+        if (err) reject(err);
+        else resolve(response!);
+      }
+    );
   });
-
-  paginate.setPage(page);
-  paginate.setPagesize(pageSize);
-  req.setPaginate(paginate);
-
-  return connectionConfig.assistantClient.getAllAssistant(
-    req,
-    WithAuthContext(authHeader),
-    cb
-  );
 }
 
 /**
