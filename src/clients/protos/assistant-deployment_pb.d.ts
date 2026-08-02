@@ -120,6 +120,16 @@ export class AssistantWebpluginDeployment extends jspb.Message {
   getGreetinginterruptible(): boolean;
   setGreetinginterruptible(value: boolean): void;
 
+  hasUnclearinputtimeout(): boolean;
+  clearUnclearinputtimeout(): void;
+  getUnclearinputtimeout(): number;
+  setUnclearinputtimeout(value: number): void;
+
+  hasUnclearinputmessage(): boolean;
+  clearUnclearinputmessage(): void;
+  getUnclearinputmessage(): string;
+  setUnclearinputmessage(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantWebpluginDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantWebpluginDeployment): AssistantWebpluginDeployment.AsObject;
@@ -152,6 +162,8 @@ export namespace AssistantWebpluginDeployment {
     idealtimeoutmessage: string,
     idealtimeoutbackoff: string,
     greetinginterruptible: boolean,
+    unclearinputtimeout: number,
+    unclearinputmessage: string,
   }
 }
 
@@ -220,6 +232,16 @@ export class AssistantPhoneDeployment extends jspb.Message {
   getGreetinginterruptible(): boolean;
   setGreetinginterruptible(value: boolean): void;
 
+  hasUnclearinputtimeout(): boolean;
+  clearUnclearinputtimeout(): void;
+  getUnclearinputtimeout(): number;
+  setUnclearinputtimeout(value: number): void;
+
+  hasUnclearinputmessage(): boolean;
+  clearUnclearinputmessage(): void;
+  getUnclearinputmessage(): string;
+  setUnclearinputmessage(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantPhoneDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantPhoneDeployment): AssistantPhoneDeployment.AsObject;
@@ -248,6 +270,8 @@ export namespace AssistantPhoneDeployment {
     idealtimeoutmessage: string,
     idealtimeoutbackoff: string,
     greetinginterruptible: boolean,
+    unclearinputtimeout: number,
+    unclearinputmessage: string,
   }
 }
 
@@ -319,6 +343,16 @@ export class AssistantWhatsappDeployment extends jspb.Message {
   getGreetinginterruptible(): boolean;
   setGreetinginterruptible(value: boolean): void;
 
+  hasUnclearinputtimeout(): boolean;
+  clearUnclearinputtimeout(): void;
+  getUnclearinputtimeout(): number;
+  setUnclearinputtimeout(value: number): void;
+
+  hasUnclearinputmessage(): boolean;
+  clearUnclearinputmessage(): void;
+  getUnclearinputmessage(): string;
+  setUnclearinputmessage(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantWhatsappDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantWhatsappDeployment): AssistantWhatsappDeployment.AsObject;
@@ -348,6 +382,8 @@ export namespace AssistantWhatsappDeployment {
     idealtimeoutmessage: string,
     idealtimeoutbackoff: string,
     greetinginterruptible: boolean,
+    unclearinputtimeout: number,
+    unclearinputmessage: string,
   }
 }
 
@@ -411,6 +447,16 @@ export class AssistantDebuggerDeployment extends jspb.Message {
   getGreetinginterruptible(): boolean;
   setGreetinginterruptible(value: boolean): void;
 
+  hasUnclearinputtimeout(): boolean;
+  clearUnclearinputtimeout(): void;
+  getUnclearinputtimeout(): number;
+  setUnclearinputtimeout(value: number): void;
+
+  hasUnclearinputmessage(): boolean;
+  clearUnclearinputmessage(): void;
+  getUnclearinputmessage(): string;
+  setUnclearinputmessage(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantDebuggerDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantDebuggerDeployment): AssistantDebuggerDeployment.AsObject;
@@ -438,6 +484,8 @@ export namespace AssistantDebuggerDeployment {
     idealtimeoutmessage: string,
     idealtimeoutbackoff: string,
     greetinginterruptible: boolean,
+    unclearinputtimeout: number,
+    unclearinputmessage: string,
   }
 }
 
@@ -498,6 +546,16 @@ export class AssistantApiDeployment extends jspb.Message {
   getGreetinginterruptible(): boolean;
   setGreetinginterruptible(value: boolean): void;
 
+  hasUnclearinputtimeout(): boolean;
+  clearUnclearinputtimeout(): void;
+  getUnclearinputtimeout(): number;
+  setUnclearinputtimeout(value: number): void;
+
+  hasUnclearinputmessage(): boolean;
+  clearUnclearinputmessage(): void;
+  getUnclearinputmessage(): string;
+  setUnclearinputmessage(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantApiDeployment.AsObject;
   static toObject(includeInstance: boolean, msg: AssistantApiDeployment): AssistantApiDeployment.AsObject;
@@ -524,6 +582,8 @@ export namespace AssistantApiDeployment {
     idealtimeoutmessage: string,
     idealtimeoutbackoff: string,
     greetinginterruptible: boolean,
+    unclearinputtimeout: number,
+    unclearinputmessage: string,
   }
 }
 
