@@ -255,21 +255,15 @@ export class AssistantProviderAgentkit extends jspb.Message {
 
   getMetadataMap(): jspb.Map<string, string>;
   clearMetadataMap(): void;
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): common_pb.AuditActor | undefined;
+  setCreatedactor(value?: common_pb.AuditActor): void;
 
-  hasCreateduser(): boolean;
-  clearCreateduser(): void;
-  getCreateduser(): common_pb.User | undefined;
-  setCreateduser(value?: common_pb.User): void;
-
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
-
-  hasUpdateduser(): boolean;
-  clearUpdateduser(): void;
-  getUpdateduser(): common_pb.User | undefined;
-  setUpdateduser(value?: common_pb.User): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): common_pb.AuditActor | undefined;
+  setUpdatedactor(value?: common_pb.AuditActor): void;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -324,10 +318,8 @@ export namespace AssistantProviderAgentkit {
     url: string,
     certificate: string,
     metadataMap: Array<[string, string]>,
-    createdby: string,
-    createduser?: common_pb.User.AsObject,
-    updatedby: string,
-    updateduser?: common_pb.User.AsObject,
+    createdactor?: common_pb.AuditActor.AsObject,
+    updatedactor?: common_pb.AuditActor.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     transportsecurity: string,
@@ -361,21 +353,15 @@ export class AssistantProviderWebsocket extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): common_pb.AuditActor | undefined;
+  setCreatedactor(value?: common_pb.AuditActor): void;
 
-  hasCreateduser(): boolean;
-  clearCreateduser(): void;
-  getCreateduser(): common_pb.User | undefined;
-  setCreateduser(value?: common_pb.User): void;
-
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
-
-  hasUpdateduser(): boolean;
-  clearUpdateduser(): void;
-  getUpdateduser(): common_pb.User | undefined;
-  setUpdateduser(value?: common_pb.User): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): common_pb.AuditActor | undefined;
+  setUpdatedactor(value?: common_pb.AuditActor): void;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -406,10 +392,8 @@ export namespace AssistantProviderWebsocket {
     headersMap: Array<[string, string]>,
     parametersMap: Array<[string, string]>,
     status: string,
-    createdby: string,
-    createduser?: common_pb.User.AsObject,
-    updatedby: string,
-    updateduser?: common_pb.User.AsObject,
+    createdactor?: common_pb.AuditActor.AsObject,
+    updatedactor?: common_pb.AuditActor.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
@@ -441,21 +425,15 @@ export class AssistantProviderModel extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): common_pb.AuditActor | undefined;
+  setCreatedactor(value?: common_pb.AuditActor): void;
 
-  hasCreateduser(): boolean;
-  clearCreateduser(): void;
-  getCreateduser(): common_pb.User | undefined;
-  setCreateduser(value?: common_pb.User): void;
-
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
-
-  hasUpdateduser(): boolean;
-  clearUpdateduser(): void;
-  getUpdateduser(): common_pb.User | undefined;
-  setUpdateduser(value?: common_pb.User): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): common_pb.AuditActor | undefined;
+  setUpdatedactor(value?: common_pb.AuditActor): void;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -486,10 +464,8 @@ export namespace AssistantProviderModel {
     modelprovidername: string,
     assistantmodeloptionsList: Array<common_pb.Metadata.AsObject>,
     status: string,
-    createdby: string,
-    createduser?: common_pb.User.AsObject,
-    updatedby: string,
-    updateduser?: common_pb.User.AsObject,
+    createdactor?: common_pb.AuditActor.AsObject,
+    updatedactor?: common_pb.AuditActor.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }
@@ -516,21 +492,15 @@ export class AssistantProviderAgentflow extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): common_pb.AuditActor | undefined;
+  setCreatedactor(value?: common_pb.AuditActor): void;
 
-  hasCreateduser(): boolean;
-  clearCreateduser(): void;
-  getCreateduser(): common_pb.User | undefined;
-  setCreateduser(value?: common_pb.User): void;
-
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
-
-  hasUpdateduser(): boolean;
-  clearUpdateduser(): void;
-  getUpdateduser(): common_pb.User | undefined;
-  setUpdateduser(value?: common_pb.User): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): common_pb.AuditActor | undefined;
+  setUpdatedactor(value?: common_pb.AuditActor): void;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -560,10 +530,8 @@ export namespace AssistantProviderAgentflow {
     schemaversion: string,
     definition?: google_protobuf_struct_pb.Struct.AsObject,
     status: string,
-    createdby: string,
-    createduser?: common_pb.User.AsObject,
-    updatedby: string,
-    updateduser?: common_pb.User.AsObject,
+    createdactor?: common_pb.AuditActor.AsObject,
+    updatedactor?: common_pb.AuditActor.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }

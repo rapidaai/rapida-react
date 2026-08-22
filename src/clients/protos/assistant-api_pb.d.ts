@@ -69,21 +69,15 @@ export class Assistant extends jspb.Message {
   getAssistanttag(): common_pb.Tag | undefined;
   setAssistanttag(value?: common_pb.Tag): void;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): common_pb.AuditActor | undefined;
+  setCreatedactor(value?: common_pb.AuditActor): void;
 
-  hasCreateduser(): boolean;
-  clearCreateduser(): void;
-  getCreateduser(): common_pb.User | undefined;
-  setCreateduser(value?: common_pb.User): void;
-
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
-
-  hasUpdateduser(): boolean;
-  clearUpdateduser(): void;
-  getUpdateduser(): common_pb.User | undefined;
-  setUpdateduser(value?: common_pb.User): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): common_pb.AuditActor | undefined;
+  setUpdatedactor(value?: common_pb.AuditActor): void;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -163,10 +157,8 @@ export namespace Assistant {
     assistantproviderwebsocket?: assistant_provider_pb.AssistantProviderWebsocket.AsObject,
     assistantprovideragentflow?: assistant_provider_pb.AssistantProviderAgentflow.AsObject,
     assistanttag?: common_pb.Tag.AsObject,
-    createdby: string,
-    createduser?: common_pb.User.AsObject,
-    updatedby: string,
-    updateduser?: common_pb.User.AsObject,
+    createdactor?: common_pb.AuditActor.AsObject,
+    updatedactor?: common_pb.AuditActor.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     debuggerdeployment?: assistant_deployment_pb.AssistantDebuggerDeployment.AsObject,
@@ -406,11 +398,15 @@ export class AssistantConfiguration extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): common_pb.AuditActor | undefined;
+  setCreatedactor(value?: common_pb.AuditActor): void;
 
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): common_pb.AuditActor | undefined;
+  setUpdatedactor(value?: common_pb.AuditActor): void;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -443,8 +439,8 @@ export namespace AssistantConfiguration {
     enabled: boolean,
     optionsList: Array<common_pb.Metadata.AsObject>,
     status: string,
-    createdby: string,
-    updatedby: string,
+    createdactor?: common_pb.AuditActor.AsObject,
+    updatedactor?: common_pb.AuditActor.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
   }

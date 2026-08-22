@@ -183,21 +183,15 @@ export class EndpointProviderModel extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): common_pb.AuditActor | undefined;
+  setCreatedactor(value?: common_pb.AuditActor): void;
 
-  hasCreateduser(): boolean;
-  clearCreateduser(): void;
-  getCreateduser(): common_pb.User | undefined;
-  setCreateduser(value?: common_pb.User): void;
-
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
-
-  hasUpdateduser(): boolean;
-  clearUpdateduser(): void;
-  getUpdateduser(): common_pb.User | undefined;
-  setUpdateduser(value?: common_pb.User): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): common_pb.AuditActor | undefined;
+  setUpdatedactor(value?: common_pb.AuditActor): void;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -232,10 +226,8 @@ export namespace EndpointProviderModel {
     modelprovidername: string,
     endpointmodeloptionsList: Array<common_pb.Metadata.AsObject>,
     status: string,
-    createdby: string,
-    createduser?: common_pb.User.AsObject,
-    updatedby: string,
-    updateduser?: common_pb.User.AsObject,
+    createdactor?: common_pb.AuditActor.AsObject,
+    updatedactor?: common_pb.AuditActor.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     endpointid: string,
@@ -371,21 +363,15 @@ export class Endpoint extends jspb.Message {
   getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): common_pb.AuditActor | undefined;
+  setCreatedactor(value?: common_pb.AuditActor): void;
 
-  hasCreateduser(): boolean;
-  clearCreateduser(): void;
-  getCreateduser(): common_pb.User | undefined;
-  setCreateduser(value?: common_pb.User): void;
-
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
-
-  hasUpdateduser(): boolean;
-  clearUpdateduser(): void;
-  getUpdateduser(): common_pb.User | undefined;
-  setUpdateduser(value?: common_pb.User): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): common_pb.AuditActor | undefined;
+  setUpdatedactor(value?: common_pb.AuditActor): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): Endpoint.AsObject;
@@ -418,10 +404,8 @@ export namespace Endpoint {
     description: string,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-    createdby: string,
-    createduser?: common_pb.User.AsObject,
-    updatedby: string,
-    updateduser?: common_pb.User.AsObject,
+    createdactor?: common_pb.AuditActor.AsObject,
+    updatedactor?: common_pb.AuditActor.AsObject,
   }
 }
 
@@ -771,11 +755,15 @@ export class EndpointRetryConfiguration extends jspb.Message {
   setRetryablesList(value: Array<string>): void;
   addRetryables(value: string, index?: number): string;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): common_pb.AuditActor | undefined;
+  setCreatedactor(value?: common_pb.AuditActor): void;
 
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): common_pb.AuditActor | undefined;
+  setUpdatedactor(value?: common_pb.AuditActor): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): EndpointRetryConfiguration.AsObject;
@@ -794,8 +782,8 @@ export namespace EndpointRetryConfiguration {
     delayseconds: string,
     exponentialbackoff: boolean,
     retryablesList: Array<string>,
-    createdby: string,
-    updatedby: string,
+    createdactor?: common_pb.AuditActor.AsObject,
+    updatedactor?: common_pb.AuditActor.AsObject,
   }
 }
 
@@ -809,11 +797,15 @@ export class EndpointCacheConfiguration extends jspb.Message {
   getMatchthreshold(): number;
   setMatchthreshold(value: number): void;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): common_pb.AuditActor | undefined;
+  setCreatedactor(value?: common_pb.AuditActor): void;
 
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): common_pb.AuditActor | undefined;
+  setUpdatedactor(value?: common_pb.AuditActor): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): EndpointCacheConfiguration.AsObject;
@@ -830,8 +822,8 @@ export namespace EndpointCacheConfiguration {
     cachetype: string,
     expiryinterval: string,
     matchthreshold: number,
-    createdby: string,
-    updatedby: string,
+    createdactor?: common_pb.AuditActor.AsObject,
+    updatedactor?: common_pb.AuditActor.AsObject,
   }
 }
 

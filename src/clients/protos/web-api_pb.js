@@ -1290,7 +1290,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.web_api.ProjectCredential = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, 500, null, null);
 };
 goog.inherits(proto.web_api.ProjectCredential, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -3229,7 +3229,9 @@ proto.web_api.ScopedAuthentication.toObject = function(includeInstance, msg) {
     userid: jspb.Message.getFieldWithDefault(msg, 1, 0),
     organizationid: jspb.Message.getFieldWithDefault(msg, 2, 0),
     projectid: jspb.Message.getFieldWithDefault(msg, 3, 0),
-    status: jspb.Message.getFieldWithDefault(msg, 4, "")
+    status: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    actortype: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    actorid: jspb.Message.getFieldWithDefault(msg, 6, "")
   };
 
   if (includeInstance) {
@@ -3281,6 +3283,14 @@ proto.web_api.ScopedAuthentication.deserializeBinaryFromReader = function(msg, r
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setActortype(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setActorid(value);
       break;
     default:
       reader.skipField();
@@ -3336,6 +3346,20 @@ proto.web_api.ScopedAuthentication.serializeBinaryToWriter = function(message, w
   if (f.length > 0) {
     writer.writeString(
       4,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 5));
+  if (f != null) {
+    writer.writeString(
+      5,
+      f
+    );
+  }
+  f = /** @type {string} */ (jspb.Message.getField(message, 6));
+  if (f != null) {
+    writer.writeString(
+      6,
       f
     );
   }
@@ -3411,6 +3435,78 @@ proto.web_api.ScopedAuthentication.prototype.getStatus = function() {
  */
 proto.web_api.ScopedAuthentication.prototype.setStatus = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * optional string actorType = 5;
+ * @return {string}
+ */
+proto.web_api.ScopedAuthentication.prototype.getActortype = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.web_api.ScopedAuthentication} returns this
+ */
+proto.web_api.ScopedAuthentication.prototype.setActortype = function(value) {
+  return jspb.Message.setField(this, 5, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.web_api.ScopedAuthentication} returns this
+ */
+proto.web_api.ScopedAuthentication.prototype.clearActortype = function() {
+  return jspb.Message.setField(this, 5, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.web_api.ScopedAuthentication.prototype.hasActortype = function() {
+  return jspb.Message.getField(this, 5) != null;
+};
+
+
+/**
+ * optional string actorId = 6;
+ * @return {string}
+ */
+proto.web_api.ScopedAuthentication.prototype.getActorid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.web_api.ScopedAuthentication} returns this
+ */
+proto.web_api.ScopedAuthentication.prototype.setActorid = function(value) {
+  return jspb.Message.setField(this, 6, value);
+};
+
+
+/**
+ * Clears the field making it undefined.
+ * @return {!proto.web_api.ScopedAuthentication} returns this
+ */
+proto.web_api.ScopedAuthentication.prototype.clearActorid = function() {
+  return jspb.Message.setField(this, 6, undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.web_api.ScopedAuthentication.prototype.hasActorid = function() {
+  return jspb.Message.getField(this, 6) != null;
 };
 
 
@@ -13582,11 +13678,10 @@ proto.web_api.ProjectCredential.toObject = function(includeInstance, msg) {
     name: jspb.Message.getFieldWithDefault(msg, 4, ""),
     key: jspb.Message.getFieldWithDefault(msg, 5, ""),
     status: jspb.Message.getFieldWithDefault(msg, 6, ""),
-    createdby: jspb.Message.getFieldWithDefault(msg, 7, "0"),
-    updatedby: jspb.Message.getFieldWithDefault(msg, 8, "0"),
+    createdactor: (f = msg.getCreatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
+    updatedactor: (f = msg.getUpdatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-    updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-    createduser: (f = msg.getCreateduser()) && common_pb.User.toObject(includeInstance, f)
+    updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -13647,13 +13742,15 @@ proto.web_api.ProjectCredential.deserializeBinaryFromReader = function(msg, read
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
       break;
-    case 7:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setCreatedby(value);
+    case 1000:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setCreatedactor(value);
       break;
-    case 8:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setUpdatedby(value);
+    case 1001:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setUpdatedactor(value);
       break;
     case 9:
       var value = new google_protobuf_timestamp_pb.Timestamp;
@@ -13664,11 +13761,6 @@ proto.web_api.ProjectCredential.deserializeBinaryFromReader = function(msg, read
       var value = new google_protobuf_timestamp_pb.Timestamp;
       reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
       msg.setUpdateddate(value);
-      break;
-    case 11:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setCreateduser(value);
       break;
     default:
       reader.skipField();
@@ -13741,18 +13833,20 @@ proto.web_api.ProjectCredential.serializeBinaryToWriter = function(message, writ
       f
     );
   }
-  f = message.getCreatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      7,
-      f
+  f = message.getCreatedactor();
+  if (f != null) {
+    writer.writeMessage(
+      1000,
+      f,
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
-  f = message.getUpdatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      8,
-      f
+  f = message.getUpdatedactor();
+  if (f != null) {
+    writer.writeMessage(
+      1001,
+      f,
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
   f = message.getCreateddate();
@@ -13769,14 +13863,6 @@ proto.web_api.ProjectCredential.serializeBinaryToWriter = function(message, writ
       10,
       f,
       google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
-    );
-  }
-  f = message.getCreateduser();
-  if (f != null) {
-    writer.writeMessage(
-      11,
-      f,
-      common_pb.User.serializeBinaryToWriter
     );
   }
 };
@@ -13891,38 +13977,76 @@ proto.web_api.ProjectCredential.prototype.setStatus = function(value) {
 
 
 /**
- * optional uint64 createdBy = 7;
- * @return {string}
+ * optional AuditActor createdActor = 1000;
+ * @return {?proto.AuditActor}
  */
-proto.web_api.ProjectCredential.prototype.getCreatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 7, "0"));
+proto.web_api.ProjectCredential.prototype.getCreatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1000));
 };
 
 
 /**
- * @param {string} value
+ * @param {?proto.AuditActor|undefined} value
+ * @return {!proto.web_api.ProjectCredential} returns this
+*/
+proto.web_api.ProjectCredential.prototype.setCreatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1000, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
  * @return {!proto.web_api.ProjectCredential} returns this
  */
-proto.web_api.ProjectCredential.prototype.setCreatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 7, value);
+proto.web_api.ProjectCredential.prototype.clearCreatedactor = function() {
+  return this.setCreatedactor(undefined);
 };
 
 
 /**
- * optional uint64 updatedBy = 8;
- * @return {string}
+ * Returns whether this field is set.
+ * @return {boolean}
  */
-proto.web_api.ProjectCredential.prototype.getUpdatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, "0"));
+proto.web_api.ProjectCredential.prototype.hasCreatedactor = function() {
+  return jspb.Message.getField(this, 1000) != null;
 };
 
 
 /**
- * @param {string} value
+ * optional AuditActor updatedActor = 1001;
+ * @return {?proto.AuditActor}
+ */
+proto.web_api.ProjectCredential.prototype.getUpdatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1001));
+};
+
+
+/**
+ * @param {?proto.AuditActor|undefined} value
+ * @return {!proto.web_api.ProjectCredential} returns this
+*/
+proto.web_api.ProjectCredential.prototype.setUpdatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1001, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
  * @return {!proto.web_api.ProjectCredential} returns this
  */
-proto.web_api.ProjectCredential.prototype.setUpdatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 8, value);
+proto.web_api.ProjectCredential.prototype.clearUpdatedactor = function() {
+  return this.setUpdatedactor(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.web_api.ProjectCredential.prototype.hasUpdatedactor = function() {
+  return jspb.Message.getField(this, 1001) != null;
 };
 
 
@@ -13997,43 +14121,6 @@ proto.web_api.ProjectCredential.prototype.clearUpdateddate = function() {
  */
 proto.web_api.ProjectCredential.prototype.hasUpdateddate = function() {
   return jspb.Message.getField(this, 10) != null;
-};
-
-
-/**
- * optional User createdUser = 11;
- * @return {?proto.User}
- */
-proto.web_api.ProjectCredential.prototype.getCreateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 11));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
- * @return {!proto.web_api.ProjectCredential} returns this
-*/
-proto.web_api.ProjectCredential.prototype.setCreateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 11, value);
-};
-
-
-/**
- * Clears the message field making it undefined.
- * @return {!proto.web_api.ProjectCredential} returns this
- */
-proto.web_api.ProjectCredential.prototype.clearCreateduser = function() {
-  return this.setCreateduser(undefined);
-};
-
-
-/**
- * Returns whether this field is set.
- * @return {boolean}
- */
-proto.web_api.ProjectCredential.prototype.hasCreateduser = function() {
-  return jspb.Message.getField(this, 11) != null;
 };
 
 

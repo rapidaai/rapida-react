@@ -175,7 +175,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.assistant_api.AssistantProviderAgentkit = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, 500, null, null);
 };
 goog.inherits(proto.assistant_api.AssistantProviderAgentkit, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -196,7 +196,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.assistant_api.AssistantProviderWebsocket = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, 500, null, null);
 };
 goog.inherits(proto.assistant_api.AssistantProviderWebsocket, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -217,7 +217,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.assistant_api.AssistantProviderModel = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.assistant_api.AssistantProviderModel.repeatedFields_, null);
+  jspb.Message.initialize(this, opt_data, 0, 500, proto.assistant_api.AssistantProviderModel.repeatedFields_, null);
 };
 goog.inherits(proto.assistant_api.AssistantProviderModel, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -238,7 +238,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.assistant_api.AssistantProviderAgentflow = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, 500, null, null);
 };
 goog.inherits(proto.assistant_api.AssistantProviderAgentflow, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -2004,10 +2004,8 @@ proto.assistant_api.AssistantProviderAgentkit.toObject = function(includeInstanc
     url: jspb.Message.getFieldWithDefault(msg, 5, ""),
     certificate: jspb.Message.getFieldWithDefault(msg, 6, ""),
     metadataMap: (f = msg.getMetadataMap()) ? f.toObject(includeInstance, undefined) : [],
-    createdby: jspb.Message.getFieldWithDefault(msg, 13, "0"),
-    createduser: (f = msg.getCreateduser()) && common_pb.User.toObject(includeInstance, f),
-    updatedby: jspb.Message.getFieldWithDefault(msg, 15, "0"),
-    updateduser: (f = msg.getUpdateduser()) && common_pb.User.toObject(includeInstance, f),
+    createdactor: (f = msg.getCreatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
+    updatedactor: (f = msg.getUpdatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     transportsecurity: jspb.Message.getFieldWithDefault(msg, 19, ""),
@@ -2084,23 +2082,15 @@ proto.assistant_api.AssistantProviderAgentkit.deserializeBinaryFromReader = func
         jspb.Map.deserializeBinary(message, reader, jspb.BinaryReader.prototype.readString, jspb.BinaryReader.prototype.readString, null, "", "");
          });
       break;
-    case 13:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setCreatedby(value);
+    case 1000:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setCreatedactor(value);
       break;
-    case 14:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setCreateduser(value);
-      break;
-    case 15:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setUpdatedby(value);
-      break;
-    case 16:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setUpdateduser(value);
+    case 1001:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setUpdatedactor(value);
       break;
     case 17:
       var value = new google_protobuf_timestamp_pb.Timestamp;
@@ -2219,34 +2209,20 @@ proto.assistant_api.AssistantProviderAgentkit.serializeBinaryToWriter = function
   if (f && f.getLength() > 0) {
     f.serializeBinary(7, writer, jspb.BinaryWriter.prototype.writeString, jspb.BinaryWriter.prototype.writeString);
   }
-  f = message.getCreatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      13,
-      f
-    );
-  }
-  f = message.getCreateduser();
+  f = message.getCreatedactor();
   if (f != null) {
     writer.writeMessage(
-      14,
+      1000,
       f,
-      common_pb.User.serializeBinaryToWriter
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
-  f = message.getUpdatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      15,
-      f
-    );
-  }
-  f = message.getUpdateduser();
+  f = message.getUpdatedactor();
   if (f != null) {
     writer.writeMessage(
-      16,
+      1001,
       f,
-      common_pb.User.serializeBinaryToWriter
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
   f = message.getCreateddate();
@@ -2455,39 +2431,21 @@ proto.assistant_api.AssistantProviderAgentkit.prototype.clearMetadataMap = funct
 
 
 /**
- * optional uint64 createdBy = 13;
- * @return {string}
+ * optional AuditActor createdActor = 1000;
+ * @return {?proto.AuditActor}
  */
-proto.assistant_api.AssistantProviderAgentkit.prototype.getCreatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, "0"));
+proto.assistant_api.AssistantProviderAgentkit.prototype.getCreatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1000));
 };
 
 
 /**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
- */
-proto.assistant_api.AssistantProviderAgentkit.prototype.setCreatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 13, value);
-};
-
-
-/**
- * optional User createdUser = 14;
- * @return {?proto.User}
- */
-proto.assistant_api.AssistantProviderAgentkit.prototype.getCreateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 14));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
+ * @param {?proto.AuditActor|undefined} value
  * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
 */
-proto.assistant_api.AssistantProviderAgentkit.prototype.setCreateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 14, value);
+proto.assistant_api.AssistantProviderAgentkit.prototype.setCreatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1000, value);
 };
 
 
@@ -2495,8 +2453,8 @@ proto.assistant_api.AssistantProviderAgentkit.prototype.setCreateduser = functio
  * Clears the message field making it undefined.
  * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
  */
-proto.assistant_api.AssistantProviderAgentkit.prototype.clearCreateduser = function() {
-  return this.setCreateduser(undefined);
+proto.assistant_api.AssistantProviderAgentkit.prototype.clearCreatedactor = function() {
+  return this.setCreatedactor(undefined);
 };
 
 
@@ -2504,45 +2462,27 @@ proto.assistant_api.AssistantProviderAgentkit.prototype.clearCreateduser = funct
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.assistant_api.AssistantProviderAgentkit.prototype.hasCreateduser = function() {
-  return jspb.Message.getField(this, 14) != null;
+proto.assistant_api.AssistantProviderAgentkit.prototype.hasCreatedactor = function() {
+  return jspb.Message.getField(this, 1000) != null;
 };
 
 
 /**
- * optional uint64 updatedBy = 15;
- * @return {string}
+ * optional AuditActor updatedActor = 1001;
+ * @return {?proto.AuditActor}
  */
-proto.assistant_api.AssistantProviderAgentkit.prototype.getUpdatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, "0"));
+proto.assistant_api.AssistantProviderAgentkit.prototype.getUpdatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1001));
 };
 
 
 /**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
- */
-proto.assistant_api.AssistantProviderAgentkit.prototype.setUpdatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 15, value);
-};
-
-
-/**
- * optional User updatedUser = 16;
- * @return {?proto.User}
- */
-proto.assistant_api.AssistantProviderAgentkit.prototype.getUpdateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 16));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
+ * @param {?proto.AuditActor|undefined} value
  * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
 */
-proto.assistant_api.AssistantProviderAgentkit.prototype.setUpdateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 16, value);
+proto.assistant_api.AssistantProviderAgentkit.prototype.setUpdatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1001, value);
 };
 
 
@@ -2550,8 +2490,8 @@ proto.assistant_api.AssistantProviderAgentkit.prototype.setUpdateduser = functio
  * Clears the message field making it undefined.
  * @return {!proto.assistant_api.AssistantProviderAgentkit} returns this
  */
-proto.assistant_api.AssistantProviderAgentkit.prototype.clearUpdateduser = function() {
-  return this.setUpdateduser(undefined);
+proto.assistant_api.AssistantProviderAgentkit.prototype.clearUpdatedactor = function() {
+  return this.setUpdatedactor(undefined);
 };
 
 
@@ -2559,8 +2499,8 @@ proto.assistant_api.AssistantProviderAgentkit.prototype.clearUpdateduser = funct
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.assistant_api.AssistantProviderAgentkit.prototype.hasUpdateduser = function() {
-  return jspb.Message.getField(this, 16) != null;
+proto.assistant_api.AssistantProviderAgentkit.prototype.hasUpdatedactor = function() {
+  return jspb.Message.getField(this, 1001) != null;
 };
 
 
@@ -2821,10 +2761,8 @@ proto.assistant_api.AssistantProviderWebsocket.toObject = function(includeInstan
     headersMap: (f = msg.getHeadersMap()) ? f.toObject(includeInstance, undefined) : [],
     parametersMap: (f = msg.getParametersMap()) ? f.toObject(includeInstance, undefined) : [],
     status: jspb.Message.getFieldWithDefault(msg, 12, ""),
-    createdby: jspb.Message.getFieldWithDefault(msg, 13, "0"),
-    createduser: (f = msg.getCreateduser()) && common_pb.User.toObject(includeInstance, f),
-    updatedby: jspb.Message.getFieldWithDefault(msg, 15, "0"),
-    updateduser: (f = msg.getUpdateduser()) && common_pb.User.toObject(includeInstance, f),
+    createdactor: (f = msg.getCreatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
+    updatedactor: (f = msg.getUpdatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
   };
@@ -2895,23 +2833,15 @@ proto.assistant_api.AssistantProviderWebsocket.deserializeBinaryFromReader = fun
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
       break;
-    case 13:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setCreatedby(value);
+    case 1000:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setCreatedactor(value);
       break;
-    case 14:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setCreateduser(value);
-      break;
-    case 15:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setUpdatedby(value);
-      break;
-    case 16:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setUpdateduser(value);
+    case 1001:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setUpdatedactor(value);
       break;
     case 17:
       var value = new google_protobuf_timestamp_pb.Timestamp;
@@ -2995,34 +2925,20 @@ proto.assistant_api.AssistantProviderWebsocket.serializeBinaryToWriter = functio
       f
     );
   }
-  f = message.getCreatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      13,
-      f
-    );
-  }
-  f = message.getCreateduser();
+  f = message.getCreatedactor();
   if (f != null) {
     writer.writeMessage(
-      14,
+      1000,
       f,
-      common_pb.User.serializeBinaryToWriter
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
-  f = message.getUpdatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      15,
-      f
-    );
-  }
-  f = message.getUpdateduser();
+  f = message.getUpdatedactor();
   if (f != null) {
     writer.writeMessage(
-      16,
+      1001,
       f,
-      common_pb.User.serializeBinaryToWriter
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
   f = message.getCreateddate();
@@ -3179,39 +3095,21 @@ proto.assistant_api.AssistantProviderWebsocket.prototype.setStatus = function(va
 
 
 /**
- * optional uint64 createdBy = 13;
- * @return {string}
+ * optional AuditActor createdActor = 1000;
+ * @return {?proto.AuditActor}
  */
-proto.assistant_api.AssistantProviderWebsocket.prototype.getCreatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, "0"));
+proto.assistant_api.AssistantProviderWebsocket.prototype.getCreatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1000));
 };
 
 
 /**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantProviderWebsocket} returns this
- */
-proto.assistant_api.AssistantProviderWebsocket.prototype.setCreatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 13, value);
-};
-
-
-/**
- * optional User createdUser = 14;
- * @return {?proto.User}
- */
-proto.assistant_api.AssistantProviderWebsocket.prototype.getCreateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 14));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
+ * @param {?proto.AuditActor|undefined} value
  * @return {!proto.assistant_api.AssistantProviderWebsocket} returns this
 */
-proto.assistant_api.AssistantProviderWebsocket.prototype.setCreateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 14, value);
+proto.assistant_api.AssistantProviderWebsocket.prototype.setCreatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1000, value);
 };
 
 
@@ -3219,8 +3117,8 @@ proto.assistant_api.AssistantProviderWebsocket.prototype.setCreateduser = functi
  * Clears the message field making it undefined.
  * @return {!proto.assistant_api.AssistantProviderWebsocket} returns this
  */
-proto.assistant_api.AssistantProviderWebsocket.prototype.clearCreateduser = function() {
-  return this.setCreateduser(undefined);
+proto.assistant_api.AssistantProviderWebsocket.prototype.clearCreatedactor = function() {
+  return this.setCreatedactor(undefined);
 };
 
 
@@ -3228,45 +3126,27 @@ proto.assistant_api.AssistantProviderWebsocket.prototype.clearCreateduser = func
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.assistant_api.AssistantProviderWebsocket.prototype.hasCreateduser = function() {
-  return jspb.Message.getField(this, 14) != null;
+proto.assistant_api.AssistantProviderWebsocket.prototype.hasCreatedactor = function() {
+  return jspb.Message.getField(this, 1000) != null;
 };
 
 
 /**
- * optional uint64 updatedBy = 15;
- * @return {string}
+ * optional AuditActor updatedActor = 1001;
+ * @return {?proto.AuditActor}
  */
-proto.assistant_api.AssistantProviderWebsocket.prototype.getUpdatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, "0"));
+proto.assistant_api.AssistantProviderWebsocket.prototype.getUpdatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1001));
 };
 
 
 /**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantProviderWebsocket} returns this
- */
-proto.assistant_api.AssistantProviderWebsocket.prototype.setUpdatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 15, value);
-};
-
-
-/**
- * optional User updatedUser = 16;
- * @return {?proto.User}
- */
-proto.assistant_api.AssistantProviderWebsocket.prototype.getUpdateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 16));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
+ * @param {?proto.AuditActor|undefined} value
  * @return {!proto.assistant_api.AssistantProviderWebsocket} returns this
 */
-proto.assistant_api.AssistantProviderWebsocket.prototype.setUpdateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 16, value);
+proto.assistant_api.AssistantProviderWebsocket.prototype.setUpdatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1001, value);
 };
 
 
@@ -3274,8 +3154,8 @@ proto.assistant_api.AssistantProviderWebsocket.prototype.setUpdateduser = functi
  * Clears the message field making it undefined.
  * @return {!proto.assistant_api.AssistantProviderWebsocket} returns this
  */
-proto.assistant_api.AssistantProviderWebsocket.prototype.clearUpdateduser = function() {
-  return this.setUpdateduser(undefined);
+proto.assistant_api.AssistantProviderWebsocket.prototype.clearUpdatedactor = function() {
+  return this.setUpdatedactor(undefined);
 };
 
 
@@ -3283,8 +3163,8 @@ proto.assistant_api.AssistantProviderWebsocket.prototype.clearUpdateduser = func
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.assistant_api.AssistantProviderWebsocket.prototype.hasUpdateduser = function() {
-  return jspb.Message.getField(this, 16) != null;
+proto.assistant_api.AssistantProviderWebsocket.prototype.hasUpdatedactor = function() {
+  return jspb.Message.getField(this, 1001) != null;
 };
 
 
@@ -3409,10 +3289,8 @@ proto.assistant_api.AssistantProviderModel.toObject = function(includeInstance, 
     assistantmodeloptionsList: jspb.Message.toObjectList(msg.getAssistantmodeloptionsList(),
     common_pb.Metadata.toObject, includeInstance),
     status: jspb.Message.getFieldWithDefault(msg, 12, ""),
-    createdby: jspb.Message.getFieldWithDefault(msg, 13, "0"),
-    createduser: (f = msg.getCreateduser()) && common_pb.User.toObject(includeInstance, f),
-    updatedby: jspb.Message.getFieldWithDefault(msg, 15, "0"),
-    updateduser: (f = msg.getUpdateduser()) && common_pb.User.toObject(includeInstance, f),
+    createdactor: (f = msg.getCreatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
+    updatedactor: (f = msg.getUpdatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
   };
@@ -3481,23 +3359,15 @@ proto.assistant_api.AssistantProviderModel.deserializeBinaryFromReader = functio
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
       break;
-    case 13:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setCreatedby(value);
+    case 1000:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setCreatedactor(value);
       break;
-    case 14:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setCreateduser(value);
-      break;
-    case 15:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setUpdatedby(value);
-      break;
-    case 16:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setUpdateduser(value);
+    case 1001:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setUpdatedactor(value);
       break;
     case 17:
       var value = new google_protobuf_timestamp_pb.Timestamp;
@@ -3589,34 +3459,20 @@ proto.assistant_api.AssistantProviderModel.serializeBinaryToWriter = function(me
       f
     );
   }
-  f = message.getCreatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      13,
-      f
-    );
-  }
-  f = message.getCreateduser();
+  f = message.getCreatedactor();
   if (f != null) {
     writer.writeMessage(
-      14,
+      1000,
       f,
-      common_pb.User.serializeBinaryToWriter
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
-  f = message.getUpdatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      15,
-      f
-    );
-  }
-  f = message.getUpdateduser();
+  f = message.getUpdatedactor();
   if (f != null) {
     writer.writeMessage(
-      16,
+      1001,
       f,
-      common_pb.User.serializeBinaryToWriter
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
   f = message.getCreateddate();
@@ -3804,39 +3660,21 @@ proto.assistant_api.AssistantProviderModel.prototype.setStatus = function(value)
 
 
 /**
- * optional uint64 createdBy = 13;
- * @return {string}
+ * optional AuditActor createdActor = 1000;
+ * @return {?proto.AuditActor}
  */
-proto.assistant_api.AssistantProviderModel.prototype.getCreatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, "0"));
+proto.assistant_api.AssistantProviderModel.prototype.getCreatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1000));
 };
 
 
 /**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantProviderModel} returns this
- */
-proto.assistant_api.AssistantProviderModel.prototype.setCreatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 13, value);
-};
-
-
-/**
- * optional User createdUser = 14;
- * @return {?proto.User}
- */
-proto.assistant_api.AssistantProviderModel.prototype.getCreateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 14));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
+ * @param {?proto.AuditActor|undefined} value
  * @return {!proto.assistant_api.AssistantProviderModel} returns this
 */
-proto.assistant_api.AssistantProviderModel.prototype.setCreateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 14, value);
+proto.assistant_api.AssistantProviderModel.prototype.setCreatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1000, value);
 };
 
 
@@ -3844,8 +3682,8 @@ proto.assistant_api.AssistantProviderModel.prototype.setCreateduser = function(v
  * Clears the message field making it undefined.
  * @return {!proto.assistant_api.AssistantProviderModel} returns this
  */
-proto.assistant_api.AssistantProviderModel.prototype.clearCreateduser = function() {
-  return this.setCreateduser(undefined);
+proto.assistant_api.AssistantProviderModel.prototype.clearCreatedactor = function() {
+  return this.setCreatedactor(undefined);
 };
 
 
@@ -3853,45 +3691,27 @@ proto.assistant_api.AssistantProviderModel.prototype.clearCreateduser = function
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.assistant_api.AssistantProviderModel.prototype.hasCreateduser = function() {
-  return jspb.Message.getField(this, 14) != null;
+proto.assistant_api.AssistantProviderModel.prototype.hasCreatedactor = function() {
+  return jspb.Message.getField(this, 1000) != null;
 };
 
 
 /**
- * optional uint64 updatedBy = 15;
- * @return {string}
+ * optional AuditActor updatedActor = 1001;
+ * @return {?proto.AuditActor}
  */
-proto.assistant_api.AssistantProviderModel.prototype.getUpdatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, "0"));
+proto.assistant_api.AssistantProviderModel.prototype.getUpdatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1001));
 };
 
 
 /**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantProviderModel} returns this
- */
-proto.assistant_api.AssistantProviderModel.prototype.setUpdatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 15, value);
-};
-
-
-/**
- * optional User updatedUser = 16;
- * @return {?proto.User}
- */
-proto.assistant_api.AssistantProviderModel.prototype.getUpdateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 16));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
+ * @param {?proto.AuditActor|undefined} value
  * @return {!proto.assistant_api.AssistantProviderModel} returns this
 */
-proto.assistant_api.AssistantProviderModel.prototype.setUpdateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 16, value);
+proto.assistant_api.AssistantProviderModel.prototype.setUpdatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1001, value);
 };
 
 
@@ -3899,8 +3719,8 @@ proto.assistant_api.AssistantProviderModel.prototype.setUpdateduser = function(v
  * Clears the message field making it undefined.
  * @return {!proto.assistant_api.AssistantProviderModel} returns this
  */
-proto.assistant_api.AssistantProviderModel.prototype.clearUpdateduser = function() {
-  return this.setUpdateduser(undefined);
+proto.assistant_api.AssistantProviderModel.prototype.clearUpdatedactor = function() {
+  return this.setUpdatedactor(undefined);
 };
 
 
@@ -3908,8 +3728,8 @@ proto.assistant_api.AssistantProviderModel.prototype.clearUpdateduser = function
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.assistant_api.AssistantProviderModel.prototype.hasUpdateduser = function() {
-  return jspb.Message.getField(this, 16) != null;
+proto.assistant_api.AssistantProviderModel.prototype.hasUpdatedactor = function() {
+  return jspb.Message.getField(this, 1001) != null;
 };
 
 
@@ -4025,10 +3845,8 @@ proto.assistant_api.AssistantProviderAgentflow.toObject = function(includeInstan
     schemaversion: jspb.Message.getFieldWithDefault(msg, 4, ""),
     definition: (f = msg.getDefinition()) && google_protobuf_struct_pb.Struct.toObject(includeInstance, f),
     status: jspb.Message.getFieldWithDefault(msg, 12, ""),
-    createdby: jspb.Message.getFieldWithDefault(msg, 13, "0"),
-    createduser: (f = msg.getCreateduser()) && common_pb.User.toObject(includeInstance, f),
-    updatedby: jspb.Message.getFieldWithDefault(msg, 15, "0"),
-    updateduser: (f = msg.getUpdateduser()) && common_pb.User.toObject(includeInstance, f),
+    createdactor: (f = msg.getCreatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
+    updatedactor: (f = msg.getUpdatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f)
   };
@@ -4092,23 +3910,15 @@ proto.assistant_api.AssistantProviderAgentflow.deserializeBinaryFromReader = fun
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
       break;
-    case 13:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setCreatedby(value);
+    case 1000:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setCreatedactor(value);
       break;
-    case 14:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setCreateduser(value);
-      break;
-    case 15:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setUpdatedby(value);
-      break;
-    case 16:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setUpdateduser(value);
+    case 1001:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setUpdatedactor(value);
       break;
     case 17:
       var value = new google_protobuf_timestamp_pb.Timestamp;
@@ -4192,34 +4002,20 @@ proto.assistant_api.AssistantProviderAgentflow.serializeBinaryToWriter = functio
       f
     );
   }
-  f = message.getCreatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      13,
-      f
-    );
-  }
-  f = message.getCreateduser();
+  f = message.getCreatedactor();
   if (f != null) {
     writer.writeMessage(
-      14,
+      1000,
       f,
-      common_pb.User.serializeBinaryToWriter
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
-  f = message.getUpdatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      15,
-      f
-    );
-  }
-  f = message.getUpdateduser();
+  f = message.getUpdatedactor();
   if (f != null) {
     writer.writeMessage(
-      16,
+      1001,
       f,
-      common_pb.User.serializeBinaryToWriter
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
   f = message.getCreateddate();
@@ -4369,39 +4165,21 @@ proto.assistant_api.AssistantProviderAgentflow.prototype.setStatus = function(va
 
 
 /**
- * optional uint64 createdBy = 13;
- * @return {string}
+ * optional AuditActor createdActor = 1000;
+ * @return {?proto.AuditActor}
  */
-proto.assistant_api.AssistantProviderAgentflow.prototype.getCreatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, "0"));
+proto.assistant_api.AssistantProviderAgentflow.prototype.getCreatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1000));
 };
 
 
 /**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantProviderAgentflow} returns this
- */
-proto.assistant_api.AssistantProviderAgentflow.prototype.setCreatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 13, value);
-};
-
-
-/**
- * optional User createdUser = 14;
- * @return {?proto.User}
- */
-proto.assistant_api.AssistantProviderAgentflow.prototype.getCreateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 14));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
+ * @param {?proto.AuditActor|undefined} value
  * @return {!proto.assistant_api.AssistantProviderAgentflow} returns this
 */
-proto.assistant_api.AssistantProviderAgentflow.prototype.setCreateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 14, value);
+proto.assistant_api.AssistantProviderAgentflow.prototype.setCreatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1000, value);
 };
 
 
@@ -4409,8 +4187,8 @@ proto.assistant_api.AssistantProviderAgentflow.prototype.setCreateduser = functi
  * Clears the message field making it undefined.
  * @return {!proto.assistant_api.AssistantProviderAgentflow} returns this
  */
-proto.assistant_api.AssistantProviderAgentflow.prototype.clearCreateduser = function() {
-  return this.setCreateduser(undefined);
+proto.assistant_api.AssistantProviderAgentflow.prototype.clearCreatedactor = function() {
+  return this.setCreatedactor(undefined);
 };
 
 
@@ -4418,45 +4196,27 @@ proto.assistant_api.AssistantProviderAgentflow.prototype.clearCreateduser = func
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.assistant_api.AssistantProviderAgentflow.prototype.hasCreateduser = function() {
-  return jspb.Message.getField(this, 14) != null;
+proto.assistant_api.AssistantProviderAgentflow.prototype.hasCreatedactor = function() {
+  return jspb.Message.getField(this, 1000) != null;
 };
 
 
 /**
- * optional uint64 updatedBy = 15;
- * @return {string}
+ * optional AuditActor updatedActor = 1001;
+ * @return {?proto.AuditActor}
  */
-proto.assistant_api.AssistantProviderAgentflow.prototype.getUpdatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, "0"));
+proto.assistant_api.AssistantProviderAgentflow.prototype.getUpdatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1001));
 };
 
 
 /**
- * @param {string} value
- * @return {!proto.assistant_api.AssistantProviderAgentflow} returns this
- */
-proto.assistant_api.AssistantProviderAgentflow.prototype.setUpdatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 15, value);
-};
-
-
-/**
- * optional User updatedUser = 16;
- * @return {?proto.User}
- */
-proto.assistant_api.AssistantProviderAgentflow.prototype.getUpdateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 16));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
+ * @param {?proto.AuditActor|undefined} value
  * @return {!proto.assistant_api.AssistantProviderAgentflow} returns this
 */
-proto.assistant_api.AssistantProviderAgentflow.prototype.setUpdateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 16, value);
+proto.assistant_api.AssistantProviderAgentflow.prototype.setUpdatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1001, value);
 };
 
 
@@ -4464,8 +4224,8 @@ proto.assistant_api.AssistantProviderAgentflow.prototype.setUpdateduser = functi
  * Clears the message field making it undefined.
  * @return {!proto.assistant_api.AssistantProviderAgentflow} returns this
  */
-proto.assistant_api.AssistantProviderAgentflow.prototype.clearUpdateduser = function() {
-  return this.setUpdateduser(undefined);
+proto.assistant_api.AssistantProviderAgentflow.prototype.clearUpdatedactor = function() {
+  return this.setUpdatedactor(undefined);
 };
 
 
@@ -4473,8 +4233,8 @@ proto.assistant_api.AssistantProviderAgentflow.prototype.clearUpdateduser = func
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.assistant_api.AssistantProviderAgentflow.prototype.hasUpdateduser = function() {
-  return jspb.Message.getField(this, 16) != null;
+proto.assistant_api.AssistantProviderAgentflow.prototype.hasUpdatedactor = function() {
+  return jspb.Message.getField(this, 1001) != null;
 };
 
 

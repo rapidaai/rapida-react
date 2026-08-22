@@ -219,6 +219,36 @@ export namespace User {
   }
 }
 
+export class AuditActor extends jspb.Message {
+  getType(): string;
+  setType(value: string): void;
+
+  getId(): string;
+  setId(value: string): void;
+
+  hasDisplayname(): boolean;
+  clearDisplayname(): void;
+  getDisplayname(): string;
+  setDisplayname(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AuditActor.AsObject;
+  static toObject(includeInstance: boolean, msg: AuditActor): AuditActor.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AuditActor, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AuditActor;
+  static deserializeBinaryFromReader(message: AuditActor, reader: jspb.BinaryReader): AuditActor;
+}
+
+export namespace AuditActor {
+  export type AsObject = {
+    type: string,
+    id: string,
+    displayname: string,
+  }
+}
+
 export class BaseResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
@@ -691,21 +721,15 @@ export class Knowledge extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): AuditActor | undefined;
+  setCreatedactor(value?: AuditActor): void;
 
-  hasCreateduser(): boolean;
-  clearCreateduser(): void;
-  getCreateduser(): User | undefined;
-  setCreateduser(value?: User): void;
-
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
-
-  hasUpdateduser(): boolean;
-  clearUpdateduser(): void;
-  getUpdateduser(): User | undefined;
-  setUpdateduser(value?: User): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): AuditActor | undefined;
+  setUpdatedactor(value?: AuditActor): void;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -763,10 +787,8 @@ export namespace Knowledge {
     embeddingmodelprovidername: string,
     knowledgeembeddingmodeloptionsList: Array<Metadata.AsObject>,
     status: string,
-    createdby: string,
-    createduser?: User.AsObject,
-    updatedby: string,
-    updateduser?: User.AsObject,
+    createdactor?: AuditActor.AsObject,
+    updatedactor?: AuditActor.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     organizationid: string,
@@ -858,11 +880,15 @@ export class AssistantConversationMessage extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): AuditActor | undefined;
+  setCreatedactor(value?: AuditActor): void;
 
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): AuditActor | undefined;
+  setUpdatedactor(value?: AuditActor): void;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -905,8 +931,8 @@ export namespace AssistantConversationMessage {
     source: string,
     metricsList: Array<Metric.AsObject>,
     status: string,
-    createdby: string,
-    updatedby: string,
+    createdactor?: AuditActor.AsObject,
+    updatedactor?: AuditActor.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     assistantid: string,
@@ -1057,11 +1083,15 @@ export class AssistantConversation extends jspb.Message {
   getSource(): string;
   setSource(value: string): void;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): AuditActor | undefined;
+  setCreatedactor(value?: AuditActor): void;
 
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): AuditActor | undefined;
+  setUpdatedactor(value?: AuditActor): void;
 
   hasUser(): boolean;
   clearUser(): void;
@@ -1149,8 +1179,8 @@ export namespace AssistantConversation {
     projectid: string,
     organizationid: string,
     source: string,
-    createdby: string,
-    updatedby: string,
+    createdactor?: AuditActor.AsObject,
+    updatedactor?: AuditActor.AsObject,
     user?: User.AsObject,
     assistantprovidermodelid: string,
     assistantconversationmessageList: Array<AssistantConversationMessage.AsObject>,

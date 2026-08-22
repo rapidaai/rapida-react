@@ -145,7 +145,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.endpoint_api.EndpointProviderModel = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.endpoint_api.EndpointProviderModel.repeatedFields_, null);
+  jspb.Message.initialize(this, opt_data, 0, 500, proto.endpoint_api.EndpointProviderModel.repeatedFields_, null);
 };
 goog.inherits(proto.endpoint_api.EndpointProviderModel, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -187,7 +187,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.endpoint_api.Endpoint = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, 500, null, null);
 };
 goog.inherits(proto.endpoint_api.Endpoint, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -418,7 +418,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.endpoint_api.EndpointRetryConfiguration = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, proto.endpoint_api.EndpointRetryConfiguration.repeatedFields_, null);
+  jspb.Message.initialize(this, opt_data, 0, 500, proto.endpoint_api.EndpointRetryConfiguration.repeatedFields_, null);
 };
 goog.inherits(proto.endpoint_api.EndpointRetryConfiguration, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -439,7 +439,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.endpoint_api.EndpointCacheConfiguration = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, 500, null, null);
 };
 goog.inherits(proto.endpoint_api.EndpointCacheConfiguration, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -1919,10 +1919,8 @@ proto.endpoint_api.EndpointProviderModel.toObject = function(includeInstance, ms
     endpointmodeloptionsList: jspb.Message.toObjectList(msg.getEndpointmodeloptionsList(),
     common_pb.Metadata.toObject, includeInstance),
     status: jspb.Message.getFieldWithDefault(msg, 12, ""),
-    createdby: jspb.Message.getFieldWithDefault(msg, 13, "0"),
-    createduser: (f = msg.getCreateduser()) && common_pb.User.toObject(includeInstance, f),
-    updatedby: jspb.Message.getFieldWithDefault(msg, 15, "0"),
-    updateduser: (f = msg.getUpdateduser()) && common_pb.User.toObject(includeInstance, f),
+    createdactor: (f = msg.getCreatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
+    updatedactor: (f = msg.getUpdatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     endpointid: jspb.Message.getFieldWithDefault(msg, 19, "0"),
@@ -1985,23 +1983,15 @@ proto.endpoint_api.EndpointProviderModel.deserializeBinaryFromReader = function(
       var value = /** @type {string} */ (reader.readString());
       msg.setStatus(value);
       break;
-    case 13:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setCreatedby(value);
+    case 1000:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setCreatedactor(value);
       break;
-    case 14:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setCreateduser(value);
-      break;
-    case 15:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setUpdatedby(value);
-      break;
-    case 16:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setUpdateduser(value);
+    case 1001:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setUpdatedactor(value);
       break;
     case 17:
       var value = new google_protobuf_timestamp_pb.Timestamp;
@@ -2087,34 +2077,20 @@ proto.endpoint_api.EndpointProviderModel.serializeBinaryToWriter = function(mess
       f
     );
   }
-  f = message.getCreatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      13,
-      f
-    );
-  }
-  f = message.getCreateduser();
+  f = message.getCreatedactor();
   if (f != null) {
     writer.writeMessage(
-      14,
+      1000,
       f,
-      common_pb.User.serializeBinaryToWriter
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
-  f = message.getUpdatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      15,
-      f
-    );
-  }
-  f = message.getUpdateduser();
+  f = message.getUpdatedactor();
   if (f != null) {
     writer.writeMessage(
-      16,
+      1001,
       f,
-      common_pb.User.serializeBinaryToWriter
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
   f = message.getCreateddate();
@@ -2280,39 +2256,21 @@ proto.endpoint_api.EndpointProviderModel.prototype.setStatus = function(value) {
 
 
 /**
- * optional uint64 createdBy = 13;
- * @return {string}
+ * optional AuditActor createdActor = 1000;
+ * @return {?proto.AuditActor}
  */
-proto.endpoint_api.EndpointProviderModel.prototype.getCreatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 13, "0"));
+proto.endpoint_api.EndpointProviderModel.prototype.getCreatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1000));
 };
 
 
 /**
- * @param {string} value
- * @return {!proto.endpoint_api.EndpointProviderModel} returns this
- */
-proto.endpoint_api.EndpointProviderModel.prototype.setCreatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 13, value);
-};
-
-
-/**
- * optional User createdUser = 14;
- * @return {?proto.User}
- */
-proto.endpoint_api.EndpointProviderModel.prototype.getCreateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 14));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
+ * @param {?proto.AuditActor|undefined} value
  * @return {!proto.endpoint_api.EndpointProviderModel} returns this
 */
-proto.endpoint_api.EndpointProviderModel.prototype.setCreateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 14, value);
+proto.endpoint_api.EndpointProviderModel.prototype.setCreatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1000, value);
 };
 
 
@@ -2320,8 +2278,8 @@ proto.endpoint_api.EndpointProviderModel.prototype.setCreateduser = function(val
  * Clears the message field making it undefined.
  * @return {!proto.endpoint_api.EndpointProviderModel} returns this
  */
-proto.endpoint_api.EndpointProviderModel.prototype.clearCreateduser = function() {
-  return this.setCreateduser(undefined);
+proto.endpoint_api.EndpointProviderModel.prototype.clearCreatedactor = function() {
+  return this.setCreatedactor(undefined);
 };
 
 
@@ -2329,45 +2287,27 @@ proto.endpoint_api.EndpointProviderModel.prototype.clearCreateduser = function()
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.endpoint_api.EndpointProviderModel.prototype.hasCreateduser = function() {
-  return jspb.Message.getField(this, 14) != null;
+proto.endpoint_api.EndpointProviderModel.prototype.hasCreatedactor = function() {
+  return jspb.Message.getField(this, 1000) != null;
 };
 
 
 /**
- * optional uint64 updatedBy = 15;
- * @return {string}
+ * optional AuditActor updatedActor = 1001;
+ * @return {?proto.AuditActor}
  */
-proto.endpoint_api.EndpointProviderModel.prototype.getUpdatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 15, "0"));
+proto.endpoint_api.EndpointProviderModel.prototype.getUpdatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1001));
 };
 
 
 /**
- * @param {string} value
- * @return {!proto.endpoint_api.EndpointProviderModel} returns this
- */
-proto.endpoint_api.EndpointProviderModel.prototype.setUpdatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 15, value);
-};
-
-
-/**
- * optional User updatedUser = 16;
- * @return {?proto.User}
- */
-proto.endpoint_api.EndpointProviderModel.prototype.getUpdateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 16));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
+ * @param {?proto.AuditActor|undefined} value
  * @return {!proto.endpoint_api.EndpointProviderModel} returns this
 */
-proto.endpoint_api.EndpointProviderModel.prototype.setUpdateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 16, value);
+proto.endpoint_api.EndpointProviderModel.prototype.setUpdatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1001, value);
 };
 
 
@@ -2375,8 +2315,8 @@ proto.endpoint_api.EndpointProviderModel.prototype.setUpdateduser = function(val
  * Clears the message field making it undefined.
  * @return {!proto.endpoint_api.EndpointProviderModel} returns this
  */
-proto.endpoint_api.EndpointProviderModel.prototype.clearUpdateduser = function() {
-  return this.setUpdateduser(undefined);
+proto.endpoint_api.EndpointProviderModel.prototype.clearUpdatedactor = function() {
+  return this.setUpdatedactor(undefined);
 };
 
 
@@ -2384,8 +2324,8 @@ proto.endpoint_api.EndpointProviderModel.prototype.clearUpdateduser = function()
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.endpoint_api.EndpointProviderModel.prototype.hasUpdateduser = function() {
-  return jspb.Message.getField(this, 16) != null;
+proto.endpoint_api.EndpointProviderModel.prototype.hasUpdatedactor = function() {
+  return jspb.Message.getField(this, 1001) != null;
 };
 
 
@@ -2941,10 +2881,8 @@ proto.endpoint_api.Endpoint.toObject = function(includeInstance, msg) {
     description: jspb.Message.getFieldWithDefault(msg, 19, ""),
     createddate: (f = msg.getCreateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
     updateddate: (f = msg.getUpdateddate()) && google_protobuf_timestamp_pb.Timestamp.toObject(includeInstance, f),
-    createdby: jspb.Message.getFieldWithDefault(msg, 22, "0"),
-    createduser: (f = msg.getCreateduser()) && common_pb.User.toObject(includeInstance, f),
-    updatedby: jspb.Message.getFieldWithDefault(msg, 24, "0"),
-    updateduser: (f = msg.getUpdateduser()) && common_pb.User.toObject(includeInstance, f)
+    createdactor: (f = msg.getCreatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
+    updatedactor: (f = msg.getUpdatedactor()) && common_pb.AuditActor.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -3065,23 +3003,15 @@ proto.endpoint_api.Endpoint.deserializeBinaryFromReader = function(msg, reader) 
       reader.readMessage(value,google_protobuf_timestamp_pb.Timestamp.deserializeBinaryFromReader);
       msg.setUpdateddate(value);
       break;
-    case 22:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setCreatedby(value);
+    case 1000:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setCreatedactor(value);
       break;
-    case 23:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setCreateduser(value);
-      break;
-    case 24:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setUpdatedby(value);
-      break;
-    case 25:
-      var value = new common_pb.User;
-      reader.readMessage(value,common_pb.User.deserializeBinaryFromReader);
-      msg.setUpdateduser(value);
+    case 1001:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setUpdatedactor(value);
       break;
     default:
       reader.skipField();
@@ -3253,34 +3183,20 @@ proto.endpoint_api.Endpoint.serializeBinaryToWriter = function(message, writer) 
       google_protobuf_timestamp_pb.Timestamp.serializeBinaryToWriter
     );
   }
-  f = message.getCreatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      22,
-      f
-    );
-  }
-  f = message.getCreateduser();
+  f = message.getCreatedactor();
   if (f != null) {
     writer.writeMessage(
-      23,
+      1000,
       f,
-      common_pb.User.serializeBinaryToWriter
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
-  f = message.getUpdatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      24,
-      f
-    );
-  }
-  f = message.getUpdateduser();
+  f = message.getUpdatedactor();
   if (f != null) {
     writer.writeMessage(
-      25,
+      1001,
       f,
-      common_pb.User.serializeBinaryToWriter
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
 };
@@ -3781,39 +3697,21 @@ proto.endpoint_api.Endpoint.prototype.hasUpdateddate = function() {
 
 
 /**
- * optional uint64 createdBy = 22;
- * @return {string}
+ * optional AuditActor createdActor = 1000;
+ * @return {?proto.AuditActor}
  */
-proto.endpoint_api.Endpoint.prototype.getCreatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 22, "0"));
+proto.endpoint_api.Endpoint.prototype.getCreatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1000));
 };
 
 
 /**
- * @param {string} value
- * @return {!proto.endpoint_api.Endpoint} returns this
- */
-proto.endpoint_api.Endpoint.prototype.setCreatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 22, value);
-};
-
-
-/**
- * optional User createdUser = 23;
- * @return {?proto.User}
- */
-proto.endpoint_api.Endpoint.prototype.getCreateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 23));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
+ * @param {?proto.AuditActor|undefined} value
  * @return {!proto.endpoint_api.Endpoint} returns this
 */
-proto.endpoint_api.Endpoint.prototype.setCreateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 23, value);
+proto.endpoint_api.Endpoint.prototype.setCreatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1000, value);
 };
 
 
@@ -3821,8 +3719,8 @@ proto.endpoint_api.Endpoint.prototype.setCreateduser = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.endpoint_api.Endpoint} returns this
  */
-proto.endpoint_api.Endpoint.prototype.clearCreateduser = function() {
-  return this.setCreateduser(undefined);
+proto.endpoint_api.Endpoint.prototype.clearCreatedactor = function() {
+  return this.setCreatedactor(undefined);
 };
 
 
@@ -3830,45 +3728,27 @@ proto.endpoint_api.Endpoint.prototype.clearCreateduser = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.endpoint_api.Endpoint.prototype.hasCreateduser = function() {
-  return jspb.Message.getField(this, 23) != null;
+proto.endpoint_api.Endpoint.prototype.hasCreatedactor = function() {
+  return jspb.Message.getField(this, 1000) != null;
 };
 
 
 /**
- * optional uint64 updatedBy = 24;
- * @return {string}
+ * optional AuditActor updatedActor = 1001;
+ * @return {?proto.AuditActor}
  */
-proto.endpoint_api.Endpoint.prototype.getUpdatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 24, "0"));
+proto.endpoint_api.Endpoint.prototype.getUpdatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1001));
 };
 
 
 /**
- * @param {string} value
- * @return {!proto.endpoint_api.Endpoint} returns this
- */
-proto.endpoint_api.Endpoint.prototype.setUpdatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 24, value);
-};
-
-
-/**
- * optional User updatedUser = 25;
- * @return {?proto.User}
- */
-proto.endpoint_api.Endpoint.prototype.getUpdateduser = function() {
-  return /** @type{?proto.User} */ (
-    jspb.Message.getWrapperField(this, common_pb.User, 25));
-};
-
-
-/**
- * @param {?proto.User|undefined} value
+ * @param {?proto.AuditActor|undefined} value
  * @return {!proto.endpoint_api.Endpoint} returns this
 */
-proto.endpoint_api.Endpoint.prototype.setUpdateduser = function(value) {
-  return jspb.Message.setWrapperField(this, 25, value);
+proto.endpoint_api.Endpoint.prototype.setUpdatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1001, value);
 };
 
 
@@ -3876,8 +3756,8 @@ proto.endpoint_api.Endpoint.prototype.setUpdateduser = function(value) {
  * Clears the message field making it undefined.
  * @return {!proto.endpoint_api.Endpoint} returns this
  */
-proto.endpoint_api.Endpoint.prototype.clearUpdateduser = function() {
-  return this.setUpdateduser(undefined);
+proto.endpoint_api.Endpoint.prototype.clearUpdatedactor = function() {
+  return this.setUpdatedactor(undefined);
 };
 
 
@@ -3885,8 +3765,8 @@ proto.endpoint_api.Endpoint.prototype.clearUpdateduser = function() {
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.endpoint_api.Endpoint.prototype.hasUpdateduser = function() {
-  return jspb.Message.getField(this, 25) != null;
+proto.endpoint_api.Endpoint.prototype.hasUpdatedactor = function() {
+  return jspb.Message.getField(this, 1001) != null;
 };
 
 
@@ -6335,8 +6215,8 @@ proto.endpoint_api.EndpointRetryConfiguration.toObject = function(includeInstanc
     delayseconds: jspb.Message.getFieldWithDefault(msg, 4, "0"),
     exponentialbackoff: jspb.Message.getBooleanFieldWithDefault(msg, 5, false),
     retryablesList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f,
-    createdby: jspb.Message.getFieldWithDefault(msg, 8, "0"),
-    updatedby: jspb.Message.getFieldWithDefault(msg, 9, "0")
+    createdactor: (f = msg.getCreatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
+    updatedactor: (f = msg.getUpdatedactor()) && common_pb.AuditActor.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -6393,13 +6273,15 @@ proto.endpoint_api.EndpointRetryConfiguration.deserializeBinaryFromReader = func
       var value = /** @type {string} */ (reader.readString());
       msg.addRetryables(value);
       break;
-    case 8:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setCreatedby(value);
+    case 1000:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setCreatedactor(value);
       break;
-    case 9:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setUpdatedby(value);
+    case 1001:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setUpdatedactor(value);
       break;
     default:
       reader.skipField();
@@ -6465,18 +6347,20 @@ proto.endpoint_api.EndpointRetryConfiguration.serializeBinaryToWriter = function
       f
     );
   }
-  f = message.getCreatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      8,
-      f
+  f = message.getCreatedactor();
+  if (f != null) {
+    writer.writeMessage(
+      1000,
+      f,
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
-  f = message.getUpdatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      9,
-      f
+  f = message.getUpdatedactor();
+  if (f != null) {
+    writer.writeMessage(
+      1001,
+      f,
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
 };
@@ -6592,38 +6476,76 @@ proto.endpoint_api.EndpointRetryConfiguration.prototype.clearRetryablesList = fu
 
 
 /**
- * optional uint64 createdBy = 8;
- * @return {string}
+ * optional AuditActor createdActor = 1000;
+ * @return {?proto.AuditActor}
  */
-proto.endpoint_api.EndpointRetryConfiguration.prototype.getCreatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, "0"));
+proto.endpoint_api.EndpointRetryConfiguration.prototype.getCreatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1000));
 };
 
 
 /**
- * @param {string} value
+ * @param {?proto.AuditActor|undefined} value
+ * @return {!proto.endpoint_api.EndpointRetryConfiguration} returns this
+*/
+proto.endpoint_api.EndpointRetryConfiguration.prototype.setCreatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1000, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
  * @return {!proto.endpoint_api.EndpointRetryConfiguration} returns this
  */
-proto.endpoint_api.EndpointRetryConfiguration.prototype.setCreatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 8, value);
+proto.endpoint_api.EndpointRetryConfiguration.prototype.clearCreatedactor = function() {
+  return this.setCreatedactor(undefined);
 };
 
 
 /**
- * optional uint64 updatedBy = 9;
- * @return {string}
+ * Returns whether this field is set.
+ * @return {boolean}
  */
-proto.endpoint_api.EndpointRetryConfiguration.prototype.getUpdatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 9, "0"));
+proto.endpoint_api.EndpointRetryConfiguration.prototype.hasCreatedactor = function() {
+  return jspb.Message.getField(this, 1000) != null;
 };
 
 
 /**
- * @param {string} value
+ * optional AuditActor updatedActor = 1001;
+ * @return {?proto.AuditActor}
+ */
+proto.endpoint_api.EndpointRetryConfiguration.prototype.getUpdatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1001));
+};
+
+
+/**
+ * @param {?proto.AuditActor|undefined} value
+ * @return {!proto.endpoint_api.EndpointRetryConfiguration} returns this
+*/
+proto.endpoint_api.EndpointRetryConfiguration.prototype.setUpdatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1001, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
  * @return {!proto.endpoint_api.EndpointRetryConfiguration} returns this
  */
-proto.endpoint_api.EndpointRetryConfiguration.prototype.setUpdatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 9, value);
+proto.endpoint_api.EndpointRetryConfiguration.prototype.clearUpdatedactor = function() {
+  return this.setUpdatedactor(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.endpoint_api.EndpointRetryConfiguration.prototype.hasUpdatedactor = function() {
+  return jspb.Message.getField(this, 1001) != null;
 };
 
 
@@ -6662,8 +6584,8 @@ proto.endpoint_api.EndpointCacheConfiguration.toObject = function(includeInstanc
     cachetype: jspb.Message.getFieldWithDefault(msg, 2, ""),
     expiryinterval: jspb.Message.getFieldWithDefault(msg, 3, "0"),
     matchthreshold: jspb.Message.getFloatingPointFieldWithDefault(msg, 4, 0.0),
-    createdby: jspb.Message.getFieldWithDefault(msg, 5, "0"),
-    updatedby: jspb.Message.getFieldWithDefault(msg, 6, "0")
+    createdactor: (f = msg.getCreatedactor()) && common_pb.AuditActor.toObject(includeInstance, f),
+    updatedactor: (f = msg.getUpdatedactor()) && common_pb.AuditActor.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -6712,13 +6634,15 @@ proto.endpoint_api.EndpointCacheConfiguration.deserializeBinaryFromReader = func
       var value = /** @type {number} */ (reader.readFloat());
       msg.setMatchthreshold(value);
       break;
-    case 5:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setCreatedby(value);
+    case 1000:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setCreatedactor(value);
       break;
-    case 6:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setUpdatedby(value);
+    case 1001:
+      var value = new common_pb.AuditActor;
+      reader.readMessage(value,common_pb.AuditActor.deserializeBinaryFromReader);
+      msg.setUpdatedactor(value);
       break;
     default:
       reader.skipField();
@@ -6770,18 +6694,20 @@ proto.endpoint_api.EndpointCacheConfiguration.serializeBinaryToWriter = function
       f
     );
   }
-  f = message.getCreatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      5,
-      f
+  f = message.getCreatedactor();
+  if (f != null) {
+    writer.writeMessage(
+      1000,
+      f,
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
-  f = message.getUpdatedby();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      6,
-      f
+  f = message.getUpdatedactor();
+  if (f != null) {
+    writer.writeMessage(
+      1001,
+      f,
+      common_pb.AuditActor.serializeBinaryToWriter
     );
   }
 };
@@ -6842,38 +6768,76 @@ proto.endpoint_api.EndpointCacheConfiguration.prototype.setMatchthreshold = func
 
 
 /**
- * optional uint64 createdBy = 5;
- * @return {string}
+ * optional AuditActor createdActor = 1000;
+ * @return {?proto.AuditActor}
  */
-proto.endpoint_api.EndpointCacheConfiguration.prototype.getCreatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, "0"));
+proto.endpoint_api.EndpointCacheConfiguration.prototype.getCreatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1000));
 };
 
 
 /**
- * @param {string} value
+ * @param {?proto.AuditActor|undefined} value
+ * @return {!proto.endpoint_api.EndpointCacheConfiguration} returns this
+*/
+proto.endpoint_api.EndpointCacheConfiguration.prototype.setCreatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1000, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
  * @return {!proto.endpoint_api.EndpointCacheConfiguration} returns this
  */
-proto.endpoint_api.EndpointCacheConfiguration.prototype.setCreatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 5, value);
+proto.endpoint_api.EndpointCacheConfiguration.prototype.clearCreatedactor = function() {
+  return this.setCreatedactor(undefined);
 };
 
 
 /**
- * optional uint64 updatedBy = 6;
- * @return {string}
+ * Returns whether this field is set.
+ * @return {boolean}
  */
-proto.endpoint_api.EndpointCacheConfiguration.prototype.getUpdatedby = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, "0"));
+proto.endpoint_api.EndpointCacheConfiguration.prototype.hasCreatedactor = function() {
+  return jspb.Message.getField(this, 1000) != null;
 };
 
 
 /**
- * @param {string} value
+ * optional AuditActor updatedActor = 1001;
+ * @return {?proto.AuditActor}
+ */
+proto.endpoint_api.EndpointCacheConfiguration.prototype.getUpdatedactor = function() {
+  return /** @type{?proto.AuditActor} */ (
+    jspb.Message.getWrapperField(this, common_pb.AuditActor, 1001));
+};
+
+
+/**
+ * @param {?proto.AuditActor|undefined} value
+ * @return {!proto.endpoint_api.EndpointCacheConfiguration} returns this
+*/
+proto.endpoint_api.EndpointCacheConfiguration.prototype.setUpdatedactor = function(value) {
+  return jspb.Message.setWrapperField(this, 1001, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
  * @return {!proto.endpoint_api.EndpointCacheConfiguration} returns this
  */
-proto.endpoint_api.EndpointCacheConfiguration.prototype.setUpdatedby = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 6, value);
+proto.endpoint_api.EndpointCacheConfiguration.prototype.clearUpdatedactor = function() {
+  return this.setUpdatedactor(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.endpoint_api.EndpointCacheConfiguration.prototype.hasUpdatedactor = function() {
+  return jspb.Message.getField(this, 1001) != null;
 };
 
 

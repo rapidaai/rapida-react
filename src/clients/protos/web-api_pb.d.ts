@@ -273,6 +273,16 @@ export class ScopedAuthentication extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
+  hasActortype(): boolean;
+  clearActortype(): void;
+  getActortype(): string;
+  setActortype(value: string): void;
+
+  hasActorid(): boolean;
+  clearActorid(): void;
+  getActorid(): string;
+  setActorid(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ScopedAuthentication.AsObject;
   static toObject(includeInstance: boolean, msg: ScopedAuthentication): ScopedAuthentication.AsObject;
@@ -289,6 +299,8 @@ export namespace ScopedAuthentication {
     organizationid: number,
     projectid: number,
     status: string,
+    actortype: string,
+    actorid: string,
   }
 }
 
@@ -1746,11 +1758,15 @@ export class ProjectCredential extends jspb.Message {
   getStatus(): string;
   setStatus(value: string): void;
 
-  getCreatedby(): string;
-  setCreatedby(value: string): void;
+  hasCreatedactor(): boolean;
+  clearCreatedactor(): void;
+  getCreatedactor(): common_pb.AuditActor | undefined;
+  setCreatedactor(value?: common_pb.AuditActor): void;
 
-  getUpdatedby(): string;
-  setUpdatedby(value: string): void;
+  hasUpdatedactor(): boolean;
+  clearUpdatedactor(): void;
+  getUpdatedactor(): common_pb.AuditActor | undefined;
+  setUpdatedactor(value?: common_pb.AuditActor): void;
 
   hasCreateddate(): boolean;
   clearCreateddate(): void;
@@ -1761,11 +1777,6 @@ export class ProjectCredential extends jspb.Message {
   clearUpdateddate(): void;
   getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
-
-  hasCreateduser(): boolean;
-  clearCreateduser(): void;
-  getCreateduser(): common_pb.User | undefined;
-  setCreateduser(value?: common_pb.User): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ProjectCredential.AsObject;
@@ -1785,11 +1796,10 @@ export namespace ProjectCredential {
     name: string,
     key: string,
     status: string,
-    createdby: string,
-    updatedby: string,
+    createdactor?: common_pb.AuditActor.AsObject,
+    updatedactor?: common_pb.AuditActor.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
-    createduser?: common_pb.User.AsObject,
   }
 }
 
