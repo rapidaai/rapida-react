@@ -90,6 +90,53 @@ export namespace TalkInput {
   }
 }
 
+export class ConversationControl extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getAction(): ConversationControl.ActionMap[keyof ConversationControl.ActionMap];
+  setAction(value: ConversationControl.ActionMap[keyof ConversationControl.ActionMap]): void;
+
+  clearTypesList(): void;
+  getTypesList(): Array<ConversationControl.TypeMap[keyof ConversationControl.TypeMap]>;
+  setTypesList(value: Array<ConversationControl.TypeMap[keyof ConversationControl.TypeMap]>): void;
+  addTypes(value: ConversationControl.TypeMap[keyof ConversationControl.TypeMap], index?: number): ConversationControl.TypeMap[keyof ConversationControl.TypeMap];
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ConversationControl.AsObject;
+  static toObject(includeInstance: boolean, msg: ConversationControl): ConversationControl.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ConversationControl, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ConversationControl;
+  static deserializeBinaryFromReader(message: ConversationControl, reader: jspb.BinaryReader): ConversationControl;
+}
+
+export namespace ConversationControl {
+  export type AsObject = {
+    id: string,
+    action: ConversationControl.ActionMap[keyof ConversationControl.ActionMap],
+    typesList: Array<ConversationControl.TypeMap[keyof ConversationControl.TypeMap]>,
+  }
+
+  export interface ActionMap {
+    CONTROL_ACTION_UNSPECIFIED: 0;
+    CONTROL_ACTION_BLOCK: 1;
+    CONTROL_ACTION_UNBLOCK: 2;
+  }
+
+  export const Action: ActionMap;
+
+  export interface TypeMap {
+    CONTROL_TYPE_UNSPECIFIED: 0;
+    CONTROL_TYPE_USER_AUDIO: 1;
+    CONTROL_TYPE_USER_TEXT: 2;
+    CONTROL_TYPE_BARGE_IN: 3;
+  }
+
+  export const Type: TypeMap;
+}
+
 export class TalkOutput extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
@@ -137,6 +184,11 @@ export class TalkOutput extends jspb.Message {
   getObservability(): observability_api_pb.ObservabilityRecord | undefined;
   setObservability(value?: observability_api_pb.ObservabilityRecord): void;
 
+  hasControl(): boolean;
+  clearControl(): void;
+  getControl(): ConversationControl | undefined;
+  setControl(value?: ConversationControl): void;
+
   getDataCase(): TalkOutput.DataCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): TalkOutput.AsObject;
@@ -160,6 +212,7 @@ export namespace TalkOutput {
     toolcallresult?: talk_api_pb.ConversationToolCallResult.AsObject,
     error?: common_pb.Error.AsObject,
     observability?: observability_api_pb.ObservabilityRecord.AsObject,
+    control?: ConversationControl.AsObject,
   }
 
   export enum DataCase {
@@ -172,6 +225,7 @@ export namespace TalkOutput {
     TOOLCALLRESULT = 14,
     ERROR = 15,
     OBSERVABILITY = 16,
+    CONTROL = 17,
   }
 }
 

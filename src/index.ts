@@ -413,6 +413,7 @@ export {
   GetAllConversationMessageResponse,
   AssistantConversationRecording,
   AssistantDefinition,
+  AuditActor,
   AssistantConversationTelephonyEvent,
 } from "@/rapida/clients/protos/common_pb";
 export {
