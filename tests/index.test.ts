@@ -148,5 +148,9 @@ describe('Main Entry Point', () => {
     expect(sdk.GetAssistantConfigurationRequest).toBeDefined();
     expect(sdk.GetAllAssistantConfigurationRequest).toBeDefined();
     expect(sdk.DeleteAssistantConfigurationRequest).toBeDefined();
+    expect(sdk.GetProjectDashboard).toBeDefined();
+    expect(sdk.GetProjectDashboardRequest).toBeDefined();
+    expect(sdk.DashboardServiceClient).toBeDefined();
+    expect((sdk as any).ProjectDashboardAnalyticsServiceClient).toBeUndefined();
   });
 });

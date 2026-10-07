@@ -139,3 +139,138 @@ BillingServiceClient.prototype.updateSubscription = function updateSubscription(
 
 exports.BillingServiceClient = BillingServiceClient;
 
+var ProductUsageService = (function () {
+  function ProductUsageService() {}
+  ProductUsageService.serviceName = "billing_api.ProductUsageService";
+  return ProductUsageService;
+}());
+
+ProductUsageService.CreateProductUsage = {
+  methodName: "CreateProductUsage",
+  service: ProductUsageService,
+  requestStream: false,
+  responseStream: false,
+  requestType: billing_api_pb.CreateProductUsageRequest,
+  responseType: billing_api_pb.GetProductUsageResponse
+};
+
+ProductUsageService.GetProductUsages = {
+  methodName: "GetProductUsages",
+  service: ProductUsageService,
+  requestStream: false,
+  responseStream: false,
+  requestType: billing_api_pb.GetProductUsagesRequest,
+  responseType: billing_api_pb.GetUsagesResponse
+};
+
+ProductUsageService.GetOrganizationUsages = {
+  methodName: "GetOrganizationUsages",
+  service: ProductUsageService,
+  requestStream: false,
+  responseStream: false,
+  requestType: billing_api_pb.GetOrganizationUsagesRequest,
+  responseType: billing_api_pb.GetUsagesResponse
+};
+
+exports.ProductUsageService = ProductUsageService;
+
+function ProductUsageServiceClient(serviceHost, options) {
+  this.serviceHost = serviceHost;
+  this.options = options || {};
+}
+
+ProductUsageServiceClient.prototype.createProductUsage = function createProductUsage(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(ProductUsageService.CreateProductUsage, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+ProductUsageServiceClient.prototype.getProductUsages = function getProductUsages(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(ProductUsageService.GetProductUsages, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+ProductUsageServiceClient.prototype.getOrganizationUsages = function getOrganizationUsages(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(ProductUsageService.GetOrganizationUsages, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+exports.ProductUsageServiceClient = ProductUsageServiceClient;
+

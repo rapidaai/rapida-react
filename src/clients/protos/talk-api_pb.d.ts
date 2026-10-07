@@ -501,6 +501,65 @@ export namespace ConversationInterruption {
   export const InterruptionType: InterruptionTypeMap;
 }
 
+export class ConversationPlaybackControl extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getKind(): ConversationPlaybackControl.KindMap[keyof ConversationPlaybackControl.KindMap];
+  setKind(value: ConversationPlaybackControl.KindMap[keyof ConversationPlaybackControl.KindMap]): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ConversationPlaybackControl.AsObject;
+  static toObject(includeInstance: boolean, msg: ConversationPlaybackControl): ConversationPlaybackControl.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ConversationPlaybackControl, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ConversationPlaybackControl;
+  static deserializeBinaryFromReader(message: ConversationPlaybackControl, reader: jspb.BinaryReader): ConversationPlaybackControl;
+}
+
+export namespace ConversationPlaybackControl {
+  export type AsObject = {
+    id: string,
+    kind: ConversationPlaybackControl.KindMap[keyof ConversationPlaybackControl.KindMap],
+  }
+
+  export interface KindMap {
+    KIND_UNSPECIFIED: 0;
+    PAUSE: 1;
+    CONTINUE: 2;
+    FLUSH: 3;
+  }
+
+  export const Kind: KindMap;
+}
+
+export class ConversationPlaybackComplete extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  hasTime(): boolean;
+  clearTime(): void;
+  getTime(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setTime(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ConversationPlaybackComplete.AsObject;
+  static toObject(includeInstance: boolean, msg: ConversationPlaybackComplete): ConversationPlaybackComplete.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ConversationPlaybackComplete, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ConversationPlaybackComplete;
+  static deserializeBinaryFromReader(message: ConversationPlaybackComplete, reader: jspb.BinaryReader): ConversationPlaybackComplete;
+}
+
+export namespace ConversationPlaybackComplete {
+  export type AsObject = {
+    id: string,
+    time?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
 export class ConversationDisconnection extends jspb.Message {
   getType(): ConversationDisconnection.DisconnectionTypeMap[keyof ConversationDisconnection.DisconnectionTypeMap];
   setType(value: ConversationDisconnection.DisconnectionTypeMap[keyof ConversationDisconnection.DisconnectionTypeMap]): void;
@@ -720,6 +779,11 @@ export class AssistantTalkRequest extends jspb.Message {
   getBridgeuseraudio(): ConversationBridgeUserAudio | undefined;
   setBridgeuseraudio(value?: ConversationBridgeUserAudio): void;
 
+  hasPlaybackcomplete(): boolean;
+  clearPlaybackcomplete(): void;
+  getPlaybackcomplete(): ConversationPlaybackComplete | undefined;
+  setPlaybackcomplete(value?: ConversationPlaybackComplete): void;
+
   getRequestCase(): AssistantTalkRequest.RequestCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AssistantTalkRequest.AsObject;
@@ -742,6 +806,7 @@ export namespace AssistantTalkRequest {
     toolcallresult?: ConversationToolCallResult.AsObject,
     bridgeoperatoraudio?: ConversationBridgeOperatorAudio.AsObject,
     bridgeuseraudio?: ConversationBridgeUserAudio.AsObject,
+    playbackcomplete?: ConversationPlaybackComplete.AsObject,
   }
 
   export enum RequestCase {
@@ -755,6 +820,7 @@ export namespace AssistantTalkRequest {
     TOOLCALLRESULT = 7,
     BRIDGEOPERATORAUDIO = 8,
     BRIDGEUSERAUDIO = 9,
+    PLAYBACKCOMPLETE = 10,
   }
 }
 
@@ -820,6 +886,11 @@ export class AssistantTalkResponse extends jspb.Message {
   getEvent(): ConversationEvent | undefined;
   setEvent(value?: ConversationEvent): void;
 
+  hasPlaybackcontrol(): boolean;
+  clearPlaybackcontrol(): void;
+  getPlaybackcontrol(): ConversationPlaybackControl | undefined;
+  setPlaybackcontrol(value?: ConversationPlaybackControl): void;
+
   hasError(): boolean;
   clearError(): void;
   getError(): ConversationError | undefined;
@@ -851,6 +922,7 @@ export namespace AssistantTalkResponse {
     metric?: ConversationMetric.AsObject,
     disconnection?: ConversationDisconnection.AsObject,
     event?: ConversationEvent.AsObject,
+    playbackcontrol?: ConversationPlaybackControl.AsObject,
     error?: ConversationError.AsObject,
   }
 
@@ -867,6 +939,7 @@ export namespace AssistantTalkResponse {
     METRIC = 18,
     DISCONNECTION = 19,
     EVENT = 20,
+    PLAYBACKCONTROL = 24,
     ERROR = 15,
   }
 }

@@ -38,6 +38,40 @@ export class BillingService {
   static readonly UpdateSubscription: BillingServiceUpdateSubscription;
 }
 
+type ProductUsageServiceCreateProductUsage = {
+  readonly methodName: string;
+  readonly service: typeof ProductUsageService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof billing_api_pb.CreateProductUsageRequest;
+  readonly responseType: typeof billing_api_pb.GetProductUsageResponse;
+};
+
+type ProductUsageServiceGetProductUsages = {
+  readonly methodName: string;
+  readonly service: typeof ProductUsageService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof billing_api_pb.GetProductUsagesRequest;
+  readonly responseType: typeof billing_api_pb.GetUsagesResponse;
+};
+
+type ProductUsageServiceGetOrganizationUsages = {
+  readonly methodName: string;
+  readonly service: typeof ProductUsageService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof billing_api_pb.GetOrganizationUsagesRequest;
+  readonly responseType: typeof billing_api_pb.GetUsagesResponse;
+};
+
+export class ProductUsageService {
+  static readonly serviceName: string;
+  static readonly CreateProductUsage: ProductUsageServiceCreateProductUsage;
+  static readonly GetProductUsages: ProductUsageServiceGetProductUsages;
+  static readonly GetOrganizationUsages: ProductUsageServiceGetOrganizationUsages;
+}
+
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
 export type Status = { details: string, code: number; metadata: grpc.Metadata }
 
@@ -96,6 +130,39 @@ export class BillingServiceClient {
   updateSubscription(
     requestMessage: billing_api_pb.UpdateSubscriptionRequest,
     callback: (error: ServiceError|null, responseMessage: billing_api_pb.UpdateSubscriptionResponse|null) => void
+  ): UnaryResponse;
+}
+
+export class ProductUsageServiceClient {
+  readonly serviceHost: string;
+
+  constructor(serviceHost: string, options?: grpc.RpcOptions);
+  createProductUsage(
+    requestMessage: billing_api_pb.CreateProductUsageRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: billing_api_pb.GetProductUsageResponse|null) => void
+  ): UnaryResponse;
+  createProductUsage(
+    requestMessage: billing_api_pb.CreateProductUsageRequest,
+    callback: (error: ServiceError|null, responseMessage: billing_api_pb.GetProductUsageResponse|null) => void
+  ): UnaryResponse;
+  getProductUsages(
+    requestMessage: billing_api_pb.GetProductUsagesRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: billing_api_pb.GetUsagesResponse|null) => void
+  ): UnaryResponse;
+  getProductUsages(
+    requestMessage: billing_api_pb.GetProductUsagesRequest,
+    callback: (error: ServiceError|null, responseMessage: billing_api_pb.GetUsagesResponse|null) => void
+  ): UnaryResponse;
+  getOrganizationUsages(
+    requestMessage: billing_api_pb.GetOrganizationUsagesRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: billing_api_pb.GetUsagesResponse|null) => void
+  ): UnaryResponse;
+  getOrganizationUsages(
+    requestMessage: billing_api_pb.GetOrganizationUsagesRequest,
+    callback: (error: ServiceError|null, responseMessage: billing_api_pb.GetUsagesResponse|null) => void
   ): UnaryResponse;
 }
 

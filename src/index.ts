@@ -98,6 +98,7 @@ export {
 } from "@/rapida/utils/rapida_header";
 export { IndexKnowledgeDocument } from "@/rapida/clients/document";
 export { Invoke } from "@/rapida/clients/invoke";
+export { GetProjectDashboard } from "@/rapida/clients/dashboard";
 export {
   AuthenticateUser,
   AuthorizeUser,
@@ -625,6 +626,34 @@ export {
   BillingService,
   BillingServiceClient,
 } from "@/rapida/clients/protos/billing-api_pb_service";
+export {
+  DashboardService,
+  DashboardServiceClient,
+} from "@/rapida/clients/protos/dashboard-api_pb_service";
+export {
+  GetProjectDashboardRequest,
+  GetProjectDashboardResponse,
+  ProjectDashboard,
+  DashboardPeriod,
+  DashboardSectionState,
+  DashboardAnalyticsSection,
+  DashboardUsageSection,
+  ProjectDashboardAnalytics,
+  DashboardProjectState,
+  DashboardSummary,
+  DashboardCountComparison,
+  DashboardRateComparison,
+  DashboardLatencyComparison,
+  DashboardFailedComparison,
+  DashboardActivityBucket,
+  DashboardAssistantHealth,
+  DashboardHealth,
+  DashboardAssistant,
+  DashboardUsageComponent,
+  DashboardComponentUsage,
+  DashboardFailureCode,
+  DashboardRecentFailure,
+} from "@/rapida/clients/protos/dashboard-api_pb";
 export {
   BillingPlanQuota,
   BillingPlan,

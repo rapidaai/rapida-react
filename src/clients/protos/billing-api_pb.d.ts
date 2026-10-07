@@ -15,6 +15,9 @@ export class BillingPlanQuota extends jspb.Message {
   getQuotalimit(): number;
   setQuotalimit(value: number): void;
 
+  getUnit(): string;
+  setUnit(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): BillingPlanQuota.AsObject;
   static toObject(includeInstance: boolean, msg: BillingPlanQuota): BillingPlanQuota.AsObject;
@@ -30,6 +33,221 @@ export namespace BillingPlanQuota {
     id: string,
     resourcetype: string,
     quotalimit: number,
+    unit: string,
+  }
+}
+
+export class ProductUsage extends jspb.Message {
+  getId(): string;
+  setId(value: string): void;
+
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  getUsagetype(): string;
+  setUsagetype(value: string): void;
+
+  getUsages(): number;
+  setUsages(value: number): void;
+
+  getUnit(): string;
+  setUnit(value: string): void;
+
+  hasOccurredat(): boolean;
+  clearOccurredat(): void;
+  getOccurredat(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setOccurredat(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): ProductUsage.AsObject;
+  static toObject(includeInstance: boolean, msg: ProductUsage): ProductUsage.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: ProductUsage, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): ProductUsage;
+  static deserializeBinaryFromReader(message: ProductUsage, reader: jspb.BinaryReader): ProductUsage;
+}
+
+export namespace ProductUsage {
+  export type AsObject = {
+    id: string,
+    projectid: string,
+    usagetype: string,
+    usages: number,
+    unit: string,
+    occurredat?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
+export class CreateProductUsageRequest extends jspb.Message {
+  getUsagetype(): string;
+  setUsagetype(value: string): void;
+
+  getUsages(): number;
+  setUsages(value: number): void;
+
+  getUnit(): string;
+  setUnit(value: string): void;
+
+  hasOccurredat(): boolean;
+  clearOccurredat(): void;
+  getOccurredat(): google_protobuf_timestamp_pb.Timestamp | undefined;
+  setOccurredat(value?: google_protobuf_timestamp_pb.Timestamp): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): CreateProductUsageRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: CreateProductUsageRequest): CreateProductUsageRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: CreateProductUsageRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): CreateProductUsageRequest;
+  static deserializeBinaryFromReader(message: CreateProductUsageRequest, reader: jspb.BinaryReader): CreateProductUsageRequest;
+}
+
+export namespace CreateProductUsageRequest {
+  export type AsObject = {
+    usagetype: string,
+    usages: number,
+    unit: string,
+    occurredat?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+  }
+}
+
+export class GetProductUsageResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  hasData(): boolean;
+  clearData(): void;
+  getData(): ProductUsage | undefined;
+  setData(value?: ProductUsage): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetProductUsageResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetProductUsageResponse): GetProductUsageResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetProductUsageResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetProductUsageResponse;
+  static deserializeBinaryFromReader(message: GetProductUsageResponse, reader: jspb.BinaryReader): GetProductUsageResponse;
+}
+
+export namespace GetProductUsageResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    data?: ProductUsage.AsObject,
+    error?: common_pb.Error.AsObject,
+  }
+}
+
+export class GetProductUsagesRequest extends jspb.Message {
+  getUsagetype(): string;
+  setUsagetype(value: string): void;
+
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): common_pb.Paginate | undefined;
+  setPaginate(value?: common_pb.Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetProductUsagesRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetProductUsagesRequest): GetProductUsagesRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetProductUsagesRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetProductUsagesRequest;
+  static deserializeBinaryFromReader(message: GetProductUsagesRequest, reader: jspb.BinaryReader): GetProductUsagesRequest;
+}
+
+export namespace GetProductUsagesRequest {
+  export type AsObject = {
+    usagetype: string,
+    paginate?: common_pb.Paginate.AsObject,
+    criteriasList: Array<common_pb.Criteria.AsObject>,
+  }
+}
+
+export class GetOrganizationUsagesRequest extends jspb.Message {
+  hasPaginate(): boolean;
+  clearPaginate(): void;
+  getPaginate(): common_pb.Paginate | undefined;
+  setPaginate(value?: common_pb.Paginate): void;
+
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetOrganizationUsagesRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: GetOrganizationUsagesRequest): GetOrganizationUsagesRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetOrganizationUsagesRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetOrganizationUsagesRequest;
+  static deserializeBinaryFromReader(message: GetOrganizationUsagesRequest, reader: jspb.BinaryReader): GetOrganizationUsagesRequest;
+}
+
+export namespace GetOrganizationUsagesRequest {
+  export type AsObject = {
+    paginate?: common_pb.Paginate.AsObject,
+    criteriasList: Array<common_pb.Criteria.AsObject>,
+  }
+}
+
+export class GetUsagesResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  clearDataList(): void;
+  getDataList(): Array<ProductUsage>;
+  setDataList(value: Array<ProductUsage>): void;
+  addData(value?: ProductUsage, index?: number): ProductUsage;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  hasPaginated(): boolean;
+  clearPaginated(): void;
+  getPaginated(): common_pb.Paginated | undefined;
+  setPaginated(value?: common_pb.Paginated): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): GetUsagesResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: GetUsagesResponse): GetUsagesResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: GetUsagesResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): GetUsagesResponse;
+  static deserializeBinaryFromReader(message: GetUsagesResponse, reader: jspb.BinaryReader): GetUsagesResponse;
+}
+
+export namespace GetUsagesResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    dataList: Array<ProductUsage.AsObject>,
+    error?: common_pb.Error.AsObject,
+    paginated?: common_pb.Paginated.AsObject,
   }
 }
 
