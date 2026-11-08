@@ -151,6 +151,16 @@ describe('Main Entry Point', () => {
     expect(sdk.GetProjectDashboard).toBeDefined();
     expect(sdk.GetProjectDashboardRequest).toBeDefined();
     expect(sdk.DashboardServiceClient).toBeDefined();
+    expect(sdk.ListPermissions).toBeDefined();
+    expect(sdk.ListRoles).toBeDefined();
+    expect(sdk.GetRole).toBeDefined();
+    expect(sdk.CreateCustomRole).toBeDefined();
+    expect(sdk.UpdateCustomRole).toBeDefined();
+    expect(sdk.ReduceCustomRolePermissions).toBeDefined();
+    expect(sdk.ArchiveCustomRole).toBeDefined();
+    expect(sdk.AccessManagementServiceClient).toBeDefined();
+    expect(sdk.ListPermissionsRequest).toBeDefined();
+    expect(sdk.RoleScope).toBeDefined();
     expect((sdk as any).ProjectDashboardAnalyticsServiceClient).toBeUndefined();
   });
 });

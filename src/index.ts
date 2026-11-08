@@ -100,6 +100,15 @@ export { IndexKnowledgeDocument } from "@/rapida/clients/document";
 export { Invoke } from "@/rapida/clients/invoke";
 export { GetProjectDashboard } from "@/rapida/clients/dashboard";
 export {
+  ArchiveCustomRole,
+  CreateCustomRole,
+  GetRole,
+  ListPermissions,
+  ListRoles,
+  ReduceCustomRolePermissions,
+  UpdateCustomRole,
+} from "@/rapida/clients/access-management";
+export {
   AuthenticateUser,
   AuthorizeUser,
   RegisterUser,
@@ -262,6 +271,10 @@ export {
   VaultServiceClient,
 } from "@/rapida/clients/protos/vault-api_pb_service";
 export {
+  AccessManagementService,
+  AccessManagementServiceClient,
+} from "@/rapida/clients/protos/access-management-api_pb_service";
+export {
   Deployment,
   DeploymentClient,
 } from "@/rapida/clients/protos/invoker-api_pb_service";
@@ -417,6 +430,27 @@ export {
   AuditActor,
   AssistantConversationTelephonyEvent,
 } from "@/rapida/clients/protos/common_pb";
+export {
+  ArchiveCustomRoleRequest,
+  ArchiveCustomRoleResponse,
+  CreateCustomRoleRequest,
+  CreateCustomRoleResponse,
+  GetRoleRequest,
+  GetRoleResponse,
+  ListPermissionsRequest,
+  ListPermissionsResponse,
+  ListRolesRequest,
+  ListRolesResponse,
+  PermissionDefinition,
+  ReduceCustomRolePermissionsRequest,
+  ReduceCustomRolePermissionsResponse,
+  RoleDefinition,
+  RoleDefinitionType,
+  RoleScope,
+  RoleSubject,
+  UpdateCustomRoleRequest,
+  UpdateCustomRoleResponse,
+} from "@/rapida/clients/protos/access-management-api_pb";
 export {
   AssistantService,
   AssistantServiceClient,

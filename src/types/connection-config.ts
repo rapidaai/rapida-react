@@ -63,6 +63,7 @@ import { NotificationServiceClient } from "@/rapida/clients/protos/notification-
 import { WebRTCClient } from "@/rapida/clients/protos/webrtc_pb_service";
 import { BillingServiceClient } from "@/rapida/clients/protos/billing-api_pb_service";
 import { DashboardServiceClient } from "@/rapida/clients/protos/dashboard-api_pb_service";
+import { AccessManagementServiceClient } from "@/rapida/clients/protos/access-management-api_pb_service";
 
 /**
  *
@@ -241,6 +242,13 @@ export class ConnectionConfig {
 
   get dashboardClient(): DashboardServiceClient {
     return new DashboardServiceClient(
+      this.endpoint.web,
+      this.getClientOptions()
+    );
+  }
+
+  get accessManagementClient(): AccessManagementServiceClient {
+    return new AccessManagementServiceClient(
       this.endpoint.web,
       this.getClientOptions()
     );
