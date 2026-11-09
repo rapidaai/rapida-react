@@ -304,6 +304,15 @@ type ProjectServiceGetAllProjectCredential = {
   readonly responseType: typeof web_api_pb.GetAllProjectCredentialResponse;
 };
 
+type ProjectServiceRevokeProjectCredential = {
+  readonly methodName: string;
+  readonly service: typeof ProjectService;
+  readonly requestStream: false;
+  readonly responseStream: false;
+  readonly requestType: typeof web_api_pb.RevokeProjectCredentialRequest;
+  readonly responseType: typeof web_api_pb.RevokeProjectCredentialResponse;
+};
+
 export class ProjectService {
   static readonly serviceName: string;
   static readonly CreateProject: ProjectServiceCreateProject;
@@ -315,6 +324,7 @@ export class ProjectService {
   static readonly ArchiveProject: ProjectServiceArchiveProject;
   static readonly CreateProjectCredential: ProjectServiceCreateProjectCredential;
   static readonly GetAllProjectCredential: ProjectServiceGetAllProjectCredential;
+  static readonly RevokeProjectCredential: ProjectServiceRevokeProjectCredential;
 }
 
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
@@ -630,6 +640,15 @@ export class ProjectServiceClient {
   getAllProjectCredential(
     requestMessage: web_api_pb.GetAllProjectCredentialRequest,
     callback: (error: ServiceError|null, responseMessage: web_api_pb.GetAllProjectCredentialResponse|null) => void
+  ): UnaryResponse;
+  revokeProjectCredential(
+    requestMessage: web_api_pb.RevokeProjectCredentialRequest,
+    metadata: grpc.Metadata,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.RevokeProjectCredentialResponse|null) => void
+  ): UnaryResponse;
+  revokeProjectCredential(
+    requestMessage: web_api_pb.RevokeProjectCredentialRequest,
+    callback: (error: ServiceError|null, responseMessage: web_api_pb.RevokeProjectCredentialResponse|null) => void
   ): UnaryResponse;
 }
 

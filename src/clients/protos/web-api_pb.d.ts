@@ -1778,6 +1778,12 @@ export class ProjectCredential extends jspb.Message {
   getUpdateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
   setUpdateddate(value?: google_protobuf_timestamp_pb.Timestamp): void;
 
+  getRoledefinitionid(): string;
+  setRoledefinitionid(value: string): void;
+
+  getRolename(): string;
+  setRolename(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ProjectCredential.AsObject;
   static toObject(includeInstance: boolean, msg: ProjectCredential): ProjectCredential.AsObject;
@@ -1800,6 +1806,8 @@ export namespace ProjectCredential {
     updatedactor?: common_pb.AuditActor.AsObject,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     updateddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
+    roledefinitionid: string,
+    rolename: string,
   }
 }
 
@@ -1860,6 +1868,30 @@ export namespace GetAllProjectCredentialRequest {
     paginate?: common_pb.Paginate.AsObject,
     criteriasList: Array<common_pb.Criteria.AsObject>,
     projectid: string,
+  }
+}
+
+export class RevokeProjectCredentialRequest extends jspb.Message {
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  getCredentialid(): string;
+  setCredentialid(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RevokeProjectCredentialRequest.AsObject;
+  static toObject(includeInstance: boolean, msg: RevokeProjectCredentialRequest): RevokeProjectCredentialRequest.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RevokeProjectCredentialRequest, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RevokeProjectCredentialRequest;
+  static deserializeBinaryFromReader(message: RevokeProjectCredentialRequest, reader: jspb.BinaryReader): RevokeProjectCredentialRequest;
+}
+
+export namespace RevokeProjectCredentialRequest {
+  export type AsObject = {
+    projectid: string,
+    credentialid: string,
   }
 }
 
@@ -1938,6 +1970,40 @@ export namespace GetAllProjectCredentialResponse {
     dataList: Array<ProjectCredential.AsObject>,
     error?: common_pb.Error.AsObject,
     paginated?: common_pb.Paginated.AsObject,
+  }
+}
+
+export class RevokeProjectCredentialResponse extends jspb.Message {
+  getCode(): number;
+  setCode(value: number): void;
+
+  getSuccess(): boolean;
+  setSuccess(value: boolean): void;
+
+  getId(): string;
+  setId(value: string): void;
+
+  hasError(): boolean;
+  clearError(): void;
+  getError(): common_pb.Error | undefined;
+  setError(value?: common_pb.Error): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RevokeProjectCredentialResponse.AsObject;
+  static toObject(includeInstance: boolean, msg: RevokeProjectCredentialResponse): RevokeProjectCredentialResponse.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RevokeProjectCredentialResponse, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RevokeProjectCredentialResponse;
+  static deserializeBinaryFromReader(message: RevokeProjectCredentialResponse, reader: jspb.BinaryReader): RevokeProjectCredentialResponse;
+}
+
+export namespace RevokeProjectCredentialResponse {
+  export type AsObject = {
+    code: number,
+    success: boolean,
+    id: string,
+    error?: common_pb.Error.AsObject,
   }
 }
 

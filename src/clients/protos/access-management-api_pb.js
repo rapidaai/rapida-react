@@ -91,7 +91,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.web_api.ListPermissionsRequest = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.web_api.ListPermissionsRequest.repeatedFields_, null);
 };
 goog.inherits(proto.web_api.ListPermissionsRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -133,7 +133,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.web_api.ListRolesRequest = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.web_api.ListRolesRequest.repeatedFields_, null);
 };
 goog.inherits(proto.web_api.ListRolesRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -1199,6 +1199,13 @@ proto.web_api.RoleDefinition.prototype.clearPermissionsList = function() {
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.web_api.ListPermissionsRequest.repeatedFields_ = [3];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -1231,7 +1238,8 @@ proto.web_api.ListPermissionsRequest.prototype.toObject = function(opt_includeIn
 proto.web_api.ListPermissionsRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     paginate: (f = msg.getPaginate()) && common_pb.Paginate.toObject(includeInstance, f),
-    scope: jspb.Message.getFieldWithDefault(msg, 2, 0)
+    criteriasList: jspb.Message.toObjectList(msg.getCriteriasList(),
+    common_pb.Criteria.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -1273,9 +1281,10 @@ proto.web_api.ListPermissionsRequest.deserializeBinaryFromReader = function(msg,
       reader.readMessage(value,common_pb.Paginate.deserializeBinaryFromReader);
       msg.setPaginate(value);
       break;
-    case 2:
-      var value = /** @type {!proto.web_api.RoleScope} */ (reader.readEnum());
-      msg.setScope(value);
+    case 3:
+      var value = new common_pb.Criteria;
+      reader.readMessage(value,common_pb.Criteria.deserializeBinaryFromReader);
+      msg.addCriterias(value);
       break;
     default:
       reader.skipField();
@@ -1314,11 +1323,12 @@ proto.web_api.ListPermissionsRequest.serializeBinaryToWriter = function(message,
       common_pb.Paginate.serializeBinaryToWriter
     );
   }
-  f = message.getScope();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      2,
-      f
+  f = message.getCriteriasList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      3,
+      f,
+      common_pb.Criteria.serializeBinaryToWriter
     );
   }
 };
@@ -1362,20 +1372,40 @@ proto.web_api.ListPermissionsRequest.prototype.hasPaginate = function() {
 
 
 /**
- * optional RoleScope scope = 2;
- * @return {!proto.web_api.RoleScope}
+ * repeated Criteria criterias = 3;
+ * @return {!Array<!proto.Criteria>}
  */
-proto.web_api.ListPermissionsRequest.prototype.getScope = function() {
-  return /** @type {!proto.web_api.RoleScope} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
+proto.web_api.ListPermissionsRequest.prototype.getCriteriasList = function() {
+  return /** @type{!Array<!proto.Criteria>} */ (
+    jspb.Message.getRepeatedWrapperField(this, common_pb.Criteria, 3));
 };
 
 
 /**
- * @param {!proto.web_api.RoleScope} value
+ * @param {!Array<!proto.Criteria>} value
+ * @return {!proto.web_api.ListPermissionsRequest} returns this
+*/
+proto.web_api.ListPermissionsRequest.prototype.setCriteriasList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 3, value);
+};
+
+
+/**
+ * @param {!proto.Criteria=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.Criteria}
+ */
+proto.web_api.ListPermissionsRequest.prototype.addCriterias = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 3, opt_value, proto.Criteria, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
  * @return {!proto.web_api.ListPermissionsRequest} returns this
  */
-proto.web_api.ListPermissionsRequest.prototype.setScope = function(value) {
-  return jspb.Message.setProto3EnumField(this, 2, value);
+proto.web_api.ListPermissionsRequest.prototype.clearCriteriasList = function() {
+  return this.setCriteriasList([]);
 };
 
 
@@ -1702,6 +1732,13 @@ proto.web_api.ListPermissionsResponse.prototype.hasPaginated = function() {
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.web_api.ListRolesRequest.repeatedFields_ = [6];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -1734,10 +1771,8 @@ proto.web_api.ListRolesRequest.prototype.toObject = function(opt_includeInstance
 proto.web_api.ListRolesRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     paginate: (f = msg.getPaginate()) && common_pb.Paginate.toObject(includeInstance, f),
-    query: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    scope: jspb.Message.getFieldWithDefault(msg, 3, 0),
-    subject: jspb.Message.getFieldWithDefault(msg, 4, 0),
-    definitiontype: jspb.Message.getFieldWithDefault(msg, 5, 0)
+    criteriasList: jspb.Message.toObjectList(msg.getCriteriasList(),
+    common_pb.Criteria.toObject, includeInstance)
   };
 
   if (includeInstance) {
@@ -1779,21 +1814,10 @@ proto.web_api.ListRolesRequest.deserializeBinaryFromReader = function(msg, reade
       reader.readMessage(value,common_pb.Paginate.deserializeBinaryFromReader);
       msg.setPaginate(value);
       break;
-    case 2:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setQuery(value);
-      break;
-    case 3:
-      var value = /** @type {!proto.web_api.RoleScope} */ (reader.readEnum());
-      msg.setScope(value);
-      break;
-    case 4:
-      var value = /** @type {!proto.web_api.RoleSubject} */ (reader.readEnum());
-      msg.setSubject(value);
-      break;
-    case 5:
-      var value = /** @type {!proto.web_api.RoleDefinitionType} */ (reader.readEnum());
-      msg.setDefinitiontype(value);
+    case 6:
+      var value = new common_pb.Criteria;
+      reader.readMessage(value,common_pb.Criteria.deserializeBinaryFromReader);
+      msg.addCriterias(value);
       break;
     default:
       reader.skipField();
@@ -1832,32 +1856,12 @@ proto.web_api.ListRolesRequest.serializeBinaryToWriter = function(message, write
       common_pb.Paginate.serializeBinaryToWriter
     );
   }
-  f = message.getQuery();
+  f = message.getCriteriasList();
   if (f.length > 0) {
-    writer.writeString(
-      2,
-      f
-    );
-  }
-  f = message.getScope();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      3,
-      f
-    );
-  }
-  f = message.getSubject();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      4,
-      f
-    );
-  }
-  f = message.getDefinitiontype();
-  if (f !== 0.0) {
-    writer.writeEnum(
-      5,
-      f
+    writer.writeRepeatedMessage(
+      6,
+      f,
+      common_pb.Criteria.serializeBinaryToWriter
     );
   }
 };
@@ -1901,74 +1905,40 @@ proto.web_api.ListRolesRequest.prototype.hasPaginate = function() {
 
 
 /**
- * optional string query = 2;
- * @return {string}
+ * repeated Criteria criterias = 6;
+ * @return {!Array<!proto.Criteria>}
  */
-proto.web_api.ListRolesRequest.prototype.getQuery = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+proto.web_api.ListRolesRequest.prototype.getCriteriasList = function() {
+  return /** @type{!Array<!proto.Criteria>} */ (
+    jspb.Message.getRepeatedWrapperField(this, common_pb.Criteria, 6));
 };
 
 
 /**
- * @param {string} value
+ * @param {!Array<!proto.Criteria>} value
+ * @return {!proto.web_api.ListRolesRequest} returns this
+*/
+proto.web_api.ListRolesRequest.prototype.setCriteriasList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 6, value);
+};
+
+
+/**
+ * @param {!proto.Criteria=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.Criteria}
+ */
+proto.web_api.ListRolesRequest.prototype.addCriterias = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 6, opt_value, proto.Criteria, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
  * @return {!proto.web_api.ListRolesRequest} returns this
  */
-proto.web_api.ListRolesRequest.prototype.setQuery = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
-};
-
-
-/**
- * optional RoleScope scope = 3;
- * @return {!proto.web_api.RoleScope}
- */
-proto.web_api.ListRolesRequest.prototype.getScope = function() {
-  return /** @type {!proto.web_api.RoleScope} */ (jspb.Message.getFieldWithDefault(this, 3, 0));
-};
-
-
-/**
- * @param {!proto.web_api.RoleScope} value
- * @return {!proto.web_api.ListRolesRequest} returns this
- */
-proto.web_api.ListRolesRequest.prototype.setScope = function(value) {
-  return jspb.Message.setProto3EnumField(this, 3, value);
-};
-
-
-/**
- * optional RoleSubject subject = 4;
- * @return {!proto.web_api.RoleSubject}
- */
-proto.web_api.ListRolesRequest.prototype.getSubject = function() {
-  return /** @type {!proto.web_api.RoleSubject} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
-};
-
-
-/**
- * @param {!proto.web_api.RoleSubject} value
- * @return {!proto.web_api.ListRolesRequest} returns this
- */
-proto.web_api.ListRolesRequest.prototype.setSubject = function(value) {
-  return jspb.Message.setProto3EnumField(this, 4, value);
-};
-
-
-/**
- * optional RoleDefinitionType definitionType = 5;
- * @return {!proto.web_api.RoleDefinitionType}
- */
-proto.web_api.ListRolesRequest.prototype.getDefinitiontype = function() {
-  return /** @type {!proto.web_api.RoleDefinitionType} */ (jspb.Message.getFieldWithDefault(this, 5, 0));
-};
-
-
-/**
- * @param {!proto.web_api.RoleDefinitionType} value
- * @return {!proto.web_api.ListRolesRequest} returns this
- */
-proto.web_api.ListRolesRequest.prototype.setDefinitiontype = function(value) {
-  return jspb.Message.setProto3EnumField(this, 5, value);
+proto.web_api.ListRolesRequest.prototype.clearCriteriasList = function() {
+  return this.setCriteriasList([]);
 };
 
 

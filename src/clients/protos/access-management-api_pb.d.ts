@@ -121,8 +121,10 @@ export class ListPermissionsRequest extends jspb.Message {
   getPaginate(): common_pb.Paginate | undefined;
   setPaginate(value?: common_pb.Paginate): void;
 
-  getScope(): RoleScopeMap[keyof RoleScopeMap];
-  setScope(value: RoleScopeMap[keyof RoleScopeMap]): void;
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ListPermissionsRequest.AsObject;
@@ -137,7 +139,7 @@ export class ListPermissionsRequest extends jspb.Message {
 export namespace ListPermissionsRequest {
   export type AsObject = {
     paginate?: common_pb.Paginate.AsObject,
-    scope: RoleScopeMap[keyof RoleScopeMap],
+    criteriasList: Array<common_pb.Criteria.AsObject>,
   }
 }
 
@@ -189,17 +191,10 @@ export class ListRolesRequest extends jspb.Message {
   getPaginate(): common_pb.Paginate | undefined;
   setPaginate(value?: common_pb.Paginate): void;
 
-  getQuery(): string;
-  setQuery(value: string): void;
-
-  getScope(): RoleScopeMap[keyof RoleScopeMap];
-  setScope(value: RoleScopeMap[keyof RoleScopeMap]): void;
-
-  getSubject(): RoleSubjectMap[keyof RoleSubjectMap];
-  setSubject(value: RoleSubjectMap[keyof RoleSubjectMap]): void;
-
-  getDefinitiontype(): RoleDefinitionTypeMap[keyof RoleDefinitionTypeMap];
-  setDefinitiontype(value: RoleDefinitionTypeMap[keyof RoleDefinitionTypeMap]): void;
+  clearCriteriasList(): void;
+  getCriteriasList(): Array<common_pb.Criteria>;
+  setCriteriasList(value: Array<common_pb.Criteria>): void;
+  addCriterias(value?: common_pb.Criteria, index?: number): common_pb.Criteria;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ListRolesRequest.AsObject;
@@ -214,10 +209,7 @@ export class ListRolesRequest extends jspb.Message {
 export namespace ListRolesRequest {
   export type AsObject = {
     paginate?: common_pb.Paginate.AsObject,
-    query: string,
-    scope: RoleScopeMap[keyof RoleScopeMap],
-    subject: RoleSubjectMap[keyof RoleSubjectMap],
-    definitiontype: RoleDefinitionTypeMap[keyof RoleDefinitionTypeMap],
+    criteriasList: Array<common_pb.Criteria.AsObject>,
   }
 }
 
@@ -616,3 +608,4 @@ export interface RoleDefinitionTypeMap {
 }
 
 export const RoleDefinitionType: RoleDefinitionTypeMap;
+

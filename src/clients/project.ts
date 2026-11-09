@@ -42,6 +42,8 @@ import {
   GetAllProjectCredentialRequest,
   CreateProjectCredentialRequest,
   CreateProjectCredentialResponse,
+  RevokeProjectCredentialRequest,
+  RevokeProjectCredentialResponse,
   GetAllProjectRequest,
 } from "@/rapida/clients/protos/web-api_pb";
 import { Criteria, Paginate } from "@/rapida/clients/protos/common_pb";
@@ -269,6 +271,45 @@ export function GetAllProjectCredential(
   requestObject.setProjectid(projectId);
 
   return connectionConfig.projectClient.getAllProjectCredential(
+    requestObject,
+    WithAuthContext(authHeader),
+    cb
+  );
+}
+
+/** Retrieves one explicit page of Project API keys. */
+export function ListProjectCredentials(
+  connectionConfig: ConnectionConfig,
+  req: GetAllProjectCredentialRequest,
+  cb: (
+    err: ServiceError | null,
+    response: GetAllProjectCredentialResponse | null
+  ) => void,
+  authHeader: ClientAuthInfo | UserAuthInfo
+) {
+  return connectionConfig.projectClient.getAllProjectCredential(
+    req,
+    WithAuthContext(authHeader),
+    cb
+  );
+}
+
+/** Revokes a Project API key by ID. */
+export function RevokeProjectCredential(
+  connectionConfig: ConnectionConfig,
+  projectId: string,
+  credentialId: string,
+  cb: (
+    err: ServiceError | null,
+    response: RevokeProjectCredentialResponse | null
+  ) => void,
+  authHeader: ClientAuthInfo | UserAuthInfo
+) {
+  const requestObject = new RevokeProjectCredentialRequest();
+  requestObject.setProjectid(projectId);
+  requestObject.setCredentialid(credentialId);
+
+  return connectionConfig.projectClient.revokeProjectCredential(
     requestObject,
     WithAuthContext(authHeader),
     cb

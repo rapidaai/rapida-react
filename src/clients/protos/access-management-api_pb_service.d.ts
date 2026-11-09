@@ -77,6 +77,7 @@ export class AccessManagementService {
   static readonly ReduceCustomRolePermissions: AccessManagementServiceReduceCustomRolePermissions;
   static readonly ArchiveCustomRole: AccessManagementServiceArchiveCustomRole;
 }
+
 export type ServiceError = { message: string, code: number; metadata: grpc.Metadata }
 export type Status = { details: string, code: number; metadata: grpc.Metadata }
 
@@ -173,3 +174,4 @@ export class AccessManagementServiceClient {
     callback: (error: ServiceError|null, responseMessage: access_management_api_pb.ArchiveCustomRoleResponse|null) => void
   ): UnaryResponse;
 }
+

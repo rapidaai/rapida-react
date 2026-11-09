@@ -245,6 +245,8 @@ export {
   GetProject,
   DeleteProject,
   GetAllProjectCredential,
+  ListProjectCredentials,
+  RevokeProjectCredential,
   CreateProjectCredential,
 } from "@/rapida/clients/project";
 export {
@@ -394,8 +396,10 @@ export {
   ProjectCredential,
   CreateProjectCredentialRequest,
   GetAllProjectCredentialRequest,
+  RevokeProjectCredentialRequest,
   CreateProjectCredentialResponse,
   GetAllProjectCredentialResponse,
+  RevokeProjectCredentialResponse,
 } from "@/rapida/clients/protos/web-api_pb";
 export {
   FieldSelector,

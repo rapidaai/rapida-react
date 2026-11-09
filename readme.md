@@ -930,6 +930,7 @@ GetOrganization(config, orgId, authHeader, (err, response) => {
 
 ```ts
 import {
+  Criteria,
   CreateProject,
   UpdateProject,
   GetProject,
@@ -937,6 +938,10 @@ import {
   DeleteProject,
   AddUsersToProject,
   GetAllProjectCredential,
+  GetAllProjectCredentialRequest,
+  ListProjectCredentials,
+  Paginate,
+  RevokeProjectCredential,
   CreateProjectCredential,
 } from "@rapidaai/react";
 
@@ -953,12 +958,34 @@ AddUsersToProject(config, "user@example.com", "admin", ["project-id-1"], (err, r
   console.log("User added");
 }, authHeader);
 
-// Manage project credentials (API keys)
-GetAllProjectCredential(config, projectId, page, pageSize, authHeader, (err, response) => {
-  console.log("Credentials:", response.getCredentialsList());
-});
+// Preserve the existing unpaginated Project API key call.
+GetAllProjectCredential(config, projectId, (err, response) => {
+  console.log("API keys:", response?.getDataList());
+}, authHeader);
 
-const credential = await CreateProjectCredential(config, request, authHeader);
+// New inventory consumers pass the generated request directly.
+const credentialRequest = new GetAllProjectCredentialRequest();
+const credentialPage = new Paginate();
+const credentialRole = new Criteria();
+credentialRequest.setProjectid(projectId);
+credentialPage.setPage(1);
+credentialPage.setPagesize(25);
+credentialRequest.setPaginate(credentialPage);
+credentialRole.setKey("role");
+credentialRole.setLogic("contains");
+credentialRole.setValue("runtime");
+credentialRequest.addCriterias(credentialRole);
+ListProjectCredentials(config, credentialRequest, (err, response) => {
+  console.log("API keys:", response?.getDataList());
+}, authHeader);
+
+CreateProjectCredential(config, projectId, "Web widget", roleDefinitionId, (err, response) => {
+  console.log("Created:", response?.getData());
+}, authHeader);
+
+RevokeProjectCredential(config, projectId, credentialId, (err, response) => {
+  console.log("Revoked ID:", response?.getId());
+}, authHeader);
 ```
 
 ---

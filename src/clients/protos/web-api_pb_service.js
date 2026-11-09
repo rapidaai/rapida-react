@@ -962,6 +962,15 @@ ProjectService.GetAllProjectCredential = {
   responseType: web_api_pb.GetAllProjectCredentialResponse
 };
 
+ProjectService.RevokeProjectCredential = {
+  methodName: "RevokeProjectCredential",
+  service: ProjectService,
+  requestStream: false,
+  responseStream: false,
+  requestType: web_api_pb.RevokeProjectCredentialRequest,
+  responseType: web_api_pb.RevokeProjectCredentialResponse
+};
+
 exports.ProjectService = ProjectService;
 
 function ProjectServiceClient(serviceHost, options) {
@@ -1222,6 +1231,37 @@ ProjectServiceClient.prototype.getAllProjectCredential = function getAllProjectC
     callback = arguments[1];
   }
   var client = grpc.unary(ProjectService.GetAllProjectCredential, {
+    request: requestMessage,
+    host: this.serviceHost,
+    metadata: metadata,
+    transport: this.options.transport,
+    debug: this.options.debug,
+    onEnd: function (response) {
+      if (callback) {
+        if (response.status !== grpc.Code.OK) {
+          var err = new Error(response.statusMessage);
+          err.code = response.status;
+          err.metadata = response.trailers;
+          callback(err, null);
+        } else {
+          callback(null, response.message);
+        }
+      }
+    }
+  });
+  return {
+    cancel: function () {
+      callback = null;
+      client.close();
+    }
+  };
+};
+
+ProjectServiceClient.prototype.revokeProjectCredential = function revokeProjectCredential(requestMessage, metadata, callback) {
+  if (arguments.length === 2) {
+    callback = arguments[1];
+  }
+  var client = grpc.unary(ProjectService.RevokeProjectCredential, {
     request: requestMessage,
     host: this.serviceHost,
     metadata: metadata,
