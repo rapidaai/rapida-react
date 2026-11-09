@@ -14157,7 +14157,8 @@ proto.web_api.CreateProjectCredentialRequest.prototype.toObject = function(opt_i
 proto.web_api.CreateProjectCredentialRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     projectid: jspb.Message.getFieldWithDefault(msg, 1, "0"),
-    name: jspb.Message.getFieldWithDefault(msg, 2, "")
+    name: jspb.Message.getFieldWithDefault(msg, 2, ""),
+    roledefinitionid: jspb.Message.getFieldWithDefault(msg, 3, "0")
   };
 
   if (includeInstance) {
@@ -14202,6 +14203,10 @@ proto.web_api.CreateProjectCredentialRequest.deserializeBinaryFromReader = funct
       var value = /** @type {string} */ (reader.readString());
       msg.setName(value);
       break;
+    case 3:
+      var value = /** @type {string} */ (reader.readUint64String());
+      msg.setRoledefinitionid(value);
+      break;
     default:
       reader.skipField();
       break;
@@ -14245,6 +14250,13 @@ proto.web_api.CreateProjectCredentialRequest.serializeBinaryToWriter = function(
       f
     );
   }
+  f = message.getRoledefinitionid();
+  if (parseInt(f, 10) !== 0) {
+    writer.writeUint64String(
+      3,
+      f
+    );
+  }
 };
 
 
@@ -14281,6 +14293,24 @@ proto.web_api.CreateProjectCredentialRequest.prototype.getName = function() {
  */
 proto.web_api.CreateProjectCredentialRequest.prototype.setName = function(value) {
   return jspb.Message.setProto3StringField(this, 2, value);
+};
+
+
+/**
+ * optional uint64 roleDefinitionId = 3;
+ * @return {string}
+ */
+proto.web_api.CreateProjectCredentialRequest.prototype.getRoledefinitionid = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, "0"));
+};
+
+
+/**
+ * @param {string} value
+ * @return {!proto.web_api.CreateProjectCredentialRequest} returns this
+ */
+proto.web_api.CreateProjectCredentialRequest.prototype.setRoledefinitionid = function(value) {
+  return jspb.Message.setProto3StringIntField(this, 3, value);
 };
 
 

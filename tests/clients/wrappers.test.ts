@@ -84,7 +84,7 @@ jest.mock("@/rapida/clients/protos/web-api_pb", () => ({
   GetProjectRequest: makeReq(["setProjectid"]),
   ArchiveProjectRequest: makeReq(["setId"]),
   GetAllProjectCredentialRequest: makeReq(["setProjectid"]),
-  CreateProjectCredentialRequest: makeReq(["setProjectid", "setName"]),
+  CreateProjectCredentialRequest: makeReq(["setProjectid", "setName", "setRoledefinitionid"]),
 }));
 
 jest.mock("@/rapida/clients/protos/vault-api_pb", () => ({
@@ -314,8 +314,11 @@ describe("clients wrappers", () => {
     expect(GetAllProjectCredential(config, "p1", cb, { a: 1 } as any)).toBe(
       "get-all-project-creds",
     );
-    expect(CreateProjectCredential(config, "p1", "cred", cb, { a: 1 } as any)).toBe(
+    expect(CreateProjectCredential(config, "p1", "cred", "117", cb, { a: 1 } as any)).toBe(
       "create-project-creds",
+    );
+    expect(config.projectClient.createProjectCredential.mock.calls[0][0]._setRoledefinitionid).toBe(
+      "117",
     );
 
     DeleteProviderKey(config, "vault-1", cb, { a: 1 } as any);

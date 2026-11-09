@@ -280,6 +280,7 @@ export function GetAllProjectCredential(
  *
  * @param projectId - The ID of the project for which to create a credential.
  * @param name - The name of the new credential.
+ * @param roleDefinitionId - The Project-scoped project-token role to assign.
  * @param cb - Callback function to handle the response.
  * @param authHeader - Authentication headers for the request.
  * @returns UnaryResponse - The gRPC response object.
@@ -288,6 +289,7 @@ export function CreateProjectCredential(
   connectionConfig: ConnectionConfig,
   projectId: string,
   name: string,
+  roleDefinitionId: string,
   cb: (
     err: ServiceError | null,
     response: CreateProjectCredentialResponse | null
@@ -297,6 +299,7 @@ export function CreateProjectCredential(
   const requestObject = new CreateProjectCredentialRequest();
   requestObject.setProjectid(projectId);
   requestObject.setName(name);
+  requestObject.setRoledefinitionid(roleDefinitionId);
 
   return connectionConfig.projectClient.createProjectCredential(
     requestObject,

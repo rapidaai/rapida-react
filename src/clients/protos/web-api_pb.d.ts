@@ -1810,6 +1810,9 @@ export class CreateProjectCredentialRequest extends jspb.Message {
   getName(): string;
   setName(value: string): void;
 
+  getRoledefinitionid(): string;
+  setRoledefinitionid(value: string): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): CreateProjectCredentialRequest.AsObject;
   static toObject(includeInstance: boolean, msg: CreateProjectCredentialRequest): CreateProjectCredentialRequest.AsObject;
@@ -1824,6 +1827,7 @@ export namespace CreateProjectCredentialRequest {
   export type AsObject = {
     projectid: string,
     name: string,
+    roledefinitionid: string,
   }
 }
 
