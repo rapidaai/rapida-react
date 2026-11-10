@@ -158,7 +158,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.web_api.OrganizationRole = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.web_api.OrganizationRole.repeatedFields_, null);
 };
 goog.inherits(proto.web_api.OrganizationRole, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -179,7 +179,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.web_api.ProjectRole = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.web_api.ProjectRole.repeatedFields_, null);
 };
 goog.inherits(proto.web_api.ProjectRole, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -1019,7 +1019,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.web_api.ProjectRoleAssignment = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.web_api.ProjectRoleAssignment.repeatedFields_, null);
 };
 goog.inherits(proto.web_api.ProjectRoleAssignment, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -1103,7 +1103,7 @@ if (goog.DEBUG && !COMPILED) {
  * @constructor
  */
 proto.web_api.UpdateUserOrganizationRoleRequest = function(opt_data) {
-  jspb.Message.initialize(this, opt_data, 0, -1, null, null);
+  jspb.Message.initialize(this, opt_data, 0, -1, proto.web_api.UpdateUserOrganizationRoleRequest.repeatedFields_, null);
 };
 goog.inherits(proto.web_api.UpdateUserOrganizationRoleRequest, jspb.Message);
 if (goog.DEBUG && !COMPILED) {
@@ -1999,6 +1999,13 @@ proto.web_api.Token.prototype.setIsexpired = function(value) {
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.web_api.OrganizationRole.repeatedFields_ = [5,6];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -2030,10 +2037,11 @@ proto.web_api.OrganizationRole.prototype.toObject = function(opt_includeInstance
  */
 proto.web_api.OrganizationRole.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, "0"),
     organizationid: jspb.Message.getFieldWithDefault(msg, 2, "0"),
-    role: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    organizationname: jspb.Message.getFieldWithDefault(msg, 4, "")
+    organizationname: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    rolesList: jspb.Message.toObjectList(msg.getRolesList(),
+    common_pb.AssignedRole.toObject, includeInstance),
+    effectivepermissionsList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -2070,21 +2078,22 @@ proto.web_api.OrganizationRole.deserializeBinaryFromReader = function(msg, reade
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setId(value);
-      break;
     case 2:
       var value = /** @type {string} */ (reader.readUint64String());
       msg.setOrganizationid(value);
       break;
-    case 3:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setRole(value);
-      break;
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setOrganizationname(value);
+      break;
+    case 5:
+      var value = new common_pb.AssignedRole;
+      reader.readMessage(value,common_pb.AssignedRole.deserializeBinaryFromReader);
+      msg.addRoles(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addEffectivepermissions(value);
       break;
     default:
       reader.skipField();
@@ -2115,24 +2124,10 @@ proto.web_api.OrganizationRole.prototype.serializeBinary = function() {
  */
 proto.web_api.OrganizationRole.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getId();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      1,
-      f
-    );
-  }
   f = message.getOrganizationid();
   if (parseInt(f, 10) !== 0) {
     writer.writeUint64String(
       2,
-      f
-    );
-  }
-  f = message.getRole();
-  if (f.length > 0) {
-    writer.writeString(
-      3,
       f
     );
   }
@@ -2143,24 +2138,21 @@ proto.web_api.OrganizationRole.serializeBinaryToWriter = function(message, write
       f
     );
   }
-};
-
-
-/**
- * optional uint64 id = 1;
- * @return {string}
- */
-proto.web_api.OrganizationRole.prototype.getId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, "0"));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.web_api.OrganizationRole} returns this
- */
-proto.web_api.OrganizationRole.prototype.setId = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 1, value);
+  f = message.getRolesList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      5,
+      f,
+      common_pb.AssignedRole.serializeBinaryToWriter
+    );
+  }
+  f = message.getEffectivepermissionsList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      6,
+      f
+    );
+  }
 };
 
 
@@ -2183,24 +2175,6 @@ proto.web_api.OrganizationRole.prototype.setOrganizationid = function(value) {
 
 
 /**
- * optional string role = 3;
- * @return {string}
- */
-proto.web_api.OrganizationRole.prototype.getRole = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.web_api.OrganizationRole} returns this
- */
-proto.web_api.OrganizationRole.prototype.setRole = function(value) {
-  return jspb.Message.setProto3StringField(this, 3, value);
-};
-
-
-/**
  * optional string organizationName = 4;
  * @return {string}
  */
@@ -2218,6 +2192,88 @@ proto.web_api.OrganizationRole.prototype.setOrganizationname = function(value) {
 };
 
 
+/**
+ * repeated AssignedRole roles = 5;
+ * @return {!Array<!proto.AssignedRole>}
+ */
+proto.web_api.OrganizationRole.prototype.getRolesList = function() {
+  return /** @type{!Array<!proto.AssignedRole>} */ (
+    jspb.Message.getRepeatedWrapperField(this, common_pb.AssignedRole, 5));
+};
+
+
+/**
+ * @param {!Array<!proto.AssignedRole>} value
+ * @return {!proto.web_api.OrganizationRole} returns this
+*/
+proto.web_api.OrganizationRole.prototype.setRolesList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 5, value);
+};
+
+
+/**
+ * @param {!proto.AssignedRole=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.AssignedRole}
+ */
+proto.web_api.OrganizationRole.prototype.addRoles = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 5, opt_value, proto.AssignedRole, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.web_api.OrganizationRole} returns this
+ */
+proto.web_api.OrganizationRole.prototype.clearRolesList = function() {
+  return this.setRolesList([]);
+};
+
+
+/**
+ * repeated string effectivePermissions = 6;
+ * @return {!Array<string>}
+ */
+proto.web_api.OrganizationRole.prototype.getEffectivepermissionsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 6));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.web_api.OrganizationRole} returns this
+ */
+proto.web_api.OrganizationRole.prototype.setEffectivepermissionsList = function(value) {
+  return jspb.Message.setField(this, 6, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.web_api.OrganizationRole} returns this
+ */
+proto.web_api.OrganizationRole.prototype.addEffectivepermissions = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 6, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.web_api.OrganizationRole} returns this
+ */
+proto.web_api.OrganizationRole.prototype.clearEffectivepermissionsList = function() {
+  return this.setEffectivepermissionsList([]);
+};
+
+
+
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.web_api.ProjectRole.repeatedFields_ = [5,6];
 
 
 
@@ -2250,10 +2306,11 @@ proto.web_api.ProjectRole.prototype.toObject = function(opt_includeInstance) {
  */
 proto.web_api.ProjectRole.toObject = function(includeInstance, msg) {
   var f, obj = {
-    id: jspb.Message.getFieldWithDefault(msg, 1, "0"),
     projectid: jspb.Message.getFieldWithDefault(msg, 2, "0"),
-    role: jspb.Message.getFieldWithDefault(msg, 3, ""),
-    projectname: jspb.Message.getFieldWithDefault(msg, 4, "")
+    projectname: jspb.Message.getFieldWithDefault(msg, 4, ""),
+    rolesList: jspb.Message.toObjectList(msg.getRolesList(),
+    common_pb.AssignedRole.toObject, includeInstance),
+    effectivepermissionsList: (f = jspb.Message.getRepeatedField(msg, 6)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -2290,21 +2347,22 @@ proto.web_api.ProjectRole.deserializeBinaryFromReader = function(msg, reader) {
     }
     var field = reader.getFieldNumber();
     switch (field) {
-    case 1:
-      var value = /** @type {string} */ (reader.readUint64String());
-      msg.setId(value);
-      break;
     case 2:
       var value = /** @type {string} */ (reader.readUint64String());
       msg.setProjectid(value);
       break;
-    case 3:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setRole(value);
-      break;
     case 4:
       var value = /** @type {string} */ (reader.readString());
       msg.setProjectname(value);
+      break;
+    case 5:
+      var value = new common_pb.AssignedRole;
+      reader.readMessage(value,common_pb.AssignedRole.deserializeBinaryFromReader);
+      msg.addRoles(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.addEffectivepermissions(value);
       break;
     default:
       reader.skipField();
@@ -2335,24 +2393,10 @@ proto.web_api.ProjectRole.prototype.serializeBinary = function() {
  */
 proto.web_api.ProjectRole.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getId();
-  if (parseInt(f, 10) !== 0) {
-    writer.writeUint64String(
-      1,
-      f
-    );
-  }
   f = message.getProjectid();
   if (parseInt(f, 10) !== 0) {
     writer.writeUint64String(
       2,
-      f
-    );
-  }
-  f = message.getRole();
-  if (f.length > 0) {
-    writer.writeString(
-      3,
       f
     );
   }
@@ -2363,24 +2407,21 @@ proto.web_api.ProjectRole.serializeBinaryToWriter = function(message, writer) {
       f
     );
   }
-};
-
-
-/**
- * optional uint64 id = 1;
- * @return {string}
- */
-proto.web_api.ProjectRole.prototype.getId = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, "0"));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.web_api.ProjectRole} returns this
- */
-proto.web_api.ProjectRole.prototype.setId = function(value) {
-  return jspb.Message.setProto3StringIntField(this, 1, value);
+  f = message.getRolesList();
+  if (f.length > 0) {
+    writer.writeRepeatedMessage(
+      5,
+      f,
+      common_pb.AssignedRole.serializeBinaryToWriter
+    );
+  }
+  f = message.getEffectivepermissionsList();
+  if (f.length > 0) {
+    writer.writeRepeatedString(
+      6,
+      f
+    );
+  }
 };
 
 
@@ -2403,24 +2444,6 @@ proto.web_api.ProjectRole.prototype.setProjectid = function(value) {
 
 
 /**
- * optional string role = 3;
- * @return {string}
- */
-proto.web_api.ProjectRole.prototype.getRole = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 3, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.web_api.ProjectRole} returns this
- */
-proto.web_api.ProjectRole.prototype.setRole = function(value) {
-  return jspb.Message.setProto3StringField(this, 3, value);
-};
-
-
-/**
  * optional string projectName = 4;
  * @return {string}
  */
@@ -2435,6 +2458,81 @@ proto.web_api.ProjectRole.prototype.getProjectname = function() {
  */
 proto.web_api.ProjectRole.prototype.setProjectname = function(value) {
   return jspb.Message.setProto3StringField(this, 4, value);
+};
+
+
+/**
+ * repeated AssignedRole roles = 5;
+ * @return {!Array<!proto.AssignedRole>}
+ */
+proto.web_api.ProjectRole.prototype.getRolesList = function() {
+  return /** @type{!Array<!proto.AssignedRole>} */ (
+    jspb.Message.getRepeatedWrapperField(this, common_pb.AssignedRole, 5));
+};
+
+
+/**
+ * @param {!Array<!proto.AssignedRole>} value
+ * @return {!proto.web_api.ProjectRole} returns this
+*/
+proto.web_api.ProjectRole.prototype.setRolesList = function(value) {
+  return jspb.Message.setRepeatedWrapperField(this, 5, value);
+};
+
+
+/**
+ * @param {!proto.AssignedRole=} opt_value
+ * @param {number=} opt_index
+ * @return {!proto.AssignedRole}
+ */
+proto.web_api.ProjectRole.prototype.addRoles = function(opt_value, opt_index) {
+  return jspb.Message.addToRepeatedWrapperField(this, 5, opt_value, proto.AssignedRole, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.web_api.ProjectRole} returns this
+ */
+proto.web_api.ProjectRole.prototype.clearRolesList = function() {
+  return this.setRolesList([]);
+};
+
+
+/**
+ * repeated string effectivePermissions = 6;
+ * @return {!Array<string>}
+ */
+proto.web_api.ProjectRole.prototype.getEffectivepermissionsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 6));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.web_api.ProjectRole} returns this
+ */
+proto.web_api.ProjectRole.prototype.setEffectivepermissionsList = function(value) {
+  return jspb.Message.setField(this, 6, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.web_api.ProjectRole} returns this
+ */
+proto.web_api.ProjectRole.prototype.addEffectivepermissions = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 6, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.web_api.ProjectRole} returns this
+ */
+proto.web_api.ProjectRole.prototype.clearEffectivepermissionsList = function() {
+  return this.setEffectivepermissionsList([]);
 };
 
 
@@ -11068,6 +11166,13 @@ proto.web_api.GetAllProjectResponse.prototype.hasPaginated = function() {
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.web_api.ProjectRoleAssignment.repeatedFields_ = [3];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -11100,7 +11205,7 @@ proto.web_api.ProjectRoleAssignment.prototype.toObject = function(opt_includeIns
 proto.web_api.ProjectRoleAssignment.toObject = function(includeInstance, msg) {
   var f, obj = {
     projectid: jspb.Message.getFieldWithDefault(msg, 1, "0"),
-    projectrole: jspb.Message.getFieldWithDefault(msg, 2, "")
+    roledefinitionidsList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -11141,9 +11246,11 @@ proto.web_api.ProjectRoleAssignment.deserializeBinaryFromReader = function(msg, 
       var value = /** @type {string} */ (reader.readUint64String());
       msg.setProjectid(value);
       break;
-    case 2:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setProjectrole(value);
+    case 3:
+      var values = /** @type {!Array<string>} */ (reader.isDelimited() ? reader.readPackedUint64String() : [reader.readUint64String()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addRoledefinitionids(values[i]);
+      }
       break;
     default:
       reader.skipField();
@@ -11181,10 +11288,10 @@ proto.web_api.ProjectRoleAssignment.serializeBinaryToWriter = function(message, 
       f
     );
   }
-  f = message.getProjectrole();
+  f = message.getRoledefinitionidsList();
   if (f.length > 0) {
-    writer.writeString(
-      2,
+    writer.writePackedUint64String(
+      3,
       f
     );
   }
@@ -11210,20 +11317,39 @@ proto.web_api.ProjectRoleAssignment.prototype.setProjectid = function(value) {
 
 
 /**
- * optional string projectRole = 2;
- * @return {string}
+ * repeated uint64 roleDefinitionIds = 3;
+ * @return {!Array<string>}
  */
-proto.web_api.ProjectRoleAssignment.prototype.getProjectrole = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+proto.web_api.ProjectRoleAssignment.prototype.getRoledefinitionidsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 3));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.web_api.ProjectRoleAssignment} returns this
+ */
+proto.web_api.ProjectRoleAssignment.prototype.setRoledefinitionidsList = function(value) {
+  return jspb.Message.setField(this, 3, value || []);
 };
 
 
 /**
  * @param {string} value
+ * @param {number=} opt_index
  * @return {!proto.web_api.ProjectRoleAssignment} returns this
  */
-proto.web_api.ProjectRoleAssignment.prototype.setProjectrole = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
+proto.web_api.ProjectRoleAssignment.prototype.addRoledefinitionids = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 3, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.web_api.ProjectRoleAssignment} returns this
+ */
+proto.web_api.ProjectRoleAssignment.prototype.clearRoledefinitionidsList = function() {
+  return this.setRoledefinitionidsList([]);
 };
 
 
@@ -11233,7 +11359,7 @@ proto.web_api.ProjectRoleAssignment.prototype.setProjectrole = function(value) {
  * @private {!Array<number>}
  * @const
  */
-proto.web_api.InviteUserToOrganizationRequest.repeatedFields_ = [3];
+proto.web_api.InviteUserToOrganizationRequest.repeatedFields_ = [3,4];
 
 
 
@@ -11267,9 +11393,9 @@ proto.web_api.InviteUserToOrganizationRequest.prototype.toObject = function(opt_
 proto.web_api.InviteUserToOrganizationRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     email: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    organizationrole: jspb.Message.getFieldWithDefault(msg, 2, ""),
     projectrolesList: jspb.Message.toObjectList(msg.getProjectrolesList(),
-    proto.web_api.ProjectRoleAssignment.toObject, includeInstance)
+    proto.web_api.ProjectRoleAssignment.toObject, includeInstance),
+    organizationroledefinitionidsList: (f = jspb.Message.getRepeatedField(msg, 4)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -11310,14 +11436,16 @@ proto.web_api.InviteUserToOrganizationRequest.deserializeBinaryFromReader = func
       var value = /** @type {string} */ (reader.readString());
       msg.setEmail(value);
       break;
-    case 2:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setOrganizationrole(value);
-      break;
     case 3:
       var value = new proto.web_api.ProjectRoleAssignment;
       reader.readMessage(value,proto.web_api.ProjectRoleAssignment.deserializeBinaryFromReader);
       msg.addProjectroles(value);
+      break;
+    case 4:
+      var values = /** @type {!Array<string>} */ (reader.isDelimited() ? reader.readPackedUint64String() : [reader.readUint64String()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addOrganizationroledefinitionids(values[i]);
+      }
       break;
     default:
       reader.skipField();
@@ -11355,19 +11483,19 @@ proto.web_api.InviteUserToOrganizationRequest.serializeBinaryToWriter = function
       f
     );
   }
-  f = message.getOrganizationrole();
-  if (f.length > 0) {
-    writer.writeString(
-      2,
-      f
-    );
-  }
   f = message.getProjectrolesList();
   if (f.length > 0) {
     writer.writeRepeatedMessage(
       3,
       f,
       proto.web_api.ProjectRoleAssignment.serializeBinaryToWriter
+    );
+  }
+  f = message.getOrganizationroledefinitionidsList();
+  if (f.length > 0) {
+    writer.writePackedUint64String(
+      4,
+      f
     );
   }
 };
@@ -11388,24 +11516,6 @@ proto.web_api.InviteUserToOrganizationRequest.prototype.getEmail = function() {
  */
 proto.web_api.InviteUserToOrganizationRequest.prototype.setEmail = function(value) {
   return jspb.Message.setProto3StringField(this, 1, value);
-};
-
-
-/**
- * optional string organizationRole = 2;
- * @return {string}
- */
-proto.web_api.InviteUserToOrganizationRequest.prototype.getOrganizationrole = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
-};
-
-
-/**
- * @param {string} value
- * @return {!proto.web_api.InviteUserToOrganizationRequest} returns this
- */
-proto.web_api.InviteUserToOrganizationRequest.prototype.setOrganizationrole = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
 };
 
 
@@ -11444,6 +11554,43 @@ proto.web_api.InviteUserToOrganizationRequest.prototype.addProjectroles = functi
  */
 proto.web_api.InviteUserToOrganizationRequest.prototype.clearProjectrolesList = function() {
   return this.setProjectrolesList([]);
+};
+
+
+/**
+ * repeated uint64 organizationRoleDefinitionIds = 4;
+ * @return {!Array<string>}
+ */
+proto.web_api.InviteUserToOrganizationRequest.prototype.getOrganizationroledefinitionidsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 4));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.web_api.InviteUserToOrganizationRequest} returns this
+ */
+proto.web_api.InviteUserToOrganizationRequest.prototype.setOrganizationroledefinitionidsList = function(value) {
+  return jspb.Message.setField(this, 4, value || []);
+};
+
+
+/**
+ * @param {string} value
+ * @param {number=} opt_index
+ * @return {!proto.web_api.InviteUserToOrganizationRequest} returns this
+ */
+proto.web_api.InviteUserToOrganizationRequest.prototype.addOrganizationroledefinitionids = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 4, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.web_api.InviteUserToOrganizationRequest} returns this
+ */
+proto.web_api.InviteUserToOrganizationRequest.prototype.clearOrganizationroledefinitionidsList = function() {
+  return this.setOrganizationroledefinitionidsList([]);
 };
 
 
@@ -11900,6 +12047,13 @@ proto.web_api.AddUserToProjectsRequest.prototype.clearProjectrolesList = functio
 
 
 
+/**
+ * List of repeated fields within this message type.
+ * @private {!Array<number>}
+ * @const
+ */
+proto.web_api.UpdateUserOrganizationRoleRequest.repeatedFields_ = [3];
+
 
 
 if (jspb.Message.GENERATE_TO_OBJECT) {
@@ -11932,7 +12086,7 @@ proto.web_api.UpdateUserOrganizationRoleRequest.prototype.toObject = function(op
 proto.web_api.UpdateUserOrganizationRoleRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
     userid: jspb.Message.getFieldWithDefault(msg, 1, "0"),
-    organizationrole: jspb.Message.getFieldWithDefault(msg, 2, "")
+    roledefinitionidsList: (f = jspb.Message.getRepeatedField(msg, 3)) == null ? undefined : f
   };
 
   if (includeInstance) {
@@ -11973,9 +12127,11 @@ proto.web_api.UpdateUserOrganizationRoleRequest.deserializeBinaryFromReader = fu
       var value = /** @type {string} */ (reader.readUint64String());
       msg.setUserid(value);
       break;
-    case 2:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setOrganizationrole(value);
+    case 3:
+      var values = /** @type {!Array<string>} */ (reader.isDelimited() ? reader.readPackedUint64String() : [reader.readUint64String()]);
+      for (var i = 0; i < values.length; i++) {
+        msg.addRoledefinitionids(values[i]);
+      }
       break;
     default:
       reader.skipField();
@@ -12013,10 +12169,10 @@ proto.web_api.UpdateUserOrganizationRoleRequest.serializeBinaryToWriter = functi
       f
     );
   }
-  f = message.getOrganizationrole();
+  f = message.getRoledefinitionidsList();
   if (f.length > 0) {
-    writer.writeString(
-      2,
+    writer.writePackedUint64String(
+      3,
       f
     );
   }
@@ -12042,20 +12198,39 @@ proto.web_api.UpdateUserOrganizationRoleRequest.prototype.setUserid = function(v
 
 
 /**
- * optional string organizationRole = 2;
- * @return {string}
+ * repeated uint64 roleDefinitionIds = 3;
+ * @return {!Array<string>}
  */
-proto.web_api.UpdateUserOrganizationRoleRequest.prototype.getOrganizationrole = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+proto.web_api.UpdateUserOrganizationRoleRequest.prototype.getRoledefinitionidsList = function() {
+  return /** @type {!Array<string>} */ (jspb.Message.getRepeatedField(this, 3));
+};
+
+
+/**
+ * @param {!Array<string>} value
+ * @return {!proto.web_api.UpdateUserOrganizationRoleRequest} returns this
+ */
+proto.web_api.UpdateUserOrganizationRoleRequest.prototype.setRoledefinitionidsList = function(value) {
+  return jspb.Message.setField(this, 3, value || []);
 };
 
 
 /**
  * @param {string} value
+ * @param {number=} opt_index
  * @return {!proto.web_api.UpdateUserOrganizationRoleRequest} returns this
  */
-proto.web_api.UpdateUserOrganizationRoleRequest.prototype.setOrganizationrole = function(value) {
-  return jspb.Message.setProto3StringField(this, 2, value);
+proto.web_api.UpdateUserOrganizationRoleRequest.prototype.addRoledefinitionids = function(value, opt_index) {
+  return jspb.Message.addToRepeatedField(this, 3, value, opt_index);
+};
+
+
+/**
+ * Clears the list making it empty but non-null.
+ * @return {!proto.web_api.UpdateUserOrganizationRoleRequest} returns this
+ */
+proto.web_api.UpdateUserOrganizationRoleRequest.prototype.clearRoledefinitionidsList = function() {
+  return this.setRoledefinitionidsList([]);
 };
 
 

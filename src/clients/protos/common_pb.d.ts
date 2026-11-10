@@ -177,6 +177,34 @@ export namespace Ordering {
   }
 }
 
+export class AssignedRole extends jspb.Message {
+  getRoledefinitionid(): string;
+  setRoledefinitionid(value: string): void;
+
+  getKey(): string;
+  setKey(value: string): void;
+
+  getName(): string;
+  setName(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): AssignedRole.AsObject;
+  static toObject(includeInstance: boolean, msg: AssignedRole): AssignedRole.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: AssignedRole, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): AssignedRole;
+  static deserializeBinaryFromReader(message: AssignedRole, reader: jspb.BinaryReader): AssignedRole;
+}
+
+export namespace AssignedRole {
+  export type AsObject = {
+    roledefinitionid: string,
+    key: string,
+    name: string,
+  }
+}
+
 export class User extends jspb.Message {
   getId(): string;
   setId(value: string): void;
@@ -187,9 +215,6 @@ export class User extends jspb.Message {
   getEmail(): string;
   setEmail(value: string): void;
 
-  getRole(): string;
-  setRole(value: string): void;
-
   hasCreateddate(): boolean;
   clearCreateddate(): void;
   getCreateddate(): google_protobuf_timestamp_pb.Timestamp | undefined;
@@ -197,6 +222,11 @@ export class User extends jspb.Message {
 
   getStatus(): string;
   setStatus(value: string): void;
+
+  clearOrganizationrolesList(): void;
+  getOrganizationrolesList(): Array<AssignedRole>;
+  setOrganizationrolesList(value: Array<AssignedRole>): void;
+  addOrganizationroles(value?: AssignedRole, index?: number): AssignedRole;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): User.AsObject;
@@ -213,9 +243,9 @@ export namespace User {
     id: string,
     name: string,
     email: string,
-    role: string,
     createddate?: google_protobuf_timestamp_pb.Timestamp.AsObject,
     status: string,
+    organizationrolesList: Array<AssignedRole.AsObject>,
   }
 }
 

@@ -408,6 +408,7 @@ export {
   Paginate,
   Paginated,
   Ordering,
+  AssignedRole,
   User,
   BaseResponse,
   Metadata,

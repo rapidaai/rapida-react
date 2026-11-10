@@ -90,17 +90,21 @@ export namespace Token {
 }
 
 export class OrganizationRole extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
   getOrganizationid(): string;
   setOrganizationid(value: string): void;
 
-  getRole(): string;
-  setRole(value: string): void;
-
   getOrganizationname(): string;
   setOrganizationname(value: string): void;
+
+  clearRolesList(): void;
+  getRolesList(): Array<common_pb.AssignedRole>;
+  setRolesList(value: Array<common_pb.AssignedRole>): void;
+  addRoles(value?: common_pb.AssignedRole, index?: number): common_pb.AssignedRole;
+
+  clearEffectivepermissionsList(): void;
+  getEffectivepermissionsList(): Array<string>;
+  setEffectivepermissionsList(value: Array<string>): void;
+  addEffectivepermissions(value: string, index?: number): string;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): OrganizationRole.AsObject;
@@ -114,25 +118,29 @@ export class OrganizationRole extends jspb.Message {
 
 export namespace OrganizationRole {
   export type AsObject = {
-    id: string,
     organizationid: string,
-    role: string,
     organizationname: string,
+    rolesList: Array<common_pb.AssignedRole.AsObject>,
+    effectivepermissionsList: Array<string>,
   }
 }
 
 export class ProjectRole extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
   getProjectid(): string;
   setProjectid(value: string): void;
 
-  getRole(): string;
-  setRole(value: string): void;
-
   getProjectname(): string;
   setProjectname(value: string): void;
+
+  clearRolesList(): void;
+  getRolesList(): Array<common_pb.AssignedRole>;
+  setRolesList(value: Array<common_pb.AssignedRole>): void;
+  addRoles(value?: common_pb.AssignedRole, index?: number): common_pb.AssignedRole;
+
+  clearEffectivepermissionsList(): void;
+  getEffectivepermissionsList(): Array<string>;
+  setEffectivepermissionsList(value: Array<string>): void;
+  addEffectivepermissions(value: string, index?: number): string;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ProjectRole.AsObject;
@@ -146,10 +154,10 @@ export class ProjectRole extends jspb.Message {
 
 export namespace ProjectRole {
   export type AsObject = {
-    id: string,
     projectid: string,
-    role: string,
     projectname: string,
+    rolesList: Array<common_pb.AssignedRole.AsObject>,
+    effectivepermissionsList: Array<string>,
   }
 }
 
@@ -1371,8 +1379,10 @@ export class ProjectRoleAssignment extends jspb.Message {
   getProjectid(): string;
   setProjectid(value: string): void;
 
-  getProjectrole(): string;
-  setProjectrole(value: string): void;
+  clearRoledefinitionidsList(): void;
+  getRoledefinitionidsList(): Array<string>;
+  setRoledefinitionidsList(value: Array<string>): void;
+  addRoledefinitionids(value: string, index?: number): string;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ProjectRoleAssignment.AsObject;
@@ -1387,7 +1397,7 @@ export class ProjectRoleAssignment extends jspb.Message {
 export namespace ProjectRoleAssignment {
   export type AsObject = {
     projectid: string,
-    projectrole: string,
+    roledefinitionidsList: Array<string>,
   }
 }
 
@@ -1395,13 +1405,15 @@ export class InviteUserToOrganizationRequest extends jspb.Message {
   getEmail(): string;
   setEmail(value: string): void;
 
-  getOrganizationrole(): string;
-  setOrganizationrole(value: string): void;
-
   clearProjectrolesList(): void;
   getProjectrolesList(): Array<ProjectRoleAssignment>;
   setProjectrolesList(value: Array<ProjectRoleAssignment>): void;
   addProjectroles(value?: ProjectRoleAssignment, index?: number): ProjectRoleAssignment;
+
+  clearOrganizationroledefinitionidsList(): void;
+  getOrganizationroledefinitionidsList(): Array<string>;
+  setOrganizationroledefinitionidsList(value: Array<string>): void;
+  addOrganizationroledefinitionids(value: string, index?: number): string;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): InviteUserToOrganizationRequest.AsObject;
@@ -1416,8 +1428,8 @@ export class InviteUserToOrganizationRequest extends jspb.Message {
 export namespace InviteUserToOrganizationRequest {
   export type AsObject = {
     email: string,
-    organizationrole: string,
     projectrolesList: Array<ProjectRoleAssignment.AsObject>,
+    organizationroledefinitionidsList: Array<string>,
   }
 }
 
@@ -1487,8 +1499,10 @@ export class UpdateUserOrganizationRoleRequest extends jspb.Message {
   getUserid(): string;
   setUserid(value: string): void;
 
-  getOrganizationrole(): string;
-  setOrganizationrole(value: string): void;
+  clearRoledefinitionidsList(): void;
+  getRoledefinitionidsList(): Array<string>;
+  setRoledefinitionidsList(value: Array<string>): void;
+  addRoledefinitionids(value: string, index?: number): string;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): UpdateUserOrganizationRoleRequest.AsObject;
@@ -1503,7 +1517,7 @@ export class UpdateUserOrganizationRoleRequest extends jspb.Message {
 export namespace UpdateUserOrganizationRoleRequest {
   export type AsObject = {
     userid: string,
-    organizationrole: string,
+    roledefinitionidsList: Array<string>,
   }
 }
 
