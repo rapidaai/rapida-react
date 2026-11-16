@@ -115,7 +115,6 @@ import {
   AuthenticateUser,
   AuthorizeUser,
   RegisterUser,
-  VerifyToken,
   ForgotPassword,
   CreatePassword,
   ChangePassword,

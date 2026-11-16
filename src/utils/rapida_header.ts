@@ -24,6 +24,7 @@
  */
 
 export const HEADER_AUTH_ID = 'x-auth-id';
+export const HEADER_ORGANIZATION_ID = 'x-organization-id';
 export const HEADER_PROJECT_ID = 'x-project-id';
 
 export const HEADER_API_KEY = 'x-api-key';

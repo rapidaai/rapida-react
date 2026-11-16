@@ -1,9 +1,16 @@
-import { AssignedRole, User } from "@/rapida/clients/protos/common_pb";
 import {
+  Authentication,
+  Organization,
+  Permission,
+  Project,
+  Role,
+  User,
+} from "@/rapida/clients/protos/authentication_pb";
+import {
+  AuthenticateResponse,
   InviteUserToOrganizationRequest,
-  OrganizationRole,
-  ProjectRole,
   ProjectRoleAssignment,
+  Token,
   UpdateUserOrganizationRoleRequest,
 } from "@/rapida/clients/protos/web-api_pb";
 
@@ -40,35 +47,67 @@ describe("user role contract", () => {
     ).toBeUndefined();
   });
 
-  it("projects assigned roles and effective permissions", () => {
-    const assignedRole = new AssignedRole();
-    assignedRole.setRoledefinitionid("118");
-    assignedRole.setKey("support_agent");
-    assignedRole.setName("Support Agent");
+  it("keeps permissions on assigned roles in the authentication graph", () => {
+    const permission = new Permission();
+    permission.setId("501");
+    permission.setKey("organization.members.read");
+    permission.setScope("ORGANIZATION");
+    permission.setName("Read members");
+
+    const role = new Role();
+    role.setId("118");
+    role.setKey("support_agent");
+    role.setName("Support Agent");
+    role.setScope("ORGANIZATION");
+    role.setSubject("USER");
+    role.setDefinitiontype("CUSTOM");
+    role.setPermissionsList([permission]);
+
+    const project = new Project();
+    project.setId("30");
+    project.setName("Console");
+
+    const organization = new Organization();
+    organization.setId("20");
+    organization.setName("Rapida");
+    organization.setRolesList([role]);
+    organization.setProjectsList([project]);
 
     const user = new User();
-    user.setOrganizationrolesList([assignedRole]);
+    user.setId("42");
+    user.setName("Ada");
+    user.setEmail("ada@example.com");
+    user.setStatus("ACTIVE");
 
-    const organizationAccess = new OrganizationRole();
-    organizationAccess.setOrganizationid("20");
-    organizationAccess.setRolesList([assignedRole]);
-    organizationAccess.setEffectivepermissionsList([
-      "organization.members.read",
-    ]);
+    const authentication = new Authentication();
+    authentication.setUser(user);
+    authentication.setOrganizationsList([organization]);
 
-    const projectAccess = new ProjectRole();
-    projectAccess.setProjectid("30");
-    projectAccess.setRolesList([assignedRole]);
-    projectAccess.setEffectivepermissionsList(["project.read"]);
+    expect(
+      authentication
+        .getOrganizationsList()[0]
+        .getRolesList()[0]
+        .getPermissionsList()[0]
+        .getKey(),
+    ).toBe("organization.members.read");
+    expect(
+      authentication.getOrganizationsList()[0].getProjectsList()[0].getId(),
+    ).toBe("30");
+  });
 
-    expect(user.getOrganizationrolesList()[0].getName()).toBe(
-      "Support Agent",
-    );
-    expect(organizationAccess.getEffectivepermissionsList()).toEqual([
-      "organization.members.read",
-    ]);
-    expect(projectAccess.getEffectivepermissionsList()).toEqual([
-      "project.read",
-    ]);
+  it("returns authentication and token without a session wrapper", () => {
+    const authentication = new Authentication();
+    const token = new Token();
+    token.setToken("credential");
+
+    const response = new AuthenticateResponse();
+    response.setAuthentication(authentication);
+    response.setToken(token);
+
+    expect(response.getAuthentication()).toBe(authentication);
+    expect(response.getToken()).toBe(token);
+    expect(
+      (response as unknown as { getSession?: unknown }).getSession,
+    ).toBeUndefined();
   });
 });

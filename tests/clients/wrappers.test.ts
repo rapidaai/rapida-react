@@ -54,7 +54,6 @@ jest.mock("@/rapida/clients/protos/web-api_pb", () => ({
   AuthenticateRequest: makeReq(["setEmail", "setPassword"]),
   RegisterUserRequest: makeReq(["setEmail", "setName", "setPassword"]),
   ForgotPasswordRequest: makeReq(["setEmail"]),
-  VerifyTokenRequest: makeReq(["setToken", "setTokentype"]),
   AuthorizeRequest: makeReq([]),
   GetUserRequest: makeReq([]),
   UpdateUserRequest: makeReq(["setName"]),
@@ -157,7 +156,6 @@ import {
   AuthenticateUser,
   AuthorizeUser,
   RegisterUser,
-  VerifyToken,
   ForgotPassword,
   CreatePassword,
   GetUser,
@@ -392,7 +390,6 @@ describe("clients wrappers", () => {
     AuthenticateUser(config, "a@b.com", "pw", cb);
     AuthorizeUser(config, cb, { a: 1 } as any);
     RegisterUser(config, "a@b.com", "pw", "name", cb);
-    VerifyToken(config, "t", "bearer", cb);
     ForgotPassword(config, "a@b.com", cb);
     CreatePassword(config, "tok", "newpw", cb);
     GetUser(config, cb, { a: 1 } as any);
@@ -405,7 +402,6 @@ describe("clients wrappers", () => {
     expect(config.authenticationClient.authenticate).toHaveBeenCalled();
     expect(config.authenticationClient.authorize).toHaveBeenCalled();
     expect(config.authenticationClient.registerUser).toHaveBeenCalled();
-    expect(config.authenticationClient.verifyToken).toHaveBeenCalled();
     expect(config.authenticationClient.forgotPassword).toHaveBeenCalled();
     expect(config.authenticationClient.createPassword).toHaveBeenCalled();
     expect(config.authenticationClient.getUser).toHaveBeenCalled();

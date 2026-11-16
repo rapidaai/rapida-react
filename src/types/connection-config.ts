@@ -56,6 +56,7 @@ import {
 import {
   HEADER_API_KEY,
   HEADER_AUTH_ID,
+  HEADER_ORGANIZATION_ID,
   HEADER_PROJECT_ID,
   HEADER_SOURCE_KEY,
 } from "@/rapida/utils/rapida_header";
@@ -97,15 +98,20 @@ export class ConnectionConfig {
   static WithDebugger({
     authorization,
     userId,
+    organizationId,
     projectId,
   }: {
     authorization: string;
     userId: string;
+    organizationId?: string;
     projectId: string;
   }): UserAuthInfo {
     return {
       authorization,
       [HEADER_AUTH_ID]: userId,
+      ...(organizationId
+        ? { [HEADER_ORGANIZATION_ID]: organizationId }
+        : {}),
       [HEADER_PROJECT_ID]: projectId,
       Client: {
         [HEADER_SOURCE_KEY]: DEBUGGER_SOURCE,

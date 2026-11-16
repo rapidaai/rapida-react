@@ -108,6 +108,14 @@ export function ReduceCustomRolePermissions(
   request: ReduceCustomRolePermissionsRequest,
   authHeader?: UserAuthInfo
 ): Promise<ReduceCustomRolePermissionsResponse> {
+  const hasConfirmationDigest = request.getConfirmationdigest().trim() !== "";
+  if (request.getPreview() === hasConfirmationDigest) {
+    return Promise.reject(
+      new Error(
+        "Role reduction requires either preview without a confirmation digest or confirmation with a digest."
+      )
+    );
+  }
   return new Promise((resolve, reject) => {
     connectionConfig.accessManagementClient.reduceCustomRolePermissions(
       request,

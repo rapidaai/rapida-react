@@ -31,8 +31,6 @@ import {
   AuthenticateResponse,
   RegisterUserRequest,
   ForgotPasswordRequest,
-  VerifyTokenRequest,
-  VerifyTokenResponse,
   AuthorizeRequest,
   GetUserResponse,
   GetUserRequest,
@@ -114,28 +112,6 @@ export function RegisterUser(
   requestObject.setName(name);
   requestObject.setPassword(password);
   return config.authenticationClient.registerUser(requestObject, cb);
-}
-
-/**
- * Verify a token for authentication or authorization.
- *
- * @param token - The token to verify.
- * @param tokenType - The type of the token.
- * @param cb - Callback function to handle the response.
- */
-export function VerifyToken(
-  config: ConnectionConfig,
-  token: string,
-  tokenType: string,
-  cb: (
-    err: ServiceError | null,
-    tokenResponse: VerifyTokenResponse | null
-  ) => void
-) {
-  const requestObject = new VerifyTokenRequest();
-  requestObject.setToken(token);
-  requestObject.setTokentype(tokenType);
-  return config.authenticationClient.verifyToken(requestObject, cb);
 }
 
 /**

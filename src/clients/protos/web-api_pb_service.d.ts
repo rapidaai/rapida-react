@@ -32,15 +32,6 @@ type AuthenticationServiceAuthorize = {
   readonly responseType: typeof web_api_pb.AuthenticateResponse;
 };
 
-type AuthenticationServiceScopeAuthorize = {
-  readonly methodName: string;
-  readonly service: typeof AuthenticationService;
-  readonly requestStream: false;
-  readonly responseStream: false;
-  readonly requestType: typeof web_api_pb.ScopeAuthorizeRequest;
-  readonly responseType: typeof web_api_pb.ScopedAuthenticationResponse;
-};
-
 type AuthenticationServiceVerifyToken = {
   readonly methodName: string;
   readonly service: typeof AuthenticationService;
@@ -136,7 +127,6 @@ export class AuthenticationService {
   static readonly Authenticate: AuthenticationServiceAuthenticate;
   static readonly RegisterUser: AuthenticationServiceRegisterUser;
   static readonly Authorize: AuthenticationServiceAuthorize;
-  static readonly ScopeAuthorize: AuthenticationServiceScopeAuthorize;
   static readonly VerifyToken: AuthenticationServiceVerifyToken;
   static readonly ForgotPassword: AuthenticationServiceForgotPassword;
   static readonly CreatePassword: AuthenticationServiceCreatePassword;
@@ -385,15 +375,6 @@ export class AuthenticationServiceClient {
   authorize(
     requestMessage: web_api_pb.AuthorizeRequest,
     callback: (error: ServiceError|null, responseMessage: web_api_pb.AuthenticateResponse|null) => void
-  ): UnaryResponse;
-  scopeAuthorize(
-    requestMessage: web_api_pb.ScopeAuthorizeRequest,
-    metadata: grpc.Metadata,
-    callback: (error: ServiceError|null, responseMessage: web_api_pb.ScopedAuthenticationResponse|null) => void
-  ): UnaryResponse;
-  scopeAuthorize(
-    requestMessage: web_api_pb.ScopeAuthorizeRequest,
-    callback: (error: ServiceError|null, responseMessage: web_api_pb.ScopedAuthenticationResponse|null) => void
   ): UnaryResponse;
   verifyToken(
     requestMessage: web_api_pb.VerifyTokenRequest,

@@ -160,7 +160,26 @@ describe('Main Entry Point', () => {
     expect(sdk.ArchiveCustomRole).toBeDefined();
     expect(sdk.AccessManagementServiceClient).toBeDefined();
     expect(sdk.ListPermissionsRequest).toBeDefined();
+    expect(sdk.ReduceCustomRolePermissionsRequest).toBeDefined();
+    expect(sdk.ReduceCustomRolePermissionsResponse).toBeDefined();
+    expect(sdk.RoleReductionImpact).toBeDefined();
+    expect(sdk.RoleReductionPreview).toBeDefined();
     expect(sdk.RoleScope).toBeDefined();
+    expect(sdk.Authentication).toBeDefined();
+    expect(sdk.AuthenticationPrincipal).toBeDefined();
+    expect(sdk.AuthenticationOrganization).toBeDefined();
+    expect(sdk.AuthenticationProject).toBeDefined();
+    expect(sdk.AuthenticationRole).toBeDefined();
+    expect(sdk.AuthenticationPermission).toBeDefined();
+    for (const removedExport of [
+      ['Authentication', 'Session'].join(''),
+      ['Organization', 'Role'].join(''),
+      ['Project', 'Role'].join(''),
+      ['Feature', 'Permission'].join(''),
+      ['Scoped', 'Authentication'].join(''),
+    ]) {
+      expect((sdk as Record<string, unknown>)[removedExport]).toBeUndefined();
+    }
     expect((sdk as any).ProjectDashboardAnalyticsServiceClient).toBeUndefined();
   });
 });

@@ -29,6 +29,7 @@ import {
   HEADER_REGION_KEY,
   HEADER_API_KEY,
   HEADER_AUTH_ID,
+  HEADER_ORGANIZATION_ID,
   HEADER_PROJECT_ID,
   HEADER_USER_AGENT,
   HEADER_LANGUAGE,
@@ -98,6 +99,7 @@ export const WithAuthContext = (
 export interface UserAuthInfo {
   authorization: string;
   [HEADER_AUTH_ID]: string;
+  [HEADER_ORGANIZATION_ID]?: string;
   [HEADER_PROJECT_ID]?: string;
   Client?: Partial<ClientInfo>;
 }

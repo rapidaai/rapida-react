@@ -4,6 +4,7 @@
 import * as jspb from "google-protobuf";
 import * as google_protobuf_timestamp_pb from "google-protobuf/google/protobuf/timestamp_pb";
 import * as common_pb from "./common_pb";
+import * as authentication_pb from "./authentication_pb";
 
 export class AuthenticateRequest extends jspb.Message {
   getEmail(): string;
@@ -89,229 +90,6 @@ export namespace Token {
   }
 }
 
-export class OrganizationRole extends jspb.Message {
-  getOrganizationid(): string;
-  setOrganizationid(value: string): void;
-
-  getOrganizationname(): string;
-  setOrganizationname(value: string): void;
-
-  clearRolesList(): void;
-  getRolesList(): Array<common_pb.AssignedRole>;
-  setRolesList(value: Array<common_pb.AssignedRole>): void;
-  addRoles(value?: common_pb.AssignedRole, index?: number): common_pb.AssignedRole;
-
-  clearEffectivepermissionsList(): void;
-  getEffectivepermissionsList(): Array<string>;
-  setEffectivepermissionsList(value: Array<string>): void;
-  addEffectivepermissions(value: string, index?: number): string;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): OrganizationRole.AsObject;
-  static toObject(includeInstance: boolean, msg: OrganizationRole): OrganizationRole.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: OrganizationRole, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): OrganizationRole;
-  static deserializeBinaryFromReader(message: OrganizationRole, reader: jspb.BinaryReader): OrganizationRole;
-}
-
-export namespace OrganizationRole {
-  export type AsObject = {
-    organizationid: string,
-    organizationname: string,
-    rolesList: Array<common_pb.AssignedRole.AsObject>,
-    effectivepermissionsList: Array<string>,
-  }
-}
-
-export class ProjectRole extends jspb.Message {
-  getProjectid(): string;
-  setProjectid(value: string): void;
-
-  getProjectname(): string;
-  setProjectname(value: string): void;
-
-  clearRolesList(): void;
-  getRolesList(): Array<common_pb.AssignedRole>;
-  setRolesList(value: Array<common_pb.AssignedRole>): void;
-  addRoles(value?: common_pb.AssignedRole, index?: number): common_pb.AssignedRole;
-
-  clearEffectivepermissionsList(): void;
-  getEffectivepermissionsList(): Array<string>;
-  setEffectivepermissionsList(value: Array<string>): void;
-  addEffectivepermissions(value: string, index?: number): string;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ProjectRole.AsObject;
-  static toObject(includeInstance: boolean, msg: ProjectRole): ProjectRole.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ProjectRole, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ProjectRole;
-  static deserializeBinaryFromReader(message: ProjectRole, reader: jspb.BinaryReader): ProjectRole;
-}
-
-export namespace ProjectRole {
-  export type AsObject = {
-    projectid: string,
-    projectname: string,
-    rolesList: Array<common_pb.AssignedRole.AsObject>,
-    effectivepermissionsList: Array<string>,
-  }
-}
-
-export class FeaturePermission extends jspb.Message {
-  getId(): string;
-  setId(value: string): void;
-
-  getFeature(): string;
-  setFeature(value: string): void;
-
-  getIsenable(): boolean;
-  setIsenable(value: boolean): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): FeaturePermission.AsObject;
-  static toObject(includeInstance: boolean, msg: FeaturePermission): FeaturePermission.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: FeaturePermission, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): FeaturePermission;
-  static deserializeBinaryFromReader(message: FeaturePermission, reader: jspb.BinaryReader): FeaturePermission;
-}
-
-export namespace FeaturePermission {
-  export type AsObject = {
-    id: string,
-    feature: string,
-    isenable: boolean,
-  }
-}
-
-export class AuthBillingPlan extends jspb.Message {
-  getPlanslug(): string;
-  setPlanslug(value: string): void;
-
-  getPlanname(): string;
-  setPlanname(value: string): void;
-
-  getQuotasMap(): jspb.Map<string, number>;
-  clearQuotasMap(): void;
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): AuthBillingPlan.AsObject;
-  static toObject(includeInstance: boolean, msg: AuthBillingPlan): AuthBillingPlan.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: AuthBillingPlan, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): AuthBillingPlan;
-  static deserializeBinaryFromReader(message: AuthBillingPlan, reader: jspb.BinaryReader): AuthBillingPlan;
-}
-
-export namespace AuthBillingPlan {
-  export type AsObject = {
-    planslug: string,
-    planname: string,
-    quotasMap: Array<[string, number]>,
-  }
-}
-
-export class Authentication extends jspb.Message {
-  hasUser(): boolean;
-  clearUser(): void;
-  getUser(): common_pb.User | undefined;
-  setUser(value?: common_pb.User): void;
-
-  hasToken(): boolean;
-  clearToken(): void;
-  getToken(): Token | undefined;
-  setToken(value?: Token): void;
-
-  hasOrganizationrole(): boolean;
-  clearOrganizationrole(): void;
-  getOrganizationrole(): OrganizationRole | undefined;
-  setOrganizationrole(value?: OrganizationRole): void;
-
-  clearProjectrolesList(): void;
-  getProjectrolesList(): Array<ProjectRole>;
-  setProjectrolesList(value: Array<ProjectRole>): void;
-  addProjectroles(value?: ProjectRole, index?: number): ProjectRole;
-
-  clearFeaturepermissionsList(): void;
-  getFeaturepermissionsList(): Array<FeaturePermission>;
-  setFeaturepermissionsList(value: Array<FeaturePermission>): void;
-  addFeaturepermissions(value?: FeaturePermission, index?: number): FeaturePermission;
-
-  hasBillingplan(): boolean;
-  clearBillingplan(): void;
-  getBillingplan(): AuthBillingPlan | undefined;
-  setBillingplan(value?: AuthBillingPlan): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): Authentication.AsObject;
-  static toObject(includeInstance: boolean, msg: Authentication): Authentication.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: Authentication, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): Authentication;
-  static deserializeBinaryFromReader(message: Authentication, reader: jspb.BinaryReader): Authentication;
-}
-
-export namespace Authentication {
-  export type AsObject = {
-    user?: common_pb.User.AsObject,
-    token?: Token.AsObject,
-    organizationrole?: OrganizationRole.AsObject,
-    projectrolesList: Array<ProjectRole.AsObject>,
-    featurepermissionsList: Array<FeaturePermission.AsObject>,
-    billingplan?: AuthBillingPlan.AsObject,
-  }
-}
-
-export class ScopedAuthentication extends jspb.Message {
-  getUserid(): number;
-  setUserid(value: number): void;
-
-  getOrganizationid(): number;
-  setOrganizationid(value: number): void;
-
-  getProjectid(): number;
-  setProjectid(value: number): void;
-
-  getStatus(): string;
-  setStatus(value: string): void;
-
-  hasActortype(): boolean;
-  clearActortype(): void;
-  getActortype(): string;
-  setActortype(value: string): void;
-
-  hasActorid(): boolean;
-  clearActorid(): void;
-  getActorid(): string;
-  setActorid(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ScopedAuthentication.AsObject;
-  static toObject(includeInstance: boolean, msg: ScopedAuthentication): ScopedAuthentication.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ScopedAuthentication, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ScopedAuthentication;
-  static deserializeBinaryFromReader(message: ScopedAuthentication, reader: jspb.BinaryReader): ScopedAuthentication;
-}
-
-export namespace ScopedAuthentication {
-  export type AsObject = {
-    userid: number,
-    organizationid: number,
-    projectid: number,
-    status: string,
-    actortype: string,
-    actorid: string,
-  }
-}
-
 export class AuthenticateResponse extends jspb.Message {
   getCode(): number;
   setCode(value: number): void;
@@ -319,15 +97,20 @@ export class AuthenticateResponse extends jspb.Message {
   getSuccess(): boolean;
   setSuccess(value: boolean): void;
 
-  hasData(): boolean;
-  clearData(): void;
-  getData(): Authentication | undefined;
-  setData(value?: Authentication): void;
-
   hasError(): boolean;
   clearError(): void;
   getError(): common_pb.Error | undefined;
   setError(value?: common_pb.Error): void;
+
+  hasAuthentication(): boolean;
+  clearAuthentication(): void;
+  getAuthentication(): authentication_pb.Authentication | undefined;
+  setAuthentication(value?: authentication_pb.Authentication): void;
+
+  hasToken(): boolean;
+  clearToken(): void;
+  getToken(): Token | undefined;
+  setToken(value?: Token): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): AuthenticateResponse.AsObject;
@@ -343,8 +126,9 @@ export namespace AuthenticateResponse {
   export type AsObject = {
     code: number,
     success: boolean,
-    data?: Authentication.AsObject,
     error?: common_pb.Error.AsObject,
+    authentication?: authentication_pb.Authentication.AsObject,
+    token?: Token.AsObject,
   }
 }
 
@@ -507,12 +291,22 @@ export namespace CreatePasswordResponse {
 }
 
 export class VerifyTokenRequest extends jspb.Message {
-  getTokentype(): string;
-  setTokentype(value: string): void;
+  hasUser(): boolean;
+  clearUser(): void;
+  getUser(): VerifyTokenRequest.UserCredential | undefined;
+  setUser(value?: VerifyTokenRequest.UserCredential): void;
 
-  getToken(): string;
-  setToken(value: string): void;
+  hasProject(): boolean;
+  clearProject(): void;
+  getProject(): VerifyTokenRequest.ProjectCredential | undefined;
+  setProject(value?: VerifyTokenRequest.ProjectCredential): void;
 
+  hasOrganization(): boolean;
+  clearOrganization(): void;
+  getOrganization(): VerifyTokenRequest.OrganizationCredential | undefined;
+  setOrganization(value?: VerifyTokenRequest.OrganizationCredential): void;
+
+  getCredentialCase(): VerifyTokenRequest.CredentialCase;
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): VerifyTokenRequest.AsObject;
   static toObject(includeInstance: boolean, msg: VerifyTokenRequest): VerifyTokenRequest.AsObject;
@@ -525,22 +319,96 @@ export class VerifyTokenRequest extends jspb.Message {
 
 export namespace VerifyTokenRequest {
   export type AsObject = {
-    tokentype: string,
-    token: string,
+    user?: VerifyTokenRequest.UserCredential.AsObject,
+    project?: VerifyTokenRequest.ProjectCredential.AsObject,
+    organization?: VerifyTokenRequest.OrganizationCredential.AsObject,
+  }
+
+  export class UserCredential extends jspb.Message {
+    getToken(): string;
+    setToken(value: string): void;
+
+    getUserid(): string;
+    setUserid(value: string): void;
+
+    getSelectedorganizationid(): string;
+    setSelectedorganizationid(value: string): void;
+
+    getSelectedprojectid(): string;
+    setSelectedprojectid(value: string): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): UserCredential.AsObject;
+    static toObject(includeInstance: boolean, msg: UserCredential): UserCredential.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: UserCredential, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): UserCredential;
+    static deserializeBinaryFromReader(message: UserCredential, reader: jspb.BinaryReader): UserCredential;
+  }
+
+  export namespace UserCredential {
+    export type AsObject = {
+      token: string,
+      userid: string,
+      selectedorganizationid: string,
+      selectedprojectid: string,
+    }
+  }
+
+  export class ProjectCredential extends jspb.Message {
+    getToken(): string;
+    setToken(value: string): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): ProjectCredential.AsObject;
+    static toObject(includeInstance: boolean, msg: ProjectCredential): ProjectCredential.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: ProjectCredential, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): ProjectCredential;
+    static deserializeBinaryFromReader(message: ProjectCredential, reader: jspb.BinaryReader): ProjectCredential;
+  }
+
+  export namespace ProjectCredential {
+    export type AsObject = {
+      token: string,
+    }
+  }
+
+  export class OrganizationCredential extends jspb.Message {
+    getToken(): string;
+    setToken(value: string): void;
+
+    serializeBinary(): Uint8Array;
+    toObject(includeInstance?: boolean): OrganizationCredential.AsObject;
+    static toObject(includeInstance: boolean, msg: OrganizationCredential): OrganizationCredential.AsObject;
+    static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+    static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+    static serializeBinaryToWriter(message: OrganizationCredential, writer: jspb.BinaryWriter): void;
+    static deserializeBinary(bytes: Uint8Array): OrganizationCredential;
+    static deserializeBinaryFromReader(message: OrganizationCredential, reader: jspb.BinaryReader): OrganizationCredential;
+  }
+
+  export namespace OrganizationCredential {
+    export type AsObject = {
+      token: string,
+    }
+  }
+
+  export enum CredentialCase {
+    CREDENTIAL_NOT_SET = 0,
+    USER = 3,
+    PROJECT = 4,
+    ORGANIZATION = 5,
   }
 }
 
 export class VerifyTokenResponse extends jspb.Message {
-  getCode(): number;
-  setCode(value: number): void;
-
-  getSuccess(): boolean;
-  setSuccess(value: boolean): void;
-
-  hasData(): boolean;
-  clearData(): void;
-  getData(): Token | undefined;
-  setData(value?: Token): void;
+  hasAuthentication(): boolean;
+  clearAuthentication(): void;
+  getAuthentication(): authentication_pb.Authentication | undefined;
+  setAuthentication(value?: authentication_pb.Authentication): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): VerifyTokenResponse.AsObject;
@@ -554,9 +422,7 @@ export class VerifyTokenResponse extends jspb.Message {
 
 export namespace VerifyTokenResponse {
   export type AsObject = {
-    code: number,
-    success: boolean,
-    data?: Token.AsObject,
+    authentication?: authentication_pb.Authentication.AsObject,
   }
 }
 
@@ -573,62 +439,6 @@ export class AuthorizeRequest extends jspb.Message {
 
 export namespace AuthorizeRequest {
   export type AsObject = {
-  }
-}
-
-export class ScopeAuthorizeRequest extends jspb.Message {
-  getScope(): string;
-  setScope(value: string): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ScopeAuthorizeRequest.AsObject;
-  static toObject(includeInstance: boolean, msg: ScopeAuthorizeRequest): ScopeAuthorizeRequest.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ScopeAuthorizeRequest, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ScopeAuthorizeRequest;
-  static deserializeBinaryFromReader(message: ScopeAuthorizeRequest, reader: jspb.BinaryReader): ScopeAuthorizeRequest;
-}
-
-export namespace ScopeAuthorizeRequest {
-  export type AsObject = {
-    scope: string,
-  }
-}
-
-export class ScopedAuthenticationResponse extends jspb.Message {
-  getCode(): number;
-  setCode(value: number): void;
-
-  getSuccess(): boolean;
-  setSuccess(value: boolean): void;
-
-  hasData(): boolean;
-  clearData(): void;
-  getData(): ScopedAuthentication | undefined;
-  setData(value?: ScopedAuthentication): void;
-
-  hasError(): boolean;
-  clearError(): void;
-  getError(): common_pb.Error | undefined;
-  setError(value?: common_pb.Error): void;
-
-  serializeBinary(): Uint8Array;
-  toObject(includeInstance?: boolean): ScopedAuthenticationResponse.AsObject;
-  static toObject(includeInstance: boolean, msg: ScopedAuthenticationResponse): ScopedAuthenticationResponse.AsObject;
-  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
-  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
-  static serializeBinaryToWriter(message: ScopedAuthenticationResponse, writer: jspb.BinaryWriter): void;
-  static deserializeBinary(bytes: Uint8Array): ScopedAuthenticationResponse;
-  static deserializeBinaryFromReader(message: ScopedAuthenticationResponse, reader: jspb.BinaryReader): ScopedAuthenticationResponse;
-}
-
-export namespace ScopedAuthenticationResponse {
-  export type AsObject = {
-    code: number,
-    success: boolean,
-    data?: ScopedAuthentication.AsObject,
-    error?: common_pb.Error.AsObject,
   }
 }
 
@@ -930,11 +740,6 @@ export class GetOrganizationResponse extends jspb.Message {
   getData(): common_pb.Organization | undefined;
   setData(value?: common_pb.Organization): void;
 
-  hasRole(): boolean;
-  clearRole(): void;
-  getRole(): OrganizationRole | undefined;
-  setRole(value?: OrganizationRole): void;
-
   hasError(): boolean;
   clearError(): void;
   getError(): common_pb.Error | undefined;
@@ -955,7 +760,6 @@ export namespace GetOrganizationResponse {
     code: number,
     success: boolean,
     data?: common_pb.Organization.AsObject,
-    role?: OrganizationRole.AsObject,
     error?: common_pb.Error.AsObject,
   }
 }
@@ -971,11 +775,6 @@ export class CreateOrganizationResponse extends jspb.Message {
   clearData(): void;
   getData(): common_pb.Organization | undefined;
   setData(value?: common_pb.Organization): void;
-
-  hasRole(): boolean;
-  clearRole(): void;
-  getRole(): OrganizationRole | undefined;
-  setRole(value?: OrganizationRole): void;
 
   hasError(): boolean;
   clearError(): void;
@@ -997,7 +796,6 @@ export namespace CreateOrganizationResponse {
     code: number,
     success: boolean,
     data?: common_pb.Organization.AsObject,
-    role?: OrganizationRole.AsObject,
     error?: common_pb.Error.AsObject,
   }
 }

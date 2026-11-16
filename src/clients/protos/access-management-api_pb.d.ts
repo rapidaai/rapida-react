@@ -453,6 +453,74 @@ export namespace UpdateCustomRoleResponse {
   }
 }
 
+export class RoleReductionImpact extends jspb.Message {
+  getOrganizationid(): string;
+  setOrganizationid(value: string): void;
+
+  getProjectid(): string;
+  setProjectid(value: string): void;
+
+  getSubject(): RoleSubjectMap[keyof RoleSubjectMap];
+  setSubject(value: RoleSubjectMap[keyof RoleSubjectMap]): void;
+
+  getSubjectid(): string;
+  setSubjectid(value: string): void;
+
+  getAssignmentstatus(): string;
+  setAssignmentstatus(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RoleReductionImpact.AsObject;
+  static toObject(includeInstance: boolean, msg: RoleReductionImpact): RoleReductionImpact.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RoleReductionImpact, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RoleReductionImpact;
+  static deserializeBinaryFromReader(message: RoleReductionImpact, reader: jspb.BinaryReader): RoleReductionImpact;
+}
+
+export namespace RoleReductionImpact {
+  export type AsObject = {
+    organizationid: string,
+    projectid: string,
+    subject: RoleSubjectMap[keyof RoleSubjectMap],
+    subjectid: string,
+    assignmentstatus: string,
+  }
+}
+
+export class RoleReductionPreview extends jspb.Message {
+  hasResultingrole(): boolean;
+  clearResultingrole(): void;
+  getResultingrole(): RoleDefinition | undefined;
+  setResultingrole(value?: RoleDefinition): void;
+
+  clearImpactsList(): void;
+  getImpactsList(): Array<RoleReductionImpact>;
+  setImpactsList(value: Array<RoleReductionImpact>): void;
+  addImpacts(value?: RoleReductionImpact, index?: number): RoleReductionImpact;
+
+  getConfirmationdigest(): string;
+  setConfirmationdigest(value: string): void;
+
+  serializeBinary(): Uint8Array;
+  toObject(includeInstance?: boolean): RoleReductionPreview.AsObject;
+  static toObject(includeInstance: boolean, msg: RoleReductionPreview): RoleReductionPreview.AsObject;
+  static extensions: {[key: number]: jspb.ExtensionFieldInfo<jspb.Message>};
+  static extensionsBinary: {[key: number]: jspb.ExtensionFieldBinaryInfo<jspb.Message>};
+  static serializeBinaryToWriter(message: RoleReductionPreview, writer: jspb.BinaryWriter): void;
+  static deserializeBinary(bytes: Uint8Array): RoleReductionPreview;
+  static deserializeBinaryFromReader(message: RoleReductionPreview, reader: jspb.BinaryReader): RoleReductionPreview;
+}
+
+export namespace RoleReductionPreview {
+  export type AsObject = {
+    resultingrole?: RoleDefinition.AsObject,
+    impactsList: Array<RoleReductionImpact.AsObject>,
+    confirmationdigest: string,
+  }
+}
+
 export class ReduceCustomRolePermissionsRequest extends jspb.Message {
   getRoledefinitionid(): string;
   setRoledefinitionid(value: string): void;
@@ -464,6 +532,12 @@ export class ReduceCustomRolePermissionsRequest extends jspb.Message {
 
   getReason(): string;
   setReason(value: string): void;
+
+  getConfirmationdigest(): string;
+  setConfirmationdigest(value: string): void;
+
+  getPreview(): boolean;
+  setPreview(value: boolean): void;
 
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ReduceCustomRolePermissionsRequest.AsObject;
@@ -480,6 +554,8 @@ export namespace ReduceCustomRolePermissionsRequest {
     roledefinitionid: string,
     permissiondefinitionidsList: Array<string>,
     reason: string,
+    confirmationdigest: string,
+    preview: boolean,
   }
 }
 
@@ -503,6 +579,11 @@ export class ReduceCustomRolePermissionsResponse extends jspb.Message {
   getCorrelationid(): string;
   setCorrelationid(value: string): void;
 
+  hasPreview(): boolean;
+  clearPreview(): void;
+  getPreview(): RoleReductionPreview | undefined;
+  setPreview(value?: RoleReductionPreview): void;
+
   serializeBinary(): Uint8Array;
   toObject(includeInstance?: boolean): ReduceCustomRolePermissionsResponse.AsObject;
   static toObject(includeInstance: boolean, msg: ReduceCustomRolePermissionsResponse): ReduceCustomRolePermissionsResponse.AsObject;
@@ -520,6 +601,7 @@ export namespace ReduceCustomRolePermissionsResponse {
     role?: RoleDefinition.AsObject,
     error?: common_pb.Error.AsObject,
     correlationid: string,
+    preview?: RoleReductionPreview.AsObject,
   }
 }
 
